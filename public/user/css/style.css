@@ -1498,7 +1498,7 @@ PRODUCT MODAL VIEW END
 .wsus__brand_logo img {
     height: 100%;
     width: 100% !important;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 #wsus__brand_sleder .nxt_arr,
