@@ -34,7 +34,7 @@
                     <div class="col-md-12">
                         <div class="wsus__add_address_single">
                           <div class="wsus__topbar_select">
-                          <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}">
+                          <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}" readonly>
                         </div>
                       </div>
                     </div>
