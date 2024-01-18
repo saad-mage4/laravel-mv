@@ -72,12 +72,8 @@
 
                                         <div class="col-xl-12">
                                             <div class="wsus__check_single_form">
-                                                <select class="select_2" name="country" id="country_id">
-                                                    <option value="">{{__('user.Select Country')}}*</option>
-                                                    @foreach ($countries as $country)
-                                                        <option {{ $country->id == $billing->country_id ? 'selected' : '' }} value="{{ $country->id }}">{{ $country->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                            <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}">
+                                                
                                             </div>
                                         </div>
                                         <div class="col-xl-12">

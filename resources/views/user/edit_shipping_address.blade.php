@@ -34,12 +34,8 @@
                             <div class="wsus__add_address_single">
                                 <label>{{__('user.Country')}} <b>*</b></label>
                                 <div class="wsus__topbar_select">
-                                    <select class="select_2" name="country" id="country_id">
-                                        <option value="">{{__('user.Select Country')}}</option>
-                                        @foreach ($countries as $country)
-                                            <option {{ $country->id == $shipping->country_id ? 'selected' : '' }} value="{{ $country->id }}">{{ $country->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}">
+                                    
                             </div>
                             </div>
                         </div>
