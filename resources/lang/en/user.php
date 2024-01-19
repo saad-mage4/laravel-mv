@@ -408,7 +408,7 @@
   'Sign in with social account' => 'Sign in with social account',
   'I consent to the privacy policy' => 'I consent to the privacy policy',
   'Maintainance' => 'Maintainance',
-  'Stripe' => 'Stripe',
+  'Stripe' => 'Credit / Debit Card',
   'Paypal' => 'Paypal',
   'Razorpay' => 'Razorpay',
   'Flutterwave' => 'Flutterwave',

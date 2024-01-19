@@ -146,20 +146,20 @@
                                                     @csrf
                                              <div class="row">
                                                  <div class="col-12">
-                                                     <input class="input" name="name" type="text" placeholder="{{__('user.Name')}}">
+                                                     <input class="input" name="name" type="text" placeholder="{{__('user.Name')}}*">
                                                  </div>
                                                  <div class="col-12">
-                                                     <input class="input card-number" name="card_number" type="text" placeholder="{{__('user.Card Number')}}">
+                                                     <input class="input card-number" name="card_number" type="text" placeholder="{{__('user.Card Number')}}*">
                                                  </div>
                                                  <div class="col-4">
-                                                     <input class="input card-expiry-month" name="month" type="text" placeholder="{{__('user.Month')}}">
+                                                     <input class="input card-expiry-month" name="month" type="text" placeholder="{{__('user.Month')}}*">
                                                  </div>
                                                  <div class="col-4">
-                                                     <input class="input card-expiry-year" name="year" type="text" placeholder="{{__('user.Year')}}">
+                                                     <input class="input card-expiry-year" name="year" type="text" placeholder="{{__('user.Year')}}*">
                                                  </div>
 
                                                  <div class="col-4 ms-auto">
-                                                     <input class="input card-cvc" name="cvc" type="text" placeholder="{{__('user.CVC')}}">
+                                                     <input class="input card-cvc" name="cvc" type="text" placeholder="{{__('user.CVC')}}*">
                                                  </div>
                                              </div>
 
@@ -311,6 +311,55 @@
 
 
 <script>
+
+$=jQuery;
+$(document).ready(function(){
+
+    $('input[name="card_number"]').on('input', function() {
+        let inputValue = $(this).val();
+        inputValue = inputValue.replace(/\D/g, '');
+        inputValue = inputValue.substring(0, 16);
+        $(this).val(inputValue);
+
+        // Get the entered credit card number
+        var creditCardNumber = $(this).val();
+
+        // Define regular expressions for Visa and MasterCard
+        var visaRegex = /^4/;
+        var mastercardRegex = /^5[1-5]/;
+
+        // Check the starting digits and update the image accordingly
+        if (visaRegex.test(creditCardNumber)) {
+        updateCardImage('visa');
+        } else if (mastercardRegex.test(creditCardNumber)) {
+        updateCardImage('mastercard');
+        } else {
+        // Clear the image if the entered card number doesn't match Visa or MasterCard
+        $('input[name="card_number"]').parent().removeClass('master visa');
+        }
+
+    });
+
+
+    // Function to update the card image
+  function updateCardImage(cardType) {
+    // Clear the container first
+    
+    // Update the image based on the card type
+    if (cardType === 'visa') {
+        //   $('input[name="card_number"]').parent().html('<img src="visa_image.png" alt="Visa Card">');
+        $('input[name="card_number"]').parent().addClass('visa');
+        $('input[name="card_number"]').parent().removeClass('master');
+    } else if (cardType === 'mastercard') {
+        // $('input[name="card_number"]').parent().html('<img src="mastercard_image.png" alt="MasterCard">');
+        $('input[name="card_number"]').parent().addClass('master');
+        $('input[name="card_number"]').parent().removeClass('visa');
+    }
+    // You can add more else if conditions for other card types if needed
+  }
+
+});
+
 
 // start stripe payment
 $(function() {

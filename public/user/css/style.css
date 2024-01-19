@@ -7816,7 +7816,7 @@ PAYMENT PAGE  START
 }
 
 .wsus__payment_area .input {
-    color: #fff;
+    color: #000;
     background: none;
     width: 100%;
     padding: 5px 0px;
@@ -7957,6 +7957,37 @@ PAYMENT PAGE  START
     color: #353535;
     font-weight: 700;
 }
+
+.wsus__pay_info_area #v-stripe-payment,
+.wsus__pay_info_area #payment-form {
+	background: transparent !important;
+}
+
+.wsus__pay_info_area #payment-form div.master,
+.wsus__pay_info_area #payment-form div.visa {
+    position: relative;
+}
+
+.wsus__pay_info_area #payment-form div.master::after,
+.wsus__pay_info_area #payment-form div.visa::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 50px;
+    height: 50px;
+}
+
+.wsus__pay_info_area #payment-form div.visa::after {
+    background-image: url('../../uploads/website-images/Visa_Logo.png');
+}
+.wsus__pay_info_area #payment-form div.master::after {
+    background-image: url('../../uploads/website-images/MasterCard_Logo.webp');
+}
+/* visa-logo.webp */
 
 
 /*======================
@@ -9950,7 +9981,7 @@ textarea::placeholder {
 }
 
 .wsus__payment_area .input {
-    color: #fff;
+    color: #000;
     background: none;
     width: 100%;
     padding: 5px 0px;
