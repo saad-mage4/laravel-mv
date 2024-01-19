@@ -98,7 +98,7 @@
           <i class="far fa-bars dash_bar"></i>
           <i class="far fa-times dash_close"></i>
         </span>
-        <a href="{{ route('user.dashboard') }}" class="dash_logo"><img src="{{ asset($setting->logo) }}" alt="logo" class="img-fluid"></a>
+        <a href="{{ route('user.dashboard') }}" class="dash_logo"><img src="{{ asset('uploads/website-images/white_logo_mv.png') }}" alt="logo" class="img-fluid"></a>
         <ul class="dashboard_link">
           <li><a class="{{ Route::is('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}"><i class="fas fa-tachometer"></i>{{__('user.Dashboard')}}</a></li>
           <li><a class="{{ Route::is('user.message') ? 'active' : '' }}" href="{{ route('user.message') }}"><i class="fas fa-envelope"></i>{{__('user.Message')}}</a></li>
