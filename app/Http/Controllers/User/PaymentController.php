@@ -214,6 +214,7 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -410,6 +411,7 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -602,6 +604,7 @@ class PaymentController extends Controller
                 $message = str_replace('{{order_status}}','Pending',$message);
                 $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
                 $message = str_replace('{{order_detail}}',$order_details,$message);
+                $message = str_replace('{{order_id}}',$order->order_id,$message);
                 Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
                 Session::forget('hipping_method');
@@ -816,6 +819,7 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1072,6 +1076,7 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1284,6 +1289,7 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1599,6 +1605,7 @@ class PaymentController extends Controller
                 $message = str_replace('{{order_status}}','Pending',$message);
                 $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
                 $message = str_replace('{{order_detail}}',$order_details,$message);
+                $message = str_replace('{{order_id}}',$order->order_id,$message);
                 Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
                 Session::forget('hipping_method');
@@ -1788,6 +1795,7 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -2043,6 +2051,7 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -2380,6 +2389,7 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');

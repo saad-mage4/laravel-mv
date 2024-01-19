@@ -185,6 +185,14 @@
                                                 <td>{{ $order_detail }}</td>
                                                 <td>{{__('admin.Order Detail')}}</td>
                                             </tr>
+
+                                            <tr>
+                                                @php
+                                                    $order_id="{{order_id}}";
+                                                @endphp
+                                                <td>{{ $order_id }}</td>
+                                                <td>{{__('admin.Order Id')}}</td>
+                                            </tr>
                                         @endif
 
                                         @if ($template->id == 7)
