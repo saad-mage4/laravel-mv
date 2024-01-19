@@ -7163,7 +7163,7 @@ WISHLIST PAGE START
     align-items: center;
 }
 
-.wsus__dashboard_order .package {
+/* .wsus__dashboard_order .package {
     width: 330px;
 }
 
@@ -7190,6 +7190,12 @@ WISHLIST PAGE START
 .wsus__dashboard_order .status {
     width: 134px;
     text-align: center;
+} */
+
+.wsus__dashboard_order table tr th,
+.wsus__dashboard_order table tr td {
+    width: 100%;
+    vertical-align: middle;
 }
 
 .wsus__dashboard_order .status a {
