@@ -26,7 +26,9 @@
                             </thead>
                             <tbody>
                                 @foreach ($menus as $menu)
-                                    <tr>
+                                @if($menu->menu_name == 'Campaign')
+                                @else
+                                <tr>
                                         <td width="50%">{{ $menu->menu_name }}</td>
                                         <td width="50%">
                                             @if ($menu->status)
@@ -40,6 +42,7 @@
                                             @endif
                                         </td>
                                     </tr>
+                                @endif
                                 @endforeach
                             </tbody>
                         </table>

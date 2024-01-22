@@ -193,6 +193,46 @@
                                                 <td>{{ $order_id }}</td>
                                                 <td>{{__('admin.Order Id')}}</td>
                                             </tr>
+
+                                            <tr>
+                                                @php
+                                                    $name="{{name}}";
+                                                @endphp
+                                                <td>{{ $name }}</td>
+                                                <td>{{__('admin.User Name')}}</td>
+                                            </tr>
+
+                                            <tr>
+                                                @php
+                                                    $address="{{address}}";
+                                                @endphp
+                                                <td>{{ $address }}</td>
+                                                <td>{{__('admin.Address')}}</td>
+                                            </tr>
+
+                                            <tr>
+                                                @php
+                                                    $phone="{{phone}}";
+                                                @endphp
+                                                <td>{{ $phone }}</td>
+                                                <td>{{__('admin.User Phone')}}</td>
+                                            </tr>
+
+                                            <tr>
+                                                @php
+                                                    $email="{{email}}";
+                                                @endphp
+                                                <td>{{ $email }}</td>
+                                                <td>{{__('admin.User Email')}}</td>
+                                            </tr>
+
+                                            <tr>
+                                                @php
+                                                    $shop="{{shipping}}";
+                                                @endphp
+                                                <td>{{ $shop }}</td>
+                                                <td>{{__('admin.Shipping')}}</td>
+                                            </tr>
                                         @endif
 
                                         @if ($template->id == 7)

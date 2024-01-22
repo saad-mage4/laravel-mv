@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\User;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,7 +28,7 @@ use App\Models\Flutterwave;
 use App\Models\PaystackAndMollie;
 use App\Models\InstamojoPayment;
 use App\Models\Coupon;
-use App\Models\ShoppingCart;
+use App\Models\PaymongoPayment;
 use Mail;
 Use Stripe;
 use Cart;
@@ -41,98 +41,64 @@ use Redirect;
 use Mollie\Laravel\Facades\Mollie;
 
 
-
-use Validator;
-use URL;
-
-use Input;
-use App\User;
-use Stripe\Error\Card;
-// use Cartalyst\Stripe\Stripe;
-
-
 class PaymentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+        $this->middleware('auth:web');
     }
 
     public function cashOnDelivery(Request $request){
-
-        $rules = [
-            'agree_terms_condition'=>'required',
-            'shipping_method'=>'required',
-        ];
-        $customMessages = [
-            'agree_terms_condition.required' => trans('Agree field is required'),
-            'shipping_method.required' => trans('Shipping method is required'),
-        ];
-        $this->validate($request, $rules,$customMessages);
-
-
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
         $shipping_fee = 0;
 
-        $user = Auth::guard('api')->user();
-
+        $user = Auth::guard('web')->user();
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
-        $cartProducts = ShoppingCart::with('variants')->where('user_id', $user->id)->get();
-        $totalProduct = ShoppingCart::with('variants')->where('user_id', $user->id)->sum('qty');
-        $subTotalAmount = 0;
-        $taxAmount = 0;
-        $couponAmount = 0;
-        $totalAmount = 0;
-        foreach($cartProducts as $cartProduct){
-            $subTotalAmount += $cartProduct->price * $cartProduct->qty;
-            $taxAmount += $cartProduct->tax * $cartProduct->qty;
+        $cartContents = Cart::content();
+        $shipping_method = Session::get('shipping_method');
+        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shipping_fee = $shippingMethod->fee;
+        foreach ($cartContents as $key => $content) {
+            $tax = $content->options->tax * $content->qty;
+            $tax_amount = $tax_amount + $tax;
         }
 
-        $subTotal = $subTotalAmount;
-        $tax_amount = $taxAmount;
-        $totalAmount = $taxAmount + $subTotalAmount;
-        $findCoupon = ShoppingCart::where('user_id', $user->id)->first();
+        $subTotal = 0;
+        foreach ($cartContents as $cartContent) {
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productPrice = $cartContent->price ;
+            $total = $productPrice * $cartContent->qty ;
+            $subTotal += $total;
+        }
 
-        if($findCoupon){
-            if($findCoupon->offer_type == 1){
-                $couponAmount = $findCoupon->coupon_price;
-                $couponAmount = ($couponAmount / 100) * $totalAmount;
-            }elseif($findCoupon->offer_type == 2){
-                $couponAmount = $findCoupon->coupon_price;
+        $total_price = $tax_amount + $subTotal;
+        if(Session::get('coupon_price') && Session::get('offer_type')) {
+            if(Session::get('offer_type') == 1) {
+                $coupon_price = Session::get('coupon_price');
+                $coupon_price = ($coupon_price / 100) * $total_price;
+            }else {
+                $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $coupon_price = $couponAmount;
-        $totalAmount = $totalAmount - $couponAmount ;
-
-        if($cartProducts->count() == 0){
-            $notification = trans('user_validation.Your Shopping Cart is Empty');
-            return response()->json(['message' => $notification],400);
-        }
-
-
-        $shipping_fee = 0;
-        $shipping_method = $request->shipping_method;
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
-        $shipping_fee = $shippingMethod->fee;
-        $totalAmount = $totalAmount + $shipping_fee;
-        $total_price = $totalAmount;
-
-
+        $total_price = $total_price - $coupon_price ;
+        $total_price += $shipping_fee;
         $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if($request->addition_information){
-            $additional_information = $request->addition_information;
+        if(Session::get('addition_information')){
+            $additional_information = Session::get('addition_information');
         }
-
         $agree_terms_condition = 'no';
-        if($request->agree_terms_condition){
-            $agree_terms_condition = $request->agree_terms_condition;
+        if(Session::get('agree_terms_condition')){
+            $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
@@ -151,7 +117,7 @@ class PaymentController extends Controller
         $order->currency_rate = $currency_rate;
         $order->currency_icon = $currency_icon;
         $order->currency_name = $currency_name;
-        $order->product_qty = $totalProduct;
+        $order->product_qty = Cart::count();
         $order->payment_method = 'Cash on Delivery';
         $order->payment_status = 0;
         $order->shipping_method = $shippingMethod->title;
@@ -173,55 +139,47 @@ class PaymentController extends Controller
         }
 
 
-        $findCoupon = ShoppingCart::where('user_id', $user->id)->first();
-
-        if($findCoupon){
-            if($findCoupon->coupon_name){
-                $coupon = Coupon::where(['code' => $findCoupon->coupon_name])->first();
-                $qty = $coupon->apply_qty;
-                $qty = $qty +1;
-                $coupon->apply_qty = $qty;
-                $coupon->save();
-            }
-        }
-
         $order_details = '';
+        foreach ($cartContents as $key => $cartContent) {
 
-        foreach($cartProducts as $key => $cartProduct){
             $productUnitPrice = 0;
-            $productUnitPrice = $cartProduct->price;
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productUnitPrice = $cartContent->price;
 
-            $product = Product::find($cartProduct->product_id);
-
+            $product = Product::find($cartContent->id);
             $orderProduct = new OrderProduct();
             $orderProduct->order_id = $order->id;
-            $orderProduct->product_id = $cartProduct->product_id;
+            $orderProduct->product_id = $cartContent->id;
             $orderProduct->seller_id = $product->vendor_id;
-            $orderProduct->product_name = $cartProduct->name;
+            $orderProduct->product_name = $cartContent->name;
             $orderProduct->unit_price = $productUnitPrice;
-            $orderProduct->qty = $cartProduct->qty;
-            $orderProduct->vat = $cartProduct->tax * $cartProduct->qty;
+            $orderProduct->qty = $cartContent->qty;
+            $orderProduct->vat = $cartContent->options->tax * $cartContent->qty;
             $orderProduct->save();
 
-            $productStock = Product::find($cartProduct->product_id);
-            $qty = $productStock->qty - $cartProduct->qty;
+            $productStock = Product::find($cartContent->id);
+            $qty = $productStock->qty - $cartContent->qty;
             $productStock->qty = $qty;
             $productStock->save();
 
-            foreach($cartProduct->variants as $index => $variant){
-                $productVariant = new OrderProductVariant();
-                $productVariant->order_product_id = $orderProduct->id;
-                $productVariant->product_id = $cartProduct->product_id;
-                $productVariant->variant_name = $variant->name;
-                $productVariant->variant_value = $variant->value;
-                $productVariant->variant_price = $variant->price;
-                $productVariant->save();
+            if(count($cartContent->options->variants) > 0) {
+                foreach($cartContent->options->variants as $index => $variant) {
+                    $productVariant = new OrderProductVariant();
+                    $productVariant->order_product_id = $orderProduct->id;
+                    $productVariant->product_id = $cartContent->id;
+                    $productVariant->variant_name = $variant;
+                    $productVariant->variant_value = $cartContent->options->values[$index];
+                    $productVariant->variant_price = $cartContent->options->prices[$index];
+                    $productVariant->save();
+                }
             }
 
-            $order_details.='Product: '.$cartProduct->name. '<br>';
-            $order_details.='Quantity: '. $cartProduct->qty .'<br>';
-            $order_details.='Price: '.$setting->currency_icon . $cartProduct->qty * $productUnitPrice .'<br>';
-
+            $order_details.='Product: '.$cartContent->name. '<br>';
+            $order_details.='Quantity: '. $cartContent->qty .'<br>';
+            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
         }
 
         $orderAddress = new OrderAddress();
@@ -246,6 +204,7 @@ class PaymentController extends Controller
 
         MailHelper::setMailConfig();
 
+
         $template=EmailTemplate::where('id',6)->first();
         $subject=$template->subject;
         $message=$template->description;
@@ -256,105 +215,81 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $message = str_replace('{{shop}}',$seller->shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
-        // Session::forget('hipping_method');
-        // Session::forget('coupon_price');
-        // Session::forget('coupon_name');
-        // Session::forget('offer_type');
-        // Session::forget('agree_terms_condition');
-        // Session::forget('addition_information');
-        // Cart::destroy();
+        Session::forget('hipping_method');
+        Session::forget('coupon_price');
+        Session::forget('coupon_name');
+        Session::forget('offer_type');
+        Session::forget('agree_terms_condition');
+        Session::forget('addition_information');
+        Cart::destroy();
 
         $notification = trans('user_validation.Order submited successfully. please wait for admin approval');
-
-        return response()->json(['message' => $notification],200);
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->route('user.order')->with($notification);
 
     }
 
-
     public function payWithStripe(Request $request){
-        $rules = [
-            'agree_terms_condition'=>'required',
-            'shipping_method'=>'required',
-            'card_number'=>'required',
-            'year'=>'required',
-            'month'=>'required',
-            'cvv'=>'required',
-        ];
-        $customMessages = [
-            'agree_terms_condition.required' => trans('Agree field is required'),
-            'payment_id.required' => trans('Payment id is required'),
-            'card_number.required' => trans('Card number is required'),
-            'year.required' => trans('Year is required'),
-            'month.required' => trans('Month is required'),
-            'cvv.required' => trans('Cvv is required'),
-        ];
-        $this->validate($request, $rules,$customMessages);
-
 
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
         $shipping_fee = 0;
 
-        $user = Auth::guard('api')->user();
-
+        $user = Auth::guard('web')->user();
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
-        $cartProducts = ShoppingCart::with('variants')->where('user_id', $user->id)->get();
-        $totalProduct = ShoppingCart::with('variants')->where('user_id', $user->id)->sum('qty');
-        $subTotalAmount = 0;
-        $taxAmount = 0;
-        $couponAmount = 0;
-        $totalAmount = 0;
-        foreach($cartProducts as $cartProduct){
-            $subTotalAmount += $cartProduct->price * $cartProduct->qty;
-            $taxAmount += $cartProduct->tax * $cartProduct->qty;
+        $cartContents = Cart::content();
+        $shipping_method = Session::get('shipping_method');
+        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shipping_fee = $shippingMethod->fee;
+        foreach ($cartContents as $key => $content) {
+            $tax = $content->options->tax * $content->qty;
+            $tax_amount = $tax_amount + $tax;
         }
 
-        $subTotal = $subTotalAmount;
-        $tax_amount = $taxAmount;
-        $totalAmount = $taxAmount + $subTotalAmount;
-        $findCoupon = ShoppingCart::where('user_id', $user->id)->first();
+        $subTotal = 0;
+        foreach ($cartContents as $cartContent) {
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productPrice = $cartContent->price ;
+            $total = $productPrice * $cartContent->qty ;
+            $subTotal += $total;
+        }
 
-        if($findCoupon){
-            if($findCoupon->offer_type == 1){
-                $couponAmount = $findCoupon->coupon_price;
-                $couponAmount = ($couponAmount / 100) * $totalAmount;
-            }elseif($findCoupon->offer_type == 2){
-                $couponAmount = $findCoupon->coupon_price;
+        $total_price = $tax_amount + $subTotal;
+        if(Session::get('coupon_price') && Session::get('offer_type')) {
+            if(Session::get('offer_type') == 1) {
+                $coupon_price = Session::get('coupon_price');
+                $coupon_price = ($coupon_price / 100) * $total_price;
+            }else {
+                $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $coupon_price = $couponAmount;
-        $totalAmount = $totalAmount - $couponAmount ;
-
-        if($cartProducts->count() == 0){
-            $notification = trans('user_validation.Your Shopping Cart is Empty');
-            return response()->json(['message' => $notification],400);
-        }
-
-
-        $shipping_fee = 0;
-        $shipping_method = $request->shipping_method;
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
-        $shipping_fee = $shippingMethod->fee;
-        $totalAmount = $totalAmount + $shipping_fee;
-        $total_price = $totalAmount;
-
-
+        $total_price = $total_price - $coupon_price ;
+        $total_price += $shipping_fee;
         $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if($request->addition_information){
-            $additional_information = $request->addition_information;
+        if(Session::get('addition_information')){
+            $additional_information = Session::get('addition_information');
         }
-
         $agree_terms_condition = 'no';
-        if($request->agree_terms_condition){
-            $agree_terms_condition = $request->agree_terms_condition;
+        if(Session::get('agree_terms_condition')){
+            $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
@@ -363,38 +298,18 @@ class PaymentController extends Controller
         $currency_icon = $setting->currency_icon;
         $currency_name = $setting->currency_name;
 
+
+
         $stripe = StripePayment::first();
         $payableAmount = round($total_price * $stripe->currency_rate,2);
         Stripe\Stripe::setApiKey($stripe->stripe_secret);
 
-
-        try{
-            $token = Stripe\Token::create([
-                'card' => [
-                    'number' => $request->card_number,
-                    'exp_month' => $request->month,
-                    'exp_year' => $request->year,
-                    'cvc' => $request->cvc,
-                ],
-            ]);
-        }catch (Exception $e) {
-            return response()->json(['error' => 'Please provide valid card information'],403);
-        }
-
-        if (!isset($token['id'])) {
-            return response()->json(['error' => 'Payment faild'],403);
-        }
-
-        $result = Stripe\Charge::create([
-            'card' => $token['id'],
-            'currency' => $stripe->currency_code,
-            'amount' => $payableAmount * 100,
-            'description' => env('APP_NAME'),
+        $result = Stripe\Charge::create ([
+                "amount" => $payableAmount * 100,
+                "currency" => $stripe->currency_code,
+                "source" => $request->stripeToken,
+                "description" => env('APP_NAME')
         ]);
-
-        if($result['status'] != 'succeeded') {
-            return response()->json(['error' => 'Payment faild'],403);
-        }
 
         $order = new Order();
         $orderId = substr(rand(0,time()),0,10);
@@ -402,12 +317,12 @@ class PaymentController extends Controller
         $order->user_id = $user->id;
         $order->sub_total = $subTotal;
         $order->amount_real_currency = $total_price;
-        $order->transection_id = $result['balance_transaction'];
         $order->amount_usd = $amount_usd;
         $order->currency_rate = $currency_rate;
         $order->currency_icon = $currency_icon;
         $order->currency_name = $currency_name;
-        $order->product_qty = $totalProduct;
+        $order->transection_id = $result->balance_transaction;
+        $order->product_qty = Cart::count();
         $order->payment_method = 'Stripe';
         $order->payment_status = 1;
         $order->shipping_method = $shippingMethod->title;
@@ -415,6 +330,7 @@ class PaymentController extends Controller
         $order->coupon_coast = $coupon_price;
         $order->order_vat = $tax_amount;
         $order->order_status = 0;
+        $order->cash_on_delivery = 0;
         $order->additional_info = $additional_information;
         $order->agree_terms_condition = $agree_terms_condition;
         $order->save();
@@ -427,56 +343,47 @@ class PaymentController extends Controller
             $coupon->save();
         }
 
-
-        $findCoupon = ShoppingCart::where('user_id', $user->id)->first();
-
-        if($findCoupon){
-            if($findCoupon->coupon_name){
-                $coupon = Coupon::where(['code' => $findCoupon->coupon_name])->first();
-                $qty = $coupon->apply_qty;
-                $qty = $qty +1;
-                $coupon->apply_qty = $qty;
-                $coupon->save();
-            }
-        }
-
         $order_details = '';
+        foreach ($cartContents as $key => $cartContent) {
 
-        foreach($cartProducts as $key => $cartProduct){
             $productUnitPrice = 0;
-            $productUnitPrice = $cartProduct->price;
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productUnitPrice = $cartContent->price;
 
-            $product = Product::find($cartProduct->product_id);
-
+            $product = Product::find($cartContent->id);
             $orderProduct = new OrderProduct();
             $orderProduct->order_id = $order->id;
-            $orderProduct->product_id = $cartProduct->product_id;
+            $orderProduct->product_id = $cartContent->id;
             $orderProduct->seller_id = $product->vendor_id;
-            $orderProduct->product_name = $cartProduct->name;
+            $orderProduct->product_name = $cartContent->name;
             $orderProduct->unit_price = $productUnitPrice;
-            $orderProduct->qty = $cartProduct->qty;
-            $orderProduct->vat = $cartProduct->tax * $cartProduct->qty;
+            $orderProduct->qty = $cartContent->qty;
+            $orderProduct->vat = $cartContent->options->tax * $cartContent->qty;
             $orderProduct->save();
 
-            $productStock = Product::find($cartProduct->product_id);
-            $qty = $productStock->qty - $cartProduct->qty;
+            $productStock = Product::find($cartContent->id);
+            $qty = $productStock->qty - $cartContent->qty;
             $productStock->qty = $qty;
             $productStock->save();
 
-            foreach($cartProduct->variants as $index => $variant){
-                $productVariant = new OrderProductVariant();
-                $productVariant->order_product_id = $orderProduct->id;
-                $productVariant->product_id = $cartProduct->product_id;
-                $productVariant->variant_name = $variant->name;
-                $productVariant->variant_value = $variant->value;
-                $productVariant->variant_price = $variant->price;
-                $productVariant->save();
+            if(count($cartContent->options->variants) > 0) {
+                foreach($cartContent->options->variants as $index => $variant) {
+                    $productVariant = new OrderProductVariant();
+                    $productVariant->order_product_id = $orderProduct->id;
+                    $productVariant->product_id = $cartContent->id;
+                    $productVariant->variant_name = $variant;
+                    $productVariant->variant_value = $cartContent->options->values[$index];
+                    $productVariant->variant_price = $cartContent->options->prices[$index];
+                    $productVariant->save();
+                }
             }
 
-            $order_details.='Product: '.$cartProduct->name. '<br>';
-            $order_details.='Quantity: '. $cartProduct->qty .'<br>';
-            $order_details.='Price: '.$setting->currency_icon . $cartProduct->qty * $productUnitPrice .'<br>';
-
+            $order_details.='Product: '.$cartContent->name. '<br>';
+            $order_details.='Quantity: '. $cartContent->qty .'<br>';
+            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
         }
 
         $orderAddress = new OrderAddress();
@@ -511,12 +418,26 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $message = str_replace('{{shop}}',$seller->shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
+        Session::forget('hipping_method');
+        Session::forget('coupon_price');
+        Session::forget('coupon_name');
+        Session::forget('offer_type');
+        Session::forget('agree_terms_condition');
+        Session::forget('addition_information');
+        Cart::destroy();
+
         $notification = trans('user_validation.Payment Successfully');
-
-        return response()->json(['message' => $notification],200);
-
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->route('user.order')->with($notification);
 
     }
 
@@ -696,6 +617,14 @@ class PaymentController extends Controller
                 $message = str_replace('{{order_status}}','Pending',$message);
                 $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
                 $message = str_replace('{{order_detail}}',$order_details,$message);
+                $message = str_replace('{{order_id}}',$order->order_id,$message);
+                $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+                $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+                $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+                $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+                $message = str_replace('{{shop}}',$seller->shop_name,$message);
+                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
+                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
                 Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
                 Session::forget('hipping_method');
@@ -910,6 +839,14 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $message = str_replace('{{shop}}',$seller->shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1166,6 +1103,13 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $message = str_replace('{{shop}}',$seller->shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1378,6 +1322,13 @@ class PaymentController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $message = str_replace('{{shop}}',$seller->shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1693,6 +1644,13 @@ class PaymentController extends Controller
                 $message = str_replace('{{order_status}}','Pending',$message);
                 $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
                 $message = str_replace('{{order_detail}}',$order_details,$message);
+                $message = str_replace('{{order_id}}',$order->order_id,$message);
+                $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+                $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+                $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+                $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+                $message = str_replace('{{shop}}',$seller->shop_name,$message);
+                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
                 Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
                 Session::forget('hipping_method');
@@ -1882,6 +1840,13 @@ class PaymentController extends Controller
         $message = str_replace('{{order_status}}','Pending',$message);
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $message = str_replace('{{shop}}',$seller->shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -1896,4 +1861,623 @@ class PaymentController extends Controller
         $notification = array('messege'=>$notification,'alert-type'=>'success');
         return redirect()->route('user.order')->with($notification);
     }
+
+
+    public function payWithPaymongo(Request $request){
+        $tax_amount = 0;
+        $total_price = 0;
+        $coupon_price = 0;
+        $shipping_fee = 0;
+
+        $user = Auth::guard('web')->user();
+        $billing = BillingAddress::where('user_id', $user->id)->first();
+        $shipping = ShippingAddress::where('user_id', $user->id)->first();
+        $cartContents = Cart::content();
+        $shipping_method = Session::get('shipping_method');
+        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shipping_fee = $shippingMethod->fee;
+        foreach ($cartContents as $key => $content) {
+            $tax = $content->options->tax * $content->qty;
+            $tax_amount = $tax_amount + $tax;
+        }
+
+        $subTotal = 0;
+        foreach ($cartContents as $cartContent) {
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productPrice = $cartContent->price ;
+            $total = $productPrice * $cartContent->qty ;
+            $subTotal += $total;
+        }
+
+        $total_price = $tax_amount + $subTotal;
+        if(Session::get('coupon_price') && Session::get('offer_type')) {
+            if(Session::get('offer_type') == 1) {
+                $coupon_price = Session::get('coupon_price');
+                $coupon_price = ($coupon_price / 100) * $total_price;
+            }else {
+                $coupon_price = Session::get('coupon_price');
+            }
+        }
+
+        $total_price = $total_price - $coupon_price ;
+        $total_price += $shipping_fee;
+        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $setting = Setting::first();
+
+        $additional_information = '';
+        if(Session::get('addition_information')){
+            $additional_information = Session::get('addition_information');
+        }
+        $agree_terms_condition = 'no';
+        if(Session::get('agree_terms_condition')){
+            $agree_terms_condition = Session::get('agree_terms_condition');
+        }
+
+        $amount_real_currency = $total_price;
+        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $currency_rate = $setting->currency_rate;
+        $currency_icon = $setting->currency_icon;
+        $currency_name = $setting->currency_name;
+
+        $paymongoPayment = PaymongoPayment::first();
+        $price = $total_price * $paymongoPayment->currency_rate;
+        $price = round($price);
+        $currency_code = $paymongoPayment->currency_code;
+        $setting=Setting::first();
+
+        // create payment method
+        require_once('vendor/autoload.php');
+        $client = new \GuzzleHttp\Client();
+        $card_number = $request->card_number;
+        $cvc = $request->cvc;
+        $month = $request->month;
+        $year = $request->year;
+        $code = base64_encode($paymongoPayment->public_key.':'.$paymongoPayment->secret_key);
+
+        try{
+            $response = $client->request('POST', 'https://api.paymongo.com/v1/payment_methods', [
+                'body' => '{"data":{"attributes":{"details":{"card_number":"'.$card_number.'","exp_month":'.$month.',"exp_year":'.$year.',"cvc":"'.$cvc.'"},"type":"card"}}}',
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Basic '.$code.'',
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+        }catch (Exception $e) {
+            $notification = trans('user_validation.Please provide valid card information');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
+        }
+
+        $response = json_decode($response->getBody(), true);
+        $payment_method_id = $response['data']['id'];
+
+        if($price < 100){
+            $notification = trans('user_validation.Amount cannot be less than 100₱');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
+        }
+
+        $price = $price * 100;
+
+        // create payment instant
+        $client = new \GuzzleHttp\Client();
+        $secret_code = base64_encode($paymongoPayment->secret_key);
+        $response = $client->request('POST', 'https://api.paymongo.com/v1/payment_intents', [
+        'body' => '{"data":{"attributes":{"amount":'.$price.',"payment_method_allowed":["card"],"payment_method_options":{"card":{"request_three_d_secure":"any"}},"currency":"'.$currency_code.'","capture_type":"automatic"}}}',
+        'headers' => [
+            'Accept' => 'application/json',
+            'Authorization' => 'Basic '.$secret_code.'',
+            'Content-Type' => 'application/json',
+        ],
+        ]);
+
+        $intent_response = json_decode($response->getBody(), true);
+        $intent_client_key = $intent_response['data']['attributes']['client_key'];
+        $intent_id = $intent_response['data']['id'];
+
+        $client = new \GuzzleHttp\Client();
+
+        // create payment
+        $payment_response = $client->request('POST', 'https://api.paymongo.com/v1/payment_intents/'.$intent_id.'/attach', [
+            'body' => '{"data":{"attributes":{"payment_method":"'.$payment_method_id.'","client_key":"'.$intent_client_key.'"}}}',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Basic '.$secret_code.'',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $payment_response = json_decode($response->getBody(), true);
+
+        if($payment_response['data']['attributes']['status'] != 'faild'){
+            $order = new Order();
+            $orderId = substr(rand(0,time()),0,10);
+            $order->order_id = $orderId;
+            $order->user_id = $user->id;
+            $order->sub_total = $subTotal;
+            $order->amount_real_currency = $total_price;
+            $order->amount_usd = $amount_usd;
+            $order->currency_rate = $currency_rate;
+            $order->currency_icon = $currency_icon;
+            $order->currency_name = $currency_name;
+            $order->transection_id = $payment_response['data']['id'];
+            $order->product_qty = Cart::count();
+            $order->payment_method = 'Paymongo';
+            $order->payment_status = 1;
+            $order->shipping_method = $shippingMethod->title;
+            $order->shipping_cost = $shippingMethod->fee;
+            $order->coupon_coast = $coupon_price;
+            $order->order_vat = $tax_amount;
+            $order->order_status = 0;
+            $order->cash_on_delivery = 0;
+            $order->additional_info = $additional_information;
+            $order->agree_terms_condition = $agree_terms_condition;
+            $order->save();
+
+            if(Session::get('coupon_name')){
+                $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
+                $qty = $coupon->apply_qty;
+                $qty = $qty +1;
+                $coupon->apply_qty = $qty;
+                $coupon->save();
+            }
+
+            $order_details = '';
+            foreach ($cartContents as $key => $cartContent) {
+
+                $productUnitPrice = 0;
+                $variantPrice = 0;
+                foreach ($cartContent->options->variants as $indx => $variant) {
+                    $variantPrice += $cartContent->options->prices[$indx];
+                }
+                $productUnitPrice = $cartContent->price;
+
+                $product = Product::find($cartContent->id);
+                $orderProduct = new OrderProduct();
+                $orderProduct->order_id = $order->id;
+                $orderProduct->product_id = $cartContent->id;
+                $orderProduct->seller_id = $product->vendor_id;
+                $orderProduct->product_name = $cartContent->name;
+                $orderProduct->unit_price = $productUnitPrice;
+                $orderProduct->qty = $cartContent->qty;
+                $orderProduct->vat = $cartContent->options->tax * $cartContent->qty;
+                $orderProduct->save();
+
+                $productStock = Product::find($cartContent->id);
+                $qty = $productStock->qty - $cartContent->qty;
+                $productStock->qty = $qty;
+                $productStock->save();
+
+                if(count($cartContent->options->variants) > 0) {
+                    foreach($cartContent->options->variants as $index => $variant) {
+                        $productVariant = new OrderProductVariant();
+                        $productVariant->order_product_id = $orderProduct->id;
+                        $productVariant->product_id = $cartContent->id;
+                        $productVariant->variant_name = $variant;
+                        $productVariant->variant_value = $cartContent->options->values[$index];
+                        $productVariant->variant_price = $cartContent->options->prices[$index];
+                        $productVariant->save();
+                    }
+                }
+
+                $order_details.='Product: '.$cartContent->name. '<br>';
+                $order_details.='Quantity: '. $cartContent->qty .'<br>';
+                $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+            }
+
+            $orderAddress = new OrderAddress();
+            $orderAddress->order_id = $order->id;
+            $orderAddress->billing_name = $billing->name;
+            $orderAddress->billing_email = $billing->email;
+            $orderAddress->billing_phone = $billing->phone;
+            $orderAddress->billing_address = $billing->address;
+            $orderAddress->billing_country = $billing->country ? $billing->country->name : '';
+            $orderAddress->billing_state = $billing->countryState ? $billing->countryState->name : '';
+            $orderAddress->billing_city = $billing->city ? $billing->city->name : '';
+            $orderAddress->billing_zip_code = $billing->zip_code;
+            $orderAddress->shipping_name = $shipping->name;
+            $orderAddress->shipping_email = $shipping->email;
+            $orderAddress->shipping_phone = $shipping->phone;
+            $orderAddress->shipping_address = $shipping->address;
+            $orderAddress->shipping_country = $shipping->country ? $shipping->country->name : '';
+            $orderAddress->shipping_state = $shipping->countryState ? $shipping->countryState->name : '';
+            $orderAddress->shipping_city = $shipping->city ? $shipping->city->name : '';
+            $orderAddress->shipping_zip_code = $shipping->zip_code;
+            $orderAddress->save();
+
+            MailHelper::setMailConfig();
+
+            $template=EmailTemplate::where('id',6)->first();
+            $subject=$template->subject;
+            $message=$template->description;
+            $message = str_replace('{{user_name}}',$user->name,$message);
+            $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
+            $message = str_replace('{{payment_method}}','Paymongo',$message);
+            $message = str_replace('{{payment_status}}','Success',$message);
+            $message = str_replace('{{order_status}}','Pending',$message);
+            $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
+            $message = str_replace('{{order_detail}}',$order_details,$message);
+            $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $message = str_replace('{{shop}}',$seller->shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
+            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+
+            Session::forget('hipping_method');
+            Session::forget('coupon_price');
+            Session::forget('coupon_name');
+            Session::forget('offer_type');
+            Session::forget('agree_terms_condition');
+            Session::forget('addition_information');
+            Cart::destroy();
+
+            $notification = trans('user_validation.Payment Successfully');
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->route('user.order')->with($notification);
+        }else{
+            $notification = trans('user_validation.Payment Faild');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
+        }
+
+    }
+
+    public function payWithPaymongoGrabPay(){
+        $tax_amount = 0;
+        $total_price = 0;
+        $coupon_price = 0;
+        $shipping_fee = 0;
+
+        $user = Auth::guard('web')->user();
+        $billing = BillingAddress::where('user_id', $user->id)->first();
+        $shipping = ShippingAddress::where('user_id', $user->id)->first();
+        $cartContents = Cart::content();
+        $shipping_method = Session::get('shipping_method');
+        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shipping_fee = $shippingMethod->fee;
+        foreach ($cartContents as $key => $content) {
+            $tax = $content->options->tax * $content->qty;
+            $tax_amount = $tax_amount + $tax;
+        }
+
+        $subTotal = 0;
+        foreach ($cartContents as $cartContent) {
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productPrice = $cartContent->price ;
+            $total = $productPrice * $cartContent->qty ;
+            $subTotal += $total;
+        }
+
+        $total_price = $tax_amount + $subTotal;
+        if(Session::get('coupon_price') && Session::get('offer_type')) {
+            if(Session::get('offer_type') == 1) {
+                $coupon_price = Session::get('coupon_price');
+                $coupon_price = ($coupon_price / 100) * $total_price;
+            }else {
+                $coupon_price = Session::get('coupon_price');
+            }
+        }
+
+        $total_price = $total_price - $coupon_price ;
+        $total_price += $shipping_fee;
+        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $setting = Setting::first();
+
+        $paymongoPayment = PaymongoPayment::first();
+        $price = $total_price * $paymongoPayment->currency_rate;
+        $price = round($price);
+        $success_url = route('user.checkout.paymongo-payment-success');
+        $faild_url = route('user.checkout.paymongo-payment-cancled');
+        $currency_code = $paymongoPayment->currency_code;
+
+        if($price < 100){
+            $notification = trans('user_validation.Amount cannot be less than 100₱');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.checkout.payment')->with($notification);
+        }
+
+        $price = $price * 100;
+
+        require_once('vendor/autoload.php');
+        $code = base64_encode($paymongoPayment->public_key.':'.$paymongoPayment->secret_key);
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('POST', 'https://api.paymongo.com/v1/sources', [
+        'body' => '{"data":{"attributes":{"amount":'.$price.',"redirect":{"success":"'.$success_url.'","failed":"'.$faild_url.'"},"type":"grab_pay","currency":"'.$currency_code.'"}}}',
+        'headers' => [
+            'Accept' => 'application/json',
+            'Authorization' => 'Basic '.$code.'',
+            'Content-Type' => 'application/json',
+        ],
+        ]);
+        $response = json_decode($response->getBody(), true);
+        session()->put('payment_id',$response['data']['id']);
+        return redirect()->to($response['data']['attributes']['redirect']['checkout_url']);
+    }
+
+    public function payWithPaymongoGcash(){
+        $tax_amount = 0;
+        $total_price = 0;
+        $coupon_price = 0;
+        $shipping_fee = 0;
+
+        $user = Auth::guard('web')->user();
+        $billing = BillingAddress::where('user_id', $user->id)->first();
+        $shipping = ShippingAddress::where('user_id', $user->id)->first();
+        $cartContents = Cart::content();
+        $shipping_method = Session::get('shipping_method');
+        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shipping_fee = $shippingMethod->fee;
+        foreach ($cartContents as $key => $content) {
+            $tax = $content->options->tax * $content->qty;
+            $tax_amount = $tax_amount + $tax;
+        }
+
+        $subTotal = 0;
+        foreach ($cartContents as $cartContent) {
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productPrice = $cartContent->price ;
+            $total = $productPrice * $cartContent->qty ;
+            $subTotal += $total;
+        }
+
+        $total_price = $tax_amount + $subTotal;
+        if(Session::get('coupon_price') && Session::get('offer_type')) {
+            if(Session::get('offer_type') == 1) {
+                $coupon_price = Session::get('coupon_price');
+                $coupon_price = ($coupon_price / 100) * $total_price;
+            }else {
+                $coupon_price = Session::get('coupon_price');
+            }
+        }
+
+        $total_price = $total_price - $coupon_price ;
+        $total_price += $shipping_fee;
+        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $setting = Setting::first();
+
+        $paymongoPayment = PaymongoPayment::first();
+        $price = $total_price * $paymongoPayment->currency_rate;
+        $price = round($price);
+        $success_url = route('user.checkout.paymongo-payment-success');
+        $faild_url = route('user.checkout.paymongo-payment-cancled');
+        $currency_code = $paymongoPayment->currency_code;
+
+        if($price < 100){
+            $notification = trans('user_validation.Amount cannot be less than 100₱');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.checkout.payment')->with($notification);
+        }
+
+        $price = $price * 100;
+
+        require_once('vendor/autoload.php');
+        $code = base64_encode($paymongoPayment->public_key.':'.$paymongoPayment->secret_key);
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('POST', 'https://api.paymongo.com/v1/sources', [
+        'body' => '{"data":{"attributes":{"amount":'.$price.',"redirect":{"success":"'.$success_url.'","failed":"'.$faild_url.'"},"type":"gcash","currency":"'.$currency_code.'"}}}',
+        'headers' => [
+            'Accept' => 'application/json',
+            'Authorization' => 'Basic '.$code.'',
+            'Content-Type' => 'application/json',
+        ],
+        ]);
+        $response = json_decode($response->getBody(), true);
+        session()->put('payment_id',$response['data']['id']);
+        return redirect()->to($response['data']['attributes']['redirect']['checkout_url']);
+    }
+
+    public function paymongoPaymentSuccess(Request $request){
+        $tax_amount = 0;
+        $total_price = 0;
+        $coupon_price = 0;
+        $shipping_fee = 0;
+
+        $user = Auth::guard('web')->user();
+        $billing = BillingAddress::where('user_id', $user->id)->first();
+        $shipping = ShippingAddress::where('user_id', $user->id)->first();
+        $cartContents = Cart::content();
+        $shipping_method = Session::get('shipping_method');
+        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shipping_fee = $shippingMethod->fee;
+        foreach ($cartContents as $key => $content) {
+            $tax = $content->options->tax * $content->qty;
+            $tax_amount = $tax_amount + $tax;
+        }
+
+        $subTotal = 0;
+        foreach ($cartContents as $cartContent) {
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productPrice = $cartContent->price ;
+            $total = $productPrice * $cartContent->qty ;
+            $subTotal += $total;
+        }
+
+        $total_price = $tax_amount + $subTotal;
+        if(Session::get('coupon_price') && Session::get('offer_type')) {
+            if(Session::get('offer_type') == 1) {
+                $coupon_price = Session::get('coupon_price');
+                $coupon_price = ($coupon_price / 100) * $total_price;
+            }else {
+                $coupon_price = Session::get('coupon_price');
+            }
+        }
+
+        $total_price = $total_price - $coupon_price ;
+        $total_price += $shipping_fee;
+        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $setting = Setting::first();
+
+        $additional_information = '';
+        if(Session::get('addition_information')){
+            $additional_information = Session::get('addition_information');
+        }
+        $agree_terms_condition = 'no';
+        if(Session::get('agree_terms_condition')){
+            $agree_terms_condition = Session::get('agree_terms_condition');
+        }
+
+        $amount_real_currency = $total_price;
+        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $currency_rate = $setting->currency_rate;
+        $currency_icon = $setting->currency_icon;
+        $currency_name = $setting->currency_name;
+
+        $order = new Order();
+        $orderId = substr(rand(0,time()),0,10);
+        $order->order_id = $orderId;
+        $order->user_id = $user->id;
+        $order->sub_total = $subTotal;
+        $order->amount_real_currency = $total_price;
+        $order->amount_usd = $amount_usd;
+        $order->currency_rate = $currency_rate;
+        $order->currency_icon = $currency_icon;
+        $order->currency_name = $currency_name;
+        $order->transection_id = session()->get('payment_id');
+        $order->product_qty = Cart::count();
+        $order->payment_method = 'Paymongo';
+        $order->payment_status = 1;
+        $order->shipping_method = $shippingMethod->title;
+        $order->shipping_cost = $shippingMethod->fee;
+        $order->coupon_coast = $coupon_price;
+        $order->order_vat = $tax_amount;
+        $order->order_status = 0;
+        $order->cash_on_delivery = 0;
+        $order->additional_info = $additional_information;
+        $order->agree_terms_condition = $agree_terms_condition;
+        $order->save();
+
+        if(Session::get('coupon_name')){
+            $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
+            $qty = $coupon->apply_qty;
+            $qty = $qty +1;
+            $coupon->apply_qty = $qty;
+            $coupon->save();
+        }
+
+        $order_details = '';
+        foreach ($cartContents as $key => $cartContent) {
+
+            $productUnitPrice = 0;
+            $variantPrice = 0;
+            foreach ($cartContent->options->variants as $indx => $variant) {
+                $variantPrice += $cartContent->options->prices[$indx];
+            }
+            $productUnitPrice = $cartContent->price;
+
+            $product = Product::find($cartContent->id);
+            $orderProduct = new OrderProduct();
+            $orderProduct->order_id = $order->id;
+            $orderProduct->product_id = $cartContent->id;
+            $orderProduct->seller_id = $product->vendor_id;
+            $orderProduct->product_name = $cartContent->name;
+            $orderProduct->unit_price = $productUnitPrice;
+            $orderProduct->qty = $cartContent->qty;
+            $orderProduct->vat = $cartContent->options->tax * $cartContent->qty;
+            $orderProduct->save();
+
+            $productStock = Product::find($cartContent->id);
+            $qty = $productStock->qty - $cartContent->qty;
+            $productStock->qty = $qty;
+            $productStock->save();
+
+            if(count($cartContent->options->variants) > 0) {
+                foreach($cartContent->options->variants as $index => $variant) {
+                    $productVariant = new OrderProductVariant();
+                    $productVariant->order_product_id = $orderProduct->id;
+                    $productVariant->product_id = $cartContent->id;
+                    $productVariant->variant_name = $variant;
+                    $productVariant->variant_value = $cartContent->options->values[$index];
+                    $productVariant->variant_price = $cartContent->options->prices[$index];
+                    $productVariant->save();
+                }
+            }
+
+            $order_details.='Product: '.$cartContent->name. '<br>';
+            $order_details.='Quantity: '. $cartContent->qty .'<br>';
+            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+        }
+
+        $orderAddress = new OrderAddress();
+        $orderAddress->order_id = $order->id;
+        $orderAddress->billing_name = $billing->name;
+        $orderAddress->billing_email = $billing->email;
+        $orderAddress->billing_phone = $billing->phone;
+        $orderAddress->billing_address = $billing->address;
+        $orderAddress->billing_country = $billing->country ? $billing->country->name : '';
+        $orderAddress->billing_state = $billing->countryState ? $billing->countryState->name : '';
+        $orderAddress->billing_city = $billing->city ? $billing->city->name : '';
+        $orderAddress->billing_zip_code = $billing->zip_code;
+        $orderAddress->shipping_name = $shipping->name;
+        $orderAddress->shipping_email = $shipping->email;
+        $orderAddress->shipping_phone = $shipping->phone;
+        $orderAddress->shipping_address = $shipping->address;
+        $orderAddress->shipping_country = $shipping->country ? $shipping->country->name : '';
+        $orderAddress->shipping_state = $shipping->countryState ? $shipping->countryState->name : '';
+        $orderAddress->shipping_city = $shipping->city ? $shipping->city->name : '';
+        $orderAddress->shipping_zip_code = $shipping->zip_code;
+        $orderAddress->save();
+
+        MailHelper::setMailConfig();
+
+        $template=EmailTemplate::where('id',6)->first();
+        $subject=$template->subject;
+        $message=$template->description;
+        $message = str_replace('{{user_name}}',$user->name,$message);
+        $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
+        $message = str_replace('{{payment_method}}','Paymongo',$message);
+        $message = str_replace('{{payment_status}}','Success',$message);
+        $message = str_replace('{{order_status}}','Pending',$message);
+        $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
+        $message = str_replace('{{order_detail}}',$order_details,$message);
+        $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $message = str_replace('{{shop}}',$seller->shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
+        Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+
+        Session::forget('hipping_method');
+        Session::forget('coupon_price');
+        Session::forget('coupon_name');
+        Session::forget('offer_type');
+        Session::forget('agree_terms_condition');
+        Session::forget('addition_information');
+        Cart::destroy();
+
+        $notification = trans('user_validation.Payment Successfully');
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->route('user.order')->with($notification);
+    }
+
+
+    public function paymongoPaymentCancled(Request $request){
+        $notification = trans('user_validation.Payment Faild');
+        $notification = array('messege'=>$notification,'alert-type'=>'error');
+        return redirect()->route('user.checkout.payment')->with($notification);
+    }
+
+
+
+
+
+
 }
