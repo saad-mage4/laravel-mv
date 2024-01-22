@@ -29,6 +29,7 @@ use App\Models\PaystackAndMollie;
 use App\Models\InstamojoPayment;
 use App\Models\Coupon;
 use App\Models\PaymongoPayment;
+use Illuminate\Support\Facades\DB;
 use Mail;
 Use Stripe;
 use Cart;
@@ -55,6 +56,7 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -111,6 +113,7 @@ class PaymentController extends Controller
         $orderId = substr(rand(0,time()),0,10);
         $order->order_id = $orderId;
         $order->user_id = $user->id;
+        // $order->shop_id = 5;
         $order->sub_total = $subTotal;
         $order->amount_real_currency = $total_price;
         $order->amount_usd = $amount_usd;
@@ -204,6 +207,7 @@ class PaymentController extends Controller
 
         MailHelper::setMailConfig();
 
+
         $template=EmailTemplate::where('id',6)->first();
         $subject=$template->subject;
         $message=$template->description;
@@ -215,6 +219,12 @@ class PaymentController extends Controller
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
         $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        // $message = str_replace('{{shop}}',$shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -239,6 +249,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -412,6 +427,12 @@ class PaymentController extends Controller
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
         $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        // $message = str_replace('{{shop}}',$shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -445,6 +466,11 @@ class PaymentController extends Controller
                 $shipping_fee = 0;
 
                 $user = Auth::guard('web')->user();
+
+                // $shop_name = DB::table('vendors')
+                //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+                //     ->where('vendors.user_id', $user->id)
+                //     ->value('orders.shop_id');
                 $billing = BillingAddress::where('user_id', $user->id)->first();
                 $shipping = ShippingAddress::where('user_id', $user->id)->first();
                 $cartContents = Cart::content();
@@ -605,6 +631,13 @@ class PaymentController extends Controller
                 $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
                 $message = str_replace('{{order_detail}}',$order_details,$message);
                 $message = str_replace('{{order_id}}',$order->order_id,$message);
+                $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+                $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+                $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+                $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+                // $message = str_replace('{{shop}}',$shop_name,$message);
+                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
+                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
                 Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
                 Session::forget('hipping_method');
@@ -660,6 +693,11 @@ class PaymentController extends Controller
             $shipping_fee = 0;
 
             $user = Auth::guard('web')->user();
+
+            // $shop_name = DB::table('vendors')
+            //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+            //     ->where('vendors.user_id', $user->id)
+            //     ->value('orders.shop_id');
             $billing = BillingAddress::where('user_id', $user->id)->first();
             $shipping = ShippingAddress::where('user_id', $user->id)->first();
             $cartContents = Cart::content();
@@ -820,6 +858,13 @@ class PaymentController extends Controller
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
             $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            // $message = str_replace('{{shop}}',$shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -846,6 +891,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -917,6 +967,11 @@ class PaymentController extends Controller
             $shipping_fee = 0;
 
             $user = Auth::guard('web')->user();
+
+            // $shop_name = DB::table('vendors')
+            //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+            //     ->where('vendors.user_id', $user->id)
+            //     ->value('orders.shop_id');
             $billing = BillingAddress::where('user_id', $user->id)->first();
             $shipping = ShippingAddress::where('user_id', $user->id)->first();
             $cartContents = Cart::content();
@@ -1077,6 +1132,12 @@ class PaymentController extends Controller
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
             $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            // $message = str_replace('{{shop}}',$shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1130,6 +1191,11 @@ class PaymentController extends Controller
             $shipping_fee = 0;
 
             $user = Auth::guard('web')->user();
+
+            // $shop_name = DB::table('vendors')
+            //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+            //     ->where('vendors.user_id', $user->id)
+            //     ->value('orders.shop_id');
             $billing = BillingAddress::where('user_id', $user->id)->first();
             $shipping = ShippingAddress::where('user_id', $user->id)->first();
             $cartContents = Cart::content();
@@ -1290,6 +1356,12 @@ class PaymentController extends Controller
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
             $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            // $message = str_replace('{{shop}}',$shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -1314,6 +1386,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -1446,6 +1523,11 @@ class PaymentController extends Controller
                 $shipping_fee = 0;
 
                 $user = Auth::guard('web')->user();
+
+                // $shop_name = DB::table('vendors')
+                //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+                //     ->where('vendors.user_id', $user->id)
+                //     ->value('orders.shop_id');
                 $billing = BillingAddress::where('user_id', $user->id)->first();
                 $shipping = ShippingAddress::where('user_id', $user->id)->first();
                 $cartContents = Cart::content();
@@ -1606,6 +1688,12 @@ class PaymentController extends Controller
                 $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
                 $message = str_replace('{{order_detail}}',$order_details,$message);
                 $message = str_replace('{{order_id}}',$order->order_id,$message);
+                $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+                $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+                $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+                $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+                // $message = str_replace('{{shop}}',$shop_name,$message);
+                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
                 Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
                 Session::forget('hipping_method');
@@ -1636,6 +1724,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -1796,6 +1889,12 @@ class PaymentController extends Controller
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
         $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        // $message = str_replace('{{shop}}',$shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');
@@ -1819,6 +1918,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -2052,6 +2156,12 @@ class PaymentController extends Controller
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
             $message = str_replace('{{order_id}}',$order->order_id,$message);
+            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            // $message = str_replace('{{shop}}',$shop_name,$message);
+            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
             Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
             Session::forget('hipping_method');
@@ -2080,6 +2190,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -2155,6 +2270,11 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('vendors')
+        //     ->join('orders', 'vendors.user_id', '=', 'orders.user_id')
+        //     ->where('vendors.user_id', $user->id)
+        //     ->value('orders.shop_id');
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -2230,6 +2350,9 @@ class PaymentController extends Controller
         $shipping_fee = 0;
 
         $user = Auth::guard('web')->user();
+
+        // $shop_name = DB::table('orders')
+        //     ->where('shop_id', 5);
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
@@ -2390,6 +2513,12 @@ class PaymentController extends Controller
         $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
         $message = str_replace('{{order_detail}}',$order_details,$message);
         $message = str_replace('{{order_id}}',$order->order_id,$message);
+        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
+        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
+        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
+        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        // $message = str_replace('{{shop}}',$shop_name,$message);
+        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
         Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
 
         Session::forget('hipping_method');

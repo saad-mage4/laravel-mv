@@ -228,9 +228,9 @@
 
                                             <tr>
                                                 @php
-                                                    $shop="{{shipping}}";
+                                                    $shipping="{{shipping}}";
                                                 @endphp
-                                                <td>{{ $shop }}</td>
+                                                <td>{{ $shipping }}</td>
                                                 <td>{{__('admin.Shipping')}}</td>
                                             </tr>
                                         @endif
