@@ -72,7 +72,7 @@
 
                                         <div class="col-xl-12">
                                             <div class="wsus__check_single_form">
-                                            <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}">
+                                            <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}" readonly>
                                                 
                                             </div>
                                         </div>
