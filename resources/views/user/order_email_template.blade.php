@@ -6,6 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <body>
-    {!! clean($template) !!}
+    {!! $template !!}
 </body>
 </html>
