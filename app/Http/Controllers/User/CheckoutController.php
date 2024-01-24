@@ -47,7 +47,7 @@ class CheckoutController extends Controller
         $countries = Country::orderBy('name','asc')->where('status',1)->get();
 
         if($shipping){
-            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $shipping->country_id])->get();
+            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
             $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => $shipping->state_id])->get();
         }else{
             $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
@@ -95,9 +95,8 @@ class CheckoutController extends Controller
         $user = Auth::guard('web')->user();
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $countries = Country::orderBy('name','asc')->where('status',1)->get();
-
         if($billing){
-            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $billing->country_id])->get();
+            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
             $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => $billing->state_id])->get();
         }else{
             $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
