@@ -697,7 +697,7 @@ header {
     width: 100%;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    height: 570px;
+    min-height: 570px;
     position: relative;
     z-index: 10;
 }
@@ -733,6 +733,7 @@ header {
     -ms-transition: all linear 0.3s ease;
     -o-transition: all linear 0.3s ease;
     line-height: 51px;
+    white-space: nowrap;
 }
 
 .wsus_menu_cat_item li a i {
@@ -9016,7 +9017,7 @@ DAILY DEALS DETAILS END
 
 .home_2 .wsus_menu_cat_item {
     width: 250px;
-    height: 570px;
+    min-height: 570px;
     position: absolute;
     top: 99%;
     left: 0;
