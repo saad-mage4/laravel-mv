@@ -403,7 +403,7 @@ class UserProfileController extends Controller
             'pdf.required' => trans('user_validation.pdf required'),
         ];
         $this->validate($request, $rules,$customMessages);
-
+        // dd('asas',$request);
         $user = Auth::guard('web')->user();
         $seller = new Vendor();
         $seller->shop_name = $request->shop_name;
@@ -420,7 +420,7 @@ class UserProfileController extends Controller
         $seller->seo_description = $request->shop_name;
 
         if($request->banner_image){
-            $exist_banner = $seller->banner_image;
+            $exist_front_nic = $seller->banner_image;
             $extention = $request->banner_image->getClientOriginalExtension();
             $banner_name = 'seller-banner'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
             $banner_name = 'uploads/custom-images/'.$banner_name;
@@ -428,10 +428,53 @@ class UserProfileController extends Controller
                 ->save(public_path().'/'.$banner_name);
             $seller->banner_image = $banner_name;
             $seller->save();
-            if($exist_banner){
+            if($exist_front_nic){
                 if(File::exists(public_path().'/'.$exist_banner))unlink(public_path().'/'.$exist_banner);
             }
         }
+
+        if($request->nic_front_image){
+            $exist_front_nic = $seller->nic_front_image;
+            $extention_f = $request->nic_front_image->getClientOriginalExtension();
+            $nic_front = 'nic-front'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_f;
+            $nic_front = 'uploads/custom-images/'.$nic_front;
+            Image::make($request->nic_front_image)
+                ->save(public_path().'/'.$nic_front);
+            $seller->nic_front_image = $nic_front;
+            $seller->save();
+            if($exist_front_nic){
+                if(File::exists(public_path().'/'.$exist_front_nic))unlink(public_path().'/'.$exist_front_nic);
+            }
+        }
+
+        if($request->nic_back_image){
+            $exist_back_nic = $seller->nic_back_image;
+            $extention_b = $request->nic_back_image->getClientOriginalExtension();
+            $nic_back = 'nic-back'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_b;
+            $nic_back = 'uploads/custom-images/'.$nic_back;
+            Image::make($request->nic_back_image)
+                ->save(public_path().'/'.$nic_back);
+            $seller->nic_back_image = $nic_back;
+            $seller->save();
+            if($exist_back_nic){
+                if(File::exists(public_path().'/'.$exist_back_nic))unlink(public_path().'/'.$exist_back_nic);
+            }
+        }
+
+        if($request->pdf){
+            $pdf = $seller->pdf;
+            $extention_pdf = $request->pdf->getClientOriginalExtension();
+            $pdf_file = 'seller-pdf-'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_pdf;
+            $pdf_file = 'uploads/custom-images/'.$pdf_file;
+            Image::make($request->pdf)
+                ->save(public_path().'/'.$pdf_file);
+            $seller->pdf = $pdf_file;
+            $seller->save();
+            if($pdf){
+                if(File::exists(public_path().'/'.$pdf))unlink(public_path().'/'.$pdf);
+            }
+        }
+
         $seller->save();
         $notification = trans('user_validation.Request sumited successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
