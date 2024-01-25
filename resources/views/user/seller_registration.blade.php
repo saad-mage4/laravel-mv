@@ -68,19 +68,19 @@
                   <div class="col-12">
                     <h3>Important Documents</h3>
                   </div>
-                  <div class="col-4">
+                  <div class="col-12 col-lg-4">
                     <label for="">{{__('user.NIC Front')}}</label>
                     <div class="wsus__dash_pro_single">
                       <input type="file" name="nic_front_image">
                     </div>
                   </div>
-                  <div class="col-4">
+                  <div class="col-12 col-lg-4">
                     <label for="">{{__('user.NIC Back')}}</label>
                     <div class="wsus__dash_pro_single">
                       <input type="file" name="nic_back_image">
                     </div>
                   </div>
-                  <div class="col-4">
+                  <div class="col-12 col-lg-4">
                     <label for="">{{__('user.PDF Document')}}</label>
                     <div class="wsus__dash_pro_single">
                       <input type="file" name="pdf">
