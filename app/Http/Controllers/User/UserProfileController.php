@@ -381,11 +381,14 @@ class UserProfileController extends Controller
             'address'=>'required',
             'open_at'=>'required',
             'closed_at'=>'required',
-            'agree_terms_condition' => 'required'
+            'agree_terms_condition' => 'required',
+            'nic_front_image'=>'required',
+            'nic_back_image'=>'required',
+            'pdf'=>'required'
         ];
 
         $customMessages = [
-            'banner_image.required' => trans('user_validation.Name is required'),
+            'banner_image.required' => trans('user_validation.Banner image is required'),
             'shop_name.required' => trans('user_validation.Shop name is required'),
             'shop_name.unique' => trans('user_validation.Shop name already exist'),
             'email.required' => trans('user_validation.Email is required'),
@@ -395,6 +398,9 @@ class UserProfileController extends Controller
             'open_at.required' => trans('user_validation.Open at is required'),
             'closed_at.required' => trans('user_validation.Close at is required'),
             'agree_terms_condition.required' => trans('user_validation.Agree field is required'),
+            'nic_front_image.required' => trans('user_validation.NIC front required'),
+            'nic_back_image.required' => trans('user_validation.NIC back required'),
+            'pdf.required' => trans('user_validation.pdf required'),
         ];
         $this->validate($request, $rules,$customMessages);
 

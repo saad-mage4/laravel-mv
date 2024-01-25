@@ -481,5 +481,8 @@
   'GCash' => 'GCash',
   'Payment with Paymongo' => 'Payment with Paymongo',
   'Delete Account' => 'Delete Account',
+  'NIC Front' => 'NIC Front',
+  'NIC Back' => 'NIC Back',
+  'PDF Document' => 'PDF Document',
 );
  ?>
