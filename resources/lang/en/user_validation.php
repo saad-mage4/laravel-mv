@@ -124,6 +124,7 @@
   'NIC front required' => 'NIC front image required',
   'NIC back required' => 'NIC back image required',
   'pdf required' => 'PDF file required',
+  'valid pdf' => 'valid pdf file required',
   'Please provide valid card information' => 'Please provide valid card information',
   'Amount cannot be less than 100₱' => 'Amount cannot be less than 100₱',
   'Your account has been deleted successfully' => 'Your account has been deleted successfully',

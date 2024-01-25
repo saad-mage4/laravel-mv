@@ -384,7 +384,7 @@ class UserProfileController extends Controller
             'agree_terms_condition' => 'required',
             'nic_front_image'=>'required',
             'nic_back_image'=>'required',
-            'pdf'=>'required'
+            'pdf'=>'required|mimes:pdf'
         ];
 
         $customMessages = [
@@ -401,6 +401,7 @@ class UserProfileController extends Controller
             'nic_front_image.required' => trans('user_validation.NIC front required'),
             'nic_back_image.required' => trans('user_validation.NIC back required'),
             'pdf.required' => trans('user_validation.pdf required'),
+            'pdf.mimes' => trans('user_validation.valid pdf'),
         ];
         $this->validate($request, $rules,$customMessages);
         // dd('asas',$request);
