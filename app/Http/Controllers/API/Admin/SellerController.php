@@ -35,7 +35,7 @@ class SellerController extends Controller
 
     public function index(){
         $sellers = Vendor::with('user','socialLinks','products')->orderBy('id','desc')->where('status',1)->get();
-        $defaultProfile = BannerImage::whereId('15')->first();
+        $defaultProfile = BannerImage::whereId($sellers->id)->first();
         $products = Product::all();
         $setting = Setting::first();
 
@@ -45,7 +45,7 @@ class SellerController extends Controller
 
     public function pendingSellerList(){
         $sellers = Vendor::with('user','socialLinks','products')->orderBy('id','desc')->where('status',0)->get();
-        $defaultProfile = BannerImage::whereId('15')->first();
+        $defaultProfile = BannerImage::whereId($sellers->id)->first();
         $products = Product::all();
         $setting = Setting::first();
 
@@ -73,7 +73,7 @@ class SellerController extends Controller
                 }
             }
 
-            $defaultProfile = BannerImage::whereId('15')->first();
+            $defaultProfile = BannerImage::whereId($seller->id)->first();
             $setting = Setting::first();
 
 
