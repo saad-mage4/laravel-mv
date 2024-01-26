@@ -462,20 +462,31 @@ class UserProfileController extends Controller
             }
         }
 
-        if($request->pdf){
+        if ($request->hasFile('pdf')) {
+            // Check if the custom folder exists, create if not
+            $customFolderPath = public_path('uploads/custom-pdf');
+            if (!File::exists($customFolderPath)) {
+                File::makeDirectory($customFolderPath, 0777, true, true);
+            }
+        
             $pdf = $seller->pdf;
-            $extention_pdf = $request->pdf->getClientOriginalExtension();
-            $pdf_file = 'seller-pdf-'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_pdf;
-            $pdf_file = 'uploads/custom-images/'.$pdf_file;
-            Image::make($request->pdf)
-                ->save(public_path().'/'.$pdf_file);
-            $seller->pdf = $pdf_file;
+            $extention_pdf = $request->file('pdf')->getClientOriginalExtension();
+            $pdf_file = 'seller-pdf-' . date('Y-m-d-h-i-s') . '-' . rand(999, 9999) . '.' . $extention_pdf;
+            $pdf_file_path = 'uploads/custom-pdf/' . $pdf_file;
+        
+            // Move the file to the custom folder
+            $request->file('pdf')->move($customFolderPath, $pdf_file);
+        
+            // Update the seller's pdf field in the database
+            $seller->pdf = $pdf_file_path;
             $seller->save();
-            if($pdf){
-                if(File::exists(public_path().'/'.$pdf))unlink(public_path().'/'.$pdf);
+        
+            // Delete the old PDF if it exists
+            if ($pdf && File::exists(public_path($pdf))) {
+                unlink(public_path($pdf));
             }
         }
-
+        
         $seller->save();
         $notification = trans('user_validation.Request sumited successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
