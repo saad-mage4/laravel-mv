@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderShipped;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\BreadcrumbImage;
 use Auth;
@@ -31,7 +33,7 @@ use App\Models\Coupon;
 use App\Models\PaymongoPayment;
 use Illuminate\Support\Facades\DB;
 use Mail;
-Use Stripe;
+use Stripe;
 use Cart;
 use Session;
 use Str;
@@ -49,7 +51,8 @@ class PaymentController extends Controller
         $this->middleware('auth:web');
     }
 
-    public function cashOnDelivery(Request $request){
+    public function cashOnDelivery(Request $request)
+    {
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -61,7 +64,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -74,43 +77,43 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if(Session::get('addition_information')){
+        if (Session::get('addition_information')) {
             $additional_information = Session::get('addition_information');
         }
         $agree_terms_condition = 'no';
-        if(Session::get('agree_terms_condition')){
+        if (Session::get('agree_terms_condition')) {
             $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
-        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $amount_usd = round($total_price / $setting->currency_rate, 2);
         $currency_rate = $setting->currency_rate;
         $currency_icon = $setting->currency_icon;
         $currency_name = $setting->currency_name;
 
         $order = new Order();
-        $orderId = substr(rand(0,time()),0,10);
+        $orderId = substr(rand(0, time()), 0, 10);
         $order->order_id = $orderId;
         $order->user_id = $user->id;
         // $order->shop_id = 5;
@@ -133,10 +136,10 @@ class PaymentController extends Controller
         $order->agree_terms_condition = $agree_terms_condition;
         $order->save();
 
-        if(Session::get('coupon_name')){
+        if (Session::get('coupon_name')) {
             $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
             $qty = $coupon->apply_qty;
-            $qty = $qty +1;
+            $qty = $qty + 1;
             $coupon->apply_qty = $qty;
             $coupon->save();
         }
@@ -168,8 +171,8 @@ class PaymentController extends Controller
             $productStock->qty = $qty;
             $productStock->save();
 
-            if(count($cartContent->options->variants) > 0) {
-                foreach($cartContent->options->variants as $index => $variant) {
+            if (count($cartContent->options->variants) > 0) {
+                foreach ($cartContent->options->variants as $index => $variant) {
                     $productVariant = new OrderProductVariant();
                     $productVariant->order_product_id = $orderProduct->id;
                     $productVariant->product_id = $cartContent->id;
@@ -180,9 +183,9 @@ class PaymentController extends Controller
                 }
             }
 
-            $order_details.='Product: '.$cartContent->name. '<br>';
-            $order_details.='Quantity: '. $cartContent->qty .'<br>';
-            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+            $order_details .= 'Product: ' . $cartContent->name . '<br>';
+            $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+            $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
         }
 
         $orderAddress = new OrderAddress();
@@ -208,24 +211,62 @@ class PaymentController extends Controller
         MailHelper::setMailConfig();
 
 
-        $template=EmailTemplate::where('id',6)->first();
-        $subject=$template->subject;
-        $message=$template->description;
-        $message = str_replace('{{user_name}}',$user->name,$message);
-        $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-        $message = str_replace('{{payment_method}}','Cash on delivery',$message);
-        $message = str_replace('{{payment_status}}','Pending',$message);
-        $message = str_replace('{{order_status}}','Pending',$message);
-        $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-        $message = str_replace('{{order_detail}}',$order_details,$message);
-        $message = str_replace('{{order_id}}',$order->order_id,$message);
-        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $template = EmailTemplate::where('id', 6)->first();
+        $subject = $template->subject;
+        $message = $template->description;
+        $message = str_replace('{{user_name}}', $user->name, $message);
+        $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+        $message = str_replace('{{payment_method}}', 'Cash on delivery', $message);
+        $message = str_replace('{{payment_status}}', 'Pending', $message);
+        $message = str_replace('{{order_status}}', 'Pending', $message);
+        $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+        $message = str_replace('{{order_detail}}', $order_details, $message);
+        $message = str_replace('{{order_id}}', $order->order_id, $message);
+        $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+        $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+        $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+        $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
-        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-        Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+        $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+        Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+        /* Custom logic for sending emails to vendors */
+        preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+        $productNames = $matches[1];
+        $vendorIdsArray = [];
+
+        // Use a set to keep track of unique vendor IDs
+        $uniqueVendorIds = [];
+
+        foreach ($productNames as $productName) {
+            $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+            if (!empty($vendorIds)) {
+                $vendorIdsArray[] = $vendorIds;
+            }
+        }
+
+        foreach ($vendorIdsArray as $vendorIds) {
+            foreach ($vendorIds as $vendor_id) {
+                // Check if the vendor ID is unique before processing
+                if (!in_array($vendor_id, $uniqueVendorIds)) {
+                    $uniqueVendorIds[] = $vendor_id;
+
+                    $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                    $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                    // Check if the user exists
+                    if ($user) {
+                        $details = [
+                            'name' => $user->name,
+                            'email' => $user->email
+                        ];
+
+                        Mail::to($user->email)->send(new OrderShipped($details));
+                    }
+                }
+            }
+        }
+
 
         Session::forget('hipping_method');
         Session::forget('coupon_price');
@@ -236,12 +277,13 @@ class PaymentController extends Controller
         Cart::destroy();
 
         $notification = trans('user_validation.Order submited successfully. please wait for admin approval');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.order')->with($notification);
 
     }
 
-    public function payWithStripe(Request $request){
+    public function payWithStripe(Request $request)
+    {
 
         $tax_amount = 0;
         $total_price = 0;
@@ -258,7 +300,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -271,56 +313,55 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if(Session::get('addition_information')){
+        if (Session::get('addition_information')) {
             $additional_information = Session::get('addition_information');
         }
         $agree_terms_condition = 'no';
-        if(Session::get('agree_terms_condition')){
+        if (Session::get('agree_terms_condition')) {
             $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
-        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $amount_usd = round($total_price / $setting->currency_rate, 2);
         $currency_rate = $setting->currency_rate;
         $currency_icon = $setting->currency_icon;
         $currency_name = $setting->currency_name;
 
 
-
         $stripe = StripePayment::first();
-        $payableAmount = round($total_price * $stripe->currency_rate,2);
+        $payableAmount = round($total_price * $stripe->currency_rate, 2);
         Stripe\Stripe::setApiKey($stripe->stripe_secret);
 
-        $result = Stripe\Charge::create ([
-                "amount" => $payableAmount * 100,
-                "currency" => $stripe->currency_code,
-                "source" => $request->stripeToken,
-                "description" => env('APP_NAME')
+        $result = Stripe\Charge::create([
+            "amount" => $payableAmount * 100,
+            "currency" => $stripe->currency_code,
+            "source" => $request->stripeToken,
+            "description" => env('APP_NAME')
         ]);
 
         $order = new Order();
-        $orderId = substr(rand(0,time()),0,10);
+        $orderId = substr(rand(0, time()), 0, 10);
         $order->order_id = $orderId;
         $order->user_id = $user->id;
         $order->sub_total = $subTotal;
@@ -343,10 +384,10 @@ class PaymentController extends Controller
         $order->agree_terms_condition = $agree_terms_condition;
         $order->save();
 
-        if(Session::get('coupon_name')){
+        if (Session::get('coupon_name')) {
             $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
             $qty = $coupon->apply_qty;
-            $qty = $qty +1;
+            $qty = $qty + 1;
             $coupon->apply_qty = $qty;
             $coupon->save();
         }
@@ -377,8 +418,8 @@ class PaymentController extends Controller
             $productStock->qty = $qty;
             $productStock->save();
 
-            if(count($cartContent->options->variants) > 0) {
-                foreach($cartContent->options->variants as $index => $variant) {
+            if (count($cartContent->options->variants) > 0) {
+                foreach ($cartContent->options->variants as $index => $variant) {
                     $productVariant = new OrderProductVariant();
                     $productVariant->order_product_id = $orderProduct->id;
                     $productVariant->product_id = $cartContent->id;
@@ -389,9 +430,9 @@ class PaymentController extends Controller
                 }
             }
 
-            $order_details.='Product: '.$cartContent->name. '<br>';
-            $order_details.='Quantity: '. $cartContent->qty .'<br>';
-            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+            $order_details .= 'Product: ' . $cartContent->name . '<br>';
+            $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+            $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
         }
 
         $orderAddress = new OrderAddress();
@@ -416,25 +457,61 @@ class PaymentController extends Controller
 
         MailHelper::setMailConfig();
 
-        $template=EmailTemplate::where('id',6)->first();
-        $subject=$template->subject;
-        $message=$template->description;
-        $message = str_replace('{{user_name}}',$user->name,$message);
-        $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-        $message = str_replace('{{payment_method}}','Stripe',$message);
-        $message = str_replace('{{payment_status}}','Success',$message);
-        $message = str_replace('{{order_status}}','Pending',$message);
-        $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-        $message = str_replace('{{order_detail}}',$order_details,$message);
-        $message = str_replace('{{order_id}}',$order->order_id,$message);
-        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $template = EmailTemplate::where('id', 6)->first();
+        $subject = $template->subject;
+        $message = $template->description;
+        $message = str_replace('{{user_name}}', $user->name, $message);
+        $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+        $message = str_replace('{{payment_method}}', 'Stripe', $message);
+        $message = str_replace('{{payment_status}}', 'Success', $message);
+        $message = str_replace('{{order_status}}', 'Pending', $message);
+        $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+        $message = str_replace('{{order_detail}}', $order_details, $message);
+        $message = str_replace('{{order_id}}', $order->order_id, $message);
+        $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+        $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+        $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+        $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
-        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-        Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+        $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+        Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
 
+        /* Custom logic for sending emails to vendors */
+        preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+        $productNames = $matches[1];
+        $vendorIdsArray = [];
+
+        // Use a set to keep track of unique vendor IDs
+        $uniqueVendorIds = [];
+
+        foreach ($productNames as $productName) {
+            $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+            if (!empty($vendorIds)) {
+                $vendorIdsArray[] = $vendorIds;
+            }
+        }
+
+        foreach ($vendorIdsArray as $vendorIds) {
+            foreach ($vendorIds as $vendor_id) {
+                // Check if the vendor ID is unique before processing
+                if (!in_array($vendor_id, $uniqueVendorIds)) {
+                    $uniqueVendorIds[] = $vendor_id;
+
+                    $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                    $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                    // Check if the user exists
+                    if ($user) {
+                        $details = [
+                            'name' => $user->name,
+                            'email' => $user->email
+                        ];
+
+                        Mail::to($user->email)->send(new OrderShipped($details));
+                    }
+                }
+            }
+        }
         Session::forget('hipping_method');
         Session::forget('coupon_price');
         Session::forget('coupon_name');
@@ -444,20 +521,21 @@ class PaymentController extends Controller
         Cart::destroy();
 
         $notification = trans('user_validation.Payment Successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.order')->with($notification);
 
     }
 
 
-    public function payWithRazorpay(Request $request){
+    public function payWithRazorpay(Request $request)
+    {
         $razorpay = RazorpayPayment::first();
         $input = $request->all();
-        $api = new Api($razorpay->key,$razorpay->secret_key);
+        $api = new Api($razorpay->key, $razorpay->secret_key);
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
-        if(count($input)  && !empty($input['razorpay_payment_id'])) {
+        if (count($input) && !empty($input['razorpay_payment_id'])) {
             try {
-                $response = $api->payment->fetch($input['razorpay_payment_id'])->capture(array('amount'=>$payment['amount']));
+                $response = $api->payment->fetch($input['razorpay_payment_id'])->capture(array('amount' => $payment['amount']));
                 $payId = $response->id;
 
                 $tax_amount = 0;
@@ -475,7 +553,7 @@ class PaymentController extends Controller
                 $shipping = ShippingAddress::where('user_id', $user->id)->first();
                 $cartContents = Cart::content();
                 $shipping_method = Session::get('shipping_method');
-                $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+                $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
                 $shipping_fee = $shippingMethod->fee;
                 foreach ($cartContents as $key => $content) {
                     $tax = $content->options->tax * $content->qty;
@@ -488,43 +566,43 @@ class PaymentController extends Controller
                     foreach ($cartContent->options->variants as $indx => $variant) {
                         $variantPrice += $cartContent->options->prices[$indx];
                     }
-                    $productPrice = $cartContent->price ;
-                    $total = $productPrice * $cartContent->qty ;
+                    $productPrice = $cartContent->price;
+                    $total = $productPrice * $cartContent->qty;
                     $subTotal += $total;
                 }
 
                 $total_price = $tax_amount + $subTotal;
-                if(Session::get('coupon_price') && Session::get('offer_type')) {
-                    if(Session::get('offer_type') == 1) {
+                if (Session::get('coupon_price') && Session::get('offer_type')) {
+                    if (Session::get('offer_type') == 1) {
                         $coupon_price = Session::get('coupon_price');
                         $coupon_price = ($coupon_price / 100) * $total_price;
-                    }else {
+                    } else {
                         $coupon_price = Session::get('coupon_price');
                     }
                 }
 
-                $total_price = $total_price - $coupon_price ;
+                $total_price = $total_price - $coupon_price;
                 $total_price += $shipping_fee;
-                $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+                $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
                 $setting = Setting::first();
 
                 $additional_information = '';
-                if(Session::get('addition_information')){
+                if (Session::get('addition_information')) {
                     $additional_information = Session::get('addition_information');
                 }
                 $agree_terms_condition = 'no';
-                if(Session::get('agree_terms_condition')){
+                if (Session::get('agree_terms_condition')) {
                     $agree_terms_condition = Session::get('agree_terms_condition');
                 }
 
                 $amount_real_currency = $total_price;
-                $amount_usd = round($total_price / $setting->currency_rate,2);
+                $amount_usd = round($total_price / $setting->currency_rate, 2);
                 $currency_rate = $setting->currency_rate;
                 $currency_icon = $setting->currency_icon;
                 $currency_name = $setting->currency_name;
 
                 $order = new Order();
-                $orderId = substr(rand(0,time()),0,10);
+                $orderId = substr(rand(0, time()), 0, 10);
                 $order->order_id = $orderId;
                 $order->user_id = $user->id;
                 $order->sub_total = $subTotal;
@@ -547,10 +625,10 @@ class PaymentController extends Controller
                 $order->agree_terms_condition = $agree_terms_condition;
                 $order->save();
 
-                if(Session::get('coupon_name')){
+                if (Session::get('coupon_name')) {
                     $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
                     $qty = $coupon->apply_qty;
-                    $qty = $qty +1;
+                    $qty = $qty + 1;
                     $coupon->apply_qty = $qty;
                     $coupon->save();
                 }
@@ -581,8 +659,8 @@ class PaymentController extends Controller
                     $productStock->qty = $qty;
                     $productStock->save();
 
-                    if(count($cartContent->options->variants) > 0) {
-                        foreach($cartContent->options->variants as $index => $variant) {
+                    if (count($cartContent->options->variants) > 0) {
+                        foreach ($cartContent->options->variants as $index => $variant) {
                             $productVariant = new OrderProductVariant();
                             $productVariant->order_product_id = $orderProduct->id;
                             $productVariant->product_id = $cartContent->id;
@@ -593,9 +671,9 @@ class PaymentController extends Controller
                         }
                     }
 
-                    $order_details.='Product: '.$cartContent->name. '<br>';
-                    $order_details.='Quantity: '. $cartContent->qty .'<br>';
-                    $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+                    $order_details .= 'Product: ' . $cartContent->name . '<br>';
+                    $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+                    $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
                 }
 
                 $orderAddress = new OrderAddress();
@@ -620,25 +698,62 @@ class PaymentController extends Controller
 
                 MailHelper::setMailConfig();
 
-                $template=EmailTemplate::where('id',6)->first();
-                $subject=$template->subject;
-                $message=$template->description;
-                $message = str_replace('{{user_name}}',$user->name,$message);
-                $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-                $message = str_replace('{{payment_method}}','Razorpay',$message);
-                $message = str_replace('{{payment_status}}','Success',$message);
-                $message = str_replace('{{order_status}}','Pending',$message);
-                $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-                $message = str_replace('{{order_detail}}',$order_details,$message);
-                $message = str_replace('{{order_id}}',$order->order_id,$message);
-                $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-                $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-                $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-                $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+                $template = EmailTemplate::where('id', 6)->first();
+                $subject = $template->subject;
+                $message = $template->description;
+                $message = str_replace('{{user_name}}', $user->name, $message);
+                $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+                $message = str_replace('{{payment_method}}', 'Razorpay', $message);
+                $message = str_replace('{{payment_status}}', 'Success', $message);
+                $message = str_replace('{{order_status}}', 'Pending', $message);
+                $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+                $message = str_replace('{{order_detail}}', $order_details, $message);
+                $message = str_replace('{{order_id}}', $order->order_id, $message);
+                $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+                $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+                $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+                $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
                 // $message = str_replace('{{shop}}',$shop_name,$message);
-                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-                Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+                $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+                $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+                Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+                /* Custom logic for sending emails to vendors */
+                preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+                $productNames = $matches[1];
+                $vendorIdsArray = [];
+
+                // Use a set to keep track of unique vendor IDs
+                $uniqueVendorIds = [];
+
+                foreach ($productNames as $productName) {
+                    $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+                    if (!empty($vendorIds)) {
+                        $vendorIdsArray[] = $vendorIds;
+                    }
+                }
+
+                foreach ($vendorIdsArray as $vendorIds) {
+                    foreach ($vendorIds as $vendor_id) {
+                        // Check if the vendor ID is unique before processing
+                        if (!in_array($vendor_id, $uniqueVendorIds)) {
+                            $uniqueVendorIds[] = $vendor_id;
+
+                            $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                            $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                            // Check if the user exists
+                            if ($user) {
+                                $details = [
+                                    'name' => $user->name,
+                                    'email' => $user->email
+                                ];
+
+                                Mail::to($user->email)->send(new OrderShipped($details));
+                            }
+                        }
+                    }
+                }
 
                 Session::forget('hipping_method');
                 Session::forget('coupon_price');
@@ -649,44 +764,45 @@ class PaymentController extends Controller
                 Cart::destroy();
 
                 $notification = trans('user_validation.Payment Successfully');
-                $notification = array('messege'=>$notification,'alert-type'=>'success');
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
                 return redirect()->route('user.order')->with($notification);
 
-            }catch (Exception $e) {
+            } catch (Exception $e) {
                 $notification = trans('user_validation.Payment Faild');
-                $notification = array('messege'=>$notification,'alert-type'=>'error');
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect()->back()->with($notification);
             }
 
         }
     }
 
-    public function payWithFlutterwave(Request $request){
+    public function payWithFlutterwave(Request $request)
+    {
         $flutterwave = Flutterwave::first();
         $curl = curl_init();
         $tnx_id = $request->tnx_id;
         $url = "https://api.flutterwave.com/v3/transactions/$tnx_id/verify";
         $token = $flutterwave->secret_key;
         curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "GET",
-        CURLOPT_HTTPHEADER => array(
-            "Content-Type: application/json",
-            "Authorization: Bearer $token"
-        ),
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/json",
+                "Authorization: Bearer $token"
+            ),
         ));
 
         $response = curl_exec($curl);
 
         curl_close($curl);
         $response = json_decode($response);
-        if($response->status == 'success'){
+        if ($response->status == 'success') {
             $tax_amount = 0;
             $total_price = 0;
             $coupon_price = 0;
@@ -702,7 +818,7 @@ class PaymentController extends Controller
             $shipping = ShippingAddress::where('user_id', $user->id)->first();
             $cartContents = Cart::content();
             $shipping_method = Session::get('shipping_method');
-            $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+            $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
             $shipping_fee = $shippingMethod->fee;
             foreach ($cartContents as $key => $content) {
                 $tax = $content->options->tax * $content->qty;
@@ -715,43 +831,43 @@ class PaymentController extends Controller
                 foreach ($cartContent->options->variants as $indx => $variant) {
                     $variantPrice += $cartContent->options->prices[$indx];
                 }
-                $productPrice = $cartContent->price ;
-                $total = $productPrice * $cartContent->qty ;
+                $productPrice = $cartContent->price;
+                $total = $productPrice * $cartContent->qty;
                 $subTotal += $total;
             }
 
             $total_price = $tax_amount + $subTotal;
-            if(Session::get('coupon_price') && Session::get('offer_type')) {
-                if(Session::get('offer_type') == 1) {
+            if (Session::get('coupon_price') && Session::get('offer_type')) {
+                if (Session::get('offer_type') == 1) {
                     $coupon_price = Session::get('coupon_price');
                     $coupon_price = ($coupon_price / 100) * $total_price;
-                }else {
+                } else {
                     $coupon_price = Session::get('coupon_price');
                 }
             }
 
-            $total_price = $total_price - $coupon_price ;
+            $total_price = $total_price - $coupon_price;
             $total_price += $shipping_fee;
-            $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+            $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
             $setting = Setting::first();
 
             $additional_information = '';
-            if(Session::get('addition_information')){
+            if (Session::get('addition_information')) {
                 $additional_information = Session::get('addition_information');
             }
             $agree_terms_condition = 'no';
-            if(Session::get('agree_terms_condition')){
+            if (Session::get('agree_terms_condition')) {
                 $agree_terms_condition = Session::get('agree_terms_condition');
             }
 
             $amount_real_currency = $total_price;
-            $amount_usd = round($total_price / $setting->currency_rate,2);
+            $amount_usd = round($total_price / $setting->currency_rate, 2);
             $currency_rate = $setting->currency_rate;
             $currency_icon = $setting->currency_icon;
             $currency_name = $setting->currency_name;
 
             $order = new Order();
-            $orderId = substr(rand(0,time()),0,10);
+            $orderId = substr(rand(0, time()), 0, 10);
             $order->order_id = $orderId;
             $order->user_id = $user->id;
             $order->sub_total = $subTotal;
@@ -774,10 +890,10 @@ class PaymentController extends Controller
             $order->agree_terms_condition = $agree_terms_condition;
             $order->save();
 
-            if(Session::get('coupon_name')){
+            if (Session::get('coupon_name')) {
                 $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
                 $qty = $coupon->apply_qty;
-                $qty = $qty +1;
+                $qty = $qty + 1;
                 $coupon->apply_qty = $qty;
                 $coupon->save();
             }
@@ -808,8 +924,8 @@ class PaymentController extends Controller
                 $productStock->qty = $qty;
                 $productStock->save();
 
-                if(count($cartContent->options->variants) > 0) {
-                    foreach($cartContent->options->variants as $index => $variant) {
+                if (count($cartContent->options->variants) > 0) {
+                    foreach ($cartContent->options->variants as $index => $variant) {
                         $productVariant = new OrderProductVariant();
                         $productVariant->order_product_id = $orderProduct->id;
                         $productVariant->product_id = $cartContent->id;
@@ -820,9 +936,9 @@ class PaymentController extends Controller
                     }
                 }
 
-                $order_details.='Product: '.$cartContent->name. '<br>';
-                $order_details.='Quantity: '. $cartContent->qty .'<br>';
-                $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+                $order_details .= 'Product: ' . $cartContent->name . '<br>';
+                $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+                $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
             }
 
             $orderAddress = new OrderAddress();
@@ -847,25 +963,62 @@ class PaymentController extends Controller
 
             MailHelper::setMailConfig();
 
-            $template=EmailTemplate::where('id',6)->first();
-            $subject=$template->subject;
-            $message=$template->description;
-            $message = str_replace('{{user_name}}',$user->name,$message);
-            $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-            $message = str_replace('{{payment_method}}','Flutterwave',$message);
-            $message = str_replace('{{payment_status}}','Success',$message);
-            $message = str_replace('{{order_status}}','Pending',$message);
-            $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-            $message = str_replace('{{order_detail}}',$order_details,$message);
-            $message = str_replace('{{order_id}}',$order->order_id,$message);
-            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $template = EmailTemplate::where('id', 6)->first();
+            $subject = $template->subject;
+            $message = $template->description;
+            $message = str_replace('{{user_name}}', $user->name, $message);
+            $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+            $message = str_replace('{{payment_method}}', 'Flutterwave', $message);
+            $message = str_replace('{{payment_status}}', 'Success', $message);
+            $message = str_replace('{{order_status}}', 'Pending', $message);
+            $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+            $message = str_replace('{{order_detail}}', $order_details, $message);
+            $message = str_replace('{{order_id}}', $order->order_id, $message);
+            $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+            $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+            $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+            $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
             // $message = str_replace('{{shop}}',$shop_name,$message);
-            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+            $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+            $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+            Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+            /* Custom logic for sending emails to vendors */
+            preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+            $productNames = $matches[1];
+            $vendorIdsArray = [];
+
+            // Use a set to keep track of unique vendor IDs
+            $uniqueVendorIds = [];
+
+            foreach ($productNames as $productName) {
+                $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+                if (!empty($vendorIds)) {
+                    $vendorIdsArray[] = $vendorIds;
+                }
+            }
+
+            foreach ($vendorIdsArray as $vendorIds) {
+                foreach ($vendorIds as $vendor_id) {
+                    // Check if the vendor ID is unique before processing
+                    if (!in_array($vendor_id, $uniqueVendorIds)) {
+                        $uniqueVendorIds[] = $vendor_id;
+
+                        $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                        $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                        // Check if the user exists
+                        if ($user) {
+                            $details = [
+                                'name' => $user->name,
+                                'email' => $user->email
+                            ];
+
+                            Mail::to($user->email)->send(new OrderShipped($details));
+                        }
+                    }
+                }
+            }
 
             Session::forget('hipping_method');
             Session::forget('coupon_price');
@@ -876,14 +1029,15 @@ class PaymentController extends Controller
             Cart::destroy();
 
             $notification = trans('user_validation.Payment Successfully');
-            return response()->json(['status' => 'success' , 'message' => $notification]);
-        }else{
+            return response()->json(['status' => 'success', 'message' => $notification]);
+        } else {
             $notification = trans('user_validation.Payment Faild');
-            return response()->json(['status' => 'faild' , 'message' => $notification]);
+            return response()->json(['status' => 'faild', 'message' => $notification]);
         }
     }
 
-    public function payWithMollie(Request $request){
+    public function payWithMollie(Request $request)
+    {
 
         $tax_amount = 0;
         $total_price = 0;
@@ -900,7 +1054,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -913,30 +1067,30 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $amount_real_currency = $total_price;
         $mollie = PaystackAndMollie::first();
         $price = $amount_real_currency * $mollie->mollie_currency_rate;
-        $price = round($price,2);
+        $price = round($price, 2);
 
         $mollie_api_key = $mollie->mollie_key;
         $currency = strtoupper($mollie->mollie_currency_code);
@@ -944,23 +1098,24 @@ class PaymentController extends Controller
         $payment = Mollie::api()->payments()->create([
             'amount' => [
                 'currency' => $currency,
-                'value' => ''.$price.'',
+                'value' => '' . $price . '',
             ],
             'description' => env('APP_NAME'),
             'redirectUrl' => route('user.checkout.mollie-payment-success'),
         ]);
 
         $payment = Mollie::api()->payments()->get($payment->id);
-        session()->put('payment_id',$payment->id);
+        session()->put('payment_id', $payment->id);
         return redirect($payment->getCheckoutUrl(), 303);
     }
 
-    public function molliePaymentSuccess(Request $request){
+    public function molliePaymentSuccess(Request $request)
+    {
         $mollie = PaystackAndMollie::first();
         $mollie_api_key = $mollie->mollie_key;
         Mollie::api()->setApiKey($mollie_api_key);
         $payment = Mollie::api()->payments->get(session()->get('payment_id'));
-        if ($payment->isPaid()){
+        if ($payment->isPaid()) {
             $tax_amount = 0;
             $total_price = 0;
             $coupon_price = 0;
@@ -976,7 +1131,7 @@ class PaymentController extends Controller
             $shipping = ShippingAddress::where('user_id', $user->id)->first();
             $cartContents = Cart::content();
             $shipping_method = Session::get('shipping_method');
-            $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+            $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
             $shipping_fee = $shippingMethod->fee;
             foreach ($cartContents as $key => $content) {
                 $tax = $content->options->tax * $content->qty;
@@ -989,43 +1144,43 @@ class PaymentController extends Controller
                 foreach ($cartContent->options->variants as $indx => $variant) {
                     $variantPrice += $cartContent->options->prices[$indx];
                 }
-                $productPrice = $cartContent->price ;
-                $total = $productPrice * $cartContent->qty ;
+                $productPrice = $cartContent->price;
+                $total = $productPrice * $cartContent->qty;
                 $subTotal += $total;
             }
 
             $total_price = $tax_amount + $subTotal;
-            if(Session::get('coupon_price') && Session::get('offer_type')) {
-                if(Session::get('offer_type') == 1) {
+            if (Session::get('coupon_price') && Session::get('offer_type')) {
+                if (Session::get('offer_type') == 1) {
                     $coupon_price = Session::get('coupon_price');
                     $coupon_price = ($coupon_price / 100) * $total_price;
-                }else {
+                } else {
                     $coupon_price = Session::get('coupon_price');
                 }
             }
 
-            $total_price = $total_price - $coupon_price ;
+            $total_price = $total_price - $coupon_price;
             $total_price += $shipping_fee;
-            $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+            $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
             $setting = Setting::first();
 
             $additional_information = '';
-            if(Session::get('addition_information')){
+            if (Session::get('addition_information')) {
                 $additional_information = Session::get('addition_information');
             }
             $agree_terms_condition = 'no';
-            if(Session::get('agree_terms_condition')){
+            if (Session::get('agree_terms_condition')) {
                 $agree_terms_condition = Session::get('agree_terms_condition');
             }
 
             $amount_real_currency = $total_price;
-            $amount_usd = round($total_price / $setting->currency_rate,2);
+            $amount_usd = round($total_price / $setting->currency_rate, 2);
             $currency_rate = $setting->currency_rate;
             $currency_icon = $setting->currency_icon;
             $currency_name = $setting->currency_name;
 
             $order = new Order();
-            $orderId = substr(rand(0,time()),0,10);
+            $orderId = substr(rand(0, time()), 0, 10);
             $order->order_id = $orderId;
             $order->user_id = $user->id;
             $order->sub_total = $subTotal;
@@ -1048,10 +1203,10 @@ class PaymentController extends Controller
             $order->agree_terms_condition = $agree_terms_condition;
             $order->save();
 
-            if(Session::get('coupon_name')){
+            if (Session::get('coupon_name')) {
                 $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
                 $qty = $coupon->apply_qty;
-                $qty = $qty +1;
+                $qty = $qty + 1;
                 $coupon->apply_qty = $qty;
                 $coupon->save();
             }
@@ -1082,8 +1237,8 @@ class PaymentController extends Controller
                 $productStock->qty = $qty;
                 $productStock->save();
 
-                if(count($cartContent->options->variants) > 0) {
-                    foreach($cartContent->options->variants as $index => $variant) {
+                if (count($cartContent->options->variants) > 0) {
+                    foreach ($cartContent->options->variants as $index => $variant) {
                         $productVariant = new OrderProductVariant();
                         $productVariant->order_product_id = $orderProduct->id;
                         $productVariant->product_id = $cartContent->id;
@@ -1094,9 +1249,9 @@ class PaymentController extends Controller
                     }
                 }
 
-                $order_details.='Product: '.$cartContent->name. '<br>';
-                $order_details.='Quantity: '. $cartContent->qty .'<br>';
-                $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+                $order_details .= 'Product: ' . $cartContent->name . '<br>';
+                $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+                $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
             }
 
             $orderAddress = new OrderAddress();
@@ -1121,24 +1276,61 @@ class PaymentController extends Controller
 
             MailHelper::setMailConfig();
 
-            $template=EmailTemplate::where('id',6)->first();
-            $subject=$template->subject;
-            $message=$template->description;
-            $message = str_replace('{{user_name}}',$user->name,$message);
-            $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-            $message = str_replace('{{payment_method}}','Mollie',$message);
-            $message = str_replace('{{payment_status}}','Success',$message);
-            $message = str_replace('{{order_status}}','Pending',$message);
-            $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-            $message = str_replace('{{order_detail}}',$order_details,$message);
-            $message = str_replace('{{order_id}}',$order->order_id,$message);
-            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $template = EmailTemplate::where('id', 6)->first();
+            $subject = $template->subject;
+            $message = $template->description;
+            $message = str_replace('{{user_name}}', $user->name, $message);
+            $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+            $message = str_replace('{{payment_method}}', 'Mollie', $message);
+            $message = str_replace('{{payment_status}}', 'Success', $message);
+            $message = str_replace('{{order_status}}', 'Pending', $message);
+            $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+            $message = str_replace('{{order_detail}}', $order_details, $message);
+            $message = str_replace('{{order_id}}', $order->order_id, $message);
+            $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+            $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+            $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+            $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
             // $message = str_replace('{{shop}}',$shop_name,$message);
-            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+            $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+            Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+            /* Custom logic for sending emails to vendors */
+            preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+            $productNames = $matches[1];
+            $vendorIdsArray = [];
+
+            // Use a set to keep track of unique vendor IDs
+            $uniqueVendorIds = [];
+
+            foreach ($productNames as $productName) {
+                $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+                if (!empty($vendorIds)) {
+                    $vendorIdsArray[] = $vendorIds;
+                }
+            }
+
+            foreach ($vendorIdsArray as $vendorIds) {
+                foreach ($vendorIds as $vendor_id) {
+                    // Check if the vendor ID is unique before processing
+                    if (!in_array($vendor_id, $uniqueVendorIds)) {
+                        $uniqueVendorIds[] = $vendor_id;
+
+                        $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                        $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                        // Check if the user exists
+                        if ($user) {
+                            $details = [
+                                'name' => $user->name,
+                                'email' => $user->email
+                            ];
+
+                            Mail::to($user->email)->send(new OrderShipped($details));
+                        }
+                    }
+                }
+            }
 
             Session::forget('hipping_method');
             Session::forget('coupon_price');
@@ -1149,16 +1341,17 @@ class PaymentController extends Controller
             Cart::destroy();
 
             $notification = trans('user_validation.Payment Successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('user.order')->with($notification);
-        }else{
+        } else {
             $notification = trans('user_validation.Payment Faild');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->route('user.checkout.payment')->with($notification);
         }
     }
 
-    public function payWithPayStack(Request $request){
+    public function payWithPayStack(Request $request)
+    {
         $paystack = PaystackAndMollie::first();
 
         $reference = $request->reference;
@@ -1170,8 +1363,8 @@ class PaymentController extends Controller
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_SSL_VERIFYHOST =>0,
-            CURLOPT_SSL_VERIFYPEER =>0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
@@ -1184,7 +1377,7 @@ class PaymentController extends Controller
         $err = curl_error($curl);
         curl_close($curl);
         $final_data = json_decode($response);
-        if($final_data->status == true) {
+        if ($final_data->status == true) {
             $tax_amount = 0;
             $total_price = 0;
             $coupon_price = 0;
@@ -1200,7 +1393,7 @@ class PaymentController extends Controller
             $shipping = ShippingAddress::where('user_id', $user->id)->first();
             $cartContents = Cart::content();
             $shipping_method = Session::get('shipping_method');
-            $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+            $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
             $shipping_fee = $shippingMethod->fee;
             foreach ($cartContents as $key => $content) {
                 $tax = $content->options->tax * $content->qty;
@@ -1213,43 +1406,43 @@ class PaymentController extends Controller
                 foreach ($cartContent->options->variants as $indx => $variant) {
                     $variantPrice += $cartContent->options->prices[$indx];
                 }
-                $productPrice = $cartContent->price ;
-                $total = $productPrice * $cartContent->qty ;
+                $productPrice = $cartContent->price;
+                $total = $productPrice * $cartContent->qty;
                 $subTotal += $total;
             }
 
             $total_price = $tax_amount + $subTotal;
-            if(Session::get('coupon_price') && Session::get('offer_type')) {
-                if(Session::get('offer_type') == 1) {
+            if (Session::get('coupon_price') && Session::get('offer_type')) {
+                if (Session::get('offer_type') == 1) {
                     $coupon_price = Session::get('coupon_price');
                     $coupon_price = ($coupon_price / 100) * $total_price;
-                }else {
+                } else {
                     $coupon_price = Session::get('coupon_price');
                 }
             }
 
-            $total_price = $total_price - $coupon_price ;
+            $total_price = $total_price - $coupon_price;
             $total_price += $shipping_fee;
-            $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+            $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
             $setting = Setting::first();
 
             $additional_information = '';
-            if(Session::get('addition_information')){
+            if (Session::get('addition_information')) {
                 $additional_information = Session::get('addition_information');
             }
             $agree_terms_condition = 'no';
-            if(Session::get('agree_terms_condition')){
+            if (Session::get('agree_terms_condition')) {
                 $agree_terms_condition = Session::get('agree_terms_condition');
             }
 
             $amount_real_currency = $total_price;
-            $amount_usd = round($total_price / $setting->currency_rate,2);
+            $amount_usd = round($total_price / $setting->currency_rate, 2);
             $currency_rate = $setting->currency_rate;
             $currency_icon = $setting->currency_icon;
             $currency_name = $setting->currency_name;
 
             $order = new Order();
-            $orderId = substr(rand(0,time()),0,10);
+            $orderId = substr(rand(0, time()), 0, 10);
             $order->order_id = $orderId;
             $order->user_id = $user->id;
             $order->sub_total = $subTotal;
@@ -1272,10 +1465,10 @@ class PaymentController extends Controller
             $order->agree_terms_condition = $agree_terms_condition;
             $order->save();
 
-            if(Session::get('coupon_name')){
+            if (Session::get('coupon_name')) {
                 $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
                 $qty = $coupon->apply_qty;
-                $qty = $qty +1;
+                $qty = $qty + 1;
                 $coupon->apply_qty = $qty;
                 $coupon->save();
             }
@@ -1306,8 +1499,8 @@ class PaymentController extends Controller
                 $productStock->qty = $qty;
                 $productStock->save();
 
-                if(count($cartContent->options->variants) > 0) {
-                    foreach($cartContent->options->variants as $index => $variant) {
+                if (count($cartContent->options->variants) > 0) {
+                    foreach ($cartContent->options->variants as $index => $variant) {
                         $productVariant = new OrderProductVariant();
                         $productVariant->order_product_id = $orderProduct->id;
                         $productVariant->product_id = $cartContent->id;
@@ -1318,9 +1511,9 @@ class PaymentController extends Controller
                     }
                 }
 
-                $order_details.='Product: '.$cartContent->name. '<br>';
-                $order_details.='Quantity: '. $cartContent->qty .'<br>';
-                $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+                $order_details .= 'Product: ' . $cartContent->name . '<br>';
+                $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+                $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
             }
 
             $orderAddress = new OrderAddress();
@@ -1345,24 +1538,61 @@ class PaymentController extends Controller
 
             MailHelper::setMailConfig();
 
-            $template=EmailTemplate::where('id',6)->first();
-            $subject=$template->subject;
-            $message=$template->description;
-            $message = str_replace('{{user_name}}',$user->name,$message);
-            $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-            $message = str_replace('{{payment_method}}','Paystack',$message);
-            $message = str_replace('{{payment_status}}','Success',$message);
-            $message = str_replace('{{order_status}}','Pending',$message);
-            $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-            $message = str_replace('{{order_detail}}',$order_details,$message);
-            $message = str_replace('{{order_id}}',$order->order_id,$message);
-            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $template = EmailTemplate::where('id', 6)->first();
+            $subject = $template->subject;
+            $message = $template->description;
+            $message = str_replace('{{user_name}}', $user->name, $message);
+            $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+            $message = str_replace('{{payment_method}}', 'Paystack', $message);
+            $message = str_replace('{{payment_status}}', 'Success', $message);
+            $message = str_replace('{{order_status}}', 'Pending', $message);
+            $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+            $message = str_replace('{{order_detail}}', $order_details, $message);
+            $message = str_replace('{{order_id}}', $order->order_id, $message);
+            $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+            $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+            $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+            $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
             // $message = str_replace('{{shop}}',$shop_name,$message);
-            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+            $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+            Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+            /* Custom logic for sending emails to vendors */
+            preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+            $productNames = $matches[1];
+            $vendorIdsArray = [];
+
+            // Use a set to keep track of unique vendor IDs
+            $uniqueVendorIds = [];
+
+            foreach ($productNames as $productName) {
+                $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+                if (!empty($vendorIds)) {
+                    $vendorIdsArray[] = $vendorIds;
+                }
+            }
+
+            foreach ($vendorIdsArray as $vendorIds) {
+                foreach ($vendorIds as $vendor_id) {
+                    // Check if the vendor ID is unique before processing
+                    if (!in_array($vendor_id, $uniqueVendorIds)) {
+                        $uniqueVendorIds[] = $vendor_id;
+
+                        $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                        $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                        // Check if the user exists
+                        if ($user) {
+                            $details = [
+                                'name' => $user->name,
+                                'email' => $user->email
+                            ];
+
+                            Mail::to($user->email)->send(new OrderShipped($details));
+                        }
+                    }
+                }
+            }
 
             Session::forget('hipping_method');
             Session::forget('coupon_price');
@@ -1373,12 +1603,13 @@ class PaymentController extends Controller
             Cart::destroy();
 
             $notification = trans('user_validation.Payment Successfully');
-            return response()->json(['status' => 'success' , 'message' => $notification]);
+            return response()->json(['status' => 'success', 'message' => $notification]);
         }
     }
 
 
-    public function payWithInstamojo(){
+    public function payWithInstamojo()
+    {
 
         $tax_amount = 0;
         $total_price = 0;
@@ -1395,7 +1626,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -1408,45 +1639,45 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if(Session::get('addition_information')){
+        if (Session::get('addition_information')) {
             $additional_information = Session::get('addition_information');
         }
         $agree_terms_condition = 'no';
-        if(Session::get('agree_terms_condition')){
+        if (Session::get('agree_terms_condition')) {
             $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
         $instamojoPayment = InstamojoPayment::first();
         $price = $amount_real_currency * $instamojoPayment->currency_rate;
-        $price = round($price,2);
+        $price = round($price, 2);
 
         $environment = $instamojoPayment->account_mode;
         $api_key = $instamojoPayment->api_key;
         $auth_token = $instamojoPayment->auth_token;
 
-        if($environment == 'Sandbox') {
+        if ($environment == 'Sandbox') {
             $url = 'https://test.instamojo.com/api/1.1/';
         } else {
             $url = 'https://www.instamojo.com/api/1.1/';
@@ -1454,14 +1685,14 @@ class PaymentController extends Controller
 
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, $url.'payment-requests/');
+        curl_setopt($ch, CURLOPT_URL, $url . 'payment-requests/');
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER,
             array("X-Api-Key:$api_key",
                 "X-Auth-Token:$auth_token"));
-        $payload = Array(
+        $payload = array(
             'purpose' => env("APP_NAME"),
             'amount' => $price,
             'phone' => '918160651749',
@@ -1481,7 +1712,8 @@ class PaymentController extends Controller
         return redirect($response->payment_request->longurl);
     }
 
-    public function instamojoResponse(Request $request){
+    public function instamojoResponse(Request $request)
+    {
         $input = $request->all();
 
         $instamojoPayment = InstamojoPayment::first();
@@ -1489,14 +1721,14 @@ class PaymentController extends Controller
         $api_key = $instamojoPayment->api_key;
         $auth_token = $instamojoPayment->auth_token;
 
-        if($environment == 'Sandbox') {
+        if ($environment == 'Sandbox') {
             $url = 'https://test.instamojo.com/api/1.1/';
         } else {
             $url = 'https://www.instamojo.com/api/1.1/';
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url.'payments/'.$request->get('payment_id'));
+        curl_setopt($ch, CURLOPT_URL, $url . 'payments/' . $request->get('payment_id'));
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
@@ -1509,14 +1741,14 @@ class PaymentController extends Controller
 
         if ($err) {
             $notification = trans('user_validation.Payment Faild');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->route('user.checkout.payment')->with($notification);
         } else {
             $data = json_decode($response);
         }
 
-        if($data->success == true) {
-            if($data->payment->status == 'Credit') {
+        if ($data->success == true) {
+            if ($data->payment->status == 'Credit') {
                 $tax_amount = 0;
                 $total_price = 0;
                 $coupon_price = 0;
@@ -1532,7 +1764,7 @@ class PaymentController extends Controller
                 $shipping = ShippingAddress::where('user_id', $user->id)->first();
                 $cartContents = Cart::content();
                 $shipping_method = Session::get('shipping_method');
-                $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+                $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
                 $shipping_fee = $shippingMethod->fee;
                 foreach ($cartContents as $key => $content) {
                     $tax = $content->options->tax * $content->qty;
@@ -1545,43 +1777,43 @@ class PaymentController extends Controller
                     foreach ($cartContent->options->variants as $indx => $variant) {
                         $variantPrice += $cartContent->options->prices[$indx];
                     }
-                    $productPrice = $cartContent->price ;
-                    $total = $productPrice * $cartContent->qty ;
+                    $productPrice = $cartContent->price;
+                    $total = $productPrice * $cartContent->qty;
                     $subTotal += $total;
                 }
 
                 $total_price = $tax_amount + $subTotal;
-                if(Session::get('coupon_price') && Session::get('offer_type')) {
-                    if(Session::get('offer_type') == 1) {
+                if (Session::get('coupon_price') && Session::get('offer_type')) {
+                    if (Session::get('offer_type') == 1) {
                         $coupon_price = Session::get('coupon_price');
                         $coupon_price = ($coupon_price / 100) * $total_price;
-                    }else {
+                    } else {
                         $coupon_price = Session::get('coupon_price');
                     }
                 }
 
-                $total_price = $total_price - $coupon_price ;
+                $total_price = $total_price - $coupon_price;
                 $total_price += $shipping_fee;
-                $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+                $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
                 $setting = Setting::first();
 
                 $additional_information = '';
-                if(Session::get('addition_information')){
+                if (Session::get('addition_information')) {
                     $additional_information = Session::get('addition_information');
                 }
                 $agree_terms_condition = 'no';
-                if(Session::get('agree_terms_condition')){
+                if (Session::get('agree_terms_condition')) {
                     $agree_terms_condition = Session::get('agree_terms_condition');
                 }
 
                 $amount_real_currency = $total_price;
-                $amount_usd = round($total_price / $setting->currency_rate,2);
+                $amount_usd = round($total_price / $setting->currency_rate, 2);
                 $currency_rate = $setting->currency_rate;
                 $currency_icon = $setting->currency_icon;
                 $currency_name = $setting->currency_name;
 
                 $order = new Order();
-                $orderId = substr(rand(0,time()),0,10);
+                $orderId = substr(rand(0, time()), 0, 10);
                 $order->order_id = $orderId;
                 $order->user_id = $user->id;
                 $order->sub_total = $subTotal;
@@ -1604,10 +1836,10 @@ class PaymentController extends Controller
                 $order->agree_terms_condition = $agree_terms_condition;
                 $order->save();
 
-                if(Session::get('coupon_name')){
+                if (Session::get('coupon_name')) {
                     $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
                     $qty = $coupon->apply_qty;
-                    $qty = $qty +1;
+                    $qty = $qty + 1;
                     $coupon->apply_qty = $qty;
                     $coupon->save();
                 }
@@ -1638,8 +1870,8 @@ class PaymentController extends Controller
                     $productStock->qty = $qty;
                     $productStock->save();
 
-                    if(count($cartContent->options->variants) > 0) {
-                        foreach($cartContent->options->variants as $index => $variant) {
+                    if (count($cartContent->options->variants) > 0) {
+                        foreach ($cartContent->options->variants as $index => $variant) {
                             $productVariant = new OrderProductVariant();
                             $productVariant->order_product_id = $orderProduct->id;
                             $productVariant->product_id = $cartContent->id;
@@ -1650,9 +1882,9 @@ class PaymentController extends Controller
                         }
                     }
 
-                    $order_details.='Product: '.$cartContent->name. '<br>';
-                    $order_details.='Quantity: '. $cartContent->qty .'<br>';
-                    $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+                    $order_details .= 'Product: ' . $cartContent->name . '<br>';
+                    $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+                    $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
                 }
 
                 $orderAddress = new OrderAddress();
@@ -1677,24 +1909,61 @@ class PaymentController extends Controller
 
                 MailHelper::setMailConfig();
 
-                $template=EmailTemplate::where('id',6)->first();
-                $subject=$template->subject;
-                $message=$template->description;
-                $message = str_replace('{{user_name}}',$user->name,$message);
-                $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-                $message = str_replace('{{payment_method}}','Instamojo',$message);
-                $message = str_replace('{{payment_status}}','Success',$message);
-                $message = str_replace('{{order_status}}','Pending',$message);
-                $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-                $message = str_replace('{{order_detail}}',$order_details,$message);
-                $message = str_replace('{{order_id}}',$order->order_id,$message);
-                $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-                $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-                $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-                $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+                $template = EmailTemplate::where('id', 6)->first();
+                $subject = $template->subject;
+                $message = $template->description;
+                $message = str_replace('{{user_name}}', $user->name, $message);
+                $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+                $message = str_replace('{{payment_method}}', 'Instamojo', $message);
+                $message = str_replace('{{payment_status}}', 'Success', $message);
+                $message = str_replace('{{order_status}}', 'Pending', $message);
+                $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+                $message = str_replace('{{order_detail}}', $order_details, $message);
+                $message = str_replace('{{order_id}}', $order->order_id, $message);
+                $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+                $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+                $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+                $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
                 // $message = str_replace('{{shop}}',$shop_name,$message);
-                $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-                Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+                $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+                Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+                /* Custom logic for sending emails to vendors */
+                preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+                $productNames = $matches[1];
+                $vendorIdsArray = [];
+
+                // Use a set to keep track of unique vendor IDs
+                $uniqueVendorIds = [];
+
+                foreach ($productNames as $productName) {
+                    $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+                    if (!empty($vendorIds)) {
+                        $vendorIdsArray[] = $vendorIds;
+                    }
+                }
+
+                foreach ($vendorIdsArray as $vendorIds) {
+                    foreach ($vendorIds as $vendor_id) {
+                        // Check if the vendor ID is unique before processing
+                        if (!in_array($vendor_id, $uniqueVendorIds)) {
+                            $uniqueVendorIds[] = $vendor_id;
+
+                            $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                            $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                            // Check if the user exists
+                            if ($user) {
+                                $details = [
+                                    'name' => $user->name,
+                                    'email' => $user->email
+                                ];
+
+                                Mail::to($user->email)->send(new OrderShipped($details));
+                            }
+                        }
+                    }
+                }
 
                 Session::forget('hipping_method');
                 Session::forget('coupon_price');
@@ -1705,16 +1974,17 @@ class PaymentController extends Controller
                 Cart::destroy();
 
                 $notification = trans('user_validation.Payment Successfully');
-                $notification = array('messege'=>$notification,'alert-type'=>'success');
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
                 return redirect()->route('user.order')->with($notification);
             }
         }
 
     }
 
-    public function payWithBank(Request $request){
+    public function payWithBank(Request $request)
+    {
         $rules = [
-            'tnx_info'=>'required',
+            'tnx_info' => 'required',
         ];
         $this->validate($request, $rules);
 
@@ -1733,7 +2003,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -1746,43 +2016,43 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if(Session::get('addition_information')){
+        if (Session::get('addition_information')) {
             $additional_information = Session::get('addition_information');
         }
         $agree_terms_condition = 'no';
-        if(Session::get('agree_terms_condition')){
+        if (Session::get('agree_terms_condition')) {
             $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
-        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $amount_usd = round($total_price / $setting->currency_rate, 2);
         $currency_rate = $setting->currency_rate;
         $currency_icon = $setting->currency_icon;
         $currency_name = $setting->currency_name;
 
         $order = new Order();
-        $orderId = substr(rand(0,time()),0,10);
+        $orderId = substr(rand(0, time()), 0, 10);
         $order->order_id = $orderId;
         $order->user_id = $user->id;
         $order->sub_total = $subTotal;
@@ -1805,10 +2075,10 @@ class PaymentController extends Controller
         $order->agree_terms_condition = $agree_terms_condition;
         $order->save();
 
-        if(Session::get('coupon_name')){
+        if (Session::get('coupon_name')) {
             $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
             $qty = $coupon->apply_qty;
-            $qty = $qty +1;
+            $qty = $qty + 1;
             $coupon->apply_qty = $qty;
             $coupon->save();
         }
@@ -1839,8 +2109,8 @@ class PaymentController extends Controller
             $productStock->qty = $qty;
             $productStock->save();
 
-            if(count($cartContent->options->variants) > 0) {
-                foreach($cartContent->options->variants as $index => $variant) {
+            if (count($cartContent->options->variants) > 0) {
+                foreach ($cartContent->options->variants as $index => $variant) {
                     $productVariant = new OrderProductVariant();
                     $productVariant->order_product_id = $orderProduct->id;
                     $productVariant->product_id = $cartContent->id;
@@ -1851,9 +2121,9 @@ class PaymentController extends Controller
                 }
             }
 
-            $order_details.='Product: '.$cartContent->name. '<br>';
-            $order_details.='Quantity: '. $cartContent->qty .'<br>';
-            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+            $order_details .= 'Product: ' . $cartContent->name . '<br>';
+            $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+            $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
         }
 
         $orderAddress = new OrderAddress();
@@ -1878,24 +2148,61 @@ class PaymentController extends Controller
 
         MailHelper::setMailConfig();
 
-        $template=EmailTemplate::where('id',6)->first();
-        $subject=$template->subject;
-        $message=$template->description;
-        $message = str_replace('{{user_name}}',$user->name,$message);
-        $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-        $message = str_replace('{{payment_method}}','Bank Payment',$message);
-        $message = str_replace('{{payment_status}}','Pending',$message);
-        $message = str_replace('{{order_status}}','Pending',$message);
-        $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-        $message = str_replace('{{order_detail}}',$order_details,$message);
-        $message = str_replace('{{order_id}}',$order->order_id,$message);
-        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $template = EmailTemplate::where('id', 6)->first();
+        $subject = $template->subject;
+        $message = $template->description;
+        $message = str_replace('{{user_name}}', $user->name, $message);
+        $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+        $message = str_replace('{{payment_method}}', 'Bank Payment', $message);
+        $message = str_replace('{{payment_status}}', 'Pending', $message);
+        $message = str_replace('{{order_status}}', 'Pending', $message);
+        $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+        $message = str_replace('{{order_detail}}', $order_details, $message);
+        $message = str_replace('{{order_id}}', $order->order_id, $message);
+        $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+        $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+        $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+        $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
-        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-        Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+        $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+        Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+        /* Custom logic for sending emails to vendors */
+        preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+        $productNames = $matches[1];
+        $vendorIdsArray = [];
+
+        // Use a set to keep track of unique vendor IDs
+        $uniqueVendorIds = [];
+
+        foreach ($productNames as $productName) {
+            $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+            if (!empty($vendorIds)) {
+                $vendorIdsArray[] = $vendorIds;
+            }
+        }
+
+        foreach ($vendorIdsArray as $vendorIds) {
+            foreach ($vendorIds as $vendor_id) {
+                // Check if the vendor ID is unique before processing
+                if (!in_array($vendor_id, $uniqueVendorIds)) {
+                    $uniqueVendorIds[] = $vendor_id;
+
+                    $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                    $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                    // Check if the user exists
+                    if ($user) {
+                        $details = [
+                            'name' => $user->name,
+                            'email' => $user->email
+                        ];
+
+                        Mail::to($user->email)->send(new OrderShipped($details));
+                    }
+                }
+            }
+        }
 
         Session::forget('hipping_method');
         Session::forget('coupon_price');
@@ -1906,12 +2213,13 @@ class PaymentController extends Controller
         Cart::destroy();
 
         $notification = trans('user_validation.Order submited successfully. please wait for admin approval');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.order')->with($notification);
     }
 
 
-    public function payWithPaymongo(Request $request){
+    public function payWithPaymongo(Request $request)
+    {
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -1927,7 +2235,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -1940,37 +2248,37 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if(Session::get('addition_information')){
+        if (Session::get('addition_information')) {
             $additional_information = Session::get('addition_information');
         }
         $agree_terms_condition = 'no';
-        if(Session::get('agree_terms_condition')){
+        if (Session::get('agree_terms_condition')) {
             $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
-        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $amount_usd = round($total_price / $setting->currency_rate, 2);
         $currency_rate = $setting->currency_rate;
         $currency_icon = $setting->currency_icon;
         $currency_name = $setting->currency_name;
@@ -1979,7 +2287,7 @@ class PaymentController extends Controller
         $price = $total_price * $paymongoPayment->currency_rate;
         $price = round($price);
         $currency_code = $paymongoPayment->currency_code;
-        $setting=Setting::first();
+        $setting = Setting::first();
 
         // create payment method
         require_once('vendor/autoload.php');
@@ -1988,30 +2296,30 @@ class PaymentController extends Controller
         $cvc = $request->cvc;
         $month = $request->month;
         $year = $request->year;
-        $code = base64_encode($paymongoPayment->public_key.':'.$paymongoPayment->secret_key);
+        $code = base64_encode($paymongoPayment->public_key . ':' . $paymongoPayment->secret_key);
 
-        try{
+        try {
             $response = $client->request('POST', 'https://api.paymongo.com/v1/payment_methods', [
-                'body' => '{"data":{"attributes":{"details":{"card_number":"'.$card_number.'","exp_month":'.$month.',"exp_year":'.$year.',"cvc":"'.$cvc.'"},"type":"card"}}}',
+                'body' => '{"data":{"attributes":{"details":{"card_number":"' . $card_number . '","exp_month":' . $month . ',"exp_year":' . $year . ',"cvc":"' . $cvc . '"},"type":"card"}}}',
                 'headers' => [
                     'Accept' => 'application/json',
-                    'Authorization' => 'Basic '.$code.'',
+                    'Authorization' => 'Basic ' . $code . '',
                     'Content-Type' => 'application/json',
                 ],
             ]);
 
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $notification = trans('user_validation.Please provide valid card information');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
 
         $response = json_decode($response->getBody(), true);
         $payment_method_id = $response['data']['id'];
 
-        if($price < 100){
+        if ($price < 100) {
             $notification = trans('user_validation.Amount cannot be less than 100₱');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
 
@@ -2021,12 +2329,12 @@ class PaymentController extends Controller
         $client = new \GuzzleHttp\Client();
         $secret_code = base64_encode($paymongoPayment->secret_key);
         $response = $client->request('POST', 'https://api.paymongo.com/v1/payment_intents', [
-        'body' => '{"data":{"attributes":{"amount":'.$price.',"payment_method_allowed":["card"],"payment_method_options":{"card":{"request_three_d_secure":"any"}},"currency":"'.$currency_code.'","capture_type":"automatic"}}}',
-        'headers' => [
-            'Accept' => 'application/json',
-            'Authorization' => 'Basic '.$secret_code.'',
-            'Content-Type' => 'application/json',
-        ],
+            'body' => '{"data":{"attributes":{"amount":' . $price . ',"payment_method_allowed":["card"],"payment_method_options":{"card":{"request_three_d_secure":"any"}},"currency":"' . $currency_code . '","capture_type":"automatic"}}}',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Basic ' . $secret_code . '',
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         $intent_response = json_decode($response->getBody(), true);
@@ -2036,20 +2344,20 @@ class PaymentController extends Controller
         $client = new \GuzzleHttp\Client();
 
         // create payment
-        $payment_response = $client->request('POST', 'https://api.paymongo.com/v1/payment_intents/'.$intent_id.'/attach', [
-            'body' => '{"data":{"attributes":{"payment_method":"'.$payment_method_id.'","client_key":"'.$intent_client_key.'"}}}',
+        $payment_response = $client->request('POST', 'https://api.paymongo.com/v1/payment_intents/' . $intent_id . '/attach', [
+            'body' => '{"data":{"attributes":{"payment_method":"' . $payment_method_id . '","client_key":"' . $intent_client_key . '"}}}',
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Basic '.$secret_code.'',
+                'Authorization' => 'Basic ' . $secret_code . '',
                 'Content-Type' => 'application/json',
             ],
         ]);
 
         $payment_response = json_decode($response->getBody(), true);
 
-        if($payment_response['data']['attributes']['status'] != 'faild'){
+        if ($payment_response['data']['attributes']['status'] != 'faild') {
             $order = new Order();
-            $orderId = substr(rand(0,time()),0,10);
+            $orderId = substr(rand(0, time()), 0, 10);
             $order->order_id = $orderId;
             $order->user_id = $user->id;
             $order->sub_total = $subTotal;
@@ -2072,10 +2380,10 @@ class PaymentController extends Controller
             $order->agree_terms_condition = $agree_terms_condition;
             $order->save();
 
-            if(Session::get('coupon_name')){
+            if (Session::get('coupon_name')) {
                 $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
                 $qty = $coupon->apply_qty;
-                $qty = $qty +1;
+                $qty = $qty + 1;
                 $coupon->apply_qty = $qty;
                 $coupon->save();
             }
@@ -2106,8 +2414,8 @@ class PaymentController extends Controller
                 $productStock->qty = $qty;
                 $productStock->save();
 
-                if(count($cartContent->options->variants) > 0) {
-                    foreach($cartContent->options->variants as $index => $variant) {
+                if (count($cartContent->options->variants) > 0) {
+                    foreach ($cartContent->options->variants as $index => $variant) {
                         $productVariant = new OrderProductVariant();
                         $productVariant->order_product_id = $orderProduct->id;
                         $productVariant->product_id = $cartContent->id;
@@ -2118,9 +2426,9 @@ class PaymentController extends Controller
                     }
                 }
 
-                $order_details.='Product: '.$cartContent->name. '<br>';
-                $order_details.='Quantity: '. $cartContent->qty .'<br>';
-                $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+                $order_details .= 'Product: ' . $cartContent->name . '<br>';
+                $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+                $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
             }
 
             $orderAddress = new OrderAddress();
@@ -2145,24 +2453,61 @@ class PaymentController extends Controller
 
             MailHelper::setMailConfig();
 
-            $template=EmailTemplate::where('id',6)->first();
-            $subject=$template->subject;
-            $message=$template->description;
-            $message = str_replace('{{user_name}}',$user->name,$message);
-            $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-            $message = str_replace('{{payment_method}}','Paymongo',$message);
-            $message = str_replace('{{payment_status}}','Success',$message);
-            $message = str_replace('{{order_status}}','Pending',$message);
-            $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-            $message = str_replace('{{order_detail}}',$order_details,$message);
-            $message = str_replace('{{order_id}}',$order->order_id,$message);
-            $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-            $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-            $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-            $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+            $template = EmailTemplate::where('id', 6)->first();
+            $subject = $template->subject;
+            $message = $template->description;
+            $message = str_replace('{{user_name}}', $user->name, $message);
+            $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+            $message = str_replace('{{payment_method}}', 'Paymongo', $message);
+            $message = str_replace('{{payment_status}}', 'Success', $message);
+            $message = str_replace('{{order_status}}', 'Pending', $message);
+            $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+            $message = str_replace('{{order_detail}}', $order_details, $message);
+            $message = str_replace('{{order_id}}', $order->order_id, $message);
+            $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+            $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+            $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+            $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
             // $message = str_replace('{{shop}}',$shop_name,$message);
-            $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+            $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+            Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+
+            /* Custom logic for sending emails to vendors */
+            preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+            $productNames = $matches[1];
+            $vendorIdsArray = [];
+
+            // Use a set to keep track of unique vendor IDs
+            $uniqueVendorIds = [];
+
+            foreach ($productNames as $productName) {
+                $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+                if (!empty($vendorIds)) {
+                    $vendorIdsArray[] = $vendorIds;
+                }
+            }
+
+            foreach ($vendorIdsArray as $vendorIds) {
+                foreach ($vendorIds as $vendor_id) {
+                    // Check if the vendor ID is unique before processing
+                    if (!in_array($vendor_id, $uniqueVendorIds)) {
+                        $uniqueVendorIds[] = $vendor_id;
+
+                        $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                        $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                        // Check if the user exists
+                        if ($user) {
+                            $details = [
+                                'name' => $user->name,
+                                'email' => $user->email
+                            ];
+
+                            Mail::to($user->email)->send(new OrderShipped($details));
+                        }
+                    }
+                }
+            }
 
             Session::forget('hipping_method');
             Session::forget('coupon_price');
@@ -2173,17 +2518,18 @@ class PaymentController extends Controller
             Cart::destroy();
 
             $notification = trans('user_validation.Payment Successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('user.order')->with($notification);
-        }else{
+        } else {
             $notification = trans('user_validation.Payment Faild');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
 
     }
 
-    public function payWithPaymongoGrabPay(){
+    public function payWithPaymongoGrabPay()
+    {
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -2199,7 +2545,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -2212,24 +2558,24 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $paymongoPayment = PaymongoPayment::first();
@@ -2239,31 +2585,32 @@ class PaymentController extends Controller
         $faild_url = route('user.checkout.paymongo-payment-cancled');
         $currency_code = $paymongoPayment->currency_code;
 
-        if($price < 100){
+        if ($price < 100) {
             $notification = trans('user_validation.Amount cannot be less than 100₱');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->route('user.checkout.payment')->with($notification);
         }
 
         $price = $price * 100;
 
         require_once('vendor/autoload.php');
-        $code = base64_encode($paymongoPayment->public_key.':'.$paymongoPayment->secret_key);
+        $code = base64_encode($paymongoPayment->public_key . ':' . $paymongoPayment->secret_key);
         $client = new \GuzzleHttp\Client();
         $response = $client->request('POST', 'https://api.paymongo.com/v1/sources', [
-        'body' => '{"data":{"attributes":{"amount":'.$price.',"redirect":{"success":"'.$success_url.'","failed":"'.$faild_url.'"},"type":"grab_pay","currency":"'.$currency_code.'"}}}',
-        'headers' => [
-            'Accept' => 'application/json',
-            'Authorization' => 'Basic '.$code.'',
-            'Content-Type' => 'application/json',
-        ],
+            'body' => '{"data":{"attributes":{"amount":' . $price . ',"redirect":{"success":"' . $success_url . '","failed":"' . $faild_url . '"},"type":"grab_pay","currency":"' . $currency_code . '"}}}',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Basic ' . $code . '',
+                'Content-Type' => 'application/json',
+            ],
         ]);
         $response = json_decode($response->getBody(), true);
-        session()->put('payment_id',$response['data']['id']);
+        session()->put('payment_id', $response['data']['id']);
         return redirect()->to($response['data']['attributes']['redirect']['checkout_url']);
     }
 
-    public function payWithPaymongoGcash(){
+    public function payWithPaymongoGcash()
+    {
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -2279,7 +2626,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -2292,24 +2639,24 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $paymongoPayment = PaymongoPayment::first();
@@ -2319,31 +2666,32 @@ class PaymentController extends Controller
         $faild_url = route('user.checkout.paymongo-payment-cancled');
         $currency_code = $paymongoPayment->currency_code;
 
-        if($price < 100){
+        if ($price < 100) {
             $notification = trans('user_validation.Amount cannot be less than 100₱');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->route('user.checkout.payment')->with($notification);
         }
 
         $price = $price * 100;
 
         require_once('vendor/autoload.php');
-        $code = base64_encode($paymongoPayment->public_key.':'.$paymongoPayment->secret_key);
+        $code = base64_encode($paymongoPayment->public_key . ':' . $paymongoPayment->secret_key);
         $client = new \GuzzleHttp\Client();
         $response = $client->request('POST', 'https://api.paymongo.com/v1/sources', [
-        'body' => '{"data":{"attributes":{"amount":'.$price.',"redirect":{"success":"'.$success_url.'","failed":"'.$faild_url.'"},"type":"gcash","currency":"'.$currency_code.'"}}}',
-        'headers' => [
-            'Accept' => 'application/json',
-            'Authorization' => 'Basic '.$code.'',
-            'Content-Type' => 'application/json',
-        ],
+            'body' => '{"data":{"attributes":{"amount":' . $price . ',"redirect":{"success":"' . $success_url . '","failed":"' . $faild_url . '"},"type":"gcash","currency":"' . $currency_code . '"}}}',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Basic ' . $code . '',
+                'Content-Type' => 'application/json',
+            ],
         ]);
         $response = json_decode($response->getBody(), true);
-        session()->put('payment_id',$response['data']['id']);
+        session()->put('payment_id', $response['data']['id']);
         return redirect()->to($response['data']['attributes']['redirect']['checkout_url']);
     }
 
-    public function paymongoPaymentSuccess(Request $request){
+    public function paymongoPaymentSuccess(Request $request)
+    {
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -2357,7 +2705,7 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
+        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
         $shipping_fee = $shippingMethod->fee;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
@@ -2370,43 +2718,43 @@ class PaymentController extends Controller
             foreach ($cartContent->options->variants as $indx => $variant) {
                 $variantPrice += $cartContent->options->prices[$indx];
             }
-            $productPrice = $cartContent->price ;
-            $total = $productPrice * $cartContent->qty ;
+            $productPrice = $cartContent->price;
+            $total = $productPrice * $cartContent->qty;
             $subTotal += $total;
         }
 
         $total_price = $tax_amount + $subTotal;
-        if(Session::get('coupon_price') && Session::get('offer_type')) {
-            if(Session::get('offer_type') == 1) {
+        if (Session::get('coupon_price') && Session::get('offer_type')) {
+            if (Session::get('offer_type') == 1) {
                 $coupon_price = Session::get('coupon_price');
                 $coupon_price = ($coupon_price / 100) * $total_price;
-            }else {
+            } else {
                 $coupon_price = Session::get('coupon_price');
             }
         }
 
-        $total_price = $total_price - $coupon_price ;
+        $total_price = $total_price - $coupon_price;
         $total_price += $shipping_fee;
-        $total_price = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), '', $total_price);
+        $total_price = str_replace(array('\'', '"', ',', ';', '<', '>'), '', $total_price);
         $setting = Setting::first();
 
         $additional_information = '';
-        if(Session::get('addition_information')){
+        if (Session::get('addition_information')) {
             $additional_information = Session::get('addition_information');
         }
         $agree_terms_condition = 'no';
-        if(Session::get('agree_terms_condition')){
+        if (Session::get('agree_terms_condition')) {
             $agree_terms_condition = Session::get('agree_terms_condition');
         }
 
         $amount_real_currency = $total_price;
-        $amount_usd = round($total_price / $setting->currency_rate,2);
+        $amount_usd = round($total_price / $setting->currency_rate, 2);
         $currency_rate = $setting->currency_rate;
         $currency_icon = $setting->currency_icon;
         $currency_name = $setting->currency_name;
 
         $order = new Order();
-        $orderId = substr(rand(0,time()),0,10);
+        $orderId = substr(rand(0, time()), 0, 10);
         $order->order_id = $orderId;
         $order->user_id = $user->id;
         $order->sub_total = $subTotal;
@@ -2429,10 +2777,10 @@ class PaymentController extends Controller
         $order->agree_terms_condition = $agree_terms_condition;
         $order->save();
 
-        if(Session::get('coupon_name')){
+        if (Session::get('coupon_name')) {
             $coupon = Coupon::where(['code' => Session::get('coupon_name')])->first();
             $qty = $coupon->apply_qty;
-            $qty = $qty +1;
+            $qty = $qty + 1;
             $coupon->apply_qty = $qty;
             $coupon->save();
         }
@@ -2463,8 +2811,8 @@ class PaymentController extends Controller
             $productStock->qty = $qty;
             $productStock->save();
 
-            if(count($cartContent->options->variants) > 0) {
-                foreach($cartContent->options->variants as $index => $variant) {
+            if (count($cartContent->options->variants) > 0) {
+                foreach ($cartContent->options->variants as $index => $variant) {
                     $productVariant = new OrderProductVariant();
                     $productVariant->order_product_id = $orderProduct->id;
                     $productVariant->product_id = $cartContent->id;
@@ -2475,9 +2823,9 @@ class PaymentController extends Controller
                 }
             }
 
-            $order_details.='Product: '.$cartContent->name. '<br>';
-            $order_details.='Quantity: '. $cartContent->qty .'<br>';
-            $order_details.='Price: '.$setting->currency_icon . $cartContent->qty * $productUnitPrice .'<br>';
+            $order_details .= 'Product: ' . $cartContent->name . '<br>';
+            $order_details .= 'Quantity: ' . $cartContent->qty . '<br>';
+            $order_details .= 'Price: ' . $setting->currency_icon . $cartContent->qty * $productUnitPrice . '<br>';
         }
 
         $orderAddress = new OrderAddress();
@@ -2502,25 +2850,61 @@ class PaymentController extends Controller
 
         MailHelper::setMailConfig();
 
-        $template=EmailTemplate::where('id',6)->first();
-        $subject=$template->subject;
-        $message=$template->description;
-        $message = str_replace('{{user_name}}',$user->name,$message);
-        $message = str_replace('{{total_amount}}',$setting->currency_icon.$total_price,$message);
-        $message = str_replace('{{payment_method}}','Paymongo',$message);
-        $message = str_replace('{{payment_status}}','Success',$message);
-        $message = str_replace('{{order_status}}','Pending',$message);
-        $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
-        $message = str_replace('{{order_detail}}',$order_details,$message);
-        $message = str_replace('{{order_id}}',$order->order_id,$message);
-        $message = str_replace('{{name}}',$orderAddress->billing_name,$message);
-        $message = str_replace('{{address}}',$orderAddress->billing_address,$message);
-        $message = str_replace('{{phone}}',$orderAddress->billing_phone,$message);
-        $message = str_replace('{{email}}',$orderAddress->billing_email,$message);
+        $template = EmailTemplate::where('id', 6)->first();
+        $subject = $template->subject;
+        $message = $template->description;
+        $message = str_replace('{{user_name}}', $user->name, $message);
+        $message = str_replace('{{total_amount}}', $setting->currency_icon . $total_price, $message);
+        $message = str_replace('{{payment_method}}', 'Paymongo', $message);
+        $message = str_replace('{{payment_status}}', 'Success', $message);
+        $message = str_replace('{{order_status}}', 'Pending', $message);
+        $message = str_replace('{{order_date}}', $order->created_at->format('d F, Y'), $message);
+        $message = str_replace('{{order_detail}}', $order_details, $message);
+        $message = str_replace('{{order_id}}', $order->order_id, $message);
+        $message = str_replace('{{name}}', $orderAddress->billing_name, $message);
+        $message = str_replace('{{address}}', $orderAddress->billing_address, $message);
+        $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
+        $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
-        $message = str_replace('{{shipping}}',$shippingMethod->title,$message);
-        Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+        $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+        Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
 
+        /* Custom logic for sending emails to vendors */
+        preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
+        $productNames = $matches[1];
+        $vendorIdsArray = [];
+
+        // Use a set to keep track of unique vendor IDs
+        $uniqueVendorIds = [];
+
+        foreach ($productNames as $productName) {
+            $vendorIds = DB::table('products')->where('short_name', 'LIKE', '%' . $productName . '%')->pluck('vendor_id')->toArray();
+            if (!empty($vendorIds)) {
+                $vendorIdsArray[] = $vendorIds;
+            }
+        }
+
+        foreach ($vendorIdsArray as $vendorIds) {
+            foreach ($vendorIds as $vendor_id) {
+                // Check if the vendor ID is unique before processing
+                if (!in_array($vendor_id, $uniqueVendorIds)) {
+                    $uniqueVendorIds[] = $vendor_id;
+
+                    $user_id = DB::table('vendors')->where('id', '=', $vendor_id)->value('user_id');
+                    $user = DB::table('users')->where('id', '=', $user_id)->first();
+
+                    // Check if the user exists
+                    if ($user) {
+                        $details = [
+                            'name' => $user->name,
+                            'email' => $user->email
+                        ];
+
+                        Mail::to($user->email)->send(new OrderShipped($details));
+                    }
+                }
+            }
+        }
         Session::forget('hipping_method');
         Session::forget('coupon_price');
         Session::forget('coupon_name');
@@ -2530,20 +2914,17 @@ class PaymentController extends Controller
         Cart::destroy();
 
         $notification = trans('user_validation.Payment Successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.order')->with($notification);
     }
 
 
-    public function paymongoPaymentCancled(Request $request){
+    public function paymongoPaymentCancled(Request $request)
+    {
         $notification = trans('user_validation.Payment Faild');
-        $notification = array('messege'=>$notification,'alert-type'=>'error');
+        $notification = array('messege' => $notification, 'alert-type' => 'error');
         return redirect()->route('user.checkout.payment')->with($notification);
     }
-
-
-
-
 
 
 }
