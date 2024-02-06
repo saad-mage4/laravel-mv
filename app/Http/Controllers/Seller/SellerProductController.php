@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Seller;
+
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -27,8 +29,8 @@ use Image;
 use File;
 use Str;
 use Auth;
-
-
+use App\Mail\NewOfferPrice;
+use Illuminate\Support\Facades\Mail;
 
 
 class SellerProductController extends Controller
@@ -41,58 +43,61 @@ class SellerProductController extends Controller
     public function index()
     {
         $seller = Auth::guard('web')->user()->seller;
-        $products = Product::with('category')->orderBy('id','desc')->where('status',1)->where('vendor_id',$seller->id)->get();
+        $products = Product::with('category')->orderBy('id', 'desc')->where('status', 1)->where('vendor_id', $seller->id)->get();
         $orderProducts = OrderProduct::all();
         $setting = Setting::first();
-        return view('seller.product',compact('products','orderProducts','setting'));
+        return view('seller.product', compact('products', 'orderProducts', 'setting'));
     }
 
-    public function pendingProduct(){
+    public function pendingProduct()
+    {
         $seller = Auth::guard('web')->user()->seller;
-        $products = Product::with('category')->orderBy('id','desc')->where('status',0)->where('vendor_id',$seller->id)->get();
+        $products = Product::with('category')->orderBy('id', 'desc')->where('status', 0)->where('vendor_id', $seller->id)->get();
         $orderProducts = OrderProduct::all();
         $setting = Setting::first();
-        return view('seller.product',compact('products','orderProducts','setting'));
+        return view('seller.product', compact('products', 'orderProducts', 'setting'));
     }
 
     public function create()
     {
         $categories = Category::all();
         $brands = Brand::all();
-        $productTaxs = ProductTax::where('status',1)->get();
-        $retrunPolicies = ReturnPolicy::where('status',1)->get();
+        $productTaxs = ProductTax::where('status', 1)->get();
+        $retrunPolicies = ReturnPolicy::where('status', 1)->get();
         $specificationKeys = ProductSpecificationKey::all();
-        return view('seller.create_product',compact('categories','brands','productTaxs','retrunPolicies','specificationKeys'));
+        return view('seller.create_product', compact('categories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys'));
     }
 
 
-    public function getSubcategoryByCategory($id){
-        $subCategories=SubCategory::where('category_id',$id)->get();
-        $response='<option value="">'.trans('user_validation.Select Sub Category').'</option>';
-        foreach($subCategories as $subCategory){
-            $response .= "<option value=".$subCategory->id.">".$subCategory->name."</option>";
+    public function getSubcategoryByCategory($id)
+    {
+        $subCategories = SubCategory::where('category_id', $id)->get();
+        $response = '<option value="">' . trans('user_validation.Select Sub Category') . '</option>';
+        foreach ($subCategories as $subCategory) {
+            $response .= "<option value=" . $subCategory->id . ">" . $subCategory->name . "</option>";
         }
-        return response()->json(['subCategories'=>$response]);
+        return response()->json(['subCategories' => $response]);
     }
 
-    public function getChildcategoryBySubCategory($id){
-        $childCategories=ChildCategory::where('sub_category_id',$id)->get();
-        $response='<option value="">'.trans('user_validation.Select Child Category').'</option>';
-        foreach($childCategories as $childCategory){
-            $response .= "<option value=".$childCategory->id.">".$childCategory->name."</option>";
+    public function getChildcategoryBySubCategory($id)
+    {
+        $childCategories = ChildCategory::where('sub_category_id', $id)->get();
+        $response = '<option value="">' . trans('user_validation.Select Child Category') . '</option>';
+        foreach ($childCategories as $childCategory) {
+            $response .= "<option value=" . $childCategory->id . ">" . $childCategory->name . "</option>";
         }
-        return response()->json(['childCategories'=>$response]);
+        return response()->json(['childCategories' => $response]);
     }
 
     public function store(Request $request)
     {
 
-        if($request->video_link) {
+        if ($request->video_link) {
             $valid = preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $request->video_link);
 
             if (!$valid) {
                 $notification = trans('admin_validation.Please provide your valid youtube url');
-                $notification = array('messege'=>$notification,'alert-type'=>'error');
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect()->back()->with($notification);
             }
         }
@@ -112,7 +117,7 @@ class SellerProductController extends Controller
             'tax' => 'required',
             'is_return' => 'required',
             'is_warranty' => 'required',
-            'return_policy_id' => $request->is_return == 1 ?  'required' : '',
+            'return_policy_id' => $request->is_return == 1 ? 'required' : '',
         ];
         $customMessages = [
             'short_name.required' => trans('user_validation.Short name is required'),
@@ -135,26 +140,26 @@ class SellerProductController extends Controller
             'return_policy_id.required' => trans('user_validation.Return policy is required'),
             'status.required' => trans('user_validation.Status is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
 
         $seller = Auth::guard('web')->user()->seller;
         $product = new Product();
-        if($request->thumb_image){
+        if ($request->thumb_image) {
             $extention = $request->thumb_image->getClientOriginalExtension();
-            $image_name = Str::slug($request->name).date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_name = 'uploads/custom-images/'.$image_name;
+            $image_name = Str::slug($request->name) . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+            $image_name = 'uploads/custom-images/' . $image_name;
             Image::make($request->thumb_image)
-                ->save(public_path().'/'.$image_name);
-            $product->thumb_image=$image_name;
+                ->save(public_path() . '/' . $image_name);
+            $product->thumb_image = $image_name;
         }
 
-        if($request->banner_image){
+        if ($request->banner_image) {
             $extention = $request->banner_image->getClientOriginalExtension();
-            $banner_name = 'product-banner'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $banner_name = 'uploads/custom-images/'.$banner_name;
+            $banner_name = 'product-banner' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+            $banner_name = 'uploads/custom-images/' . $banner_name;
             Image::make($request->banner_image)
-                ->save(public_path().'/'.$banner_name);
+                ->save(public_path() . '/' . $banner_name);
             $product->banner_image = $banner_name;
         }
 
@@ -184,14 +189,14 @@ class SellerProductController extends Controller
         $product->seo_description = $request->seo_description ? $request->seo_description : $request->name;
         $product->save();
 
-        if($request->is_specification){
-            $exist_specifications=[];
-            if($request->keys){
-                foreach($request->keys as $index => $key){
-                    if($key){
-                        if($request->specifications[$index]){
-                            if(!in_array($key, $exist_specifications)){
-                                $productSpecification= new ProductSpecification();
+        if ($request->is_specification) {
+            $exist_specifications = [];
+            if ($request->keys) {
+                foreach ($request->keys as $index => $key) {
+                    if ($key) {
+                        if ($request->specifications[$index]) {
+                            if (!in_array($key, $exist_specifications)) {
+                                $productSpecification = new ProductSpecification();
                                 $productSpecification->product_id = $product->id;
                                 $productSpecification->product_specification_key_id = $key;
                                 $productSpecification->specification = $request->specifications[$index];
@@ -205,7 +210,7 @@ class SellerProductController extends Controller
         }
 
         $notification = trans('user_validation.Created Successfully');
-        $notification=array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('seller.product.index')->with($notification);
     }
 
@@ -217,38 +222,40 @@ class SellerProductController extends Controller
     public function edit($id)
     {
         $product = Product::find($id);
-        if($product->vendor_id == 0){
+        if ($product->vendor_id == 0) {
             $notification = 'Something went wrong';
-            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->route('seller.product.index')->with($notification);
         }
         $categories = Category::all();
         $subCategories = SubCategory::all();
         $childCategories = ChildCategory::all();
         $brands = Brand::all();
-        $productTaxs = ProductTax::where('status',1)->get();
-        $retrunPolicies = ReturnPolicy::where('status',1)->get();
+        $productTaxs = ProductTax::where('status', 1)->get();
+        $retrunPolicies = ReturnPolicy::where('status', 1)->get();
         $specificationKeys = ProductSpecificationKey::all();
-        $productSpecifications = ProductSpecification::where('product_id',$product->id)->get();
+        $productSpecifications = ProductSpecification::where('product_id', $product->id)->get();
         $tagArray = json_decode($product->tags);
         $tags = '';
-        if($product->tags){
-            foreach($tagArray as $index => $tag){
-                $tags .= $tag->value.',';
+//        dd($product);
+
+        if ($product->tags) {
+            foreach ($tagArray as $index => $tag) {
+                $tags .= $tag->value . ',';
             }
         }
 
-        return view('seller.edit_product',compact('categories','brands','productTaxs','retrunPolicies','specificationKeys','product','subCategories','childCategories','tags','productSpecifications'));
+        return view('seller.edit_product', compact('categories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys', 'product', 'subCategories', 'childCategories', 'tags', 'productSpecifications'));
     }
 
     public function update(Request $request, $id)
     {
-        if($request->video_link) {
+        if ($request->video_link) {
             $valid = preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $request->video_link);
 
             if (!$valid) {
                 $notification = trans('admin_validation.Please provide your valid youtube url');
-                $notification = array('messege'=>$notification,'alert-type'=>'error');
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect()->back()->with($notification);
             }
         }
@@ -258,7 +265,7 @@ class SellerProductController extends Controller
         $rules = [
             'short_name' => 'required',
             'name' => 'required',
-            'slug' => 'required|unique:products,slug,'.$product->id,
+            'slug' => 'required|unique:products,slug,' . $product->id,
             'category' => 'required',
             'short_description' => 'required',
             'long_description' => 'required',
@@ -268,7 +275,7 @@ class SellerProductController extends Controller
             'tax' => 'required',
             'is_return' => 'required',
             'is_warranty' => 'required',
-            'return_policy_id' => $request->is_return == 1 ?  'required' : '',
+            'return_policy_id' => $request->is_return == 1 ? 'required' : '',
         ];
         $customMessages = [
             'short_name.required' => trans('user_validation.Short name is required'),
@@ -291,33 +298,33 @@ class SellerProductController extends Controller
             'return_policy_id.required' => trans('user_validation.Return policy is required'),
             'status.required' => trans('user_validation.Status is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
-        if($request->thumb_image){
+        if ($request->thumb_image) {
             $old_thumbnail = $product->thumb_image;
             $extention = $request->thumb_image->getClientOriginalExtension();
-            $image_name = Str::slug($request->name).date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_name = 'uploads/custom-images/'.$image_name;
+            $image_name = Str::slug($request->name) . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+            $image_name = 'uploads/custom-images/' . $image_name;
             Image::make($request->thumb_image)
-                ->save(public_path().'/'.$image_name);
-            $product->thumb_image=$image_name;
+                ->save(public_path() . '/' . $image_name);
+            $product->thumb_image = $image_name;
             $product->save();
-            if($old_thumbnail){
-                if(File::exists(public_path().'/'.$old_thumbnail))unlink(public_path().'/'.$old_thumbnail);
+            if ($old_thumbnail) {
+                if (File::exists(public_path() . '/' . $old_thumbnail)) unlink(public_path() . '/' . $old_thumbnail);
             }
         }
 
-        if($request->banner_image){
+        if ($request->banner_image) {
             $old_banner = $product->banner_image;
             $extention = $request->banner_image->getClientOriginalExtension();
-            $banner_name = 'product-banner'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $banner_name = 'uploads/custom-images/'.$banner_name;
+            $banner_name = 'product-banner' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+            $banner_name = 'uploads/custom-images/' . $banner_name;
             Image::make($request->banner_image)
-                ->save(public_path().'/'.$banner_name);
+                ->save(public_path() . '/' . $banner_name);
             $product->banner_image = $banner_name;
             $product->save();
-            if($old_banner){
-                if(File::exists(public_path().'/'.$old_banner))unlink(public_path().'/'.$old_banner);
+            if ($old_banner) {
+                if (File::exists(public_path() . '/' . $old_banner)) unlink(public_path() . '/' . $old_banner);
             }
         }
 
@@ -343,19 +350,56 @@ class SellerProductController extends Controller
         $product->is_specification = $request->is_specification ? 1 : 0;
         $product->seo_title = $request->seo_title ? $request->seo_title : $request->name;
         $product->seo_description = $request->seo_description ? $request->seo_description : $request->name;
+
+        // Check if the offer_price has changed
+        $oldOfferPrice = $product->getOriginal('offer_price'); // Get the original offer_price from the database
+        $newOfferPrice = $request->offer_price;
+
+        if ($oldOfferPrice != $newOfferPrice) {
+            // Offer price has changed, notify users in the wishlist
+            $wishlistUsers = Wishlist::where('product_id', $product->id)
+                ->where('created_at', '>=', now()->subDays(7)) // Filter wishlists created in the past 7 days
+                ->pluck('user_id')
+                ->toArray();
+
+            foreach ($wishlistUsers as $userId) {
+                $user = User::find($userId);
+                info('start');
+                if ($user && $user->email) {
+                    $email = $user->email;
+
+                    $details = array(
+                        'product_name' => $product->name,
+                        'new_price' => $newOfferPrice,
+                        'old_price' => $oldOfferPrice,
+                    );
+                    info('data set');
+                    // Send email notification to the user (You may customize this part)
+                    $subject = 'Offer Price Update Notification';
+                    $message = 'The offer price for the product ' . $product->name . ' has been updated to ' . $newOfferPrice;
+
+                    $details = ['product_name' => $product->name, 'new_price' => $newOfferPrice, 'old_price' => $oldOfferPrice];
+                    Mail::to($email)->send(new NewOfferPrice($details));
+                    info('done');
+
+                    // Use your own logic to send the email (e.g., Laravel's Mail::to())
+                }
+            }
+        }
         $product->save();
 
-        $exist_specifications=[];
-        if($request->keys){
-            foreach($request->keys as $index => $key){
-                if($key){
-                    if($request->specifications[$index]){
-                        if(!in_array($key, $exist_specifications)){
-                            $existSroductSpecification = ProductSpecification::where(['product_id' => $product->id,'product_specification_key_id' => $key])->first();
-                            if($existSroductSpecification){
+
+        $exist_specifications = [];
+        if ($request->keys) {
+            foreach ($request->keys as $index => $key) {
+                if ($key) {
+                    if ($request->specifications[$index]) {
+                        if (!in_array($key, $exist_specifications)) {
+                            $existSroductSpecification = ProductSpecification::where(['product_id' => $product->id, 'product_specification_key_id' => $key])->first();
+                            if ($existSroductSpecification) {
                                 $existSroductSpecification->specification = $request->specifications[$index];
                                 $existSroductSpecification->save();
-                            }else{
+                            } else {
                                 $productSpecification = new ProductSpecification();
                                 $productSpecification->product_id = $product->id;
                                 $productSpecification->product_specification_key_id = $key;
@@ -370,7 +414,7 @@ class SellerProductController extends Controller
         }
 
         $notification = trans('user_validation.Update Successfully');
-        $notification=array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('seller.product.index')->with($notification);
     }
 
@@ -380,36 +424,37 @@ class SellerProductController extends Controller
         $gallery = $product->gallery;
         $old_thumbnail = $product->thumb_image;
         $product->delete();
-        if($old_thumbnail){
-            if(File::exists(public_path().'/'.$old_thumbnail))unlink(public_path().'/'.$old_thumbnail);
+        if ($old_thumbnail) {
+            if (File::exists(public_path() . '/' . $old_thumbnail)) unlink(public_path() . '/' . $old_thumbnail);
         }
-        foreach($gallery as $image){
+        foreach ($gallery as $image) {
             $old_image = $image->image;
             $image->delete();
-            if($old_image){
-                if(File::exists(public_path().'/'.$old_image))unlink(public_path().'/'.$old_image);
+            if ($old_image) {
+                if (File::exists(public_path() . '/' . $old_image)) unlink(public_path() . '/' . $old_image);
             }
         }
-        ProductVariant::where('product_id',$id)->delete();
-        ProductVariantItem::where('product_id',$id)->delete();
-        CampaignProduct::where('product_id',$id)->delete();
-        ProductReport::where('product_id',$id)->delete();
-        ProductReview::where('product_id',$id)->delete();
-        ProductSpecification::where('product_id',$id)->delete();
-        Wishlist::where('product_id',$id)->delete();
+        ProductVariant::where('product_id', $id)->delete();
+        ProductVariantItem::where('product_id', $id)->delete();
+        CampaignProduct::where('product_id', $id)->delete();
+        ProductReport::where('product_id', $id)->delete();
+        ProductReview::where('product_id', $id)->delete();
+        ProductSpecification::where('product_id', $id)->delete();
+        Wishlist::where('product_id', $id)->delete();
 
         $notification = trans('user_validation.Delete Successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
-    public function changeStatus($id){
+    public function changeStatus($id)
+    {
         $product = Product::find($id);
-        if($product->status == 1){
+        if ($product->status == 1) {
             $product->status = 0;
             $product->save();
             $message = trans('user_validation.Inactive Successfully');
-        }else{
+        } else {
             $product->status = 1;
             $product->save();
             $message = trans('user_validation.Active Successfully');
@@ -417,7 +462,8 @@ class SellerProductController extends Controller
         return response()->json($message);
     }
 
-    public function removedProductExistSpecification($id){
+    public function removedProductExistSpecification($id)
+    {
         $productSpecification = ProductSpecification::find($id);
         $productSpecification->delete();
         $message = trans('user_validation.Removed Successfully');
@@ -425,15 +471,17 @@ class SellerProductController extends Controller
     }
 
 
-    public function productHighlight($id){
+    public function productHighlight($id)
+    {
         $product = Product::find($id);
         return view('seller.product_highlight', compact('product'));
     }
 
-    public function productHighlightUpdate(Request $request,$id){
+    public function productHighlightUpdate(Request $request, $id)
+    {
 
         $product = Product::find($id);
-        if($request->product_type == 1){
+        if ($request->product_type == 1) {
             $product->is_undefine = 1;
             $product->new_product = 0;
             $product->is_featured = 0;
@@ -441,7 +489,7 @@ class SellerProductController extends Controller
             $product->is_top = 0;
             $product->is_flash_deal = 0;
             $product->save();
-        }else if($request->product_type == 2){
+        } else if ($request->product_type == 2) {
             $product->is_undefine = 0;
             $product->new_product = 1;
             $product->is_featured = 0;
@@ -449,7 +497,7 @@ class SellerProductController extends Controller
             $product->is_top = 0;
             $product->is_flash_deal = 0;
             $product->save();
-        }else if($request->product_type == 3){
+        } else if ($request->product_type == 3) {
             $product->is_undefine = 0;
             $product->new_product = 0;
             $product->is_featured = 1;
@@ -457,7 +505,7 @@ class SellerProductController extends Controller
             $product->is_top = 0;
             $product->is_flash_deal = 0;
             $product->save();
-        }else if($request->product_type == 4){
+        } else if ($request->product_type == 4) {
             $product->is_undefine = 0;
             $product->new_product = 0;
             $product->is_featured = 0;
@@ -465,7 +513,7 @@ class SellerProductController extends Controller
             $product->is_top = 1;
             $product->is_flash_deal = 0;
             $product->save();
-        }else if($request->product_type == 5){
+        } else if ($request->product_type == 5) {
             $product->is_undefine = 0;
             $product->new_product = 0;
             $product->is_featured = 0;
@@ -473,7 +521,7 @@ class SellerProductController extends Controller
             $product->is_top = 0;
             $product->is_flash_deal = 0;
             $product->save();
-        }else if($request->product_type == 6){
+        } else if ($request->product_type == 6) {
             $rules = [
                 'date' => 'required'
             ];
@@ -493,7 +541,7 @@ class SellerProductController extends Controller
         }
 
         $notification = trans('user_validation.Update Successfully');
-        $notification=array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('seller.product.index')->with($notification);
     }
 
