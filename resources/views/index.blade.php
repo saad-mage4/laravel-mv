@@ -82,7 +82,7 @@
         <div class="container">
             <div class="row">
             <div class="col-12">
-                <ul class="wsus__menu_item">
+                <ul class="wsus__menu_item left-menu">
                     @if ($menus->where('id',1)->first()->status == 1)
                     <li><a  href="{{ route('home') }}">{{__('user.Home')}}</a></li>
                     @endif
@@ -168,15 +168,25 @@
                         </ul>
                     </li>
                     @endif
+
+                    @if ($menus->where('id',15)->first()->status == 1)
+                    <li><a href="{{ route('track-order') }}">{{__('user.Track Order')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',16)->first()->status == 1)
+                    <li><a href="{{ route('flash-deal') }}">{{__('user.Flash Deal')}}</a></li>
+                    @endif
+
+
+
                 </ul>
-                    <ul class="wsus__menu_item wsus__menu_item_right ms-auto">
+                    <!-- <ul class="wsus__menu_item wsus__menu_item_right ms-auto">
                         @if ($menus->where('id',15)->first()->status == 1)
                         <li><a href="{{ route('track-order') }}">{{__('user.Track Order')}}</a></li>
                         @endif
                         @if ($menus->where('id',16)->first()->status == 1)
                         <li><a href="{{ route('flash-deal') }}">{{__('user.Flash Deal')}}</a></li>
                         @endif
-                    </ul>
+                    </ul> -->
                 </div>
             </div>
         </div>

@@ -171,6 +171,14 @@ p {
 	TOPBAR START
 ========================*/
 
+
+.slider_menu_section{
+    display: none;
+}
+
+
+
+
 #wsus__topbar {
     width: 100%;
     height: 45px;
@@ -10043,3 +10051,71 @@ textarea::placeholder {
 }
 
 /* extra css end here */
+
+
+
+
+@media only screen and (max-width: 768px) {
+
+    /* hide static pages from mobile menu  */
+    #wsus__mobile_menu #pills-tab li:nth-child(2) {
+        display: none;
+    }
+    #wsus__mobile_menu #pills-tab li {
+        width: 100%;
+    }
+
+    #wsus__mobile_menu #pills-tab li button {
+        text-align: left;
+    }
+
+
+
+    .slider_menu_section{
+        display: block !important;
+    }
+    .slider_menu_section ul{
+        margin-top: 20px;
+        display: flex;
+        overflow-x: scroll;
+        scrollbar-width: none;
+    }
+
+    .slider_menu_section ul::-webkit-scrollbar {
+        display: none;
+    }
+
+    .slider_menu_section ul.left-menu li{
+        line-height: normal;
+        color: #000;
+        float: unset;
+    }
+    .slider_menu_section ul.left-menu li:nth-child(2){
+        display: none;
+    }
+    .slider_menu_section ul.left-menu li a{
+        line-height: unset;
+        background-color: #FD5201;
+        padding: 5px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        color: #fff;
+        white-space: nowrap;
+    }
+
+    .slider_menu_section ul.left-menu li:hover a{
+        color: #fff !important;
+    }
+
+
+
+
+    #wsus__brand_sleder{
+        margin-top: 40px;
+    }
+
+
+
+    
+
+}
