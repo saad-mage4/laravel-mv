@@ -1,3 +1,10 @@
+@php
+    $setting = App\Models\Setting::first();
+    $megaMenuCategories = App\Models\MegaMenuCategory::orderBy('serial','asc')->where('status',1)->get();
+    $megaMenuBanner = App\Models\BannerImage::find(1);
+    $menus = App\Models\MenuVisibility::select('status','id')->get();
+    $customPages = App\Models\CustomPage::where('status',1)->get();
+@endphp
 @extends('layout')
 @section('title')
     <title>{{ $seoSetting->seo_title }}</title>
@@ -70,6 +77,110 @@
     <!--============================
         BANNER PART END
     ==============================-->
+
+    <section class="slider_menu_section">
+        <div class="container">
+            <div class="row">
+            <div class="col-12">
+                <ul class="wsus__menu_item">
+                    @if ($menus->where('id',1)->first()->status == 1)
+                    <li><a  href="{{ route('home') }}">{{__('user.Home')}}</a></li>
+                    @endif
+
+                    @if ($menus->where('id',2)->first()->status == 1)
+                    <li><a href="{{ route('product') }}">{{__('user.Shop')}}
+                        @if ($menus->where('id',3)->first()->status == 1)
+                            <i class="fas fa-caret-down"></i>
+                        @endif
+                        </a>
+                        @if ($menus->where('id',3)->first()->status == 1)
+                        <div class="wsus__mega_menu">
+                            <div class="row">
+                                @foreach ($megaMenuCategories as $megaMenuCategory)
+                                    <div class="col-xl-3 col-lg-4">
+                                        <div class="wsus__mega_menu_colum">
+                                            <h4><a class="text-dark" href="{{ route('product',['category' => $megaMenuCategory->category->slug]) }}">{{ $megaMenuCategory->category->name }}</a></h4>
+                                            <ul class="wsis__mega_menu_item">
+                                                @foreach ($megaMenuCategory->subCategories as $subCategory)
+                                                <li><a href="{{ route('product',['sub_category' => $subCategory->subCategory->slug]) }}">{{ $subCategory->subCategory->name }} </a></li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                @if ($megaMenuBanner->status == 1)
+                                <div class="col-xl-3 d-lg-none d-xl-block">
+                                    <div class="wsus__mega_menu_colum">
+                                        <img src="{{ asset($megaMenuBanner->image) }}" alt="images" class="img-fluid w-100">
+                                        <div class="wsus__mega_menu_colum_text">
+                                            <h5>{{ $megaMenuBanner->title }}</h5>
+                                            <h3>{{ $megaMenuBanner->description }}</h3>
+                                            <a class="common_btn" href="{{ $megaMenuBanner->link }}">{{__('user.Shop Now')}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+                    </li>
+                    @endif
+                    @if ($menus->where('id',4)->first()->status == 1)
+                        @if ($setting->enable_multivendor == 1)
+                            <li><a href="{{ route('sellers') }}">{{__('user.Sellers')}}</a></li>
+                        @endif
+                    @endif
+                    @if ($menus->where('id',5)->first()->status == 1)
+                    <li><a href="{{ route('blog') }}">{{__('user.Blog')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',6)->first()->status == 1)
+                    <li><a href="{{ route('campaign') }}">{{__('user.Campaign')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',7)->first()->status == 1)
+                    <li class="wsus__relative_li"><a href="javascript:;">{{__('user.Pages')}} <i class="fas fa-caret-down"></i></a>
+                        <ul class="wsus__menu_droapdown">
+                            @if ($menus->where('id',8)->first()->status == 1)
+                            <li><a href="{{ route('about-us') }}">{{__('user.About Us')}}</a></li>
+                            @endif
+                            @if ($menus->where('id',9)->first()->status == 1)
+                            <li><a href="{{ route('contact-us') }}">{{__('user.Contact Us')}}</a></li>
+                            @endif
+                            @if ($menus->where('id',10)->first()->status == 1)
+                            <li><a href="{{ route('user.checkout.billing-address') }}">{{__('user.Check Out')}}</a></li>
+                            @endif
+                            @if ($menus->where('id',11)->first()->status == 1)
+                            <li><a href="{{ route('brand') }}">{{__('user.Brand')}}</a></li>
+                            @endif
+                            @if ($menus->where('id',12)->first()->status == 1)
+                            <li><a href="{{ route('faq') }}">{{__('user.FAQ')}}</a></li>
+                            @endif
+                            @if ($menus->where('id',13)->first()->status == 1)
+                            <li><a href="{{ route('privacy-policy') }}">{{__('user.Privacy Policy')}}</a></li>
+                            @endif
+                            @if ($menus->where('id',14)->first()->status == 1)
+                            <li><a href="{{ route('terms-and-conditions') }}">{{__('user.Terms and Conditions')}}</a></li>
+                            @endif
+
+                            @foreach ($customPages as $customPage)
+                                <li><a href="{{ route('page', $customPage->slug) }}">{{ $customPage->page_name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </li>
+                    @endif
+                </ul>
+                    <ul class="wsus__menu_item wsus__menu_item_right ms-auto">
+                        @if ($menus->where('id',15)->first()->status == 1)
+                        <li><a href="{{ route('track-order') }}">{{__('user.Track Order')}}</a></li>
+                        @endif
+                        @if ($menus->where('id',16)->first()->status == 1)
+                        <li><a href="{{ route('flash-deal') }}">{{__('user.Flash Deal')}}</a></li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!--============================
         BRAND SLIDER START
