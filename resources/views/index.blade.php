@@ -138,37 +138,32 @@
                     <li><a href="{{ route('campaign') }}">{{__('user.Campaign')}}</a></li>
                     @endif
                     @if ($menus->where('id',7)->first()->status == 1)
-                    <li class="wsus__relative_li"><a href="javascript:;">{{__('user.Pages')}} <i class="fas fa-caret-down"></i></a>
-                        <ul class="wsus__menu_droapdown">
-                            @if ($menus->where('id',8)->first()->status == 1)
-                            <li><a href="{{ route('about-us') }}">{{__('user.About Us')}}</a></li>
-                            @endif
-                            @if ($menus->where('id',9)->first()->status == 1)
-                            <li><a href="{{ route('contact-us') }}">{{__('user.Contact Us')}}</a></li>
-                            @endif
-                            @if ($menus->where('id',10)->first()->status == 1)
-                            <li><a href="{{ route('user.checkout.billing-address') }}">{{__('user.Check Out')}}</a></li>
-                            @endif
-                            @if ($menus->where('id',11)->first()->status == 1)
-                            <li><a href="{{ route('brand') }}">{{__('user.Brand')}}</a></li>
-                            @endif
-                            @if ($menus->where('id',12)->first()->status == 1)
-                            <li><a href="{{ route('faq') }}">{{__('user.FAQ')}}</a></li>
-                            @endif
-                            @if ($menus->where('id',13)->first()->status == 1)
-                            <li><a href="{{ route('privacy-policy') }}">{{__('user.Privacy Policy')}}</a></li>
-                            @endif
-                            @if ($menus->where('id',14)->first()->status == 1)
-                            <li><a href="{{ route('terms-and-conditions') }}">{{__('user.Terms and Conditions')}}</a></li>
-                            @endif
-
-                            @foreach ($customPages as $customPage)
-                                <li><a href="{{ route('page', $customPage->slug) }}">{{ $customPage->page_name }}</a></li>
-                            @endforeach
-                        </ul>
-                    </li>
+                    <li class="wsus__relative_li"><a href="javascript:;">{{__('user.Pages')}}</a></li>
                     @endif
-
+                    @if ($menus->where('id',8)->first()->status == 1)
+                    <li><a href="{{ route('about-us') }}">{{__('user.About Us')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',9)->first()->status == 1)
+                    <li><a href="{{ route('contact-us') }}">{{__('user.Contact Us')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',10)->first()->status == 1)
+                    <li><a href="{{ route('user.checkout.billing-address') }}">{{__('user.Check Out')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',11)->first()->status == 1)
+                    <li><a href="{{ route('brand') }}">{{__('user.Brand')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',12)->first()->status == 1)
+                    <li><a href="{{ route('faq') }}">{{__('user.FAQ')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',13)->first()->status == 1)
+                    <li><a href="{{ route('privacy-policy') }}">{{__('user.Privacy Policy')}}</a></li>
+                    @endif
+                    @if ($menus->where('id',14)->first()->status == 1)
+                    <li><a href="{{ route('terms-and-conditions') }}">{{__('user.Terms and Conditions')}}</a></li>
+                    @endif
+                    @foreach ($customPages as $customPage)
+                        <li><a href="{{ route('page', $customPage->slug) }}">{{ $customPage->page_name }}</a></li>
+                    @endforeach
                     @if ($menus->where('id',15)->first()->status == 1)
                     <li><a href="{{ route('track-order') }}">{{__('user.Track Order')}}</a></li>
                     @endif
