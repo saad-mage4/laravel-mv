@@ -81,6 +81,8 @@
   'Closed at' => 'Closed at',
   'About You' => 'About You',
   'Submit Request' => 'Submit Request',
+  'Next' => 'Next',
+  'Previous' => 'Previous',
   'Invoice' => 'Invoice',
   'Billing Information' => 'Billing Information',
   'shipping information' => 'shipping information',
