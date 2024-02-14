@@ -158,35 +158,84 @@
                         @endforeach
                       </table>
                     </div>
-                    <div class="row mt-4">
-                      <div class="col-lg-6 order-status">
+                      <div class="row mt-4">
+                          <div class="col-lg-6 order-status">
+                              <div class="section-title">{{__('user.Order Status')}}</div> <!-- Change 'admin' to 'user' -->
+                              <form action="{{ route('seller.update-order-status', ['id' => $order->id]) }}" method="POST">
+                                  @csrf
+                                  @method("PUT")
+                                  <div class="form-group">
+                                      <label for="">{{__('user.Payment')}}</label> <!-- Change 'admin' to 'user' -->
+                                      <select name="payment_status" id="" class="form-control">
+                                          <option {{ $order->payment_status == 0 ? 'selected' : '' }} value="0">{{__('user.Pending')}}</option> <!-- Change 'admin' to 'user' -->
+                                          <option {{ $order->payment_status == 1 ? 'selected' : '' }} value="1">{{__('user.Success')}}</option> <!-- Change 'admin' to 'user' -->
+                                      </select>
+                                  </div>
+
+                                  <div class="form-group">
+                                      <label for="">{{__('user.Order')}}</label> <!-- Change 'admin' to 'user' -->
+                                      <select name="order_status" id="" class="form-control">
+                                          <option {{ $order->order_status == 0 ? 'selected' : '' }} value="0">{{__('user.Pending')}}</option> <!-- Change 'admin' to 'user' -->
+                                          <option {{ $order->order_status == 1 ? 'selected' : '' }} value="1">{{__('user.In Progress')}}</option> <!-- Change 'admin' to 'user' -->
+                                          <option {{ $order->order_status == 2 ? 'selected' : '' }} value="2">{{__('user.Delivered')}}</option> <!-- Change 'admin' to 'user' -->
+                                          <option {{ $order->order_status == 3 ? 'selected' : '' }} value="3">{{__('user.Completed')}}</option> <!-- Change 'admin' to 'user' -->
+                                          <option {{ $order->order_status == 4 ? 'selected' : '' }} value="4">{{__('user.Declined')}}</option> <!-- Change 'admin' to 'user' -->
+                                      </select>
+                                  </div>
+
+                                  <button class="btn btn-primary" type="submit">{{__('user.Update Status')}}</button>
+                              </form>
+                          </div>
+
+                          <div class="col-lg-6 text-right">
+                              <div class="invoice-detail-item">
+                                  <div class="invoice-detail-name">{{__('user.Subtotal')}} : {{ $setting->currency_icon }}{{ $order->sub_total }}</div>
+                              </div>
+                              <div class="invoice-detail-item">
+                                  <div class="invoice-detail-name">{{__('user.Discount')}}(-) : {{ $setting->currency_icon }}{{ $order->coupon_coast }}</div>
+                              </div>
+                              <div class="invoice-detail-item">
+                                  <div class="invoice-detail-name">{{__('user.Shipping')}} : {{ $setting->currency_icon }}{{ $order->shipping_cost }}</div>
+                              </div>
+                              <div class="invoice-detail-item">
+                                  <div class="invoice-detail-name">{{__('user.Tax')}} : {{ $setting->currency_icon }}{{ $order->order_vat }}</div>
+                              </div>
+
+                              <hr class="mt-2 mb-2">
+                              <div class="invoice-detail-item">
+                                  <div class="invoice-detail-value invoice-detail-value-lg">{{__('user.Total')}} : {{ $setting->currency_icon }}{{ $order->amount_real_currency }}</div>
+                              </div>
+                          </div>
                       </div>
+{{--                    <div class="row mt-4">--}}
+{{--                      <div class="col-lg-6 order-status">--}}
+{{--                      </div>--}}
 
-                      <div class="col-lg-6 text-right">
-                        <div class="invoice-detail-item">
-                            <div class="invoice-detail-name">{{__('user.Subtotal')}} : {{ $setting->currency_icon }}{{ $order->sub_total }}</div>
-                          </div>
-                          <div class="invoice-detail-item">
-                            <div class="invoice-detail-name">{{__('user.Discount')}}(-) : {{ $setting->currency_icon }}{{ $order->coupon_coast }}</div>
-                          </div>
-                          <div class="invoice-detail-item">
-                            <div class="invoice-detail-name">{{__('user.Shipping')}} : {{ $setting->currency_icon }}{{ $order->shipping_cost }}</div>
-                          </div>
-                          <div class="invoice-detail-item">
-                            <div class="invoice-detail-name">{{__('user.Tax')}} : {{ $setting->currency_icon }}{{ $order->order_vat }}</div>
-                          </div>
+{{--                      <div class="col-lg-6 text-right">--}}
+{{--                        <div class="invoice-detail-item">--}}
+{{--                            <div class="invoice-detail-name">{{__('user.Subtotal')}} : {{ $setting->currency_icon }}{{ $order->sub_total }}</div>--}}
+{{--                          </div>--}}
+{{--                          <div class="invoice-detail-item">--}}
+{{--                            <div class="invoice-detail-name">{{__('user.Discount')}}(-) : {{ $setting->currency_icon }}{{ $order->coupon_coast }}</div>--}}
+{{--                          </div>--}}
+{{--                          <div class="invoice-detail-item">--}}
+{{--                            <div class="invoice-detail-name">{{__('user.Shipping')}} : {{ $setting->currency_icon }}{{ $order->shipping_cost }}</div>--}}
+{{--                          </div>--}}
+{{--                          <div class="invoice-detail-item">--}}
+{{--                            <div class="invoice-detail-name">{{__('user.Tax')}} : {{ $setting->currency_icon }}{{ $order->order_vat }}</div>--}}
+{{--                          </div>--}}
 
 
 
-                        <hr class="mt-2 mb-2">
-                        <div class="invoice-detail-item">
-                          <div class="invoice-detail-value invoice-detail-value-lg">{{__('user.Total')}} : {{ $setting->currency_icon }}{{ $order->amount_real_currency }}</div>
-                        </div>
-                      </div>
+{{--                        <hr class="mt-2 mb-2">--}}
+{{--                        <div class="invoice-detail-item">--}}
+{{--                          <div class="invoice-detail-value invoice-detail-value-lg">{{__('user.Total')}} : {{ $setting->currency_icon }}{{ $order->amount_real_currency }}</div>--}}
+{{--                        </div>--}}
+{{--                      </div>--}}
 
-                    </div>
-                  </div>
-                </div>
+{{--                    </div>--}}
+{{--                  </div>--}}
+{{--                </div>--}}
               </div>
 
               <div class="text-md-right print-area">

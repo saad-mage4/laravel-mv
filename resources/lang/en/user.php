@@ -67,6 +67,8 @@
   'Payment Status' => 'Payment Status',
   'Action' => 'Action',
   'Pregress' => 'Pregress',
+     'In Progress' => 'In Progress',
+  'Update Status' => 'Update Status',
   'Delivered' => 'Delivered',
   'Completed' => 'Completed',
   'Declined' => 'Declined',
