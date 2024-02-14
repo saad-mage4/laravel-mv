@@ -137,9 +137,6 @@
                     @if ($menus->where('id',6)->first()->status == 1)
                     <li><a href="{{ route('campaign') }}">{{__('user.Campaign')}}</a></li>
                     @endif
-                    @if ($menus->where('id',7)->first()->status == 1)
-                    <li class="wsus__relative_li"><a href="javascript:;">{{__('user.Pages')}}</a></li>
-                    @endif
                     @if ($menus->where('id',8)->first()->status == 1)
                     <li><a href="{{ route('about-us') }}">{{__('user.About Us')}}</a></li>
                     @endif
