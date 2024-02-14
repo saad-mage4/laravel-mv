@@ -53,7 +53,6 @@ p {
     line-height: 27px;
 }
 
-
 /*======================
 	COMMON CSS START
 ========================*/
@@ -161,23 +160,17 @@ p {
     background: #045c9f;
 }
 
-
 /*======================
 	COMMON CSS END
 ========================*/
-
 
 /*======================
 	TOPBAR START
 ========================*/
 
-
-.slider_menu_section{
+.slider_menu_section {
     display: none;
 }
-
-
-
 
 #wsus__topbar {
     width: 100%;
@@ -307,11 +300,9 @@ p {
     color: #0b2c3d;
 }
 
-
 /*======================
 	TOPBAR END
 ========================*/
-
 
 /*======================
 	HEADER START
@@ -360,7 +351,10 @@ header {
     padding-left: 20px;
 }
 
-.wsus__category_search .select2-container--default .select2-selection--single .select2-selection__rendered {
+.wsus__category_search
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
     color: #0b2c3d;
     line-height: 41px;
     font-size: 15px;
@@ -368,7 +362,11 @@ header {
     font-weight: 400;
 }
 
-.wsus__category_search .select2-container--default .select2-selection--single .select2-selection__arrow b {
+.wsus__category_search
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b {
     margin-top: 5px;
 }
 
@@ -488,7 +486,8 @@ header {
     width: 350px;
     height: 100vh;
     background: #fff;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+        rgba(0, 0, 0, 0.22) 0px 15px 12px;
     padding: 20px;
     z-index: 9999;
     transition: all linear 0.3s;
@@ -524,7 +523,8 @@ header {
     -moz-transition: all linear 0.3s ease;
     -ms-transition: all linear 0.3s ease;
     -o-transition: all linear 0.3s ease;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+        rgba(0, 0, 0, 0.23) 0px 6px 6px;
     border-radius: 3px;
 }
 
@@ -655,11 +655,9 @@ header {
     right: 0;
 }
 
-
 /*======================
 	HEADER END
 ========================*/
-
 
 /*======================
 	MAIN MENU START
@@ -754,12 +752,12 @@ header {
     border-bottom-right-radius: 5px;
 }
 
-.wsus_menu_cat_item>li:hover>a {
+.wsus_menu_cat_item > li:hover > a {
     color: #007aff;
     background: #f1f1f1;
 }
 
-.wsus_menu_cat_item>li:hover .wsus__droap_arrow::after {
+.wsus_menu_cat_item > li:hover .wsus__droap_arrow::after {
     color: #007aff;
 }
 
@@ -872,7 +870,7 @@ header {
     margin-left: 5px;
 }
 
-.wsus__menu_item>li:hover>a,
+.wsus__menu_item > li:hover > a,
 .wsus__menu_item li a.active {
     color: #2a9cf5;
 }
@@ -881,7 +879,6 @@ header {
     margin-right: 0;
     margin-left: 25px;
 }
-
 
 /* .menu_fix {
     position: fixed;
@@ -1050,13 +1047,13 @@ header {
     -o-transition: all linear 0.3s ease;
 }
 
-.wsus__menu_droapdown>li {
+.wsus__menu_droapdown > li {
     margin: 0;
     width: 100%;
     position: relative;
 }
 
-.wsus__menu_droapdown>li>a {
+.wsus__menu_droapdown > li > a {
     color: #575757 !important;
     width: 100%;
     display: flex;
@@ -1072,11 +1069,11 @@ header {
     border-bottom: 1px solid #fff;
 }
 
-.wsus__menu_droapdown>li:last-child a {
+.wsus__menu_droapdown > li:last-child a {
     border: none;
 }
 
-.wsus__menu_droapdown>li>a>i {
+.wsus__menu_droapdown > li > a > i {
     font-size: 10px;
     margin-right: 5px;
     font-weight: 900;
@@ -1087,13 +1084,13 @@ header {
     -o-transition: all linear 0.3s ease;
 }
 
-.wsus__menu_droapdown>li:hover>a,
-.wsus__menu_droapdown>li .active {
+.wsus__menu_droapdown > li:hover > a,
+.wsus__menu_droapdown > li .active {
     color: #007aff;
     background: #aad8ff73;
 }
 
-.wsus__menu_droapdown>li:hover i {
+.wsus__menu_droapdown > li:hover i {
     margin-right: 0;
 }
 
@@ -1142,11 +1139,11 @@ header {
     -o-transition: all linear 0.3s ease;
 }
 
-.wsus__menu_droapdown2>li>a:hover {
+.wsus__menu_droapdown2 > li > a:hover {
     color: #007aff;
 }
 
-.wsus__menu_droapdown>li:hover .wsus__menu_droapdown2 {
+.wsus__menu_droapdown > li:hover .wsus__menu_droapdown2 {
     opacity: 1;
     transform: scaleY(1);
     -webkit-transform: scaleY(1);
@@ -1155,11 +1152,9 @@ header {
     -o-transform: scaleY(1);
 }
 
-
 /*=======================
 	MAIN MENU END
 ========================*/
-
 
 /*=========================
 		POP UP START
@@ -1285,11 +1280,9 @@ header {
     background: red;
 }
 
-
 /*=========================
 		POP UP END
 ===========================*/
-
 
 /*=========================
 PRODUCT MODAL VIEW START
@@ -1398,11 +1391,9 @@ PRODUCT MODAL VIEW START
     right: 15px;
 }
 
-
 /*=========================
 PRODUCT MODAL VIEW END
 ===========================*/
-
 
 /*======================
 	BANNER PART START
@@ -1478,11 +1469,9 @@ PRODUCT MODAL VIEW END
     background: #0086ee;
 }
 
-
 /*======================
 	BANNER PART END
 ========================*/
-
 
 /*======================
 	BRAND SLIDER START
@@ -1544,11 +1533,9 @@ PRODUCT MODAL VIEW END
     background: #2a9cf5;
 }
 
-
 /*======================
 	BRAND SLIDER END
 ========================*/
-
 
 /*======================
 	FLASH SELL START
@@ -1593,8 +1580,8 @@ PRODUCT MODAL VIEW END
 }
 
 .simply-countdown {
-	display: flex;
-	flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .wsus__section_header .simply-amount {
@@ -1635,11 +1622,11 @@ PRODUCT MODAL VIEW END
 }
 
 .wsus__flash_coundown .end_text {
-	color: #2a9cf5;
-	text-transform: capitalize;
-	font-weight: 600;
-	font-size: 39px;
-	width: 330px;
+    color: #2a9cf5;
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 39px;
+    width: 330px;
 }
 
 .wsus__flash_coundown .common_btn i {
@@ -1922,11 +1909,9 @@ PRODUCT MODAL VIEW END
     background: #2a9cf5;
 }
 
-
 /*======================
 	FLASH SELL END
 ========================*/
-
 
 /*======================
 MONTHLY TOP PRODUCT START
@@ -2093,11 +2078,9 @@ MONTHLY TOP PRODUCT START
     background: #045c9f;
 }
 
-
 /*======================
 MONTHLY TOP PRODUCT END
 ========================*/
-
 
 /*======================
 ELECTRONIC PART START
@@ -2113,11 +2096,9 @@ ELECTRONIC PART START
     margin: 25px 12px 0px 12px;
 }
 
-
 /*======================
 ELECTRONIC PART  END
 ========================*/
-
 
 /*======================
 HOME BLOGS START
@@ -2127,11 +2108,9 @@ HOME BLOGS START
     margin-top: 20px;
 }
 
-
 /*======================
 HOME BLOGS END
 ========================*/
-
 
 /*======================
 	SINGLE BANNER START
@@ -2208,11 +2187,9 @@ HOME BLOGS END
     border-color: #2a9cf5;
 }
 
-
 /*======================
 	SINGLE BANNER END
 ========================*/
-
 
 /*======================
 	HOT DEALS START
@@ -2445,11 +2422,9 @@ HOME BLOGS END
     margin-top: 50px;
 }
 
-
 /*======================
 	HOT DEALS END
 ========================*/
-
 
 /*======================
 	LARGE BANNER START
@@ -2507,11 +2482,9 @@ HOME BLOGS END
     font-size: 25px;
 }
 
-
 /*======================
 	LARGE BANNER  END
 ========================*/
-
 
 /*======================
 WEEKLY BEST ITEM START
@@ -2567,11 +2540,9 @@ WEEKLY BEST ITEM START
     margin: 20px 12px 0px 12px;
 }
 
-
 /*======================
 WEEKLY BEST ITEM END
 ========================*/
-
 
 /*======================
 HOME SERVOCES START
@@ -2623,11 +2594,9 @@ HOME SERVOCES START
     color: #353535;
 }
 
-
 /*======================
 	HOME SERVOCES  END
 ========================*/
-
 
 /*======================
 	HOME BLOGS START
@@ -2671,11 +2640,9 @@ HOME SERVOCES START
     left: auto;
 }
 
-
 /*======================
 	HOME BLOGS END
 ========================*/
-
 
 /*======================
 	SUBSCRIBE PART START
@@ -2737,11 +2704,9 @@ HOME SERVOCES START
     border-bottom-left-radius: 0;
 }
 
-
 /*======================
 	SUBSCRIBE PART END
 ========================*/
-
 
 /*======================
 	FOOTER PART START
@@ -2913,11 +2878,9 @@ footer {
     margin-left: 15px;
 }
 
-
 /*======================
 	FOOTER PART END
 ========================*/
-
 
 /*======================
 SCROLL BUTTON START
@@ -2951,11 +2914,9 @@ SCROLL BUTTON START
     background: #0363ae;
 }
 
-
 /*======================
 SCROLL BUTTON  END
 ========================*/
-
 
 /*======================
 BREADCRUMB START
@@ -3016,11 +2977,9 @@ BREADCRUMB START
     border: none;
 }
 
-
 /*======================
 BREADCRUMB END
 ========================*/
-
 
 /*======================
 PPRODUCT PAGE START
@@ -3213,7 +3172,8 @@ PPRODUCT PAGE START
     line-height: 23px;
     text-align: center;
     font-size: 12px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+        rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 .accordion-collapse {
@@ -3526,11 +3486,9 @@ PPRODUCT PAGE START
     -o-transform: translate(-50%, -50%);
 }
 
-
 /*======================
 PPRODUCT PAGE END
 ========================*/
-
 
 /*======================
 PRODUCT DETAILS START
@@ -3834,7 +3792,10 @@ PRODUCT DETAILS START
     border-color: #aaa;
 }
 
-.wsus__selectbox .select2-container--default .select2-selection--single .select2-selection__arrow {
+.wsus__selectbox
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
     top: -7px;
 }
 
@@ -3956,7 +3917,8 @@ PRODUCT DETAILS START
     padding: 15px;
     border-radius: 5px;
     background: #fff;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 0px 3px -1px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+        rgba(0, 0, 0, 0.3) 0px 0px 3px -1px;
 }
 
 .wsus_pro_det_sidebar_single {
@@ -4377,11 +4339,9 @@ PRODUCT DETAILS START
     margin-top: 0 !important;
 }
 
-
 /*======================
 PRODUCT DETAILS  END
 ========================*/
-
 
 /*======================
 CART VIEW PAGE START
@@ -4716,11 +4676,9 @@ CART VIEW PAGE START
     font-size: 30px;
 }
 
-
 /*======================
 CART VIEW PAGE END
 ========================*/
-
 
 /*======================
 CHECKOUT PAGE START
@@ -4908,11 +4866,9 @@ CHECKOUT PAGE START
     text-align: center;
 }
 
-
 /*======================
 CHECKOUT PAGE END
 ========================*/
-
 
 /*======================
 INVOICE PAGE SATAR
@@ -4991,7 +4947,7 @@ INVOICE PAGE SATAR
     margin-bottom: 0 !important;
 }
 
-.wsus__invoice_description .table>tbody {
+.wsus__invoice_description .table > tbody {
     vertical-align: middle;
 }
 
@@ -5078,11 +5034,9 @@ INVOICE PAGE SATAR
     color: #5d5d5d;
 }
 
-
 /*======================
 INVOICE PAGE END
 ========================*/
-
 
 /*======================
 WISHLIST PAGE START
@@ -5105,7 +5059,8 @@ WISHLIST PAGE START
     right: 5px;
     color: #fff;
     border-radius: 50%;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+        rgba(0, 0, 0, 0.23) 0px 6px 6px;
     transition: all linear 0.3s;
     -webkit-transition: all linear 0.3s ease;
     -moz-transition: all linear 0.3s ease;
@@ -5152,11 +5107,9 @@ WISHLIST PAGE START
     color: #fff;
 }
 
-
 /*======================
 	WISHLIST PAGE END
 ========================*/
-
 
 /*========================
 	COMPARE START
@@ -5293,11 +5246,9 @@ WISHLIST PAGE START
     color: red;
 }
 
-
 /*========================
 		COMPARE END
 =========================*/
-
 
 /*========================
 	CONTACT START
@@ -5404,11 +5355,9 @@ WISHLIST PAGE START
     width: 100%;
 }
 
-
 /*========================
 	CONTACT END
 =========================*/
-
 
 /*========================
 	LOGIN/REGISTER START
@@ -5446,7 +5395,7 @@ WISHLIST PAGE START
 }
 
 .wsus__login_reg_area .nav-pills .nav-link.active,
-.wsus__login_reg_area .nav-pills .show>.nav-link {
+.wsus__login_reg_area .nav-pills .show > .nav-link {
     color: #2a9cf5 !important;
     border-color: #2a9cf5 !important;
 }
@@ -5563,7 +5512,11 @@ WISHLIST PAGE START
     left: 0;
     height: 100%;
     background: rgb(42, 156, 245);
-    background: linear-gradient( 180deg, rgba(42, 156, 245, 0.8) 0%, rgba(139, 35, 244, 0.8) 100%);
+    background: linear-gradient(
+        180deg,
+        rgba(42, 156, 245, 0.8) 0%,
+        rgba(139, 35, 244, 0.8) 100%
+    );
 }
 
 .wsus__login_text_position {
@@ -5596,11 +5549,9 @@ WISHLIST PAGE START
     font-weight: 500;
 }
 
-
 /*========================
 	LOGIN/REGISTER END
 =========================*/
-
 
 /*========================
 	ABOUT US START
@@ -5762,7 +5713,8 @@ WISHLIST PAGE START
     border-radius: 50%;
     width: 100px !important;
     height: 100px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+        rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
 .wsus__about_award_single p {
@@ -5874,11 +5826,9 @@ WISHLIST PAGE START
     bottom: 20px;
 }
 
-
 /*========================
 	ABOUT US END
 =========================*/
-
 
 /*========================
 	TEAM DETAILS START
@@ -6119,11 +6069,9 @@ WISHLIST PAGE START
     z-index: -1;
 }
 
-
 /*========================
 	TEAM DETAILS END
 =========================*/
-
 
 /*========================
 	404  START
@@ -6164,11 +6112,9 @@ WISHLIST PAGE START
     margin: 10px 0px 45px 0px;
 }
 
-
 /*========================
 	404  END
 =========================*/
-
 
 /*========================
 	BLOGS PAGE START
@@ -6204,7 +6150,11 @@ WISHLIST PAGE START
     width: 100%;
     height: 100%;
     background: rgb(11, 44, 61);
-    background: linear-gradient( 0deg, rgba(11, 44, 61, 0.68) 20%, transparent 100%);
+    background: linear-gradient(
+        0deg,
+        rgba(11, 44, 61, 0.68) 20%,
+        transparent 100%
+    );
 }
 
 .wsus__blog_text_center {
@@ -6289,11 +6239,9 @@ WISHLIST PAGE START
     color: #2a9cf5;
 }
 
-
 /*========================
 	BLOGS PAGE END
 =========================*/
-
 
 /*========================
 	BLOGS DETAILS START
@@ -6755,11 +6703,9 @@ WISHLIST PAGE START
     border-color: #2a9cf5;
 }
 
-
 /*========================
 	BLOGS DETAILS END
 =========================*/
-
 
 /*========================
 	FAQ START
@@ -6821,11 +6767,9 @@ WISHLIST PAGE START
     color: #2a9cf5;
 }
 
-
 /*========================
 	FAQ END
 =========================*/
-
 
 /*========================
 	DASHBOARD START
@@ -7140,11 +7084,11 @@ WISHLIST PAGE START
     display: flex;
 }
 
-.wsus__dashboard_order .table> :not(:last-child)> :last-child>* {
+.wsus__dashboard_order .table > :not(:last-child) > :last-child > * {
     border: none;
 }
 
-.wsus__dashboard_order .table-hover>tbody>tr:hover {
+.wsus__dashboard_order .table-hover > tbody > tr:hover {
     background: #cfe8fd;
     color: #353535;
 }
@@ -7271,11 +7215,11 @@ WISHLIST PAGE START
 }
 
 .wsus__dash_rev_text h5 a {
-    transition: all linear .3s;
-    -webkit-transition: all linear .3s ease;
-    -moz-transition: all linear .3s ease;
-    -ms-transition: all linear .3s ease;
-    -o-transition: all linear .3s ease;
+    transition: all linear 0.3s;
+    -webkit-transition: all linear 0.3s ease;
+    -moz-transition: all linear 0.3s ease;
+    -ms-transition: all linear 0.3s ease;
+    -o-transition: all linear 0.3s ease;
 }
 
 .wsus__dash_rev_text h5 span {
@@ -7413,12 +7357,18 @@ WISHLIST PAGE START
 
 .wsus__dash_pro_single input::placeholder,
 .wsus__dash_pro_single textarea::placeholder {
-    color: #858D9161;
+    color: #858d9161;
     opacity: 1;
 }
 
-.wsus__dashboard_profile .select2-container--default .select2-selection--single .select2-selection__rendered,
-.wsus__add_address_single .select2-container--default .select2-selection--single .select2-selection__rendered {
+.wsus__dashboard_profile
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered,
+.wsus__add_address_single
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
     color: #353535;
 }
 
@@ -7547,7 +7497,9 @@ WISHLIST PAGE START
     color: #353535;
 }
 
-.wsus__add_address_single .select2-container--default .select2-selection--single {
+.wsus__add_address_single
+    .select2-container--default
+    .select2-selection--single {
     border-radius: 5px;
 }
 
@@ -7609,11 +7561,9 @@ WISHLIST PAGE START
     width: 210px;
 }
 
-
 /*========================
 	DASHBOARD END
 =========================*/
-
 
 /*======================
 TERMS & CONDITION START
@@ -7667,11 +7617,9 @@ TERMS & CONDITION START
     color: #0d6efd;
 }
 
-
 /*======================
 TERMS & CONDITION END
 ========================*/
-
 
 /*======================
 FORGET PASSWORD START
@@ -7722,11 +7670,9 @@ FORGET PASSWORD START
     text-align: center;
 }
 
-
 /*======================
 FORGET PASSWORD END
 ========================*/
-
 
 /*======================
 CHANGE PASSWORD START
@@ -7768,11 +7714,9 @@ CHANGE PASSWORD START
     width: 100%;
 }
 
-
 /*======================
 CHANGE PASSWORD END
 ========================*/
-
 
 /*======================
 PAYMENT PAGE  START
@@ -7968,7 +7912,7 @@ PAYMENT PAGE  START
 
 .wsus__pay_info_area #v-stripe-payment,
 .wsus__pay_info_area #payment-form {
-	background: transparent !important;
+    background: transparent !important;
 }
 
 .wsus__pay_info_area #payment-form div.master,
@@ -7978,7 +7922,7 @@ PAYMENT PAGE  START
 
 .wsus__pay_info_area #payment-form div.master::after,
 .wsus__pay_info_area #payment-form div.visa::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -8px;
     right: 15px;
@@ -7990,18 +7934,16 @@ PAYMENT PAGE  START
 }
 
 .wsus__pay_info_area #payment-form div.visa::after {
-    background-image: url('../../uploads/website-images/Visa_Logo.png');
+    background-image: url("../../uploads/website-images/Visa_Logo.png");
 }
 .wsus__pay_info_area #payment-form div.master::after {
-    background-image: url('../../uploads/website-images/MasterCard_Logo.webp');
+    background-image: url("../../uploads/website-images/MasterCard_Logo.webp");
 }
 /* visa-logo.webp */
-
 
 /*======================
 PAYMENT PAGE  END
 ========================*/
-
 
 /*======================
 TRACKING ORDER START
@@ -8162,7 +8104,6 @@ TRACKING ORDER START
     background: #dc3545 !important;
 }
 
-
 /* .progtrckr li:last-child::after {
   width: 100%;
 }
@@ -8198,11 +8139,9 @@ TRACKING ORDER START
     margin-top: 25px;
 }
 
-
 /*======================
 TRACKING ORDER END
 ========================*/
-
 
 /*======================
 VENDORS PAGE START
@@ -8320,18 +8259,21 @@ VENDORS PAGE START
     margin: 14px 0px 0px 0px;
 }
 
-
 /*======================
 VENDORS PAGE END
 ========================*/
-
 
 /*======================
 VENDORS DETAILA START
 ========================*/
 
 .wsus__vendor_det_banner_text {
-    background: linear-gradient( 90deg, rgba(11, 44, 61, 1) 0%, rgba(6, 120, 148, 0) 50%, rgba(11, 44, 61, 0) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(11, 44, 61, 1) 0%,
+        rgba(6, 120, 148, 0) 50%,
+        rgba(11, 44, 61, 0) 100%
+    );
 }
 
 .wsus__vendor_det_banner_text .wsus__vendor_location,
@@ -8378,11 +8320,9 @@ VENDORS DETAILA START
     margin-bottom: 15px;
 }
 
-
 /*======================
 VENDORS DETAILA END
 ========================*/
-
 
 /*======================
 CATEGORY PAGE START
@@ -8411,11 +8351,9 @@ CATEGORY PAGE START
     border: none;
 }
 
-
 /*======================
 CATEGORY PAGE END
 ========================*/
-
 
 /*======================
 CUSTOM PAGE START
@@ -8430,11 +8368,9 @@ CUSTOM PAGE START
     margin-top: 20px;
 }
 
-
 /*======================
 CUSTOM PAGE END
 ========================*/
-
 
 /*======================
 	DAILY DEALS START
@@ -8543,11 +8479,9 @@ CUSTOM PAGE END
     color: #2a9cf5;
 }
 
-
 /*======================
 	DAILY DEALS END
 ========================*/
-
 
 /*======================
 DAILY DEALS DETAILS START
@@ -8690,11 +8624,9 @@ DAILY DEALS DETAILS START
     text-transform: capitalize;
 }
 
-
 /*======================
 DAILY DEALS DETAILS END
 ========================*/
-
 
 /*======================
 	BRANDS PAGE START
@@ -8775,11 +8707,9 @@ DAILY DEALS DETAILS END
     z-index: 1;
 }
 
-
 /*======================
 	BRANDS PAGE END
 ========================*/
-
 
 /*======================
 	HOME PAGE 2 START
@@ -8842,7 +8772,7 @@ DAILY DEALS DETAILS END
     color: #fff;
 }
 
-.home_2 header .wsus__icon_area li:hover>a,
+.home_2 header .wsus__icon_area li:hover > a,
 .home_2 header .wsus__icon_area li .active {
     background: #316089 !important;
     color: #fff !important;
@@ -8961,7 +8891,7 @@ DAILY DEALS DETAILS END
     background: #316089;
 }
 
-.home_2 .wsus__menu_item li>a {
+.home_2 .wsus__menu_item li > a {
     color: #fff;
 }
 
@@ -8969,7 +8899,7 @@ DAILY DEALS DETAILS END
     color: #5897fb !important;
 }
 
-.home_2 .wsus__menu_item>li:hover>a,
+.home_2 .wsus__menu_item > li:hover > a,
 .home_2 .wsus__menu_item li a.active {
     color: #5897fb !important;
 }
@@ -9031,11 +8961,10 @@ DAILY DEALS DETAILS END
     border-radius: 5px;
 }
 
-.home_2 .wsus_menu_cat_item>li:hover>a,
+.home_2 .wsus_menu_cat_item > li:hover > a,
 .home_2 .wsus_menu_cat_droapdown li a:hover {
     color: #5897fb !important;
 }
-
 
 /* banner 2 start */
 
@@ -9087,7 +9016,6 @@ DAILY DEALS DETAILS END
     border-radius: 30px;
 }
 
-
 /* prosuct start */
 
 .home_2 .wsus__new,
@@ -9101,7 +9029,6 @@ DAILY DEALS DETAILS END
     -ms-transition: all linear 0.3s ease;
     -o-transition: all linear 0.3s ease;
 }
-
 
 /* .home_2 .wsus__product_item:hover .wsus__new,
 .home_2 .wsus__product_item:hover .wsus__minus {
@@ -9585,11 +9512,9 @@ DAILY DEALS DETAILS END
     border-radius: 30px;
 }
 
-
 /*======================
 	HOME PAGE 2 END
 ========================*/
-
 
 /*======================
 DASHBOARD CHAT START
@@ -9784,7 +9709,8 @@ DASHBOARD CHAT START
     -o-border-radius: 5px;
     display: inline-block;
     font-size: 15px;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
 }
 
 .wsus__chat_single_text span {
@@ -9844,22 +9770,20 @@ DASHBOARD CHAT START
     background: #2a9cf5;
     color: #fff;
     padding-right: 2px;
-    transition: all linear .3s;
-    -webkit-transition: all linear .3s ease;
-    -moz-transition: all linear .3s ease;
-    -ms-transition: all linear .3s ease;
-    -o-transition: all linear .3s ease;
+    transition: all linear 0.3s;
+    -webkit-transition: all linear 0.3s ease;
+    -moz-transition: all linear 0.3s ease;
+    -ms-transition: all linear 0.3s ease;
+    -o-transition: all linear 0.3s ease;
 }
 
 .wsus__chat_area_footer form button:hover {
     background: #5ba835;
 }
 
-
 /*======================
 DASHBOARD CHAT END
 ========================*/
-
 
 /* extra css start here */
 
@@ -9874,8 +9798,8 @@ DASHBOARD CHAT END
     text-align: center;
     background: #fff !important;
     border: 1px solid #ddd;
-    border-radius: .25rem;
-    padding: .375rem .75rem;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
 }
 
 .modal_btn input:focus {
@@ -9925,11 +9849,11 @@ DASHBOARD CHAT END
     color: #d33;
     text-transform: capitalize;
     font-size: 15px;
-    transition: all linear .3s;
-    -webkit-transition: all linear .3s ease;
-    -moz-transition: all linear .3s ease;
-    -ms-transition: all linear .3s ease;
-    -o-transition: all linear .3s ease;
+    transition: all linear 0.3s;
+    -webkit-transition: all linear 0.3s ease;
+    -moz-transition: all linear 0.3s ease;
+    -ms-transition: all linear 0.3s ease;
+    -o-transition: all linear 0.3s ease;
 }
 
 .login_link:hover {
@@ -9966,7 +9890,6 @@ a:not([href]):not([class]):hover {
     font-size: 16px;
 }
 
-
 /* .wsus__add_address_single input,
 .wsus__add_address_single textarea {
 	width: 100%;
@@ -9980,11 +9903,14 @@ a:not([href]):not([class]):hover {
 
 input::placeholder,
 textarea::placeholder {
-    color: #858D9161;
+    color: #858d9161;
     opacity: 1;
 }
 
-.wsus__check_single_form .select2-container--default .select2-selection--single .select2-selection__rendered {
+.wsus__check_single_form
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
     color: #353535;
 }
 
@@ -10017,46 +9943,84 @@ textarea::placeholder {
     height: 290px;
 }
 
-.wsus__flash_coundown .simply-section.simply-days-section, 
-.wsus__flash_coundown .simply-section.simply-hours-section, 
-.wsus__flash_coundown .simply-section.simply-minutes-section, 
+.wsus__flash_coundown .simply-section.simply-days-section,
+.wsus__flash_coundown .simply-section.simply-hours-section,
+.wsus__flash_coundown .simply-section.simply-minutes-section,
 .wsus__flash_coundown .simply-section.simply-seconds-section {
-	width: 100px;
-	text-align: center;
-	background: #fff;
-	margin: 0px 5px;
-	padding: 20px 0px 10px 0px;
-	border-radius: 3px;
+    width: 100px;
+    text-align: center;
+    background: #fff;
+    margin: 0px 5px;
+    padding: 20px 0px 10px 0px;
+    border-radius: 3px;
 }
 
 .wsus__flash_coundown .simply-amount {
-	display: block;
-	font-size: 35px;
-	font-weight: 900;
-	color: #ff5200;
-	line-height: 27px;
+    display: block;
+    font-size: 35px;
+    font-weight: 900;
+    color: #ff5200;
+    line-height: 27px;
 }
 
 .wsus__flash_coundown .simply-word {
-	text-transform: capitalize;
-	font-size: 15px;
-	padding-top: 5px;
-	display: block;
-	border-top: 1px dashed #ff5200;
-	margin-top: 13px;
+    text-transform: capitalize;
+    font-size: 15px;
+    padding-top: 5px;
+    display: block;
+    border-top: 1px dashed #ff5200;
+    margin-top: 13px;
 }
 
 .ml-auto {
-	margin-left: auto;
+    margin-left: auto;
 }
 
 /* extra css end here */
 
+.radio-1,
+.radio-2 {
+    width: 200px;
+    height: 50px;
+    border: 2px solid #204e77;
+    border-radius: 10px;
+    position: relative;
+}
+.radio-1 label,
+.radio-2 label {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.radio-1 label::before,
+.radio-2 label::before {
+    content: '';
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    right: 50px;
+    transform: translateY(-50%);
+}
+.radio-1 label::before {
+    content: 'No';
+}
+.radio-2 label::before {
+    content: 'Yes';
+}
+.radio-1 input,
+.radio-2 input {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 20px;
+    width: auto;
+}
 
-
+label.label-period::before {
+    content: attr(title);
+}
 
 @media only screen and (max-width: 768px) {
-
     /* hide static pages from mobile menu  */
     #wsus__mobile_menu #pills-tab li:nth-child(2) {
         display: none;
@@ -10069,12 +10033,10 @@ textarea::placeholder {
         text-align: left;
     }
 
-
-
-    .slider_menu_section{
+    .slider_menu_section {
         display: block !important;
     }
-    .slider_menu_section ul{
+    .slider_menu_section ul {
         margin-top: 20px;
         display: flex;
         overflow-x: scroll;
@@ -10085,17 +10047,17 @@ textarea::placeholder {
         display: none;
     }
 
-    .slider_menu_section ul.left-menu li{
+    .slider_menu_section ul.left-menu li {
         line-height: normal;
         color: #000;
         float: unset;
     }
-    .slider_menu_section ul.left-menu li:nth-child(2){
+    .slider_menu_section ul.left-menu li:nth-child(2) {
         display: none;
     }
-    .slider_menu_section ul.left-menu li a{
+    .slider_menu_section ul.left-menu li a {
         line-height: unset;
-        background-color: #FD5201;
+        background-color: #fd5201;
         padding: 5px 24px;
         border-radius: 8px;
         font-weight: 500;
@@ -10103,19 +10065,11 @@ textarea::placeholder {
         white-space: nowrap;
     }
 
-    .slider_menu_section ul.left-menu li:hover a{
+    .slider_menu_section ul.left-menu li:hover a {
         color: #fff !important;
     }
 
-
-
-
-    #wsus__brand_sleder{
+    #wsus__brand_sleder {
         margin-top: 40px;
     }
-
-
-
-    
-
 }

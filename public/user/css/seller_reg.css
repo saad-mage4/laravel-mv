@@ -1,0 +1,352 @@
+
+body {
+    counter-reset: my-counter;
+  }
+  
+  #heading {
+      text-transform: uppercase;
+      color: #FD5201;
+      font-weight: normal
+  }
+  
+  #msform {
+      text-align: center;
+      position: relative;
+      margin-top: 20px
+  }
+  .ms-form-main .container{
+      max-width: 1320px !important;
+  }
+  
+  #msform fieldset {
+      background: white;
+      border: 0 none;
+      border-radius: 0.5rem;
+      box-sizing: border-box;
+      width: 100%;
+      margin: 0;
+      padding-bottom: 20px;
+      position: relative
+  }
+  
+  .form-card {
+      text-align: left
+  }
+  
+  #msform fieldset:not(:first-of-type) {
+      display: none
+  }
+  
+  #msform input, #msform textarea, #msform select {
+      padding: 8px 15px 8px 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 25px;
+      margin-top: 2px;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: montserrat;
+      color: #000;
+      background-color: transparent;
+      font-size: 16px;
+      letter-spacing: 1px;
+      height: 45px;
+      transition: all 0.3s ease;
+  }
+  
+  #msform input:focus,
+  #msform textarea:focus {
+      -moz-box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      box-shadow: none !important;
+      border: 1px solid #FD5201;
+      outline-width: 0
+  }
+  
+  #msform .action-button {
+      width: 100px;
+      background: #FD5201;
+      font-weight: bold;
+      color: white;
+      border: 0 none;
+      border-radius: 0px;
+      cursor: pointer;
+      padding: 10px 5px;
+      margin: 10px 0px 10px 5px;
+      float: right;
+      text-transform: uppercase;
+  }
+  
+  #msform .action-button:hover,
+  #msform .action-button:focus {
+      background-color: #18587A
+  }
+  
+  #msform .action-button-previous {
+      width: 100px;
+      background: #616161;
+      font-weight: bold;
+      color: white;
+      border: 0 none;
+      border-radius: 0px;
+      cursor: pointer;
+      padding: 10px 5px;
+      margin: 10px 5px 10px 0px;
+      float: right
+  }
+  
+  #msform .action-button-previous:hover,
+  #msform .action-button-previous:focus {
+      background-color: #000000
+  }
+  
+  .card {
+      z-index: 0;
+      border: none;
+      position: relative
+  }
+  
+  .fs-title {
+      font-size: 25px;
+      color: #FD5201;
+      margin-bottom: 30px;
+      font-weight: normal;
+      text-align: left;
+      text-decoration: underline;
+  }
+  
+  .purple-text {
+      color: #FD5201;
+      font-weight: normal
+  }
+  
+  .steps {
+      font-size: 25px;
+      color: gray;
+      margin-bottom: 10px;
+      font-weight: normal;
+      text-align: right
+  }
+  
+  .fieldlabels {
+      color: #000;
+      text-align: left;
+      font-weight: 700;
+  }
+  .fieldlabels span.required {
+      color: red;
+      text-align: left;
+      font-weight: 700;
+  }
+  
+  #progressbar {
+      margin-bottom: 30px;
+      overflow: hidden;
+      color: lightgrey;
+      display: flex;
+      /* gap: 50px; */
+      justify-content: space-between;
+  }
+  
+  #progressbar .active {
+      color: #FD5201
+  }
+  
+  #progressbar li {
+      list-style-type: none;
+      font-size: 15px;
+      /* width: 25%; */
+      float: left;
+      position: relative;
+      font-weight: 400
+  }
+  
+  
+  #progressbar li:before {
+      width: 50px;
+      height: 50px;
+      line-height: 45px;
+      display: block;
+      font-size: 20px;
+      color: #18587A;
+      background: lightgray;
+      border-radius: 50%;
+      margin: 0 auto 10px auto;
+      padding: 2px;
+      counter-increment: my-counter;
+      content: counter(my-counter);
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+  }
+  
+  #progressbar li:after {
+      content: '';
+      width: 100%;
+      height: 2px;
+      background: lightgray;
+      position: absolute;
+      left: 0;
+      top: 25px;
+  }
+  
+  #progressbar li.active:before,
+  #progressbar li.active:after {
+      background: #FD5201;
+      color:#fff;
+  }
+  
+  .progress {
+      height: 20px
+  }
+  
+  .progress-bar {
+      background-color: #FD5201
+  }
+  
+  .fit-image {
+      width: 100%;
+      object-fit: cover
+  }
+  
+  
+  
+  .info {
+      padding: 20px;
+      background-color: #ececec;
+      border: 2px solid #dddddd;
+      margin-bottom: 40px;
+      border-radius: 8px;
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+  }
+  .info i {
+      color: #18587A;
+      font-size: 24px;
+  }
+  
+  
+  
+  .radio-main {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 50px;
+      margin-top: 20px;
+  }
+  .radio-main .radio-btn {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      gap: 20px;
+      /* padding: 10px 30px; */
+      border: 2px solid #18587A;
+      width: 150px;
+      align-items: center;
+      justify-content: flex-end;
+      padding-left: 20px;
+      height: 40px;
+      border-radius: 8px;
+  }
+  .radio-main .radio-btn *{
+     margin: 0 !important;
+  }
+  
+  .radio-main .radio-btn input{
+      width: unset !important;
+      padding: 0 !important;
+      height: unset !important;
+      width: unset !important;
+  }
+  
+  
+  
+  
+  div#v-pills-tab {
+      gap: 12px;
+    }
+  
+    .nav-pills-custom .nav-link {
+      color: #aaa;
+      background: #fff;
+      position: relative;
+      margin-bottom: 0 !important;
+      border: 2px solid;
+      border-radius: 0;
+      box-shadow: none !important;
+      padding: 10px 20px !important;
+    }
+  
+    .nav-pills-custom .nav-link.active {
+      color: #fd5201;
+      background: #fff;
+      border: 2px solid #fd5201;
+    }
+  
+    /* Add indicator arrow for the active tab */
+    @media (min-width: 992px) {
+      .nav-pills-custom .nav-link::before {
+        content: "";
+        display: block;
+        border-top: 8px solid transparent;
+        border-left: 10px solid #fd5201;
+        border-bottom: 8px solid transparent;
+        position: absolute;
+        top: 50%;
+        right: -10px;
+        transform: translateY(-50%);
+        opacity: 0;
+      }
+    }
+  
+    .nav-pills-custom .nav-link.active::before {
+      opacity: 1;
+    }
+  
+    .range-checkbox-main {
+      columns: 2;
+    }
+    .range-checkbox-main .check-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+  
+    .range-checkbox-main .check-item input {
+      width: unset !important;
+      height: unset !important;
+      margin: 0 !important;
+  }
+  
+  
+    .range-checkbox-main .check-item label {
+      margin: 0;
+      color: #aaa;
+    }
+  
+    a.download-link{
+      margin-top: 15px;
+      color: #18587A;
+      text-decoration: underline;
+      text-transform: capitalize;
+    }
+  
+  
+  
+    .last-radio-warp{
+      flex-wrap: wrap;
+    }
+    .last-radio-btn{
+      width: 33% !important;
+    }
+  
+    .note-input-text{
+      font-size: 16px;
+      color: #aaa;
+      font-style: italic;
+      margin-top: -20px;
+    }
