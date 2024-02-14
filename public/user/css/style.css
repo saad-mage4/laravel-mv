@@ -764,7 +764,7 @@ header {
 }
 
 .wsus_menu_cat_droapdown {
-    width: 265px;
+    min-width: 265px;
     background: #fff;
     position: absolute;
     z-index: 1;
@@ -785,7 +785,7 @@ header {
 }
 
 .wsus_menu_cat_droapdown li a {
-    padding: 0px 20px;
+    padding: 0px 10px;
     line-height: 40px;
     display: flex;
     align-items: center;
@@ -807,7 +807,7 @@ header {
 }
 
 .wsus__sub_category {
-    width: 250px;
+    min-width: 250px;
     background: #fff;
     position: absolute;
     z-index: 1;
