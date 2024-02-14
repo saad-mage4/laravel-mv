@@ -93,4 +93,47 @@ class SellerOrderController extends Controller
         $setting = Setting::first();
         return view('seller.show_order',compact('order','setting'));
     }
+    public function updateOrderStatus(Request $request , $id){
+        $rules = [
+            'order_status' => 'required',
+            'payment_status' => 'required',
+        ];
+        $this->validate($request, $rules);
+
+        $order = Order::find($id);
+        if($request->order_status == 0){
+            $order->order_status = 0;
+            $order->save();
+        }else if($request->order_status == 1){
+            $order->order_status = 1;
+            $order->order_approval_date = date('Y-m-d');
+            $order->save();
+        }else if($request->order_status == 2){
+            $order->order_status = 2;
+            $order->order_delivered_date = date('Y-m-d');
+            $order->save();
+        }else if($request->order_status == 3){
+            $order->order_status = 3;
+            $order->order_completed_date = date('Y-m-d');
+            $order->save();
+        }else if($request->order_status == 4){
+            $order->order_status = 4;
+            $order->order_declined_date = date('Y-m-d');
+            $order->save();
+        }
+
+        if($request->payment_status == 0){
+            $order->payment_status = 0;
+            $order->save();
+        }elseif($request->payment_status == 1){
+            $order->payment_status = 1;
+            $order->payment_approval_date = date('Y-m-d');
+            $order->save();
+        }
+
+        $notification = trans('admin_validation.Order Status Updated successfully');
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->back()->with($notification);
+    }
+
 }
