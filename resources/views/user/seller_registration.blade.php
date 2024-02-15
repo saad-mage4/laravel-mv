@@ -44,70 +44,164 @@
               <div class="col-xl-12">
                 <div class="row">
                   <div class="col-xl-6 col-md-6">
+                    <label for="shop-name">Shop Name</label>
+                    <div class="wsus__dash_pro_single">
+                      <input
+                        type="text"
+                        id="shop-name"
+                        placeholder="{{__('user.Shop Name')}}"
+                        name="shop_name"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
+                    <label for="">{{__('user.Banner Image')}}</label>
+                    <div class="wsus__dash_pro_single">
+                      <input type="file" name="banner_image" />
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
                     <label for="FirstName">First Name</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="FirstName" placeholder="First Name" name="firstName">
+                      <input
+                        type="text"
+                        id="FirstName"
+                        placeholder="First Name"
+                        name="firstName"
+                      />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="LastName">Last Name</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="LastName" placeholder="Last Name" name="lastName">
+                      <input
+                        type="text"
+                        id="LastName"
+                        placeholder="Last Name"
+                        name="lastName"
+                      />
                     </div>
                   </div>
-                  <div class="col-xl-6 col-md-6">
-                    <label for="phoneNumber">Phone Number</label>
-                    <div class="wsus__dash_pro_single">
-                      <input type="tel" id="phoneNumber" placeholder="Phone Number" name="phoneNumber">
-                    </div>
-                  </div>
+
                   <div class="col-xl-6 col-md-6">
                     <label for="email">Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" id="email" placeholder="Email" name="email">
+                      <input type="email" placeholder="{{__('user.Email')}}" name="email" />
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
+                    <label for="Phone Number">Phone Number</label>
+                    <div class="wsus__dash_pro_single">
+                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="address">Address</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="address" placeholder="Address" name="address">
+                      <input
+                        type="text"
+                        id="address"
+                        placeholder="Address"
+                        name="address"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
+                    <label for="open-at">Open At</label>
+                    <div class="wsus__dash_pro_single">
+                      <input
+                        type="text"
+                        placeholder="{{__('user.Opens at')}}"
+                        name="open_at"
+                        class="clockpicker"
+                        data-align="top"
+                        data-autoclose="true"
+                        autocomplete="off"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
+                    <label for="close-at">Close At</label>
+                    <div class="wsus__dash_pro_single">
+                      <input
+                        type="text"
+                        placeholder="{{__('user.Closed at')}}"
+                        name="closed_at"
+                        class="clockpicker"
+                        data-align="top"
+                        data-autoclose="true"
+                        autocomplete="off"
+                      />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="postal-code">Postal Code</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="postal-code" placeholder="Postal Code" name="postalCode">
+                      <input
+                        type="text"
+                        id="postal-code"
+                        placeholder="Postal Code"
+                        name="postalCode"
+                      />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="country">Company headquarters country location</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="country" name="country" class="form-control" value="Romania" required readonly>
+                      <input
+                        type="text"
+                        id="country"
+                        name="country"
+                        class="form-control"
+                        value="Romania"
+                        required
+                        readonly
+                      />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="company-name">Company name</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="company-name" placeholder="Company name" name="companyName">
+                      <input
+                        type="text"
+                        id="company-name"
+                        placeholder="Company name"
+                        name="companyName"
+                      />
                     </div>
                   </div>
 
                   <div class="col-xl-6 col-md-6">
                     <label for="company-type">Company Type</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="company-type" placeholder="Company Type" name="companyType">
+                      <input
+                        type="text"
+                        id="company-type"
+                        placeholder="Company Type"
+                        name="companyType"
+                      />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="urc">Unique Registration Code</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="urc" placeholder="Unique Registration Code" name="urc">
+                      <input
+                        type="text"
+                        id="urc"
+                        placeholder="Unique Registration Code"
+                        name="urc"
+                      />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="VAT-payer">VAT payer</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="VAT-payer" placeholder="VAT payer" name="vat">
+                      <input
+                        type="text"
+                        id="VAT-payer"
+                        placeholder="VAT payer"
+                        name="vat"
+                      />
                     </div>
                   </div>
                 </div>
@@ -117,7 +211,6 @@
                 <a href="#!" class="common_btn mb-4 mt-2 next">{{__('user.Next')}}</a>
                 <!-- <button class="common_btn mb-4 mt-2" type="submit">{{__('user.Submit Request')}}</button> -->
               </div>
-
             </div>
             <!-- Step 2 -->
             <div class="row form_step d-none">
@@ -168,10 +261,21 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-12">
+                  <!-- <div class="col-md-12">
                     <label for="company-desc">Brief or short company description</label>
                     <div class="wsus__dash_pro_single">
                       <textarea type="text" id="company-desc" placeholder="Brief or short company description" name="companyDesc"></textarea>
+                    </div>
+                  </div> -->
+                  <div class="col-xl-12">
+                    <label for="company-desc">Brief or short company description</label>
+                    <div class="wsus__dash_pro_single">
+                      <textarea
+                        cols="3"
+                        rows="5"
+                        name="about"
+                        placeholder="Brief or short company description"
+                      ></textarea>
                     </div>
                   </div>
                 </div>
