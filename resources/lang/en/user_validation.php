@@ -137,5 +137,14 @@
   'Amount cannot be less than 100₱' => 'Amount cannot be less than 100₱',
   'Your account has been deleted successfully' => 'Your account has been deleted successfully',
   'You can not delete your seller account' => 'You can not delete your seller account',
+  'max order' => 'Maximum Order Processing Time is required',
+  'confirm cemail' => 'Confirm Legal Representatives Email is required',
+  'confirm lemail' => 'Legal Representatives Email is required',
+  'position' => 'Position is required',
+  'lname' => 'Last Name is required',
+  'fname' => 'First Name is required',
+  'local' => 'Local currency (RON) is required',
+  'swift' => 'SWIFT is required',
+  'bank' => 'Bank is required',
 );
  ?>
