@@ -397,7 +397,7 @@ class UserProfileController extends Controller
             'swift'=>'required',
             'localCurrency'=>'required',
             'certificateRegistration'=>'required',
-            'idCardSignatory'=>'required|mimes:png|mimes:jpeg|mimes:jpg',
+            'idCardSignatory' => 'required|mimes:png,jpeg,jpg',
             'bankStatement'=>'required',
             'articlesOfIncorporation'=>'required',
             'firstName1'=>'required',
