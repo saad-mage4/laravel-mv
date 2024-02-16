@@ -160,6 +160,28 @@
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
+                    <label for="county">County</label>
+                    <div class="wsus__dash_pro_single">
+                    <select class="select_2" name="state" id="county">
+                        <option value="0" selected hidden>{{__('user.Select State')}}</option>
+                        @foreach ($states as $state)
+                            <option value="{{ $state->id }}">{{ $state->name }}</option>
+                        @endforeach
+                    </select>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
+                    <label for="locality">Locality</label>
+                    <div class="wsus__dash_pro_single">
+                    <select class="select_2" name="city" id="locality">
+                        <option value="0" selected hidden>{{__('user.Select City')}}</option>
+                        @foreach ($cities as $city)
+                            <option value="{{ $city->id }}">{{ $city->name }}</option>
+                        @endforeach
+                    </select>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-md-6">
                     <label for="company-name">Company name</label>
                     <div class="wsus__dash_pro_single">
                       <input
