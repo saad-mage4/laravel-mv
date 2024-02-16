@@ -349,7 +349,7 @@ class UserProfileController extends Controller
 
     public function cityByState($id){
         $cities = City::where(['status' => 1, 'country_state_id' => $id])->get();
-        $response='<option value="0">Select a City</option>';
+        $response='<option value="0">Select Locality</option>';
         if($cities->count() > 0){
             foreach($cities as $city){
                 $response .= "<option value=".$city->id.">".$city->name."</option>";
@@ -360,7 +360,10 @@ class UserProfileController extends Controller
 
     public function sellerRegistration(){
         $setting = Setting::first();
-        return view('user.seller_registration', compact('setting'));
+        $countries = Country::orderBy('name','asc')->where('status',1)->get();
+        $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
+        $cities = City::orderBy('name','asc')->where(['status' => 1])->get();
+        return view('user.seller_registration', compact('setting', 'states', 'cities'));
     }
 
     public function sellerRequest(Request $request){
@@ -381,10 +384,35 @@ class UserProfileController extends Controller
             'address'=>'required',
             'open_at'=>'required',
             'closed_at'=>'required',
+            'firstName'=>'required',
+            'lastName'=>'required',
+            'country'=>'required',
+            'state'=>'required',
+            'city'=>'required',
+            'companyName'=>'required',
+            'companyType'=>'required',
+            'urc'=>'required',
+            'iban'=>'required',
+            'bank'=>'required',
+            'swift'=>'required',
+            'localCurrency'=>'required',
+            'certificateRegistration'=>'required',
+            'idCardSignatory'=>'required|mimes:png|mimes:jpeg|mimes:jpg',
+            'bankStatement'=>'required',
+            'articlesOfIncorporation'=>'required',
+            'firstName1'=>'required',
+            'lastName1'=>'required',
+            'position'=>'required',
+            'legalEmail'=>'required',
+            'cLegalEmail'=>'required',
+            'maxOrderTime'=>'required',
             'agree_terms_condition' => 'required',
-            'nic_front_image'=>'required',
-            'nic_back_image'=>'required',
-            'pdf'=>'required|mimes:pdf'
+            'certificateRegistration'=>'required|mimes:pdf',
+            'bankStatement'=>'required|mimes:pdf',
+            'articlesOfIncorporation'=>'required|mimes:pdf'
+//            'nic_front_image'=>'required',
+//            'nic_back_image'=>'required',
+//            'pdf'=>'required|mimes:pdf'
         ];
 
         $customMessages = [
@@ -397,10 +425,36 @@ class UserProfileController extends Controller
             'address.required' => trans('user_validation.Address is required'),
             'open_at.required' => trans('user_validation.Open at is required'),
             'closed_at.required' => trans('user_validation.Close at is required'),
+            'firstName.required' => trans('user_validation.First Name is required'),
+            'lastName.required' => trans('user_validation.Last Name is required'),
+            'country.required' => trans('user_validation.Company headquarters country location is required'),
+            'state.required' => trans('user_validation.County is required'),
+            'city.required' => trans('user_validation.Locality is required'),
+            'companyName.required' => trans('user_validation.Company name is required'),
+            'companyType.required' => trans('user_validation.Company Type is required'),
+            'urc.required' => trans('user_validation.Unique Registration Code is required'),
+            'iban.required' => trans('user_validation.IBAN is required'),
+            'bank.required' => trans('user_validation.Bank is required'),
+            'swift.required' => trans('user_validation.SWIFT is required'),
+            'localCurrency.required' => trans('user_validation.Local currency (RON) is required'),
+            'certificateRegistration.required' => trans('user_validation.certificate required'),
+            'idCardSignatory.required' => trans('user_validation.ID Card required'),
+            'idCardSignatory.mimes' => trans('user_validation.ID Card Types'),
+            'bankStatement.required' => trans('user_validation.bank required'),
+            'articlesOfIncorporation.required' => trans('user_validation.article required'),
+            'firstName1.required' => trans('user_validation.First Name is required'),
+            'lastName1.required' => trans('user_validation.Last Name is required'),
+            'position.required' => trans('user_validation.Position is required'),
+            'legalEmail.required' => trans('user_validation.Legal Representatives Email is required'),
+            'cLegalEmail.required' => trans('user_validation.Confirm Legal Representatives Email is required'),
+            'maxOrderTime.required' => trans('user_validation.Maximum Order Processing Time is required'),
             'agree_terms_condition.required' => trans('user_validation.Agree field is required'),
-            'nic_front_image.required' => trans('user_validation.NIC front required'),
-            'nic_back_image.required' => trans('user_validation.NIC back required'),
-            'pdf.required' => trans('user_validation.pdf required'),
+            'certificateRegistration.mimes' => trans('user_validation.valid certificateRegistration'),
+            'bankStatement.mimes' => trans('user_validation.valid bankStatement'),
+            'articlesOfIncorporation.mimes' => trans('user_validation.valid articlesOfIncorporation'),
+//            'nic_front_image.required' => trans('user_validation.NIC front required'),
+//            'nic_back_image.required' => trans('user_validation.NIC back required'),
+//            'pdf.required' => trans('user_validation.pdf required'),
             'pdf.mimes' => trans('user_validation.valid pdf'),
         ];
         $this->validate($request, $rules,$customMessages);
@@ -416,12 +470,36 @@ class UserProfileController extends Controller
         $seller->greeting_msg = trans('user_validation.Welcome to'). ' '. $request->shop_name;
         $seller->open_at = $request->open_at;
         $seller->closed_at = $request->closed_at;
+        $seller->firstName = $request->firstName;
+        $seller->lastName = $request->lastName;
+        $seller->postalCode = $request->postalCode;
+        $seller->country = $request->country;
+        $seller->state = $request->state;
+        $seller->city = $request->city;
+        $seller->companyName = $request->companyName;
+        $seller->companyType = $request->companyType;
+        $seller->urc = $request->urc;
+        $seller->vat = $request->vat;
+        $seller->iban = $request->iban;
+        $seller->bank = $request->bank;
+        $seller->swift = $request->swift;
+        $seller->localCurrency = $request->localCurrency;
+        $seller->producer = $request->producer;
+        $seller->about = $request->about;
+        $seller->firstName1 = $request->firstName1;
+        $seller->lastName1 = $request->lastName1;
+        $seller->position = $request->position;
+        $seller->legalEmail = $request->legalEmail;
+        $seller->cLegalEmail = $request->cLegalEmail;
+        $seller->catcheck = $request->cat_check;
+        $seller->period = $request->period;
+        $seller->maxOrderTime = $request->maxOrderTime;
         $seller->user_id = $user->id;
         $seller->seo_title = $request->shop_name;
         $seller->seo_description = $request->shop_name;
 
         if($request->banner_image){
-            $exist_front_nic = $seller->banner_image;
+            $exist_front_nic = $seller->banner_image; // Correct variable name
             $extention = $request->banner_image->getClientOriginalExtension();
             $banner_name = 'seller-banner'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
             $banner_name = 'uploads/custom-images/'.$banner_name;
@@ -430,7 +508,8 @@ class UserProfileController extends Controller
             $seller->banner_image = $banner_name;
             $seller->save();
             if($exist_front_nic){
-                if(File::exists(public_path().'/'.$exist_banner))unlink(public_path().'/'.$exist_banner);
+                if(File::exists(public_path().'/'.$exist_front_nic)) // Correct variable name
+                    unlink(public_path().'/'.$exist_front_nic); // Correct variable name
             }
         }
 
@@ -448,6 +527,8 @@ class UserProfileController extends Controller
             }
         }
 
+
+
         if($request->nic_back_image){
             $exist_back_nic = $seller->nic_back_image;
             $extention_b = $request->nic_back_image->getClientOriginalExtension();
@@ -462,31 +543,122 @@ class UserProfileController extends Controller
             }
         }
 
+        if($request->idCardSignatory){
+            $exist_id_Card = $seller->idCardSignatory;
+            $extention_c = $request->idCardSignatory->getClientOriginalExtension();
+            $id_card = 'id-card'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_c;
+            $id_card = 'uploads/custom-images/'.$id_card;
+            Image::make($request->idCardSignatory)
+                ->save(public_path().'/'.$id_card);
+            $seller->idCardSignatory = $id_card;
+            $seller->save();
+            if($exist_id_Card){
+                if(File::exists(public_path().'/'.$exist_id_Card))unlink(public_path().'/'.$exist_id_Card);
+            }
+        }
+
         if ($request->hasFile('pdf')) {
             // Check if the custom folder exists, create if not
             $customFolderPath = public_path('uploads/custom-pdf');
             if (!File::exists($customFolderPath)) {
                 File::makeDirectory($customFolderPath, 0777, true, true);
             }
-        
+
             $pdf = $seller->pdf;
             $extention_pdf = $request->file('pdf')->getClientOriginalExtension();
             $pdf_file = 'seller-pdf-' . date('Y-m-d-h-i-s') . '-' . rand(999, 9999) . '.' . $extention_pdf;
             $pdf_file_path = 'uploads/custom-pdf/' . $pdf_file;
-        
+
             // Move the file to the custom folder
             $request->file('pdf')->move($customFolderPath, $pdf_file);
-        
+
             // Update the seller's pdf field in the database
             $seller->pdf = $pdf_file_path;
             $seller->save();
-        
+
             // Delete the old PDF if it exists
             if ($pdf && File::exists(public_path($pdf))) {
                 unlink(public_path($pdf));
             }
         }
-        
+
+        if ($request->hasFile('certificateRegistration')) {
+            // Check if the custom folder exists, create if not
+            $customFolderPath = public_path('uploads/custom-pdf');
+            if (!File::exists($customFolderPath)) {
+                File::makeDirectory($customFolderPath, 0777, true, true);
+            }
+
+            $pdf1 = $seller->certificateRegistration;
+            $extention_pdf = $request->file('certificateRegistration')->getClientOriginalExtension();
+            $pdf_file = 'seller-pdf-' . date('Y-m-d-h-i-s') . '-' . rand(999, 9999) . '.' . $extention_pdf;
+            $pdf_file_path = 'uploads/custom-pdf/' . $pdf_file;
+
+            // Move the file to the custom folder
+            $request->file('certificateRegistration')->move($customFolderPath, $pdf_file);
+
+            // Update the seller's pdf field in the database
+            $seller->certificateRegistration = $pdf_file_path;
+            $seller->save();
+
+            // Delete the old PDF if it exists
+            if ($pdf1 && File::exists(public_path($pdf1))) {
+                unlink(public_path($pdf1));
+            }
+        }
+
+        if ($request->hasFile('bankStatement')) {
+            // Check if the custom folder exists, create if not
+            $customFolderPath = public_path('uploads/custom-pdf');
+            if (!File::exists($customFolderPath)) {
+                File::makeDirectory($customFolderPath, 0777, true, true);
+            }
+
+            $pdf2 = $seller->bankStatement;
+            $extention_pdf = $request->file('bankStatement')->getClientOriginalExtension();
+            $pdf_file = 'seller-pdf-' . date('Y-m-d-h-i-s') . '-' . rand(999, 9999) . '.' . $extention_pdf;
+            $pdf_file_path = 'uploads/custom-pdf/' . $pdf_file;
+
+            // Move the file to the custom folder
+            $request->file('bankStatement')->move($customFolderPath, $pdf_file);
+
+            // Update the seller's pdf field in the database
+            $seller->bankStatement = $pdf_file_path;
+            $seller->save();
+
+            // Delete the old PDF if it exists
+            if ($pdf2 && File::exists(public_path($pdf2))) {
+                unlink(public_path($pdf2));
+            }
+        }
+
+        if ($request->hasFile('articlesOfIncorporation')) {
+            // Check if the custom folder exists, create if not
+            $customFolderPath = public_path('uploads/custom-pdf');
+            if (!File::exists($customFolderPath)) {
+                File::makeDirectory($customFolderPath, 0777, true, true);
+            }
+
+            $pdf3 = $seller->articlesOfIncorporation;
+            $extention_pdf = $request->file('articlesOfIncorporation')->getClientOriginalExtension();
+            $pdf_file = 'seller-pdf-' . date('Y-m-d-h-i-s') . '-' . rand(999, 9999) . '.' . $extention_pdf;
+            $pdf_file_path = 'uploads/custom-pdf/' . $pdf_file;
+
+            // Move the file to the custom folder
+            $request->file('articlesOfIncorporation')->move($customFolderPath, $pdf_file);
+
+            // Update the seller's pdf field in the database
+            $seller->articlesOfIncorporation = $pdf_file_path;
+            $seller->save();
+
+            // Delete the old PDF if it exists
+            if ($pdf3 && File::exists(public_path($pdf3))) {
+                unlink(public_path($pdf3));
+            }
+        }
+
+
+
         $seller->save();
         $notification = trans('user_validation.Request sumited successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
