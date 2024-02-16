@@ -141,10 +141,14 @@
   'confirm cemail' => 'Confirm Legal Representatives Email is required',
   'confirm lemail' => 'Legal Representatives Email is required',
   'position' => 'Position is required',
-  'lname' => 'Last Name is required',
-  'fname' => 'First Name is required',
+  'lastName' => 'Last Name is required',
+  'firstName' => 'First Name is required',
   'local' => 'Local currency (RON) is required',
   'swift' => 'SWIFT is required',
   'bank' => 'Bank is required',
+  'iban' => 'IBAN is required',
+  'urc' => 'Unique Registration Code is required',
+  'companytype' => 'Company Type is required',
+  'companyname' => 'Company name is required',
 );
  ?>
