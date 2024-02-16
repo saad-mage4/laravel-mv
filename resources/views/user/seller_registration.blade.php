@@ -384,13 +384,13 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="info">
-                      <i class="fas fa-info"></i> Please choose between 1 and 5 product categories that you sell. The list of categories displayed below is generic, so please select the closest categories to your field. This step is mandatory for the continuation of the registration process. 
+                      <i class="fas fa-info"></i> Please choose between 1 and 5 product categories that you sell. The list of categories displayed below is generic, so please select the closest categories to your field. This step is mandatory for the continuation of the registration process.
                     </div>
                   </div>
                   @foreach ($productCategories as $key => $category)
                     <div class="col-3 mb-3">
                       <div class="check_box">
-                        <input type="checkbox" name="cat_check[]" value="category->name}}" id="category-{{$key}}">
+                        <input type="checkbox" name="cat_check[]" value="{{category->name}}" id="category-{{$key}}">
                         <label for="category-{{$key}}">{{$category->name}}</label>
                       </div>
                     </div>
@@ -429,7 +429,7 @@
                         <input type="radio" id="period-4" name="period" required>
                       </div>
                     </div>
-                  </div>             
+                  </div>
                   <div class="col-xl-4 col-md-4">
                     <label for="maxOrderTime">Maximum Order Processing Time</label>
                     <div class="wsus__dash_pro_single">
@@ -484,7 +484,7 @@
                         $("#city_id").html(response);
                     }
                 });
-                
+
                 $(document).on('click', '.next', function(e){
                   e.preventDefault();
                   let form = $('#multiStepsForm').validate();
@@ -513,8 +513,8 @@
 
                 // $(document).on('click', '.next', function(e){
                 //   e.preventDefault();
-                  
-                  
+
+
                 // });
 
             });
