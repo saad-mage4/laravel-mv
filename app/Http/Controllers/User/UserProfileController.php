@@ -369,6 +369,7 @@ class UserProfileController extends Controller
     public function sellerRequest(Request $request){
 
         $user = Auth::guard('web')->user();
+        $categoryChecks = implode(',',$request->cat_check);
         $seller = Vendor::where('user_id',$user->id)->first();
         if($seller){
             $notification = 'Request Already exist';
@@ -407,9 +408,9 @@ class UserProfileController extends Controller
             'cLegalEmail'=>'required',
             'maxOrderTime'=>'required',
             'agree_terms_condition' => 'required',
-            'certificateRegistration'=>'required|mimes:pdf',
-            'bankStatement'=>'required|mimes:pdf',
-            'articlesOfIncorporation'=>'required|mimes:pdf'
+            'certificateRegistration'=>'required|mimes:pdf,png,jpeg,jpg',
+            'bankStatement'=>'required|mimes:pdf,png,jpeg,jpg',
+            'articlesOfIncorporation'=>'required|mimes:pdf,png,jpeg,jpg'
 //            'nic_front_image'=>'required',
 //            'nic_back_image'=>'required',
 //            'pdf'=>'required|mimes:pdf'
@@ -491,7 +492,7 @@ class UserProfileController extends Controller
         $seller->position = $request->position;
         $seller->legalEmail = $request->legalEmail;
         $seller->cLegalEmail = $request->cLegalEmail;
-        $seller->catcheck = $request->cat_check;
+        $seller->catcheck = $categoryChecks;
         $seller->period = $request->period;
         $seller->maxOrderTime = $request->maxOrderTime;
         $seller->user_id = $user->id;
