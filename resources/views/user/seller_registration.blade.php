@@ -485,6 +485,13 @@
                     }
                 });
 
+                $('input[name*="cat_check"]').change(function() {
+                  if ($('input[name*="cat_check"]:checked').length === 5) {
+                    $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events','none');
+                  } else {
+                    $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events','auto');
+                  }
+                });
                 $(document).on('click', '.next', function(e){
                   e.preventDefault();
                   let form = $('#multiStepsForm').validate();
@@ -496,6 +503,7 @@
                   } else {
                   }
                 });
+
 
               $(document).on('click', '.prev', function(e){
                   e.preventDefault();
