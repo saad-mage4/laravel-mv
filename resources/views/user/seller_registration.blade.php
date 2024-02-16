@@ -387,128 +387,14 @@
                       <i class="fas fa-info"></i> Please choose between 1 and 5 product categories that you sell. The list of categories displayed below is generic, so please select the closest categories to your field. This step is mandatory for the continuation of the registration process. 
                     </div>
                   </div>
-                  <div class="col-md-3">
-                    <!-- Tabs nav -->
-                    <div class="nav flex-column nav-pills nav-pills-custom" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                      <a class="nav-link mb-3 p-3 shadow active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">
-                        <span class="font-weight-bold small text-uppercase">Personal information</span></a>
-
-                      <a class="nav-link mb-3 p-3 shadow" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                        <span class="font-weight-bold small text-uppercase">Bookings</span></a>
-
-                      <a class="nav-link mb-3 p-3 shadow" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">
-                        <span class="font-weight-bold small text-uppercase">Reviews</span></a>
-
-                      <a class="nav-link mb-3 p-3 shadow" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">
-                        <span class="font-weight-bold small text-uppercase">Confirm booking</span></a>
-                    </div>
-                  </div>
-
-                  <div class="col-md-9 mb-4">
-                    <!-- Tabs content -->
-                    <div class="tab-content" id="v-pills-tabContent">
-                      <div class="tab-pane fade shadow rounded bg-white show active p-5" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                        <h4 class="font-italic mb-4">
-                          Personal information
-                        </h4>
-                        <div class="range-checkbox-main">
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check" value="Other Items">
-                            <label for="check">Other Items</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check1" value="SDA Others">
-                            <label for="check1">SDA Others</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check2" value="Other Photos">
-                            <label for="check2">Other Photos</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check3" value="Camera, Videos &amp; Accessories">
-                            <label for="check3">Camera, Videos &amp; Accessories</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check4" value="Gaming Hardware">
-                            <label for="check4">Gaming Hardware</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check5" value="MDA Others">
-                            <label for="check5">MDA Others</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check6" value="AC Others">
-                            <label for="check6">AC Others</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check7" value="">
-                            <label for="check7">TV ACC</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check8" value="Audo Video &amp; Hifi">
-                            <label for="check8">Audo Video &amp; Hifi</label>
-                          </div>
-                          <div class="check-item">
-                            <input type="checkbox" name="cat_check[]" id="check9" value="Aparate Photo &amp; DSLR">
-                            <label for="check9">Aparate Photo &amp; DSLR</label>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="tab-pane fade shadow rounded bg-white p-5" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                        <h4 class="font-italic mb-4">Bookings</h4>
-                        <p class="font-italic text-muted mb-2">
-                          Lorem ipsum dolor sit amet, consectetur
-                          adipisicing elit, sed do eiusmod tempor
-                          incididunt ut labore et dolore magna aliqua.
-                          Ut enim ad minim veniam, quis nostrud
-                          exercitation ullamco laboris nisi ut aliquip
-                          ex ea commodo consequat. Duis aute irure dolor
-                          in reprehenderit in voluptate velit esse
-                          cillum dolore eu fugiat nulla pariatur.
-                          Excepteur sint occaecat cupidatat non
-                          proident, sunt in culpa qui officia deserunt
-                          mollit anim id est laborum.
-                        </p>
-                      </div>
-
-                      <div class="tab-pane fade shadow rounded bg-white p-5" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-                        <h4 class="font-italic mb-4">Reviews</h4>
-                        <p class="font-italic text-muted mb-2">
-                          Lorem ipsum dolor sit amet, consectetur
-                          adipisicing elit, sed do eiusmod tempor
-                          incididunt ut labore et dolore magna aliqua.
-                          Ut enim ad minim veniam, quis nostrud
-                          exercitation ullamco laboris nisi ut aliquip
-                          ex ea commodo consequat. Duis aute irure dolor
-                          in reprehenderit in voluptate velit esse
-                          cillum dolore eu fugiat nulla pariatur.
-                          Excepteur sint occaecat cupidatat non
-                          proident, sunt in culpa qui officia deserunt
-                          mollit anim id est laborum.
-                        </p>
-                      </div>
-
-                      <div class="tab-pane fade shadow rounded bg-white p-5" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
-                        <h4 class="font-italic mb-4">
-                          Confirm booking
-                        </h4>
-                        <p class="font-italic text-muted mb-2">
-                          Lorem ipsum dolor sit amet, consectetur
-                          adipisicing elit, sed do eiusmod tempor
-                          incididunt ut labore et dolore magna aliqua.
-                          Ut enim ad minim veniam, quis nostrud
-                          exercitation ullamco laboris nisi ut aliquip
-                          ex ea commodo consequat. Duis aute irure dolor
-                          in reprehenderit in voluptate velit esse
-                          cillum dolore eu fugiat nulla pariatur.
-                          Excepteur sint occaecat cupidatat non
-                          proident, sunt in culpa qui officia deserunt
-                          mollit anim id est laborum.
-                        </p>
+                  @foreach ($productCategories as $key => $category)
+                    <div class="col-3 mb-3">
+                      <div class="check_box">
+                        <input type="checkbox" name="cat_check[]" id="category-{{$key}}">
+                        <label for="category-{{$key}}">{{$category->name}}</label>
                       </div>
                     </div>
-                  </div>
+                  @endforeach
                 </div>
               </div>
 

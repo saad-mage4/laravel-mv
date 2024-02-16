@@ -23,7 +23,7 @@ use App\Models\BannerImage;
 use App\Models\User;
 use App\Rules\Captcha;
 use App\Models\Message;
-
+use App\Models\Category;
 use App\Models\OrderProductVariant;
 use App\Models\OrderAddress;
 
@@ -363,7 +363,8 @@ class UserProfileController extends Controller
         $countries = Country::orderBy('name','asc')->where('status',1)->get();
         $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
         $cities = City::orderBy('name','asc')->where(['status' => 1])->get();
-        return view('user.seller_registration', compact('setting', 'states', 'cities'));
+        $productCategories = Category::where(['status' => 1])->get();
+        return view('user.seller_registration', compact('setting', 'states', 'cities','productCategories'));
     }
 
     public function sellerRequest(Request $request){
