@@ -390,7 +390,7 @@
                   @foreach ($productCategories as $key => $category)
                     <div class="col-3 mb-3">
                       <div class="check_box">
-                        <input type="checkbox" name="cat_check[]" id="category-{{$key}}">
+                        <input type="checkbox" name="cat_check[]" value="category->name}}" id="category-{{$key}}">
                         <label for="category-{{$key}}">{{$category->name}}</label>
                       </div>
                     </div>
