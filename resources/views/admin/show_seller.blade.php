@@ -154,20 +154,20 @@
                                 <tr>
                                     <td>Download Certificate Registration</td>
                                     <td>
-                                        <a download href="http://127.0.0.1:8000/<?=$certificateRegistration?>" class="btn btn-primary">Download</a>
+                                        <a download href="{{url($certificateRegistration)}}" class="btn btn-primary">Download</a>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>Bank Statement</td>
                                     <td>
-                                        <a download href="http://127.0.0.1:8000/<?=$bankStatement?>" class="btn btn-success">Download</a>
+                                        <a download href="{{url($bankStatement)}}" class="btn btn-success">Download</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Articles Of Incorporation</td>
                                     <td>
-                                        <a download href="http://127.0.0.1:8000/<?=$articlesOfIncorporation?>" class="btn btn-info">Download</a>
+                                        <a download href="{{url($articlesOfIncorporation)}}" class="btn btn-info">Download</a>
                                     </td>
                                 </tr>
                                 
@@ -324,7 +324,7 @@
 
                         </form>
                         <h3 class="text-center">ID Card Signatory</h3>
-                        <img src="http://127.0.0.1:8000/<?=$idCardSignatory?>" alt="idCard" class="idCard">
+                        <img src="{{url($idCardSignatory)}}" alt="idCard" class="idCard">
                     </div>
                 </div>
               </div>
