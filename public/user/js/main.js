@@ -576,27 +576,4 @@ $(function() {
         $('.dash_close').toggleClass('dash_opasity');
 
     });
-
-$(document).on('click', '.next', function(e){
-    e.preventDefault();
-    $(this).parents('.form_step').addClass('d-none').next().removeClass('d-none');
-    let index = $(this).parents('.form_step').index()+1;
-    $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
-});
-
-$(document).on('click', '.prev', function(e){
-    e.preventDefault();
-    $(this).parents('.form_step').addClass('d-none').prev().removeClass('d-none');
-    let index = $(this).parents('.form_step').index()-1;
-    $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
-});
-
-$(document).on('click', '[id="v-pills-tab"] a', function(e) {
-    e.preventDefault();
-    $(this).addClass('active').siblings().removeClass('active');
-    let index = $(this).index()+1;
-    $(`[id="v-pills-tabContent"] .tab-pane:nth-child(${index})`).addClass('active show').siblings().removeClass('active show');
-});
-
-
 });

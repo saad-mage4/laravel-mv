@@ -38,6 +38,7 @@
     @include('theme_style_css')
     <!--jquery library js-->
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('user/js/jquery.validate.min.js') }}"></script>
 
     <script>
         var capmaign_time = 0;

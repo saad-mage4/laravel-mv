@@ -9978,6 +9978,15 @@ textarea::placeholder {
 
 /* extra css end here */
 
+.wsus__dash_pro_single {
+	position: relative;
+}
+label.error {
+	color: #f00;
+    position: absolute;
+    bottom: -25px;
+}
+
 .radio-1,
 .radio-2 {
     width: 200px;

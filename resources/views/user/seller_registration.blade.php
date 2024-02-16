@@ -37,7 +37,7 @@
                 </ul>
               </div>
             </div>
-          <form action="{{ route('user.seller-request') }}" method="POST" enctype="multipart/form-data">
+          <form id="multiStepsForm" action="{{ route('user.seller-request') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <!-- Step 1 -->
             <div class="row form_step">
@@ -51,13 +51,14 @@
                         id="shop-name"
                         placeholder="{{__('user.Shop Name')}}"
                         name="shop_name"
+                        required
                       />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="">{{__('user.Banner Image')}}</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="file" name="banner_image" />
+                      <input type="file" name="banner_image" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -68,6 +69,7 @@
                         id="FirstName"
                         placeholder="First Name"
                         name="firstName"
+                        required
                       />
                     </div>
                   </div>
@@ -79,6 +81,7 @@
                         id="LastName"
                         placeholder="Last Name"
                         name="lastName"
+                        required
                       />
                     </div>
                   </div>
@@ -86,13 +89,13 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="email">Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" placeholder="{{__('user.Email')}}" name="email" />
+                      <input type="email" placeholder="{{__('user.Email')}}" name="email" required/>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Phone Number">Phone Number</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" />
+                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" required/>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -103,6 +106,7 @@
                         id="address"
                         placeholder="Address"
                         name="address"
+                        required
                       />
                     </div>
                   </div>
@@ -117,6 +121,7 @@
                         data-align="top"
                         data-autoclose="true"
                         autocomplete="off"
+                        required
                       />
                     </div>
                   </div>
@@ -131,6 +136,7 @@
                         data-align="top"
                         data-autoclose="true"
                         autocomplete="off"
+                        required
                       />
                     </div>
                   </div>
@@ -142,6 +148,7 @@
                         id="postal-code"
                         placeholder="Postal Code"
                         name="postalCode"
+                        required
                       />
                     </div>
                   </div>
@@ -154,7 +161,6 @@
                         name="country"
                         class="form-control"
                         value="Romania"
-                        required
                         readonly
                       />
                     </div>
@@ -162,8 +168,8 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="state_id">County</label>
                     <div class="wsus__dash_pro_single">
-                    <select class="select_2" name="state" id="state_id">
-                        <option value="0" selected hidden>{{__('user.Select State')}}</option>
+                    <select class="select_2" name="state" id="state_id" required>
+                        <option value="" selected hidden>{{__('user.Select State')}}</option>
                         @foreach ($states as $state)
                             <option value="{{ $state->id }}">{{ $state->name }}</option>
                         @endforeach
@@ -173,8 +179,8 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="city_id">Locality</label>
                     <div class="wsus__dash_pro_single">
-                    <select class="select_2" name="city" id="city_id">
-                        <option value="0" selected hidden>{{__('user.Select City')}}</option>
+                    <select class="select_2" name="city" id="city_id" required>
+                        <option value="" selected hidden>{{__('user.Select City')}}</option>
                         @foreach ($cities as $city)
                             <option value="{{ $city->id }}">{{ $city->name }}</option>
                         @endforeach
@@ -189,6 +195,7 @@
                         id="company-name"
                         placeholder="Company name"
                         name="companyName"
+                        required
                       />
                     </div>
                   </div>
@@ -201,6 +208,7 @@
                         id="company-type"
                         placeholder="Company Type"
                         name="companyType"
+                        required
                       />
                     </div>
                   </div>
@@ -212,18 +220,21 @@
                         id="urc"
                         placeholder="Unique Registration Code"
                         name="urc"
+                        required
                       />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
-                    <label for="VAT-payer">VAT payer</label>
-                    <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="VAT-payer"
-                        placeholder="VAT payer"
-                        name="vat"
-                      />
+                    <label for="Vat-Payer">VAT Payer</label>
+                    <div class="wsus__dash_pro_single gap-3">
+                      <div class="radio-1">
+                        <label for="vat-payer-1"></label>
+                        <input type="radio" id="vat-payer-1" name="vat" required>
+                      </div>
+                      <div class="radio-2">
+                        <label for="vat-payer-2"></label>
+                        <input type="radio" id="vat-payer-2" name="vat" required checked>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -249,25 +260,25 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="IBAN">IBAN</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="IBAN" name="iban">
+                      <input type="text" placeholder="IBAN" name="iban" required>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Bank">Bank</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="Bank" name="bank">
+                      <input type="text" placeholder="Bank" name="bank" required>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="SWIFT">SWIFT</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="SWIFT" name="swift">
+                      <input type="text" placeholder="SWIFT" name="swift" required>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Local-currency">Local currency (RON)</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="Local-currency" name="localCurrency">
+                      <input type="text" placeholder="Local-currency" name="localCurrency" required>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -275,11 +286,11 @@
                     <div class="wsus__dash_pro_single gap-3">
                       <div class="radio-1">
                         <label for="producer-1"></label>
-                        <input type="radio" id="producer-1" name="producer">
+                        <input type="radio" id="producer-1" name="producer" required checked>
                       </div>
                       <div class="radio-2">
                         <label for="producer-2"></label>
-                        <input type="radio" id="producer-2" name="producer">
+                        <input type="radio" id="producer-2" name="producer" required>
                       </div>
                     </div>
                   </div>
@@ -297,6 +308,7 @@
                         rows="5"
                         name="about"
                         placeholder="Brief or short company description"
+                        required
                       ></textarea>
                     </div>
                   </div>
@@ -317,55 +329,43 @@
                   <div class="col-12 col-lg-3">
                     <label for="certificateRegistration">Certificate of registration</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="file" id="certificateRegistration" name="certificateRegistration">
+                      <input type="file" id="certificateRegistration" name="certificateRegistration" required>
                     </div>
                   </div>
                   <div class="col-12 col-lg-3">
                     <label for="idCardSignatory">ID Card of Signatory</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="file" id="idCardSignatory" name="idCardSignatory">
+                      <input type="file" id="idCardSignatory" name="idCardSignatory" required>
                     </div>
                   </div>
                   <div class="col-12 col-lg-3">
                     <label for="BankStatement">Bank Statement</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="file" id="BankStatement" name="bankStatement">
+                      <input type="file" id="BankStatement" name="bankStatement" required>
                     </div>
                   </div>
                   <div class="col-12 col-lg-3">
                     <label for="ArticlesOfIncorporation">Articles of Incorporation</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="file" id="ArticlesOfIncorporation" name="articlesOfIncorporation">
-                    </div>
-                  </div>
-                  <div class="col-xl-4 col-md-4">
-                    <label for="FirstName1">First Name</label>
-                    <div class="wsus__dash_pro_single">
-                      <input type="text" id="FirstName1" placeholder="First Name" name="firstName1">
-                    </div>
-                  </div>
-                  <div class="col-xl-4 col-md-4">
-                    <label for="LastName1">Last Name</label>
-                    <div class="wsus__dash_pro_single">
-                      <input type="text" id="LastName1" placeholder="Last Name" name="lastName1">
+                      <input type="file" id="ArticlesOfIncorporation" name="articlesOfIncorporation" required>
                     </div>
                   </div>
                   <div class="col-xl-4 col-md-4">
                     <label for="Position">Position</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="Position" placeholder="Last Name" name="position">
+                      <input type="text" id="Position" placeholder="Last Name" name="position" required>
                     </div>
                   </div>
-                  <div class="col-xl-6 col-md-6">
+                  <div class="col-xl-4 col-md-4">
                     <label for="legalEmail">Legal Representative's Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" id="legalEmail" placeholder="Legal Representative's Email" name="legalEmail">
+                      <input type="email" id="legalEmail" placeholder="Legal Representative's Email" name="legalEmail" required>
                     </div>
                   </div>
-                  <div class="col-xl-6 col-md-6">
+                  <div class="col-xl-4 col-md-4">
                     <label for="cLegalEmail">Confirm Legal Representative's Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" id="cLegalEmail" placeholder="Confirm Legal Representative's Email" name="cLegalEmail">
+                      <input type="email" id="cLegalEmail" placeholder="Confirm Legal Representative's Email" name="cLegalEmail" required>
                     </div>
                   </div>
                 </div>
@@ -528,32 +528,32 @@
                     <div class="wsus__dash_pro_single gap-3 flex-wrap">
                       <div class="radio-1">
                         <label class="label-period" for="period-1" title="14 Days"></label>
-                        <input type="radio" id="period-1" name="period">
+                        <input type="radio" id="period-1" name="period" checked required>
                       </div>
                       <div class="radio-2">
                         <label class="label-period" for="period-2" title="30 Days"></label>
-                        <input type="radio" id="period-2" name="period">
+                        <input type="radio" id="period-2" name="period" required>
                       </div>
                       <div class="radio-1">
                         <label class="label-period" for="period-3" title="60 Days"></label>
-                        <input type="radio" id="period-3" name="period">
+                        <input type="radio" id="period-3" name="period" required>
                       </div>
                       <div class="radio-2">
                         <label class="label-period" for="period-4" title="90 Days"></label>
-                        <input type="radio" id="period-4" name="period">
+                        <input type="radio" id="period-4" name="period" required>
                       </div>
                     </div>
                   </div>             
                   <div class="col-xl-4 col-md-4">
                     <label for="maxOrderTime">Maximum Order Processing Time</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="time" id="maxOrderTime" name="maxOrderTime">
+                      <input type="time" id="maxOrderTime" name="maxOrderTime" required>
                     </div>
                   </div>
                   <div class="col-xl-12">
                     <div class="terms_area">
-                      <div class="form-check">
-                        <input required name="agree_terms_condition" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked3">
+                      <div class="form-check position-relative">
+                        <input name="agree_terms_condition" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked3" required>
                         <label class="form-check-label" for="flexCheckChecked3">
                           {{__('user.I have read and agree with terms and conditions')}}
                         </label>
@@ -597,7 +597,40 @@
                         var response= "<option value=''>{{__('user.Select Locality')}}</option>";
                         $("#city_id").html(response);
                     }
-                })
+                });
+                
+                $(document).on('click', '.next', function(e){
+                  e.preventDefault();
+                  let form = $('#multiStepsForm').validate();
+                  let valid = $('#multiStepsForm').valid();
+                  if(valid){
+                    $(this).parents('.form_step').addClass('d-none').next().removeClass('d-none');
+                    let index = $(this).parents('.form_step').index()+1;
+                    $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
+                  } else {
+                  }
+                });
+
+              $(document).on('click', '.prev', function(e){
+                  e.preventDefault();
+                  $(this).parents('.form_step').addClass('d-none').prev().removeClass('d-none');
+                  let index = $(this).parents('.form_step').index()-1;
+                  $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
+                });
+
+              $(document).on('click', '[id="v-pills-tab"] a', function(e) {
+                  e.preventDefault();
+                  $(this).addClass('active').siblings().removeClass('active');
+                  let index = $(this).index()+1;
+                  $(`[id="v-pills-tabContent"] .tab-pane:nth-child(${index})`).addClass('active show').siblings().removeClass('active show');
+                });
+
+                // $(document).on('click', '.next', function(e){
+                //   e.preventDefault();
+                  
+                  
+                // });
+
             });
         })(jQuery);
     </script>
