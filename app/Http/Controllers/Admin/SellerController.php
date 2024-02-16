@@ -51,6 +51,12 @@ class SellerController extends Controller
 
     public function show($id){
         $seller = Vendor::find($id);
+        // Extra Fields
+        $certificateRegistration = $seller->certificateRegistration;
+        $bankStatement = $seller->bankStatement;
+        $articlesOfIncorporation = $seller->articlesOfIncorporation;
+        $idCardSignatory = $seller->idCardSignatory;
+
         if($seller){
             $countries = Country::orderBy('name','asc')->where('status',1)->get();
             $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $seller->user->country_id])->get();
@@ -72,7 +78,7 @@ class SellerController extends Controller
 
             $defaultProfile = BannerImage::whereId('15')->first();
             $setting = Setting::first();
-            return view('admin.show_seller',compact('seller','countries','cities','states','user','totalWithdraw','totalAmount','totalSoldProduct','totalPendingWithdraw','defaultProfile','setting'));
+            return view('admin.show_seller',compact('seller','countries','cities','states','user','totalWithdraw','totalAmount','totalSoldProduct','totalPendingWithdraw','defaultProfile','setting','certificateRegistration','idCardSignatory','bankStatement','articlesOfIncorporation'));
         }else{
             $notification = trans('admin_validation.Something went wrong');
             $notification = array('messege'=>$notification,'alert-type'=>'error');

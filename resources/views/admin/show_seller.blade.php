@@ -151,7 +151,26 @@
                                     </td>
                                 </tr>
 
+                                <tr>
+                                    <td>Download Certificate Registration</td>
+                                    <td>
+                                        <a download href="http://127.0.0.1:8000/<?=$certificateRegistration?>" class="btn btn-primary">Download</a>
+                                    </td>
+                                </tr>
 
+                                <tr>
+                                    <td>Bank Statement</td>
+                                    <td>
+                                        <a download href="http://127.0.0.1:8000/<?=$bankStatement?>" class="btn btn-success">Download</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Articles Of Incorporation</td>
+                                    <td>
+                                        <a download href="http://127.0.0.1:8000/<?=$articlesOfIncorporation?>" class="btn btn-info">Download</a>
+                                    </td>
+                                </tr>
+                                
                             </table>
                         </div>
                     </div>
@@ -304,6 +323,8 @@
                             </div>
 
                         </form>
+                        <h3 class="text-center">ID Card Signatory</h3>
+                        <img src="http://127.0.0.1:8000/<?=$idCardSignatory?>" alt="idCard" class="idCard">
                     </div>
                 </div>
               </div>
