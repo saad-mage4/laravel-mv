@@ -160,9 +160,9 @@
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
-                    <label for="county">County</label>
+                    <label for="state_id">County</label>
                     <div class="wsus__dash_pro_single">
-                    <select class="select_2" name="state" id="county">
+                    <select class="select_2" name="state" id="state_id">
                         <option value="0" selected hidden>{{__('user.Select State')}}</option>
                         @foreach ($states as $state)
                             <option value="{{ $state->id }}">{{ $state->name }}</option>
@@ -171,9 +171,9 @@
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
-                    <label for="locality">Locality</label>
+                    <label for="city_id">Locality</label>
                     <div class="wsus__dash_pro_single">
-                    <select class="select_2" name="city" id="locality">
+                    <select class="select_2" name="city" id="city_id">
                         <option value="0" selected hidden>{{__('user.Select City')}}</option>
                         @foreach ($cities as $city)
                             <option value="{{ $city->id }}">{{ $city->name }}</option>
@@ -550,6 +550,16 @@
                       <input type="time" id="maxOrderTime" name="maxOrderTime">
                     </div>
                   </div>
+                  <div class="col-xl-12">
+                    <div class="terms_area">
+                      <div class="form-check">
+                        <input required name="agree_terms_condition" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked3">
+                        <label class="form-check-label" for="flexCheckChecked3">
+                          {{__('user.I have read and agree with terms and conditions')}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -566,4 +576,30 @@
     </div>
   </div>
 </div>
+
+<script>
+        (function($) {
+            "use strict";
+            $(document).ready(function () {
+                $("#state_id").on("change",function(){
+                    var countryId = $("#state_id").val();
+                    if(countryId){
+                        $.ajax({
+                            type:"get",
+                            url:"{{url('/user/city-by-state/')}}"+"/"+countryId,
+                            success:function(response){
+                                $("#city_id").html(response.cities);
+                            },
+                            error:function(err){
+                            }
+                        })
+                    }else{
+                        var response= "<option value=''>{{__('user.Select Locality')}}</option>";
+                        $("#city_id").html(response);
+                    }
+                })
+            });
+        })(jQuery);
+    </script>
+
   @endsection
