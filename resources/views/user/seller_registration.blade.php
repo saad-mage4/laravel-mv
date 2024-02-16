@@ -413,43 +413,43 @@
                         </h4>
                         <div class="range-checkbox-main">
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check" value="Other Items">
+                            <input type="checkbox" name="cat_check" id="check" value="Other Items">
                             <label for="check">Other Items</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check1" value="SDA Others">
+                            <input type="checkbox" name="cat_check" id="check1" value="SDA Others">
                             <label for="check1">SDA Others</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check2" value="Other Photos">
+                            <input type="checkbox" name="cat_check" id="check2" value="Other Photos">
                             <label for="check2">Other Photos</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check3" value="Camera, Videos &amp; Accessories">
+                            <input type="checkbox" name="cat_check" id="check3" value="Camera, Videos &amp; Accessories">
                             <label for="check3">Camera, Videos &amp; Accessories</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check4" value="Gaming Hardware">
+                            <input type="checkbox" name="cat_check" id="check4" value="Gaming Hardware">
                             <label for="check4">Gaming Hardware</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check5" value="MDA Others">
+                            <input type="checkbox" name="cat_check" id="check5" value="MDA Others">
                             <label for="check5">MDA Others</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check6" value="AC Others">
+                            <input type="checkbox" name="cat_check" id="check6" value="AC Others">
                             <label for="check6">AC Others</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check7" value="">
+                            <input type="checkbox" name="cat_check" id="check7" value="">
                             <label for="check7">TV ACC</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check8" value="Audo Video &amp; Hifi">
+                            <input type="checkbox" name="cat_check" id="check8" value="Audo Video &amp; Hifi">
                             <label for="check8">Audo Video &amp; Hifi</label>
                           </div>
                           <div class="check-item">
-                            <input type="checkbox" name="cat-check" id="check9" value="Aparate Photo &amp; DSLR">
+                            <input type="checkbox" name="cat_check" id="check9" value="Aparate Photo &amp; DSLR">
                             <label for="check9">Aparate Photo &amp; DSLR</label>
                           </div>
                         </div>
