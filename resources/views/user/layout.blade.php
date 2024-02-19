@@ -126,8 +126,17 @@
 
 
           <li><a class="{{ Route::is('user.change-password') ? 'active' : '' }}" href="{{ route('user.change-password') }}"><i class="fal fa-gift-card"></i> {{__('user.Change Password')}}</a></li>
-
-          <li><a onclick="return confirm('Are you sure ?')" class="{{ Route::is('user.delete-account') ? 'active' : '' }}" href="{{ route('user.delete-account') }}"><i class="fal fa-trash"></i> {{__('user.Delete Account')}}</a></li>
+        
+          @if ($setting->enable_multivendor == 1)
+                @php
+                    $authUser = Auth::guard('web')->user();
+                    $isSeller = App\Models\Vendor::where('user_id', $authUser->id)->first();
+                @endphp
+            @if ($isSeller)
+            @else
+                <li><a onclick="return confirm('Are you sure ?')" class="{{ Route::is('user.delete-account') ? 'active' : '' }}" href="{{ route('user.delete-account') }}"><i class="fal fa-trash"></i> {{__('user.Delete Account')}}</a></li>
+            @endif
+          @endif
 
           <li><a href="{{ route('user.logout') }}"><i class="far fa-sign-out-alt"></i> {{__('user.Log out')}}</a></li>
         </ul>

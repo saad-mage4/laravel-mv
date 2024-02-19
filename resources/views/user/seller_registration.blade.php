@@ -52,6 +52,7 @@
                         placeholder="{{__('user.Shop Name')}}"
                         name="shop_name"
                         required
+                        value="{{old('shop_name')}}"
                       />
                     </div>
                   </div>
@@ -69,6 +70,7 @@
                         id="FirstName"
                         placeholder="First Name"
                         name="firstName"
+                        value="{{old('firstName')}}"
                         required
                       />
                     </div>
@@ -81,6 +83,7 @@
                         id="LastName"
                         placeholder="Last Name"
                         name="lastName"
+                        value="{{old('lastName')}}"
                         required
                       />
                     </div>
@@ -89,13 +92,13 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="email">Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" placeholder="{{__('user.Email')}}" name="email" required/>
+                      <input type="email" placeholder="{{__('user.Email')}}" name="email" required value="{{old('email')}}"/>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Phone Number">Phone Number</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" required/>
+                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" required value="{{old('phone')}}"/>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -106,6 +109,7 @@
                         id="address"
                         placeholder="Address"
                         name="address"
+                        value="{{old('address')}}"
                         required
                       />
                     </div>
@@ -121,6 +125,7 @@
                         data-align="top"
                         data-autoclose="true"
                         autocomplete="off"
+                        value="{{old('open_at')}}"
                         required
                       />
                     </div>
@@ -136,6 +141,7 @@
                         data-align="top"
                         data-autoclose="true"
                         autocomplete="off"
+                        value="{{old('closed_at')}}"
                         required
                       />
                     </div>
@@ -148,6 +154,7 @@
                         id="postal-code"
                         placeholder="Postal Code"
                         name="postalCode"
+                        value="{{old('postalCode')}}"
                         required
                       />
                     </div>
@@ -169,7 +176,7 @@
                     <label for="state_id">County</label>
                     <div class="wsus__dash_pro_single">
                     <select class="select_2" name="state" id="state_id" required>
-                        <option value="" selected hidden>{{__('user.Select State')}}</option>
+                        <option value="{{(old('state') != null) ? old('state'):''}}" selected hidden>{{__('user.Select State')}}</option>
                         @foreach ($states as $state)
                             <option value="{{ $state->id }}">{{ $state->name }}</option>
                         @endforeach
@@ -180,7 +187,7 @@
                     <label for="city_id">Locality</label>
                     <div class="wsus__dash_pro_single">
                     <select class="select_2" name="city" id="city_id" required>
-                        <option value="" selected hidden>{{__('user.Select City')}}</option>
+                        <option value="{{(old('city') != null) ? old('city'):''}}" selected hidden>{{__('user.Select City')}}</option>
                         @foreach ($cities as $city)
                             <option value="{{ $city->id }}">{{ $city->name }}</option>
                         @endforeach
@@ -195,6 +202,7 @@
                         id="company-name"
                         placeholder="Company name"
                         name="companyName"
+                        value="{{old('companyName')}}"
                         required
                       />
                     </div>
@@ -208,6 +216,7 @@
                         id="company-type"
                         placeholder="Company Type"
                         name="companyType"
+                        value="{{old('companyType')}}"
                         required
                       />
                     </div>
@@ -220,6 +229,7 @@
                         id="urc"
                         placeholder="Unique Registration Code"
                         name="urc"
+                        value="{{old('urc')}}"
                         required
                       />
                     </div>
@@ -260,25 +270,25 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="IBAN">IBAN</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="IBAN" name="iban" required>
+                      <input type="text" placeholder="IBAN" name="iban" required value="{{old('iban')}}">
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Bank">Bank</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="Bank" name="bank" required>
+                      <input type="text" placeholder="Bank" name="bank" required value="{{old('bank')}}">
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="SWIFT">SWIFT</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="SWIFT" name="swift" required>
+                      <input type="text" placeholder="SWIFT" name="swift" required value="{{old('swift')}}">
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Local-currency">Local currency (RON)</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="Local-currency" name="localCurrency" required>
+                      <input type="text" placeholder="Local-currency" name="localCurrency" required value="{{old('localCurrency')}}">
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -309,7 +319,7 @@
                         name="about"
                         placeholder="Brief or short company description"
                         required
-                      ></textarea>
+                      >{{old('about')}}</textarea>
                     </div>
                   </div>
                 </div>
@@ -353,19 +363,19 @@
                   <div class="col-xl-4 col-md-4">
                     <label for="Position">Position</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" id="Position" placeholder="Last Name" name="position" required>
+                      <input type="text" id="Position" placeholder="Last Name" name="position" required value="{{old('position')}}">
                     </div>
                   </div>
                   <div class="col-xl-4 col-md-4">
                     <label for="legalEmail">Legal Representative's Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" id="legalEmail" placeholder="Legal Representative's Email" name="legalEmail" required>
+                      <input type="email" id="legalEmail" placeholder="Legal Representative's Email" name="legalEmail" required value="{{old('legalEmail')}}">
                     </div>
                   </div>
                   <div class="col-xl-4 col-md-4">
                     <label for="cLegalEmail">Confirm Legal Representative's Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" id="cLegalEmail" placeholder="Confirm Legal Representative's Email" name="cLegalEmail" required>
+                      <input type="email" id="cLegalEmail" placeholder="Confirm Legal Representative's Email" name="cLegalEmail" required value="{{old('cLegalEmail')}}">
                     </div>
                   </div>
                 </div>
@@ -433,7 +443,7 @@
                   <div class="col-xl-4 col-md-4">
                     <label for="maxOrderTime">Maximum Order Processing Time</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="time" id="maxOrderTime" name="maxOrderTime" required>
+                      <input type="time" id="maxOrderTime" name="maxOrderTime" required value="{{old('maxOrderTime')}}">
                     </div>
                   </div>
                   <div class="col-xl-12">
