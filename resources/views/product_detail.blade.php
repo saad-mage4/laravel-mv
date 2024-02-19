@@ -460,27 +460,35 @@
                                 </div>
                             </div>
                             @if ($product->vendor_id != 0)
-                            @php
-                                $user = $product->seller;
-                                $user = $user->user;
-                            @endphp
+                                @php
+                                    $user = $product->seller;
+                                    if (isset($user) && isset($user->user)) {
+                                        $user = $user->user;
+                                    } else {
+                                        $user = null;
+                                    }
+                                @endphp
                             <div class="tab-pane fade" id="pills-contact" role="tabpanel"
                                 aria-labelledby="pills-contact-tab">
                                 <div class="wsus__pro_det_vendor">
                                     <div class="row">
                                         <div class="col-xl-6 col-xxl-5 col-md-6">
                                             <div class="wsus__vebdor_img">
-                                                @if ($user->image)
-                                                <img src="{{ asset($user->image) }}" alt="vensor" class="img-fluid w-100">
+                                                @if (isset($user) && isset($user->image))
+                                                    <img src="{{ asset($user->image) }}" alt="vendor" class="img-fluid w-100">
                                                 @else
-                                                <img src="{{ asset($defaultProfile->image) }}" alt="vensor" class="img-fluid w-100">
+                                                    <img src="{{ asset($defaultProfile->image) }}" alt="vendor" class="img-fluid w-100">
                                                 @endif
 
                                             </div>
                                         </div>
                                         <div class="col-xl-6 col-xxl-7 col-md-6 mt-4 mt-md-0">
                                             <div class="wsus__pro_det_vendor_text">
-                                                <h4>{{ $user->name }}</h4>
+                                                @if (isset($user) && isset($user->name))
+                                                    <h4>{{ $user->name }}</h4>
+                                                @else
+                                                    <h4>Unknown</h4>
+                                                @endif
                                                 @php
                                                     $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->count();
                                                     $totalReview = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->sum('rating');
@@ -528,19 +536,33 @@
                                                     </p>
                                                 @endif
 
-                                                <p><span>{{__('user.Store Name')}}:</span> {{ $user->seller->shop_name }}</p>
-                                                <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
-                                                <p><span>{{__('user.Phone')}}:</span> {{ $user->phone }}</p>
-                                                <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
-                                                <a href="{{ route('seller-detail',['shop_name' => $user->seller->slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
-                                                <a href="{{ route('user.chat-with-seller', $user->seller->slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
+                                                <p><span>{{ __('user.Store Name') }}:</span> {{ isset($user->seller) && isset($user->seller->shop_name) ? $user->seller->shop_name : 'Unknown' }}</p>
+                                                    <p>
+                                                        <span>{{ __('user.Address') }}:</span>
+                                                        {{ isset($user->address) ? $user->address : 'Unknown' }}
+                                                        @if (isset($user->city))
+                                                            {{ isset($user->city->name) ? ','.$user->city->name : '' }}
+                                                            {{ isset($user->city->countryState->name) ? ','.$user->city->countryState->name : '' }}
+                                                            {{ isset($user->city->countryState->country->name) ? ','.$user->city->countryState->country->name : '' }}
+                                                        @endif
+                                                    </p>
+                                                    <p><span>{{ __('user.Phone') }}:</span> {{ isset($user->phone) ? $user->phone : 'Unknown' }}</p>
+
+                                                    <p><span>{{ __('user.mail') }}:</span> {{ isset($user->email) ? $user->email : 'Unknown' }}</p>
+
+                                                    @if (isset($user->seller))
+                                                        <a href="{{ route('seller-detail',['shop_name' => $user->seller->slug]) }}" class="see_btn">{{ __('user.visit store') }}</a>
+                                                        <a href="{{ route('user.chat-with-seller', $user->seller->slug) }}" class="see_btn">{{ __('user.Chat with Seller') }}</a>
+                                                    @endif
                                             </div>
                                         </div>
-                                        <div class="col-xl-12">
-                                            <div class="wsus__vendor_details">
-                                                {!! clean($user->seller->description) !!}
+                                        @if (isset($user->seller))
+                                            <div class="col-xl-12">
+                                                <div class="wsus__vendor_details">
+                                                    {!! clean($user->seller->description) !!}
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
