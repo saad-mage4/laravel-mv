@@ -28,7 +28,7 @@
   'Email' => 'Email',
   'Select Country' => 'Select Country',
   'Select State' => 'Select County',
-  'Select City' => 'Select City',
+  'Select City' => 'Select Locality',
   'Zip Code' => 'Zip Code',
   'Same as Shipping Address' => 'Same as Shipping Address',
   'products' => 'products',
