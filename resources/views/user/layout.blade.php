@@ -39,6 +39,7 @@
     <!--jquery library js-->
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('user/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('user/js/additional-methods.min.js') }}"></script>
 
     <script>
         var capmaign_time = 0;

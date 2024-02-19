@@ -390,7 +390,7 @@
                   @foreach ($productCategories as $key => $category)
                     <div class="col-3 mb-3">
                       <div class="check_box">
-                        <input type="checkbox" name="cat_check[]" value="{{$category->name}}" id="category-{{$key}}">
+                        <input type="checkbox" class="catCheck" name="cat_check[]" value="{{$category->name}}" id="category-{{$key}}" required>
                         <label for="category-{{$key}}">{{$category->name}}</label>
                       </div>
                     </div>
@@ -492,18 +492,60 @@
                     $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events','auto');
                   }
                 });
-                $(document).on('click', '.next', function(e){
+                $(document).on("click", ".next", function (e) {
                   e.preventDefault();
-                  let form = $('#multiStepsForm').validate();
-                  let valid = $('#multiStepsForm').valid();
-                  if(valid){
-                    $(this).parents('.form_step').addClass('d-none').next().removeClass('d-none');
-                    let index = $(this).parents('.form_step').index()+1;
-                    $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
+                  var ruleSetImg = {
+                    required: true,
+                    extension: "png|jpg|jpeg",
+                  };
+                  var message = {
+                    extension: "Allowed file types (png or jpg)",
+                  };
+                  var ruleSetPDForImg = {
+                    required: true,
+                    extension: "pdf|png|jpg|jpeg",
+                  };
+                  var message1 = {
+                    extension: "Allowed file types (pdf, png or jpg)",
+                  };
+                  let form = $("#multiStepsForm").validate({
+                    rules: {
+                      banner_image: ruleSetImg,
+                      idCardSignatory: ruleSetPDForImg,
+                      certificateRegistration: ruleSetPDForImg,
+                      bankStatement: ruleSetPDForImg,
+                      articlesOfIncorporation: ruleSetPDForImg,
+                      "cat_check[]": {
+                        required: true
+                      }
+                    },
+                    messages: {
+                      banner_image: message,
+                      idCardSignatory: message1,
+                      certificateRegistration: message1,
+                      bankStatement: message1,
+                      articlesOfIncorporation: message1,
+                      "cat_check[]": {
+                        required: "Please select between 1 and 5."
+                      }
+                    },
+                  });
+
+                  let valid = $("#multiStepsForm").valid();
+                  if (valid) {
+                    $(this)
+                      .parents(".form_step")
+                      .addClass("d-none")
+                      .next()
+                      .removeClass("d-none");
+                    let index = $(this).parents(".form_step").index() + 1;
+                    $(`#progressbar li:nth-child(${index})`)
+                      .addClass("active")
+                      .siblings()
+                      .removeClass("active");
                   } else {
                   }
                 });
-
 
               $(document).on('click', '.prev', function(e){
                   e.preventDefault();

@@ -9979,12 +9979,21 @@ textarea::placeholder {
 /* extra css end here */
 
 .wsus__dash_pro_single {
-	position: relative;
+    position: relative;
 }
 label.error {
-	color: #f00;
+    color: #f00;
     position: absolute;
     bottom: -25px;
+}
+label.error[for*="cat_check"] {
+    border: none;
+    position: absolute;
+    width: auto;
+    height: auto;
+    line-height: normal;
+    top: -30px;
+    left: 0;
 }
 
 .radio-1,
@@ -10003,7 +10012,7 @@ label.error {
 }
 .radio-1 label::before,
 .radio-2 label::before {
-    content: '';
+    content: "";
     font-size: 20px;
     position: absolute;
     top: 50%;
@@ -10011,10 +10020,10 @@ label.error {
     transform: translateY(-50%);
 }
 .radio-1 label::before {
-    content: 'No';
+    content: "No";
 }
 .radio-2 label::before {
-    content: 'Yes';
+    content: "Yes";
 }
 .radio-1 input,
 .radio-2 input {
@@ -10030,12 +10039,12 @@ label.label-period::before {
 }
 
 .check_box {
-	height: 40px;
-	width: 100%;
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    height: 40px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .check_box input {
     opacity: 0;
@@ -10043,19 +10052,18 @@ label.label-period::before {
     position: absolute;
 }
 .check_box label {
-	width: 100%;
-	text-align: center;
-	height: 100%;
-	line-height: 35px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    line-height: 35px;
     border: 1px solid #000;
     font-weight: 600;
 }
 .check_box input:checked ~ label {
-	border-color: orangered;
+    border-color: orangered;
     background-color: orangered;
     color: #fff;
 }
-
 
 @media only screen and (max-width: 768px) {
     /* hide static pages from mobile menu  */
