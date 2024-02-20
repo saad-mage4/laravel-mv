@@ -102,6 +102,11 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about-us');
     Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
+    Route::get('language/{locale}', function ($locale) {
+        app()->setLocale($locale);
+        session()->put('locale', $locale);
+        return redirect()->back();
+    });
     Route::post('/send-contact-message', [HomeController::class, 'sendContactMessage'])->name('send-contact-message');
     Route::get('/blog', [HomeController::class, 'blog'])->name('blog');
     Route::get('/blog-detail/{slug}', [HomeController::class, 'blogDetail'])->name('blog-detail');
