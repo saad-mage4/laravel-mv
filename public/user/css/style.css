@@ -10065,6 +10065,19 @@ label.label-period::before {
     color: #fff;
 }
 
+
+/* Switcher */
+.switcher-container #switcher {
+	padding: 0 10px;
+	line-height: normal;
+    height: 30px;
+    border: none;
+    outline: none;
+    text-align: center;
+}
+.switcher-container #switcher:focus {
+    box-shadow: none;
+}
 @media only screen and (max-width: 768px) {
     /* hide static pages from mobile menu  */
     #wsus__mobile_menu #pills-tab li:nth-child(2) {
