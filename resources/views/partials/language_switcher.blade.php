@@ -2,7 +2,7 @@
     <select name="switcher" id="switcher" class="form-control">
         @foreach($available_locales as $locale_name => $available_locale)
         @if($available_locale === $current_locale)
-        <option value="{{$available_locale}}">{{$locale_name}}</option>
+        <option selected hidden value="{{$available_locale}}">{{$locale_name}}</option>
         @else
         <option value="{{$available_locale}}">{{$locale_name}}</option>
         @endif
