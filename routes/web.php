@@ -168,6 +168,11 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/user/logout', [LoginController::class, 'userLogout'])->name('user.logout');
 
     Route::group(['as'=> 'user.', 'prefix' => 'user'],function (){
+        Route::get('language/{locale}', function ($locale) {
+            app()->setLocale($locale);
+            session()->put('locale', $locale);
+            return redirect()->back();
+        });
         Route::get('dashboard', [UserProfileController::class, 'dashboard'])->name('dashboard');
         Route::get('order', [UserProfileController::class, 'order'])->name('order');
         Route::get('pending-order', [UserProfileController::class, 'pendingOrder'])->name('pending-order');
@@ -247,6 +252,11 @@ Route::group(['middleware' => ['maintainance']], function () {
 
 
     Route::group(['as'=> 'seller.', 'prefix' => 'seller','middleware' => ['checkseller']],function (){
+        Route::get('language/{locale}', function ($locale) {
+            app()->setLocale($locale);
+            session()->put('locale', $locale);
+            return redirect()->back();
+        });
         Route::get('dashboard',[SellerDashboardController::class,'index'])->name('dashboard');
         Route::get('my-profile',[SellerProfileController::class,'index'])->name('my-profile');
         Route::get('state-by-country/{id}',[SellerProfileController::class,'stateByCountry'])->name('state-by-country');
@@ -326,6 +336,11 @@ Route::group(['middleware' => ['maintainance']], function () {
 
 // start admin routes
 Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
+    Route::get('language/{locale}', function ($locale) {
+        app()->setLocale($locale);
+        session()->put('locale', $locale);
+        return redirect()->back();
+    });
 
     // start auth route
     Route::get('login', [AdminLoginController::class,'adminLoginPage'])->name('login');
