@@ -74,7 +74,9 @@
   ==============================-->
   <div class="wsus__dashboard_menu">
     <div class="wsusd__dashboard_user">
-        @include('partials/language_switcher')
+        <div class="m2">
+            @include('partials/language_switcher')
+        </div>
         @if ($user->image)
             <img src="{{ asset($user->image) }}" alt="img" class="img-fluid">
         @else
