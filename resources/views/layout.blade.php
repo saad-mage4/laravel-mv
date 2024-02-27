@@ -948,30 +948,30 @@
                 <div class="col-xl-2 col-sm-5 col-md-6 col-lg-2">
                     <div class="wsus__footer_content">
 
-                        <h5>{{ $footer->first_column }}</h5>
+                        <h5>{{ GoogleTranslate::trans($footer->first_column, app()->getLocale()) }}</h5>
                         <ul class="wsus__footer_menu">
                             @foreach ($footerLinks->where('column',1) as $footerLink)
-                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ $footerLink->title }}</a></li>
+                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ GoogleTranslate::trans($footerLink->title, app()->getLocale()) }}</a></li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
                 <div class="col-xl-2 col-sm-7 col-md-6 col-lg-2">
                     <div class="wsus__footer_content">
-                        <h5>{{ $footer->second_column }}</h5>
+                        <h5>{{ GoogleTranslate::trans($footer->second_column, app()->getLocale()) }}</h5>
                         <ul class="wsus__footer_menu">
                             @foreach ($footerLinks->where('column',2) as $footerLink)
-                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ $footerLink->title }}</a></li>
+                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ GoogleTranslate::trans($footerLink->title, app()->getLocale()) }}</a></li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
                 <div class="col-xl-2 col-sm-5 col-md-6 col-lg-3">
                     <div class="wsus__footer_content">
-                        <h5>{{ $footer->third_column }}</h5>
+                        <h5>{{ GoogleTranslate::trans($footer->third_column, app()->getLocale()) }}</h5>
                         <ul class="wsus__footer_menu">
                             @foreach ($footerLinks->where('column',3) as $footerLink)
-                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ $footerLink->title }}</a></li>
+                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ GoogleTranslate::trans($footerLink->title, app()->getLocale()) }}</a></li>
                             @endforeach
                         </ul>
                     </div>
@@ -983,8 +983,8 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="wsus__copyright">
-                            <p>{{ $footer->copyright }}</p>
-                            <p>{{ $footer->image_title }} :
+                            <p>{{ GoogleTranslate::trans($footer->copyright, app()->getLocale()) }}</p>
+                            <p>{{ GoogleTranslate::trans($footer->image_title, app()->getLocale()) }} :
                                 <img src="{{ asset($footer->payment_image) }}" alt="card" class="img-fluid">
                             </p>
                         </div>
