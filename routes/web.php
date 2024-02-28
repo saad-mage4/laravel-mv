@@ -100,9 +100,6 @@ Route::group(['middleware' => ['demo','XSS']], function () {
 
 Route::group(['middleware' => ['maintainance']], function () {
 
-
-    Route::get('lang/home', [LangController::class, 'index']);
-    Route::get('lang/change', [LangController::class, 'change'])->name('changeLang');
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about-us');
     Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
