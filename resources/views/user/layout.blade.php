@@ -129,7 +129,7 @@
 
 
           <li><a class="{{ Route::is('user.change-password') ? 'active' : '' }}" href="{{ route('user.change-password') }}"><i class="fal fa-gift-card"></i> {{__('user.Change Password')}}</a></li>
-        
+
           @if ($setting->enable_multivendor == 1)
                 @php
                     $authUser = Auth::guard('web')->user();
