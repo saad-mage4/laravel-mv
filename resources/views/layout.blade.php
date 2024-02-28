@@ -173,6 +173,7 @@
                                     <option value="">{{__('user.All Category')}}</option>
                                     @if (request()->has('category'))
                                         @foreach ($productCategories as $productCategory)
+                                            dd($productCategory);
                                             <option {{ request()->get('category') == $productCategory->slug ? 'selected' : ''  }} value="{{ $productCategory->slug }}">{{ $productCategory->name }}</option>
                                         @endforeach
                                     @else
@@ -297,6 +298,7 @@
 
                     <ul class="wsus_menu_cat_item show_home toggle_menu">
                         @foreach ($productCategories as $productCategory)
+                            {{ $productCategory->name }} <br>
                             @if ($productCategory->subCategories->count() == 0)
                                 <li><a href="{{ route('product',['category' => $productCategory->slug]) }}"><i class="{{ $productCategory->icon }}"></i> {{ $productCategory->name }}</a></li>
                             @else
@@ -948,30 +950,30 @@
                 <div class="col-xl-2 col-sm-5 col-md-6 col-lg-2">
                     <div class="wsus__footer_content">
 
-                        <h5>{{ GoogleTranslate::trans($footer->first_column, app()->getLocale()) }}</h5>
+                        <h5>{{ $footer->first_column }}</h5>
                         <ul class="wsus__footer_menu">
                             @foreach ($footerLinks->where('column',1) as $footerLink)
-                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ GoogleTranslate::trans($footerLink->title, app()->getLocale()) }}</a></li>
+                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ $footerLink->title }}</a></li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
                 <div class="col-xl-2 col-sm-7 col-md-6 col-lg-2">
                     <div class="wsus__footer_content">
-                        <h5>{{ GoogleTranslate::trans($footer->second_column, app()->getLocale()) }}</h5>
+                        <h5>{{ $footer->second_column }}</h5>
                         <ul class="wsus__footer_menu">
                             @foreach ($footerLinks->where('column',2) as $footerLink)
-                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ GoogleTranslate::trans($footerLink->title, app()->getLocale()) }}</a></li>
+                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ $footerLink->title }}</a></li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
                 <div class="col-xl-2 col-sm-5 col-md-6 col-lg-3">
                     <div class="wsus__footer_content">
-                        <h5>{{ GoogleTranslate::trans($footer->third_column, app()->getLocale()) }}</h5>
+                        <h5>{{ $footer->third_column }}</h5>
                         <ul class="wsus__footer_menu">
                             @foreach ($footerLinks->where('column',3) as $footerLink)
-                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ GoogleTranslate::trans($footerLink->title, app()->getLocale()) }}</a></li>
+                            <li><a href="{{ $footerLink->link }}"><i class="fas fa-caret-right"></i> {{ $footerLink->title }}</a></li>
                             @endforeach
                         </ul>
                     </div>
@@ -983,8 +985,8 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="wsus__copyright">
-                            <p>{{ GoogleTranslate::trans($footer->copyright, app()->getLocale()) }}</p>
-                            <p>{{ GoogleTranslate::trans($footer->image_title, app()->getLocale()) }} :
+                            <p>{{ $footer->copyright }}</p>
+                            <p>{{ $footer->image_title }} :
                                 <img src="{{ asset($footer->payment_image) }}" alt="card" class="img-fluid">
                             </p>
                         </div>
