@@ -15,7 +15,7 @@
 
 @section('public-content')
     <!--============================
-        BANNER PART START
+        BANNER PART START 
     ==============================-->
     @php
         $sliderVisibility = $visibilities->where('id',1)->first();
