@@ -74,7 +74,7 @@
   ==============================-->
   <div class="wsus__dashboard_menu">
     <div class="wsusd__dashboard_user">
-        <div class="m2">
+        <div class="m-2">
             @include('partials/language_switcher')
         </div>
         @if ($user->image)
