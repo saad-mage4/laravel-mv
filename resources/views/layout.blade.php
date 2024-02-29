@@ -102,6 +102,15 @@
     </script>
 
     @include('theme_style_css')
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ro' // Include English and Romanian
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 
 <body>
@@ -122,7 +131,8 @@
                 </div>
                 <div class="col-xl-6 col-sm-12 col-md-8 col-lg-6">
                     <ul class="wsus__topbar_right">
-                        @include('partials/language_switcher')
+                        <div id="google_translate_element"></div>
+                        <!--  include('partials/language_switcher') -->
                         @if ($menus->where('id',9)->first()->status == 1)
                             <li><a href="{{ route('contact-us') }}"><i class="fal fa-address-card"></i> {{__('user.Contact Us')}}</a></li>
                         @endif

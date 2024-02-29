@@ -8,6 +8,25 @@ body {
     scroll-behavior: smooth;
     font-family: "Poppins", sans-serif;
     overflow-x: hidden;
+    top: 0 !important;
+}
+
+.skiptranslate.goog-te-gadget {
+    font-size: 0;
+}
+.skiptranslate.goog-te-gadget span {
+    display: none;
+}
+.skiptranslate iframe {
+    visibility: hidden !important;
+}
+
+select.goog-te-combo {
+    height: 35px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
 }
 
 ul,
@@ -10065,11 +10084,10 @@ label.label-period::before {
     color: #fff;
 }
 
-
 /* Switcher */
 .switcher-container #switcher {
-	padding: 0 10px;
-	line-height: normal;
+    padding: 0 10px;
+    line-height: normal;
     height: 30px;
     border: none;
     outline: none;
