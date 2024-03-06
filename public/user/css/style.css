@@ -29,6 +29,10 @@ select.goog-te-combo {
     background-color: #fff;
 }
 
+#goog-gt-tt {
+    display: none !important;
+}
+
 ul,
 ol {
     list-style: none;
