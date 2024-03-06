@@ -64,6 +64,15 @@
         var productMonths = [];
         var productDays = [];
     </script>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ro' // Include English and Romanian
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 
 <body>
@@ -75,7 +84,10 @@
   <div class="wsus__dashboard_menu">
     <div class="wsusd__dashboard_user">
         <div class="m-2">
-            @include('partials/language_switcher')
+{{--            @include('partials/language_switcher')--}}
+            <span class="flag ro d-none">🇷🇴</span>
+            <span class="flag en d-none">🇺🇸</span>
+            <div id="google_translate_element"></div>
         </div>
         @if ($user->image)
             <img src="{{ asset($user->image) }}" alt="img" class="img-fluid">
