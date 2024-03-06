@@ -131,6 +131,8 @@
                 </div>
                 <div class="col-xl-6 col-sm-12 col-md-8 col-lg-6">
                     <ul class="wsus__topbar_right">
+                        <span class="flag ro d-none">🇷🇴</span>
+                        <span class="flag en d-none">🇺🇸</span>
                         <div id="google_translate_element"></div>
                         <!--  include('partials/language_switcher') -->
                         @if ($menus->where('id',9)->first()->status == 1)

@@ -32,6 +32,17 @@ select.goog-te-combo {
 #goog-gt-tt {
     display: none !important;
 }
+a font {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+.flag {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    margin-right: 10px;
+    font-size: 25px;
+}
 
 ul,
 ol {

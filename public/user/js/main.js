@@ -576,4 +576,15 @@ $(function() {
         $('.dash_close').toggleClass('dash_opasity');
 
     });
+
+   $(document).on('change', 'select.goog-te-combo', function(e){
+        e.preventDefault();
+        let flag = $(this).find('option:selected').val();
+        if(flag == 'en') {
+            $('.flag.en').removeClass('d-none').siblings('.flag').addClass('d-none');
+        } else {
+            $('.flag.ro').removeClass('d-none').siblings('.flag').addClass('d-none');
+        }
+   });
+
 });
