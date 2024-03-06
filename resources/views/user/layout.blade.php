@@ -83,7 +83,7 @@
   ==============================-->
   <div class="wsus__dashboard_menu">
     <div class="wsusd__dashboard_user">
-        <div class="m-2">
+        <div class="m-2 d-flex">
 {{--            @include('partials/language_switcher')--}}
             <span class="flag ro d-none">🇷🇴</span>
             <span class="flag en d-none">🇺🇸</span>
