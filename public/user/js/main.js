@@ -582,8 +582,10 @@ $(function() {
         let flag = $(this).find('option:selected').val();
         if(flag == 'en') {
             $('.flag.en').removeClass('d-none').siblings('.flag').addClass('d-none');
-        } else {
+        } else if(flag == 'ro') {
             $('.flag.ro').removeClass('d-none').siblings('.flag').addClass('d-none');
+        } else {
+            $('.flag').addClass('d-none');
         }
    });
 
