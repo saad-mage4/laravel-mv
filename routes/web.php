@@ -185,6 +185,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('change-password', [UserProfileController::class, 'changePassword'])->name('change-password');
         Route::post('update-password', [UserProfileController::class, 'updatePassword'])->name('update-password');
         Route::get('seller-registration', [UserProfileController::class, 'sellerRegistration'])->name('seller-registration');
+        Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->name('seller-membership');
         Route::get('billing-address', [UserProfileController::class, 'editBillingAddress'])->name('billing-address');
         Route::post('update-billing-address', [UserProfileController::class, 'updateBillingAddress'])->name('update-billing-address');
         Route::get('shipping-address', [UserProfileController::class, 'editShippingAddress'])->name('shipping-address');

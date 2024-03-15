@@ -358,6 +358,11 @@ class UserProfileController extends Controller
         return response()->json(['cities'=>$response]);
     }
 
+    public function sellerMembership(){
+        $setting = Setting::first();
+        return view('user.seller_membership', compact('setting'));
+    }
+
     public function sellerRegistration(){
         $setting = Setting::first();
         $countries = Country::orderBy('name','asc')->where('status',1)->get();
