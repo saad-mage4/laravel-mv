@@ -360,7 +360,20 @@ class UserProfileController extends Controller
 
     public function sellerMembership(){
         $setting = Setting::first();
-        return view('user.seller_membership', compact('setting'));
+        $user = Auth::guard('web')->user();
+        $is_member = $user->is_member;
+        $user->save();
+        return view('user.seller_membership', compact('setting', 'is_member'));
+    }
+
+    public function subscribe()
+    {
+//        dd('test');
+        $setting = Setting::first();
+        $user = Auth::guard('web')->user();
+        $user->is_member = 1;
+        $user->save();
+        return view('membership');
     }
 
     public function sellerRegistration(){
