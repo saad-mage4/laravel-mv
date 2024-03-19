@@ -374,13 +374,14 @@ class UserProfileController extends Controller
     public function subscribe(Request $request)
     {
         Stripe::setApiKey(env('STRIPE_SECRET'));
+        $user = Auth::guard('web')->user();
 
         $token = $request->stripeToken;
 
-        $customer = Customer::create([
-            'email' => $request->email,
-            'source' => $token,
-        ]);
+        // $customer = Customer::create([
+        //     'email' => $request->email,
+        //     'source' => $token,
+        // ]);
 
         // Create a one-time payment intent for the customer
         $paymentIntent = PaymentIntent::create([
@@ -389,14 +390,12 @@ class UserProfileController extends Controller
             'payment_method_types' => ['card'],
             'description' => 'One-time fee', // Optional description for the payment
             'confirm' => true,
-            'customer' => $customer->id,
+            'customer' => $user->id,
         ]);
 
 
         // Handle success or failure
         if ($paymentIntent->status === 'succeeded') {
-            $setting = Setting::first();
-            $user = Auth::guard('web')->user();
             $user->is_member = 1;
             $user->save();
 
