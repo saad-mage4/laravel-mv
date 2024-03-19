@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 use Auth;
 use App\Models\Country;
@@ -34,6 +35,10 @@ use Hash;
 use Slug;
 
 use App\Events\SellerToUser;
+use Stripe\Customer;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
+
 class UserProfileController extends Controller
 {
 
@@ -366,14 +371,41 @@ class UserProfileController extends Controller
         return view('user.seller_membership', compact('setting', 'is_member'));
     }
 
-    public function subscribe()
+    public function subscribe(Request $request)
     {
-//        dd('test');
-        $setting = Setting::first();
-        $user = Auth::guard('web')->user();
-        $user->is_member = 1;
-        $user->save();
-        return view('membership');
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $token = $request->stripeToken;
+
+        $customer = Customer::create([
+            'email' => $request->email,
+            'source' => $token,
+        ]);
+
+        // Create a one-time payment intent for the customer
+        $paymentIntent = PaymentIntent::create([
+            'amount' => 1499, // Amount in cents ($15)
+            'currency' => 'eur',
+            'payment_method_types' => ['card'],
+            'description' => 'One-time fee', // Optional description for the payment
+            'confirm' => true,
+            'customer' => $customer->id,
+        ]);
+
+
+        // Handle success or failure
+        if ($paymentIntent->status === 'succeeded') {
+            $setting = Setting::first();
+            $user = Auth::guard('web')->user();
+            $user->is_member = 1;
+            $user->save();
+
+
+
+            return redirect('user/membership/subscribe')->with('success', 'Subscription successful!');
+        } else {
+            return back()->withErrors(['stripe_error' => 'Payment failed.']);
+        }
     }
 
     public function sellerRegistration(){
