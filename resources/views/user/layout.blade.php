@@ -1,6 +1,7 @@
 @php
     $setting = App\Models\Setting::first();
     $user = Auth::guard('web')->user();
+    $is_member = $user->is_member;
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -126,18 +127,23 @@
           <li><a class="{{ Route::is('user.wishlist') ? 'active' : '' }}" href="{{ route('user.wishlist') }}"><i class="far fa-heart"></i> {{__('user.Wishlist')}}</a></li>
           <li><a class="{{ Route::is('user.my-profile') ? 'active' : '' }}" href="{{ route('user.my-profile') }}"><i class="far fa-user"></i> {{__('user.My Profile')}}</a></li>
           <li><a class="{{ Route::is('user.address') ? 'active' : '' }}" href="{{ route('user.address') }}"><i class="fal fa-gift-card"></i> {{__('user.Address')}}</a></li>
-        @if ($setting->enable_multivendor == 1)
-            @php
-                $authUser = Auth::guard('web')->user();
-                $isSeller = App\Models\Vendor::where('user_id', $authUser->id)->first();
-            @endphp
-            @if ($isSeller)
-                <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
-            @else
-                <li><a class="{{ Route::is('user.seller-registration') ? 'active' : '' }}" href="{{ route('user.seller-registration') }}"><i class="fal fa-gift-card"></i> {{__('user.Become a Seller')}}</a></li>
-            @endif
+            @if ($setting->enable_multivendor == 1)
+                @php
+                    $authUser = Auth::guard('web')->user();
+                    $isSeller = App\Models\Vendor::where('user_id', $authUser->id)->first();
 
-        @endif
+
+                @endphp
+
+                @if ($is_member == false && $isSeller == false)
+                    <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Membership')}}</a></li>
+                @elseif($is_member == true && $isSeller == false)
+                    <li><a class="{{ Route::is('user.seller-registration') ? 'active' : '' }}" href="{{ route('user.seller-registration') }}"><i class="fal fa-gift-card"></i> {{__('user.Become a Seller')}}</a></li>
+                @else
+                    <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
+                @endif
+
+            @endif
 
 
           <li><a class="{{ Route::is('user.change-password') ? 'active' : '' }}" href="{{ route('user.change-password') }}"><i class="fal fa-gift-card"></i> {{__('user.Change Password')}}</a></li>
