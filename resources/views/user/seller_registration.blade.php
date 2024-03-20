@@ -21,22 +21,22 @@
         <div class="wsus__dash_pro_area">
           <!-- Progress -->
           <div class="row">
-              <div class="col-12">
-                <ul id="progressbar">
-                  <li class="active" id="account">
-                    <strong>Seller Information</strong>
-                  </li>
-                  <li id="personal">
-                    <strong>Company Details & Payments</strong>
-                  </li>
-                  <li id="payment">
-                    <strong>Elements & Legal Details</strong>
-                  </li>
-                  <li id="confirm"><strong>Product Range</strong></li>
-                  <li id="confirm"><strong>Operational Information</strong></li>
-                </ul>
-              </div>
+            <div class="col-12">
+              <ul id="progressbar">
+                <li class="active" id="account">
+                  <strong>Seller Information</strong>
+                </li>
+                <li id="personal">
+                  <strong>Company Details & Payments</strong>
+                </li>
+                <li id="payment">
+                  <strong>Elements & Legal Details</strong>
+                </li>
+                <li id="confirm"><strong>Product Range</strong></li>
+                <!-- <li id="confirm"><strong>Operational Information</strong></li> -->
+              </ul>
             </div>
+          </div>
           <form id="multiStepsForm" action="{{ route('user.seller-request') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <!-- Step 1 -->
@@ -46,14 +46,7 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="shop-name">Shop Name</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="shop-name"
-                        placeholder="{{__('user.Shop Name')}}"
-                        name="shop_name"
-                        required
-                        value="{{old('shop_name')}}"
-                      />
+                      <input type="text" id="shop-name" placeholder="{{__('user.Shop Name')}}" name="shop_name" required value="{{old('shop_name')}}" />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -65,173 +58,97 @@
                   <div class="col-xl-6 col-md-6">
                     <label for="FirstName">First Name</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="FirstName"
-                        placeholder="First Name"
-                        name="firstName"
-                        value="{{old('firstName')}}"
-                        required
-                      />
+                      <input type="text" id="FirstName" placeholder="First Name" name="firstName" value="{{old('firstName')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="LastName">Last Name</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="LastName"
-                        placeholder="Last Name"
-                        name="lastName"
-                        value="{{old('lastName')}}"
-                        required
-                      />
+                      <input type="text" id="LastName" placeholder="Last Name" name="lastName" value="{{old('lastName')}}" required />
                     </div>
                   </div>
 
                   <div class="col-xl-6 col-md-6">
                     <label for="email">Email</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="email" placeholder="{{__('user.Email')}}" name="email" required value="{{old('email')}}"/>
+                      <input type="email" placeholder="{{__('user.Email')}}" name="email" required value="{{old('email')}}" />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="Phone Number">Phone Number</label>
                     <div class="wsus__dash_pro_single">
-                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" required value="{{old('phone')}}"/>
+                      <input type="text" placeholder="{{__('user.Phone')}}" name="phone" required value="{{old('phone')}}" />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="address">Address</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="address"
-                        placeholder="Address"
-                        name="address"
-                        value="{{old('address')}}"
-                        required
-                      />
+                      <input type="text" id="address" placeholder="Address" name="address" value="{{old('address')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="open-at">Open At</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        placeholder="{{__('user.Opens at')}}"
-                        name="open_at"
-                        class="clockpicker"
-                        data-align="top"
-                        data-autoclose="true"
-                        autocomplete="off"
-                        value="{{old('open_at')}}"
-                        required
-                      />
+                      <input type="text" placeholder="{{__('user.Opens at')}}" name="open_at" class="clockpicker" data-align="top" data-autoclose="true" autocomplete="off" value="{{old('open_at')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="close-at">Close At</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        placeholder="{{__('user.Closed at')}}"
-                        name="closed_at"
-                        class="clockpicker"
-                        data-align="top"
-                        data-autoclose="true"
-                        autocomplete="off"
-                        value="{{old('closed_at')}}"
-                        required
-                      />
+                      <input type="text" placeholder="{{__('user.Closed at')}}" name="closed_at" class="clockpicker" data-align="top" data-autoclose="true" autocomplete="off" value="{{old('closed_at')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="postal-code">Postal Code</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="postal-code"
-                        placeholder="Postal Code"
-                        name="postalCode"
-                        value="{{old('postalCode')}}"
-                        required
-                      />
+                      <input type="text" id="postal-code" placeholder="Postal Code" name="postalCode" value="{{old('postalCode')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="country">Company headquarters country location</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="country"
-                        name="country"
-                        class="form-control"
-                        value="Romania"
-                        readonly
-                      />
+                      <input type="text" id="country" name="country" class="form-control" value="Romania" readonly />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="state_id">County</label>
                     <div class="wsus__dash_pro_single">
-                    <select class="select_2" name="state" id="state_id" required>
+                      <select class="select_2" name="state" id="state_id" required>
                         <option value="{{(old('state') != null) ? old('state'):''}}" selected hidden>{{__('user.Select State')}}</option>
                         @foreach ($states as $state)
-                            <option value="{{ $state->id }}">{{ $state->name }}</option>
+                        <option value="{{ $state->id }}">{{ $state->name }}</option>
                         @endforeach
-                    </select>
+                      </select>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="city_id">Locality</label>
                     <div class="wsus__dash_pro_single">
-                    <select class="select_2" name="city" id="city_id" required>
+                      <select class="select_2" name="city" id="city_id" required>
                         <option value="{{(old('city') != null) ? old('city'):''}}" selected hidden>{{__('user.Select City')}}</option>
                         @foreach ($cities as $city)
-                            <option value="{{ $city->id }}">{{ $city->name }}</option>
+                        <option value="{{ $city->id }}">{{ $city->name }}</option>
                         @endforeach
-                    </select>
+                      </select>
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="company-name">Company name</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="company-name"
-                        placeholder="Company name"
-                        name="companyName"
-                        value="{{old('companyName')}}"
-                        required
-                      />
+                      <input type="text" id="company-name" placeholder="Company name" name="companyName" value="{{old('companyName')}}" required />
                     </div>
                   </div>
 
                   <div class="col-xl-6 col-md-6">
                     <label for="company-type">Company Type</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="company-type"
-                        placeholder="Company Type"
-                        name="companyType"
-                        value="{{old('companyType')}}"
-                        required
-                      />
+                      <input type="text" id="company-type" placeholder="Company Type" name="companyType" value="{{old('companyType')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="urc">Unique Registration Code</label>
                     <div class="wsus__dash_pro_single">
-                      <input
-                        type="text"
-                        id="urc"
-                        placeholder="Unique Registration Code"
-                        name="urc"
-                        value="{{old('urc')}}"
-                        required
-                      />
+                      <input type="text" id="urc" placeholder="Unique Registration Code" name="urc" value="{{old('urc')}}" required />
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -262,9 +179,9 @@
                   <div class="col-12">
                     <h3>Payment Info</h3>
                     <div class="info">
-                          <i class="fas fa-info"></i>
-                          Info: All payments will be made in the local platform
-                          currency (RON).
+                      <i class="fas fa-info"></i>
+                      Info: All payments will be made in the local platform
+                      currency (RON).
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
@@ -313,21 +230,15 @@
                   <div class="col-xl-12">
                     <label for="company-desc">Brief or short company description</label>
                     <div class="wsus__dash_pro_single">
-                      <textarea
-                        cols="3"
-                        rows="5"
-                        name="about"
-                        placeholder="Brief or short company description"
-                        required
-                      >{{old('about')}}</textarea>
+                      <textarea cols="3" rows="5" name="about" placeholder="Brief or short company description" required>{{old('about')}}</textarea>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="col-xl-12 d-flex justify-content-between">
-              <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
-              <a href="#!" class="common_btn mb-4 mt-2 next">{{__('user.Next')}}</a>
+                <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
+                <a href="#!" class="common_btn mb-4 mt-2 next">{{__('user.Next')}}</a>
                 <!-- <button class="common_btn mb-4 mt-2" type="submit">{{__('user.Submit Request')}}</button> -->
               </div>
 
@@ -382,8 +293,8 @@
               </div>
 
               <div class="col-xl-12 d-flex justify-content-between">
-              <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
-              <a href="#!" class="common_btn mb-4 mt-2 next">{{__('user.Next')}}</a>
+                <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
+                <a href="#!" class="common_btn mb-4 mt-2 next">{{__('user.Next')}}</a>
                 <!-- <button class="common_btn mb-4 mt-2" type="submit">{{__('user.Submit Request')}}</button> -->
               </div>
 
@@ -398,72 +309,29 @@
                     </div>
                   </div>
                   @foreach ($productCategories as $key => $category)
-                    <div class="col-3 mb-3">
-                      <div class="check_box">
-                        <input type="checkbox" class="catCheck" name="cat_check[]" value="{{$category->name}}" id="category-{{$key}}" required>
-                        <label for="category-{{$key}}">{{$category->name}}</label>
-                      </div>
+                  <div class="col-3 mb-3">
+                    <div class="check_box">
+                      <input type="checkbox" class="catCheck" name="cat_check[]" value="{{$category->name}}" id="category-{{$key}}" required>
+                      <label for="category-{{$key}}">{{$category->name}}</label>
                     </div>
+                  </div>
                   @endforeach
                 </div>
               </div>
-
-              <div class="col-xl-12 d-flex justify-content-between">
-              <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
-              <a href="#!" class="common_btn mb-4 mt-2 next">{{__('user.Next')}}</a>
-                <!-- <button class="common_btn mb-4 mt-2" type="submit">{{__('user.Submit Request')}}</button> -->
-              </div>
-
-            </div>
-            <!-- Step 5 -->
-            <div class="row form_step d-none">
               <div class="col-xl-12">
-                <div class="row">
-                  <div class="col-xl-4 col-md-4">
-                    <label for="producer-label">Return Period</label>
-                    <div class="wsus__dash_pro_single gap-3 flex-wrap">
-                      <div class="radio-1">
-                        <label class="label-period" for="period-1" title="14 Days"></label>
-                        <input type="radio" id="period-1" name="period" checked required>
-                      </div>
-                      <div class="radio-2">
-                        <label class="label-period" for="period-2" title="30 Days"></label>
-                        <input type="radio" id="period-2" name="period" required>
-                      </div>
-                      <div class="radio-1">
-                        <label class="label-period" for="period-3" title="60 Days"></label>
-                        <input type="radio" id="period-3" name="period" required>
-                      </div>
-                      <div class="radio-2">
-                        <label class="label-period" for="period-4" title="90 Days"></label>
-                        <input type="radio" id="period-4" name="period" required>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-4 col-md-4">
-                    <label for="maxOrderTime">Maximum Order Processing Time</label>
-                    <div class="wsus__dash_pro_single">
-                      <input type="time" id="maxOrderTime" name="maxOrderTime" required value="{{old('maxOrderTime')}}">
-                    </div>
-                  </div>
-                  <div class="col-xl-12">
-                    <div class="terms_area">
-                      <div class="form-check position-relative">
-                        <input name="agree_terms_condition" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked3" required>
-                        <label class="form-check-label" for="flexCheckChecked3">
-                          {{__('user.I have read and agree with terms and conditions')}}
-                        </label>
-                      </div>
-                    </div>
+                <div class="terms_area">
+                  <div class="form-check position-relative">
+                    <input name="agree_terms_condition" class="form-check-input" type="checkbox" value="1" id="flexCheckChecked3" required>
+                    <label class="form-check-label" for="flexCheckChecked3">
+                      {{__('user.I have read and agree with terms and conditions')}}
+                    </label>
                   </div>
                 </div>
               </div>
-
               <div class="col-xl-12 d-flex justify-content-between">
-              <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
+                <a href="#!" class="common_btn mb-4 mt-2 prev">{{__('user.Previous')}}</a>
                 <button class="common_btn mb-4 mt-2" type="submit">{{__('user.Submit Request')}}</button>
               </div>
-
             </div>
           </form>
         </div>
@@ -474,111 +342,109 @@
 </div>
 
 <script>
-        (function($) {
-            "use strict";
-            $(document).ready(function () {
-                $("#state_id").on("change",function(){
-                    var countryId = $("#state_id").val();
-                    if(countryId){
-                        $.ajax({
-                            type:"get",
-                            url:"{{url('/user/city-by-state/')}}"+"/"+countryId,
-                            success:function(response){
-                                $("#city_id").html(response.cities);
-                            },
-                            error:function(err){
-                            }
-                        })
-                    }else{
-                        var response= "<option value=''>{{__('user.Select Locality')}}</option>";
-                        $("#city_id").html(response);
-                    }
-                });
+  (function($) {
+    "use strict";
+    $(document).ready(function() {
+      $("#state_id").on("change", function() {
+        var countryId = $("#state_id").val();
+        if (countryId) {
+          $.ajax({
+            type: "get",
+            url: "{{url('/user/city-by-state/')}}" + "/" + countryId,
+            success: function(response) {
+              $("#city_id").html(response.cities);
+            },
+            error: function(err) {}
+          })
+        } else {
+          var response = "<option value=''>{{__('user.Select Locality')}}</option>";
+          $("#city_id").html(response);
+        }
+      });
 
-                $('input[name*="cat_check"]').change(function() {
-                  if ($('input[name*="cat_check"]:checked').length === 5) {
-                    $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events','none');
-                  } else {
-                    $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events','auto');
-                  }
-                });
-                $(document).on("click", ".next", function (e) {
-                  e.preventDefault();
-                  var ruleSetImg = {
-                    required: true,
-                    extension: "png|jpg|jpeg",
-                  };
-                  var message = {
-                    extension: "Allowed file types (png or jpg)",
-                  };
-                  var ruleSetPDForImg = {
-                    required: true,
-                    extension: "pdf|png|jpg|jpeg",
-                  };
-                  var message1 = {
-                    extension: "Allowed file types (pdf, png or jpg)",
-                  };
-                  let form = $("#multiStepsForm").validate({
-                    rules: {
-                      banner_image: ruleSetImg,
-                      idCardSignatory: ruleSetPDForImg,
-                      certificateRegistration: ruleSetPDForImg,
-                      bankStatement: ruleSetPDForImg,
-                      articlesOfIncorporation: ruleSetPDForImg,
-                      "cat_check[]": {
-                        required: true
-                      }
-                    },
-                    messages: {
-                      banner_image: message,
-                      idCardSignatory: message1,
-                      certificateRegistration: message1,
-                      bankStatement: message1,
-                      articlesOfIncorporation: message1,
-                      "cat_check[]": {
-                        required: "Please select between 1 and 5."
-                      }
-                    },
-                  });
+      $('input[name*="cat_check"]').change(function() {
+        if ($('input[name*="cat_check"]:checked').length === 5) {
+          $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events', 'none');
+        } else {
+          $('input[name*="cat_check"]:not(:checked)').parent().css('pointer-events', 'auto');
+        }
+      });
+      $(document).on("click", ".next", function(e) {
+        e.preventDefault();
+        var ruleSetImg = {
+          required: true,
+          extension: "png|jpg|jpeg",
+        };
+        var message = {
+          extension: "Allowed file types (png or jpg)",
+        };
+        var ruleSetPDForImg = {
+          required: true,
+          extension: "pdf|png|jpg|jpeg",
+        };
+        var message1 = {
+          extension: "Allowed file types (pdf, png or jpg)",
+        };
+        let form = $("#multiStepsForm").validate({
+          rules: {
+            banner_image: ruleSetImg,
+            idCardSignatory: ruleSetPDForImg,
+            certificateRegistration: ruleSetPDForImg,
+            bankStatement: ruleSetPDForImg,
+            articlesOfIncorporation: ruleSetPDForImg,
+            "cat_check[]": {
+              required: true
+            }
+          },
+          messages: {
+            banner_image: message,
+            idCardSignatory: message1,
+            certificateRegistration: message1,
+            bankStatement: message1,
+            articlesOfIncorporation: message1,
+            "cat_check[]": {
+              required: "Please select between 1 and 5."
+            }
+          },
+        });
 
-                  let valid = $("#multiStepsForm").valid();
-                  if (valid) {
-                    $(this)
-                      .parents(".form_step")
-                      .addClass("d-none")
-                      .next()
-                      .removeClass("d-none");
-                    let index = $(this).parents(".form_step").index() + 1;
-                    $(`#progressbar li:nth-child(${index})`)
-                      .addClass("active")
-                      .siblings()
-                      .removeClass("active");
-                  } else {
-                  }
-                });
+        let valid = $("#multiStepsForm").valid();
+        if (valid) {
+          $(this)
+            .parents(".form_step")
+            .addClass("d-none")
+            .next()
+            .removeClass("d-none");
+          let index = $(this).parents(".form_step").index() + 1;
+          $(`#progressbar li:nth-child(${index})`)
+            .addClass("active")
+            .siblings()
+            .removeClass("active");
+        } else {}
+      });
 
-              $(document).on('click', '.prev', function(e){
-                  e.preventDefault();
-                  $(this).parents('.form_step').addClass('d-none').prev().removeClass('d-none');
-                  let index = $(this).parents('.form_step').index()-1;
-                  $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
-                });
+      $(document).on('click', '.prev', function(e) {
+        e.preventDefault();
+        $(this).parents('.form_step').addClass('d-none').prev().removeClass('d-none');
+        let index = $(this).parents('.form_step').index() - 1;
+        $(`#progressbar li:nth-child(${index})`).addClass('active').siblings().removeClass('active');
+      });
 
-              $(document).on('click', '[id="v-pills-tab"] a', function(e) {
-                  e.preventDefault();
-                  $(this).addClass('active').siblings().removeClass('active');
-                  let index = $(this).index()+1;
-                  $(`[id="v-pills-tabContent"] .tab-pane:nth-child(${index})`).addClass('active show').siblings().removeClass('active show');
-                });
+      $(document).on('click', '[id="v-pills-tab"] a', function(e) {
+        e.preventDefault();
+        $(this).addClass('active').siblings().removeClass('active');
+        let index = $(this).index() + 1;
+        $(`[id="v-pills-tabContent"] .tab-pane:nth-child(${index})`).addClass('active show').siblings().removeClass('active show');
+      });
 
-                // $(document).on('click', '.next', function(e){
-                //   e.preventDefault();
+      // $(document).on('click', '.next', function(e){
+      //   e.preventDefault();
 
 
-                // });
+      // });
 
-            });
-        })(jQuery);
-    </script>
+    });
+  })(jQuery);
+</script>
 
-  @endsection
+@endsection

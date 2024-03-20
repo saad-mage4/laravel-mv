@@ -368,20 +368,27 @@ class UserProfileController extends Controller
         $user = Auth::guard('web')->user();
         $is_member = $user->is_member;
         $user->save();
-        return view('user.seller_membership', compact('setting', 'is_member'));
+        if($user->is_member == 1){
+            $notification = 'You have already Paid!';
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect('user/seller-registration')->with($notification);
+        } else {
+            return view('user.seller_membership', compact('setting', 'is_member'));
+        }
     }
 
     public function subscribe(Request $request)
     {
+        // dd($request);
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $user = Auth::guard('web')->user();
 
         $token = $request->stripeToken;
 
-        // $customer = Customer::create([
-        //     'email' => $request->email,
-        //     'source' => $token,
-        // ]);
+        $customer = Customer::create([
+            'email' => $request->email,
+            'source' => $token,
+        ]);
 
         // Create a one-time payment intent for the customer
         $paymentIntent = PaymentIntent::create([
@@ -390,7 +397,7 @@ class UserProfileController extends Controller
             'payment_method_types' => ['card'],
             'description' => 'One-time fee', // Optional description for the payment
             'confirm' => true,
-            'customer' => $user->id,
+            'customer' => $customer->id,
         ]);
 
 
@@ -398,22 +405,34 @@ class UserProfileController extends Controller
         if ($paymentIntent->status === 'succeeded') {
             $user->is_member = 1;
             $user->save();
-
-
-
-            return redirect('user/membership/subscribe')->with('success', 'Subscription successful!');
+            // dd('test');
+            // $msg = 'Payment Success';
+            // return view('user.', compact('msg'));
+            $notification = 'Payment has been made Successfully!';
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect('user/seller-registration')->with($notification);
         } else {
-            return back()->withErrors(['stripe_error' => 'Payment failed.']);
+            // return back()->withErrors(['stripe_error' => 'Payment failed.']);
+            $notification = 'Payment has been made Successfully!';
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->back()->with($notification);
         }
     }
 
     public function sellerRegistration(){
         $setting = Setting::first();
+        $user = Auth::guard('web')->user();
         $countries = Country::orderBy('name','asc')->where('status',1)->get();
         $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
         $cities = City::orderBy('name','asc')->where(['status' => 1])->get();
         $productCategories = Category::where(['status' => 1])->get();
-        return view('user.seller_registration', compact('setting', 'states', 'cities','productCategories'));
+        if($user->is_member == 1) {
+            return view('user.seller_registration', compact('setting', 'states', 'cities','productCategories'));
+        } else {
+            $notification = 'You Must Pay First!';
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect('user/seller-membership')->with($notification);
+        }
     }
 
     public function sellerRequest(Request $request){
@@ -456,7 +475,7 @@ class UserProfileController extends Controller
             'position'=>'required',
             'legalEmail'=>'required',
             'cLegalEmail'=>'required',
-            'maxOrderTime'=>'required',
+            // 'maxOrderTime'=>'required',
             'agree_terms_condition' => 'required',
             'certificateRegistration'=>'required|mimes:pdf,png,jpeg,jpg',
             'bankStatement'=>'required|mimes:pdf,png,jpeg,jpg',

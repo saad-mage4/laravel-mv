@@ -28,10 +28,11 @@
           <div class="row mb-3" id="list-styled">
             <div class="col-xl-12">
               <h3>TERMS & CONDITION</h3>
-              <strong>Initial Fee:</strong>
+              <strong>One Time Fee:</strong>
               <ul>
-                <li>Upon registration, an initial fee of 15 Euros will be charged to activate your seller account.</li>
+                <li>Upon registration, a one-time fee of <strong>14.99</strong> Euros will be charged to activate your seller account.</li>
               </ul>
+              <div class="d-none">
               <strong>Monthly Membership Fee:</strong>
               <ul>
                 <li>In addition to the initial fee, a monthly membership fee will be charged based on your sales volume. Here's how the monthly membership fee is calculated:
@@ -51,6 +52,7 @@
                   </ul>
                 </li>
               </ul>
+              </div>
             </div>
               <div class="col-xl-4">
                   <form action="{{ route('user.membership.subscribe') }}" method="post">

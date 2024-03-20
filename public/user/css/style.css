@@ -21,6 +21,10 @@ body {
     visibility: hidden !important;
 }
 
+.language-changer {
+	display: flex;
+}
+
 select.goog-te-combo {
     height: 35px;
     padding: 0 10px;
