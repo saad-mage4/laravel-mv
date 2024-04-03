@@ -56,11 +56,9 @@
             </div>
 {{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
               <div class="col-xl-4">
-                  <form action="{{ route('user.membership.subscribe') }}" method="post">
-                      @csrf
-                                  <a href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a>
-                  </form>
-
+                  
+                    <a class="common_btn" href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a>
+                  
               </div>
           </div>
         </div>
