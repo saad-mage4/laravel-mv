@@ -478,7 +478,7 @@
   'order id' => 'order id',
   'track' => 'track',
   'Become a Seller' => 'Become a Seller',
-  'Membership' => 'Become a Member',
+  'Membership' => 'Become a Seller',
   'I have read and agree with terms and conditions' => 'I have read and agree with terms and conditions',
   'Paymongo' => 'Paymongo',
   'Card Payment' => 'Card Payment',
