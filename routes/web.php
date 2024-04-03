@@ -166,7 +166,10 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::post('/store-reset-password/{token}', [LoginController::class, 'storeResetPasswordPage'])->name('store-reset-password');
     Route::get('/user/logout', [LoginController::class, 'userLogout'])->name('user.logout');
 
+
+//    Route::get('/payment/success', [UserProfileController::class, 'paymentSuccess'])->name('payment.success');
     Route::group(['as'=> 'user.', 'prefix' => 'user'],function (){
+
         Route::get('language/{locale}', function ($locale) {
             app()->setLocale($locale);
             session()->put('locale', $locale);
@@ -186,8 +189,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::post('update-password', [UserProfileController::class, 'updatePassword'])->name('update-password');
         Route::get('seller-registration', [UserProfileController::class, 'sellerRegistration'])->name('seller-registration');
         Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->name('seller-membership');
-//        Route::get('seller-membership', [UserProfileController::class, 'showMembershipForm']);
-        Route::post('/membership/subscribe', [UserProfileController::class, 'subscribe'])->name('membership.subscribe');
+        Route::get('/membership/subscribe', [UserProfileController::class, 'subscribe'])->name('membership.subscribe');
         Route::get('billing-address', [UserProfileController::class, 'editBillingAddress'])->name('billing-address');
         Route::post('update-billing-address', [UserProfileController::class, 'updateBillingAddress'])->name('update-billing-address');
         Route::get('shipping-address', [UserProfileController::class, 'editShippingAddress'])->name('shipping-address');
@@ -684,4 +686,6 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
 });
 
 });
+
 // end admin routes
+
