@@ -38,6 +38,9 @@ use App\Events\SellerToUser;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
+use Stripe\Checkout\Session as CheckoutSession;
+//use Illuminate\Http\Request;
+//use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
@@ -377,47 +380,26 @@ class UserProfileController extends Controller
         }
     }
 
-    public function subscribe(Request $request)
-    {
-        // dd($request);
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+    public function subscribe(Request $request) {
+        $response = $request->status;
         $user = Auth::guard('web')->user();
+        // Set the Stripe API key
+        Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $token = $request->stripeToken;
-
-        $customer = Customer::create([
-            'email' => $request->email,
-            'source' => $token,
-        ]);
-
-        // Create a one-time payment intent for the customer
-        $paymentIntent = PaymentIntent::create([
-            'amount' => 1499, // Amount in cents ($15)
-            'currency' => 'eur',
-            'payment_method_types' => ['card'],
-            'description' => 'One-time fee', // Optional description for the payment
-            'confirm' => true,
-            'customer' => $customer->id,
-        ]);
-
-
-        // Handle success or failure
-        if ($paymentIntent->status === 'succeeded') {
+        if ($response == 'success') {
             $user->is_member = 1;
             $user->save();
-            // dd('test');
-            // $msg = 'Payment Success';
-            // return view('user.', compact('msg'));
             $notification = 'Payment has been made Successfully!';
             $notification = array('messege'=>$notification,'alert-type'=>'success');
             return redirect('user/seller-registration')->with($notification);
         } else {
-            // return back()->withErrors(['stripe_error' => 'Payment failed.']);
-            $notification = 'Payment has been made Successfully!';
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = 'Payment Failed. Please try again!';
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
             return redirect()->back()->with($notification);
         }
     }
+
 
     public function sellerRegistration(){
         $setting = Setting::first();

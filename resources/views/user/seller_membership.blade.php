@@ -54,39 +54,11 @@
               </ul>
               </div>
             </div>
+{{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
               <div class="col-xl-4">
                   <form action="{{ route('user.membership.subscribe') }}" method="post">
                       @csrf
-                      {{--<label for="email">Email:</label>--}}
-                      {{--<input type="email" name="email" id="email" required>--}}
-
-                      <!-- Optional: Name field -->
-                      {{--<label for="name">Name:</label>--}}
-                      {{--<input type="text" name="name" id="name">--}}
-
-                      <!-- Stripe Checkout Button -->
-                      <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                              data-key="{{ env('STRIPE_KEY') }}"
-                              data-plan="price_1OtehMA7He8cL1je0o5oS4AG"
-                              data-name="Trademag"
-                              data-description="Membership Subscription"
-                              data-locale="auto"
-                              data-label="Subscribe" <!-- Customizing button label -->
-                      data-allow-remember-me="false" <!-- Disabling Remember Me option -->
-                      data-panel-label="Subscribe for " <!-- Customizing panel label -->
-                      data-email="user@example.com" <!-- Pre-filling customer email -->
-                      data-zip-code="true" <!-- Enabling zip code input -->
-                      ></script>
-                      {{--    <a href="https://buy.stripe.com/test_00g9DRcbT1i7fbabIJ">Pay with Stripe</a>--}}
-                      {{--    <script async--}}
-                      {{--            src="https://js.stripe.com/v3/buy-button.js">--}}
-                      {{--    </script>--}}
-
-                      {{--    <stripe-buy-button--}}
-                      {{--        buy-button-id="buy_btn_1OuLNZA7He8cL1jeBh0y5WXV"--}}
-                      {{--        publishable-key="pk_test_51OJfb1A7He8cL1jepIHz4KyBS3mWU2807SOLepFT5YwTXkCs2T5wOABneh4dzGih7k1lzxv4U1ICQuZfHMBKxtWj002WMt9Wjq"--}}
-                      {{--    >--}}
-                      {{--    </stripe-buy-button>--}}
+                                  <a href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a>
                   </form>
 
               </div>
