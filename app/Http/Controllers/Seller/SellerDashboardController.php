@@ -30,6 +30,18 @@ class SellerDashboardController extends Controller
         $user = Auth::guard('web')->user();
         $seller = $user->seller;
 
+        if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {
+            // Subscription has expired, set is_member to 0
+            $user->is_member = 0;
+            $user->save();
+        }
+
+        if($user->is_member == 0) {
+            $notification = 'Your Monthly Subscription has been expired!';
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect('user/dashboard')->with($notification);
+        }
+
         $todayOrders = Order::with('user')->whereHas('orderProducts',function($query) use ($user){
             $query->where('seller_id', $user->seller->id);
         })->orderBy('id','desc')->whereDay('created_at', now()->day)->get();

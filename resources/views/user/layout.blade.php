@@ -2,6 +2,7 @@
     $setting = App\Models\Setting::first();
     $user = Auth::guard('web')->user();
     $is_member = $user->is_member;
+    $is_paid = $user->is_paid;
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -135,10 +136,12 @@
 
                 @endphp
 
-                @if ($is_member == false && $isSeller == false)
+                @if ($is_member == false && $user->is_paid == false && $isSeller == false)
                     <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Membership')}}</a></li>
-                @elseif($is_member == true && $isSeller == false)
+                @elseif($is_member == true && $user->is_paid == 0 && $isSeller == false)
                     <li><a class="{{ Route::is('user.seller-registration') ? 'active' : '' }}" href="{{ route('user.seller-registration') }}"><i class="fal fa-gift-card"></i> {{__('user.Become a Seller')}}</a></li>
+                @elseif($user->is_member == false && $user->is_paid == 1 && $isSeller == true)
+                <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Membership')}}</a></li>
                 @else
                     <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
                 @endif

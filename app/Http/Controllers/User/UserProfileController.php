@@ -27,6 +27,7 @@ use App\Models\Message;
 use App\Models\Category;
 use App\Models\OrderProductVariant;
 use App\Models\OrderAddress;
+use Carbon\Carbon;
 
 use Image;
 use File;
@@ -54,6 +55,13 @@ class UserProfileController extends Controller
         $orders = Order::where('user_id',$user->id)->get();
         $wishlists = Wishlist::where('user_id',$user->id)->get();
         $reviews = ProductReview::where(['user_id' => $user->id, 'status' => 1])->get();
+
+        if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {
+            // Subscription has expired, set is_member to 0
+            $user->is_member = 0;
+            $user->save();
+        }
+
         return view('user.dashboard', compact('orders','reviews','wishlists'));
     }
 
@@ -371,7 +379,7 @@ class UserProfileController extends Controller
         $user = Auth::guard('web')->user();
         $is_member = $user->is_member;
         $user->save();
-        if($user->is_member == 1){
+        if($user->is_member == 1 && $user->is_paid == 0){
             $notification = 'You have already Paid!';
             $notification = array('messege'=>$notification,'alert-type'=>'error');
             return redirect('user/seller-registration')->with($notification);
@@ -383,16 +391,28 @@ class UserProfileController extends Controller
 
     public function subscribe(Request $request) {
         $response = $request->status;
+        // dd($response);
         $user = Auth::guard('web')->user();
+        $is_paid = $user->is_paid;
         // Set the Stripe API key
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         if ($response == 'success') {
             $user->is_member = 1;
+            // Add one month to the current date
+            $expiryDate = Carbon::now()->addMonth();
+            // Save the expiry date to the user's record
+            $user->subscription_expiry_date = $expiryDate;
             $user->save();
-            $notification = 'Payment has been made Successfully!';
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
-            return redirect('user/seller-registration')->with($notification);
+            if($is_paid == 1) {
+                $notification = 'Payment has been made Successfully!';
+                $notification = array('messege'=>$notification,'alert-type'=>'success');
+                return redirect('seller/dashboard')->with($notification);
+            } else {
+                $notification = 'Payment has been made Successfully!';
+                $notification = array('messege'=>$notification,'alert-type'=>'success');
+                return redirect('user/seller-registration')->with($notification);
+            }
         } else {
             $notification = 'Payment Failed. Please try again!';
             $notification = array('messege'=>$notification,'alert-type'=>'error');
@@ -710,7 +730,8 @@ class UserProfileController extends Controller
         }
 
 
-
+        $user->is_paid = 1;
+        $user->save();
         $seller->save();
         $notification = trans('user_validation.Request sumited successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
