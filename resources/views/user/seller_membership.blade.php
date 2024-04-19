@@ -28,9 +28,9 @@
           <div class="row mb-3" id="list-styled">
             <div class="col-xl-12">
               <h3>TERMS & CONDITION</h3>
-              <strong>One Time Fee:</strong>
+              <strong>Monthly Subscription Fee:</strong>
               <ul>
-                <li>Upon registration, a one-time fee of <strong>14.99</strong> Euros will be charged to activate your seller account.</li>
+                <li>By subscribing to our service, you agree to pay a monthly fee of <strong>14.99</strong> Euros.</li>
               </ul>
               <div class="d-none">
               <strong>Monthly Membership Fee:</strong>
@@ -56,9 +56,9 @@
             </div>
 {{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
               <div class="col-xl-4">
-                  
+
                     <a class="common_btn" href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a>
-                  
+
               </div>
           </div>
         </div>
