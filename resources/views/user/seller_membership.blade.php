@@ -32,6 +32,13 @@
               <ul>
                 <li>By subscribing to our service, you agree to pay a monthly fee of <strong>14.99</strong> Euros.</li>
               </ul>
+               <ul>
+                    <li>In addition to the subscription fee, a <strong>1%</strong> commission per withdrawal will be applied.</li>
+               </ul>
+                <strong>Return Policy:</strong>
+               <ul>
+                    <li>The Seller will reimburse the amount within <strong>14</strong> days from the Buyer's decision to withdraw.</li>
+               </ul>
               <div class="d-none">
               <strong>Monthly Membership Fee:</strong>
               <ul>
