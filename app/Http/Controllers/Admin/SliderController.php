@@ -71,8 +71,6 @@ class SliderController extends Controller
 
     public function update(Request $request, $id){
         $rules = [
-            'title' => 'required',
-            'description' => 'required',
             'button_link' => 'required',
             'status' => 'required',
             'serial' => 'required'
