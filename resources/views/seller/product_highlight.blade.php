@@ -70,6 +70,41 @@
                                         </div>
                                     </div>
                                 </form>
+                                <style>
+                                    /* CSS styles go here */
+                                    #card-element {
+                                        margin-bottom: 20px;
+                                        border: 1px solid #ccc;
+                                        padding: 10px;
+                                    }
+
+                                    input[type="email"] {
+                                        width: 100%;
+                                        margin-bottom: 20px;
+                                        padding: 10px;
+                                    }
+
+                                    input[type="radio"] {
+                                        margin-right: 5px;
+                                    }
+
+                                    label {
+                                        margin-right: 10px;
+                                    }
+
+                                    button[type="submit"] {
+                                        background-color: #007bff;
+                                        color: white;
+                                        padding: 10px 20px;
+                                        border: none;
+                                        border-radius: 5px;
+                                        cursor: pointer;
+                                    }
+
+                                    button[type="submit"]:hover {
+                                        background-color: #0056b3;
+                                    }
+                                </style>
                                 <form id="payment-form" method="POST" action="{{ route('seller.product.highlight.payment', ['id' => $product->id]) }}" style="{{ $product->is_highlight_1 == 0 ? 'display: block;' : 'display: none;' }}">
                                     @csrf
                                     <!-- Include Stripe Elements for collecting card details -->
@@ -87,6 +122,14 @@
                                     <label for="css">10 Euros</label><br>
 
                                     <button type="submit">Submit Payment</button>
+
+                                    <!-- Additional text -->
+                                    <div class="highlight-text">
+                                        Upgrade your Product Highlight:<br>
+                                        1-week highlight: €5<br>
+                                        2-week highlight: €10<br>
+                                        Please proceed with payment to activate your chosen option.
+                                    </div>
                                 </form>
                             </div>
                         </div>
