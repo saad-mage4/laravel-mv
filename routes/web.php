@@ -93,6 +93,7 @@ use App\Http\Controllers\User\MessageController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Seller\ProductHighlightPaymentController;
 
 Route::group(['middleware' => ['demo','XSS']], function () {
 
@@ -279,6 +280,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('pending-product', [SellerProductController::class,'pendingProduct'])->name('pending-product');
         Route::get('product-highlight/{id}', [SellerProductController::class,'productHighlight'])->name('product-highlight');
         Route::put('update-product-highlight/{id}', [SellerProductController::class,'productHighlightUpdate'])->name('update-product-highlight');
+        Route::post('/products/{id}/highlight-payment', [ProductHighlightPaymentController::class, 'create'])->name('product.highlight.payment');
 
 
         Route::get('subcategory-by-category/{id}', [SellerProductController::class,'getSubcategoryByCategory'])->name('subcategory-by-category');
