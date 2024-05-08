@@ -11,13 +11,6 @@
         padding: 10px;
         max-width:450px;
     }
-    
-    .radio-groups label {
-        color: #fff;
-        font-weight: bold;
-        letter-spacing: 1px;
-        margin-right: 10px;
-    }
 
     button[type="submit"] {
         background-color: #007bff;
@@ -40,6 +33,12 @@
         gap:20px;
         margin-block:15px;
     }
+    .radio-groups label {
+        color: #000;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-right: 10px;
+    }
     .radio-group * {
         margin: 0;
         padding: 0;
@@ -48,10 +47,16 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        background-color: #2046da;
-        border:1px solid #2046da;
+        background-color: #fff;
+        border: 2px solid #007bff;
         padding:5px;
         border-radius:5px;
+    }
+    .radio-group.active {
+        background-color: #007bff;
+    }
+    .radio-group.active label {
+        color: #fff;
     }
     .highlight-text {
         color: #444;
@@ -138,7 +143,7 @@
                                         Please proceed with payment to activate your chosen option.
                                     </div>
                                     <div class="radio-groups">
-                                        <div class="radio-group">
+                                        <div class="radio-group active">
                                             <input type="radio" checked id="5-euro" name="amount" value="5">
                                             <label for="5-euro">5 Euros</label>
                                         </div>
@@ -168,6 +173,13 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
+        $(document).ready(function(){
+            $('.radio-groups').on('change', 'input', function(e){
+                e.preventDefault();
+                $(this).parent('.radio-group').addClass('active').siblings('.radio-group').removeClass('active');
+            });
+        });
+
         var stripe = Stripe('pk_test_51OJfb1A7He8cL1jepIHz4KyBS3mWU2807SOLepFT5YwTXkCs2T5wOABneh4dzGih7k1lzxv4U1ICQuZfHMBKxtWj002WMt9Wjq');
         var elements = stripe.elements();
 
