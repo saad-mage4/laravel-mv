@@ -31,8 +31,6 @@ use Str;
 use Auth;
 use App\Mail\NewOfferPrice;
 use Illuminate\Support\Facades\Mail;
-
-
 class SellerProductController extends Controller
 {
     public function __construct()
@@ -471,15 +469,26 @@ class SellerProductController extends Controller
     }
 
 
-    public function productHighlight($id)
+    public function productHighlight($id, Request $request)
     {
+        $duration = (int)$request->duration;
+        //            dd($duration);
+
         $product = Product::find($id);
+
+        if ($product->highlight_expiry_date != null && Carbon::now()->gt($product->highlight_expiry_date)) {
+            // Subscription has expired, set is_highlight to 0
+            $product->is_highlight_1 = 0;
+            $product->save();
+        }
+
         return view('seller.product_highlight', compact('product'));
     }
 
+
+
     public function productHighlightUpdate(Request $request, $id)
     {
-
         $product = Product::find($id);
         if ($request->product_type == 1) {
             $product->is_undefine = 1;
@@ -544,5 +553,6 @@ class SellerProductController extends Controller
         $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('seller.product.index')->with($notification);
     }
+
 
 }
