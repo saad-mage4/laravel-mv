@@ -72,6 +72,8 @@ class ProductHighlightPaymentController extends Controller
         $product->save();
 
 // Redirect or return a response as needed
-        return redirect()->back()->with('success', 'Payment successful.');
+        $notification = 'Payment has been made Successfully!';
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->back()->with($notification);
     }
 }
