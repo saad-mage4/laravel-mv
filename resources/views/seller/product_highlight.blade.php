@@ -81,7 +81,7 @@
                     <div class="breadcrumb-item">{{__('user.Product Highlight')}}</div>
                 </div>
             </div>
- 
+
             <div class="section-body">
                 <a href="{{ route('seller.product.index') }}" class="btn btn-primary"><i
                         class="fas fa-list"></i> {{__('user.Products')}}</a>
@@ -98,8 +98,8 @@
                                         <div class="form-group col-12">
                                             <label>{{__('user.Select Type')}} <span class="text-danger">*</span></label>
                                             <select name="product_type" class="form-control" id="product_type">
-                                                <option
-                                                    {{ $product->is_undefine == 1 ? 'selected' : '' }} value="1">{{__('user.Undefine Product')}}</option>
+{{--                                                <option--}}
+{{--                                                    {{ $product->is_undefine == 1 ? 'selected' : '' }} value="1">{{__('user.Undefine Product')}}</option>--}}
                                                 <option
                                                     {{ $product->new_product == 1 ? 'selected' : '' }} value="2">{{__('user.New Arrival')}}</option>
                                                 <option
@@ -108,8 +108,8 @@
                                                     {{ $product->is_top == 1 ? 'selected' : '' }} value="4">{{__('user.Top Product')}}</option>
                                                 <option
                                                     {{ $product->is_best == 1 ? 'selected' : '' }} value="5">{{__('user.Best Product')}}</option>
-                                                <option
-                                                    {{ $product->is_flash_deal == 1 ? 'selected' : '' }} value="6">{{__('user.Flash Deal Product')}}</option>
+{{--                                                <option--}}
+{{--                                                    {{ $product->is_flash_deal == 1 ? 'selected' : '' }} value="6">{{__('user.Flash Deal Product')}}</option>--}}
 
                                             </select>
                                         </div>
@@ -127,7 +127,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="row">
+                                    <div class="row" @if($product->new_product == 1 || $product->is_featured == 1 || $product->is_best == 1 || $product->is_top == 1) style="display: none;" @endif>
                                         <div class="col-12">
                                             <button class="btn btn-primary">{{__('user.Update')}}</button>
                                         </div>

@@ -42,6 +42,20 @@ class SellerProductController extends Controller
     {
         $seller = Auth::guard('web')->user()->seller;
         $products = Product::with('category')->orderBy('id', 'desc')->where('status', 1)->where('vendor_id', $seller->id)->get();
+
+        // Loop through products to update is_undefine if quantity is 0
+        foreach ($products as $product) {
+            if ($product->qty == 0) {
+                $product->is_undefine = 1;
+                $product->new_product = 0;
+                $product->is_featured = 0;
+                $product->is_best = 0;
+                $product->is_top = 0;
+                $product->is_flash_deal = 0;
+                $product->save();
+            }
+        }
+
         $orderProducts = OrderProduct::all();
         $setting = Setting::first();
         return view('seller.product', compact('products', 'orderProducts', 'setting'));
@@ -475,6 +489,17 @@ class SellerProductController extends Controller
         //            dd($duration);
 
         $product = Product::find($id);
+
+        if ($product->qty == 0) {
+            // Out of stck, set is_undefine to 1
+            $product->is_undefine = 1;
+            $product->new_product = 0;
+            $product->is_featured = 0;
+            $product->is_best = 0;
+            $product->is_top = 0;
+            $product->is_flash_deal = 0;
+            $product->save();
+        }
 
         if ($product->highlight_expiry_date != null && Carbon::now()->gt($product->highlight_expiry_date)) {
             // Subscription has expired, set is_highlight to 0
