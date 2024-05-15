@@ -96,7 +96,7 @@ class SellerOrderController extends Controller
     public function updateOrderStatus(Request $request , $id){
         $rules = [
             'order_status' => 'required',
-            'payment_status' => 'required',
+//            'payment_status' => 'required',
         ];
         $this->validate($request, $rules);
 

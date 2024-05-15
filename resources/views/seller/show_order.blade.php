@@ -164,13 +164,13 @@
                               <form action="{{ route('seller.update-order-status', ['id' => $order->id]) }}" method="POST">
                                   @csrf
                                   @method("PUT")
-                                  <div class="form-group">
-                                      <label for="">{{__('user.Payment')}}</label> <!-- Change 'admin' to 'user' -->
-                                      <select name="payment_status" id="" class="form-control">
-                                          <option {{ $order->payment_status == 0 ? 'selected' : '' }} value="0">{{__('user.Pending')}}</option> <!-- Change 'admin' to 'user' -->
-                                          <option {{ $order->payment_status == 1 ? 'selected' : '' }} value="1">{{__('user.Success')}}</option> <!-- Change 'admin' to 'user' -->
-                                      </select>
-                                  </div>
+{{--                                  <div class="form-group">--}}
+{{--                                      <label for="">{{__('user.Payment')}}</label> <!-- Change 'admin' to 'user' -->--}}
+{{--                                      <select name="payment_status" id="" class="form-control">--}}
+{{--                                          <option {{ $order->payment_status == 0 ? 'selected' : '' }} value="0">{{__('user.Pending')}}</option> <!-- Change 'admin' to 'user' -->--}}
+{{--                                          <option {{ $order->payment_status == 1 ? 'selected' : '' }} value="1">{{__('user.Success')}}</option> <!-- Change 'admin' to 'user' -->--}}
+{{--                                      </select>--}}
+{{--                                  </div>--}}
 
                                   <div class="form-group">
                                       <label for="">{{__('user.Order')}}</label> <!-- Change 'admin' to 'user' -->
