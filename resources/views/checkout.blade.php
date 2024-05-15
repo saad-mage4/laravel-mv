@@ -41,7 +41,7 @@
                 <div class="col-12">
                     <ul class="wsus__cart_tab">
                         <li><a href="{{ route('cart') }}">{{__('user.Shopping Cart')}}</a></li>
-                        <li><a href="{{ route('user.checkout.billing-address') }}">{{__('user.Billing Address')}}</a></li>
+{{--                        <li><a href="{{ route('user.checkout.billing-address') }}">{{__('user.Billing Address')}}</a></li>--}}
                         <li><a  class="wsus__order_active" href="{{ route('user.checkout.checkout') }}">{{__('user.Checkout')}}</a></li>
                         <li><a href="javascript:;">{{__('user.payment')}}</a></li>
 

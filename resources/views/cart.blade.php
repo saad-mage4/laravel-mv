@@ -42,7 +42,7 @@
                 <div class="col-12">
                     <ul class="wsus__cart_tab">
                         <li><a class="wsus__order_active" href="{{ route('cart') }}">{{__('user.Shopping Cart')}}</a></li>
-                        <li><a href="{{ route('user.checkout.billing-address') }}">{{__('user.Checkout')}}</a></li>
+                        <li><a href="{{ route('user.checkout.checkout') }}">{{__('user.Checkout')}}</a></li>
                         <li><a href="javascript:;">{{__('user.payment')}}</a></li>
                     </ul>
                 </div>
@@ -180,7 +180,7 @@
                             <p>{{__('user.Tax')}}(+): <span>{{ $setting->currency_icon }}{{ $tax_amount }}</span></p>
                             <p>{{__('user.Coupon')}}(-): <span>{{ $setting->currency_icon }}{{  $coupon_price  }}</span></p>
                             <p class="total"><span>{{__('user.total')}}:</span> <span>{{ $setting->currency_icon }}{{ $total_price }}</span></p>
-                            <a class="common_btn mt-4 w-100 text-center" href="{{ route('user.checkout.billing-address') }}">{{__('user.checkout')}}</a>
+                            <a class="common_btn mt-4 w-100 text-center" href="{{ route('user.checkout.checkout') }}">{{__('user.checkout')}}</a>
                         </div>
                     </div>
                 </div>

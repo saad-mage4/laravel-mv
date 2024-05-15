@@ -437,14 +437,14 @@ class PaymentController extends Controller
 
         $orderAddress = new OrderAddress();
         $orderAddress->order_id = $order->id;
-        $orderAddress->billing_name = $billing->name;
-        $orderAddress->billing_email = $billing->email;
-        $orderAddress->billing_phone = $billing->phone;
-        $orderAddress->billing_address = $billing->address;
-        $orderAddress->billing_country = $billing->country ? $billing->country->name : '';
-        $orderAddress->billing_state = $billing->countryState ? $billing->countryState->name : '';
-        $orderAddress->billing_city = $billing->city ? $billing->city->name : '';
-        $orderAddress->billing_zip_code = $billing->zip_code;
+//        $orderAddress->billing_name = $billing->name;
+//        $orderAddress->billing_email = $billing->email;
+//        $orderAddress->billing_phone = $billing->phone;
+//        $orderAddress->billing_address = $billing->address;
+//        $orderAddress->billing_country = $billing->country ? $billing->country->name : '';
+//        $orderAddress->billing_state = $billing->countryState ? $billing->countryState->name : '';
+//        $orderAddress->billing_city = $billing->city ? $billing->city->name : '';
+//        $orderAddress->billing_zip_code = $billing->zip_code;
         $orderAddress->shipping_name = $shipping->name;
         $orderAddress->shipping_email = $shipping->email;
         $orderAddress->shipping_phone = $shipping->phone;

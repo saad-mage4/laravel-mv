@@ -85,53 +85,53 @@
             @endphp
             <div class="wsus__pay_info_area">
                 <div class="row">
-                    <div class="col-xl-2 col-lg-2">
-                        <div class="wsus__payment_menu">
-                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                @if ($stripe->status == 1)
-                                <button class="nav-link common_btn active" id="v-stripe-payment-tab" data-bs-toggle="pill" data-bs-target="#v-stripe-payment" type="button" role="tab" aria-controls="v-stripe-payment" aria-selected="true">{{__('user.Stripe')}}</button>
-                                @endif
+{{--                    <div class="col-xl-2 col-lg-2">--}}
+{{--                        <div class="wsus__payment_menu">--}}
+{{--                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">--}}
+{{--                                @if ($stripe->status == 1)--}}
+{{--                                <button class="nav-link common_btn active" id="v-stripe-payment-tab" data-bs-toggle="pill" data-bs-target="#v-stripe-payment" type="button" role="tab" aria-controls="v-stripe-payment" aria-selected="true">{{__('user.Stripe')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($paypal->status == 1)
-                                <button class="nav-link common_btn" id="v-paypal-payment-tab" data-bs-toggle="pill" data-bs-target="#v-paypal-payment" type="button" role="tab" aria-controls="v-paypal-payment" aria-selected="false">{{__('user.Paypal')}}</button>
-                                @endif
+{{--                                @if ($paypal->status == 1)--}}
+{{--                                <button class="nav-link common_btn" id="v-paypal-payment-tab" data-bs-toggle="pill" data-bs-target="#v-paypal-payment" type="button" role="tab" aria-controls="v-paypal-payment" aria-selected="false">{{__('user.Paypal')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($razorpay->status == 1)
-                                <button class="nav-link common_btn" id="v-razorpay-payment-tab" data-bs-toggle="pill" data-bs-target="#v-razorpay-payment" type="button" role="tab" aria-controls="v-razorpay-payment" aria-selected="false">{{__('user.Razorpay')}}</button>
-                                @endif
+{{--                                @if ($razorpay->status == 1)--}}
+{{--                                <button class="nav-link common_btn" id="v-razorpay-payment-tab" data-bs-toggle="pill" data-bs-target="#v-razorpay-payment" type="button" role="tab" aria-controls="v-razorpay-payment" aria-selected="false">{{__('user.Razorpay')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($flutterwave->status == 1)
-                                    <button class="nav-link common_btn" id="v-flutterwave-payment-tab" data-bs-toggle="pill" data-bs-target="#v-flutterwave-payment" type="button" role="tab" aria-controls="v-flutterwave-payment" aria-selected="false">{{__('user.Flutterwave')}}</button>
-                                @endif
+{{--                                @if ($flutterwave->status == 1)--}}
+{{--                                    <button class="nav-link common_btn" id="v-flutterwave-payment-tab" data-bs-toggle="pill" data-bs-target="#v-flutterwave-payment" type="button" role="tab" aria-controls="v-flutterwave-payment" aria-selected="false">{{__('user.Flutterwave')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($paystack->mollie_status == 1)
-                                <button class="nav-link common_btn" id="v-mollie-payment-tab" data-bs-toggle="pill" data-bs-target="#v-mollie-payment" type="button" role="tab" aria-controls="v-mollie-payment" aria-selected="false">{{__('user.Mollie')}}</button>
-                                @endif
+{{--                                @if ($paystack->mollie_status == 1)--}}
+{{--                                <button class="nav-link common_btn" id="v-mollie-payment-tab" data-bs-toggle="pill" data-bs-target="#v-mollie-payment" type="button" role="tab" aria-controls="v-mollie-payment" aria-selected="false">{{__('user.Mollie')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($paystack->paystack_status == 1)
-                                <button class="nav-link common_btn" id="v-paystack-payment-tab" data-bs-toggle="pill" data-bs-target="#v-paystack-payment" type="button" role="tab" aria-controls="v-paystack-payment" aria-selected="false">{{__('user.Paystack')}}</button>
-                                @endif
+{{--                                @if ($paystack->paystack_status == 1)--}}
+{{--                                <button class="nav-link common_btn" id="v-paystack-payment-tab" data-bs-toggle="pill" data-bs-target="#v-paystack-payment" type="button" role="tab" aria-controls="v-paystack-payment" aria-selected="false">{{__('user.Paystack')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($instamojoPayment->status == 1)
-                                    <button class="nav-link common_btn" id="v-instamojo-payment-tab" data-bs-toggle="pill" data-bs-target="#v-instamojo-payment" type="button" role="tab" aria-controls="v-instamojo-payment" aria-selected="false">{{__('user.Instamojo')}}</button>
-                                @endif
+{{--                                @if ($instamojoPayment->status == 1)--}}
+{{--                                    <button class="nav-link common_btn" id="v-instamojo-payment-tab" data-bs-toggle="pill" data-bs-target="#v-instamojo-payment" type="button" role="tab" aria-controls="v-instamojo-payment" aria-selected="false">{{__('user.Instamojo')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($paymongo->status == 1)
-                                    <button class="nav-link common_btn" id="v-paymongo-payment-tab" data-bs-toggle="pill" data-bs-target="#v-paymongo-payment" type="button" role="tab" aria-controls="v-paymongo-payment" aria-selected="false">{{__('user.Paymongo')}}</button>
-                                @endif
+{{--                                @if ($paymongo->status == 1)--}}
+{{--                                    <button class="nav-link common_btn" id="v-paymongo-payment-tab" data-bs-toggle="pill" data-bs-target="#v-paymongo-payment" type="button" role="tab" aria-controls="v-paymongo-payment" aria-selected="false">{{__('user.Paymongo')}}</button>--}}
+{{--                                @endif--}}
 
 
 
-                                @if ($bankPayment->status == 1)
-                                <button class="nav-link common_btn" id="v-bank-payment-tab" data-bs-toggle="pill" data-bs-target="#v-bank-payment" type="button" role="tab" aria-controls="v-bank-payment" aria-selected="false">{{__('user.Bank')}}</button>
-                                @endif
+{{--                                @if ($bankPayment->status == 1)--}}
+{{--                                <button class="nav-link common_btn" id="v-bank-payment-tab" data-bs-toggle="pill" data-bs-target="#v-bank-payment" type="button" role="tab" aria-controls="v-bank-payment" aria-selected="false">{{__('user.Bank')}}</button>--}}
+{{--                                @endif--}}
 
-                                @if ($bankPayment->cash_on_delivery_status == 1)
-                                <button class="nav-link common_btn" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">{{__('user.Cash on delivery')}}</button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+{{--                                @if ($bankPayment->cash_on_delivery_status == 1)--}}
+{{--                                <button class="nav-link common_btn" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">{{__('user.Cash on delivery')}}</button>--}}
+{{--                                @endif--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="col-xl-6 col-lg-6">
                         <div class="tab-content" id="v-pills-tabContent">
                             @if ($stripe->status == 1)
@@ -344,7 +344,7 @@ $(document).ready(function(){
     // Function to update the card image
   function updateCardImage(cardType) {
     // Clear the container first
-    
+
     // Update the image based on the card type
     if (cardType === 'visa') {
         //   $('input[name="card_number"]').parent().html('<img src="visa_image.png" alt="Visa Card">');
