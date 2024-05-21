@@ -226,9 +226,11 @@ $(function() {
 
     $('.monthly_top_filter2').on('click', 'button', function() {
         var filterValue = $(this).attr('data-filter');
-        $grid2.isotope({
-            filter: filterValue
-        });
+        console.log(filterValue);
+        $(`.wsus__hot_large_item ${filterValue}`).removeClass('slide-hide').siblings('.flash_sell_slider').addClass('slide-hide');
+        // $grid2.isotope({
+        //     filter: filterValue
+        // });
     });
 
     //active class

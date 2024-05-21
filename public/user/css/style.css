@@ -25,6 +25,12 @@ body {
 	display: flex;
 }
 
+.slide-hide {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+}
+
 select.goog-te-combo {
     height: 35px;
     padding: 0 10px;

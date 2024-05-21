@@ -1610,7 +1610,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row grid2">
+                <div class="row _featured flash_sell_slider">
                     @foreach ($featuredProducts as $featuredProduct)
 
                         @php
@@ -1750,7 +1750,8 @@
                             </div>
                         </div>
                     @endforeach
-
+                </div>
+                <div class="row _best flash_sell_slider slide-hide">
                     @foreach ($bestProducts as $bestProduct)
                         @php
                             $reviewQty = $bestProduct->reviews->where('status',1)->count();
@@ -1943,7 +1944,9 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
 
+                <div class="row _top flash_sell_slider slide-hide">
                     @foreach ($topProducts as $topProduct)
                         @php
                             $reviewQty = $topProduct->reviews->where('status',1)->count();
@@ -2083,7 +2086,8 @@
                             </div>
                         </div>
                     @endforeach
-
+                </div>
+                <div class="row _new flash_sell_slider slide-hide">
                     @foreach ($newProducts as $newProduct)
                         @php
                             $reviewQty = $newProduct->reviews->where('status',1)->count();
