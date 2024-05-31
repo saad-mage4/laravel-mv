@@ -4,8 +4,8 @@
 @endsection
 @php
 $img1 = true;
-$img2 = true;
-$img3 = true;
+$img2 = false;
+$img3 = false;
 @endphp
 @section('meta')
     <meta name="description" content="">

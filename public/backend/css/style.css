@@ -1683,6 +1683,13 @@ h6 .badge {
 .nav-collapse {
   display: flex; }
 
+/* Sponsor Start */
+.add-sponsor img {
+  width: 100%;
+  border-radius: 10px;
+}
+/* Sponsor End */
+
 @media (max-width: 575.98px) {
   body.search-show .navbar .form-inline .search-element {
     display: block; }
