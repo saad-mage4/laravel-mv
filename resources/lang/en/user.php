@@ -269,6 +269,7 @@
   'Product Reviews' => 'Product Reviews',
   'My Withdraw' => 'My Withdraw',
   'Visit User Dashboard' => 'Visit User Dashboard',
+  'Add Sponsor' => 'Add Sponsor',
   'Go Back' => 'Go Back',
   'manage options' => 'manage options',
   'Create Variant' => 'Create Variant',
@@ -489,5 +490,6 @@
   'NIC Front' => 'NIC Front',
   'NIC Back' => 'NIC Back',
   'PDF Document' => 'PDF Document',
+  'sponsor' => 'Sponsor',
 );
  ?>

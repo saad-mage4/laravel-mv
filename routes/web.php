@@ -76,6 +76,7 @@ use App\Http\Controllers\Seller\WithdrawController;
 use App\Http\Controllers\Seller\SellerProductReportControler;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Seller\SellerMessageContoller;
+use App\Http\Controllers\Seller\SellerSponsorController;
 use App\Http\Controllers\MembershipController;
 
 
@@ -102,6 +103,7 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about-us');
     Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
+    Route::get('/sponsor', [HomeController::class, 'Sponsor'])->name('sponsor');
     Route::get('language/{locale}', function ($locale) {
         app()->setLocale($locale);
         session()->put('locale', $locale);
@@ -334,6 +336,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('load-chat-box/{id}', [SellerMessageContoller::class, 'loadChatBox'])->name('load-chat-box');
         Route::get('load-new-message/{id}', [SellerMessageContoller::class, 'loadNewMessage'])->name('load-new-message');
         Route::get('send-message', [SellerMessageContoller::class, 'sendMessage'])->name('send-message');
+        Route::get('add-sponsor', [SellerSponsorController::class, 'addSponsor'])->name('add-sponsor');
 
     });
 

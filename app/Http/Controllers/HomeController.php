@@ -161,13 +161,17 @@ class HomeController extends Controller
         return view('about_us', compact('aboutUs','seoSetting'));
     }
 
+    public function Sponsor(){
+        return view('sponsor');
+    }
+
     public function contactUs(){
         $contact = ContactPage::first();
         $recaptchaSetting = GoogleRecaptcha::first();
         $seoSetting = SeoSetting::find(3);
         return view('contact_us', compact('contact','recaptchaSetting','seoSetting'));
     }
-
+    
     public function sendContactMessage(Request $request){
         $rules = [
             'name'=>'required',

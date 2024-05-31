@@ -14,7 +14,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
+  
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -281,7 +281,7 @@
                 <h5>{{__('user.Sub Total')}} <span>{{ $currencySetting->currency_icon }}{{ $sidebarCartSubTotal }}</span></h5>
                 <div class="wsus__minicart_btn_area">
                     <a class="common_btn" href="{{ route('cart') }}">{{__('user.View Cart')}}</a>
-                    <a class="common_btn" href="{{ route('user.checkout.checkout') }}">{{__('user.Checkout')}}</a>
+                    <a class="common_btn" href="{{ route('user.checkout.billing-address') }}">{{__('user.Checkout')}}</a>
                 </div>
             @endif
             </div>
@@ -423,6 +423,7 @@
                                 @endforeach
                             </ul>
                         </li>
+                        <li><a href="{{ route('sponsor') }}">{{__('user.sponsor')}}</a></li>
                         @endif
                     </ul>
                     <ul class="wsus__menu_item wsus__menu_item_right ms-auto">

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Order;
 use App\Models\WithdrawMethod;
 use App\Models\SellerWithdraw;
 use App\Models\OrderProduct;
 use App\Models\Setting;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Auth;
 class WithdrawController extends Controller
 {
@@ -34,6 +37,28 @@ class WithdrawController extends Controller
         $methods = WithdrawMethod::whereStatus('1')->get();
         $setting = Setting::first();
         return view('seller.create_withdraw', compact('methods','setting'));
+    }
+
+    public function automateWithdraw(){
+        $orders = DB::table('orders')->whereNotNull('order_completed_date')->where('payment_status', '=', 0)->get();
+        if (!empty($orders)) {
+
+            foreach ($orders as $order) {
+                $currentDate = $order->order_completed_date;
+                $currentDate = Carbon::parse($currentDate);
+                $currentCarbonDate = Carbon::parse($currentDate);
+                $dateInFifteenDays = $currentCarbonDate->addDays(14);
+                $diffInDays = $currentDate->diffInDays($dateInFifteenDays, false);
+
+                date_default_timezone_set("Asia/Karachi");
+                $current_time = date('Y-m-d');
+                $order_completed_date = Carbon::createFromFormat('Y-m-d', $order->order_completed_date);
+                $diff = $order_completed_date->diffInDays($current_time);
+                if ($diff >= 14) {
+                    DB::table('orders')->where('id', '=', $order->id)->update(['payment_status' => 1]);
+                }
+            }
+        }
     }
 
     public function getWithDrawAccountInfo($id){

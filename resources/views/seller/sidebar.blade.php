@@ -58,8 +58,9 @@
           <li class="{{ Route::is('seller.message') ? 'active' : '' }}"><a class="nav-link" href="{{ route('seller.message') }}"><i class="far fa-envelope"></i> <span>{{__('user.Message')}}</span></a></li>
 
           <li class=""><a class="nav-link" href="{{ route('user.dashboard') }}"><i class="fas fa-user"></i> <span>{{__('user.Visit User Dashboard')}}</span></a></li>
-
+          <li class=""><a class="nav-link" href="{{ route('seller.add-sponsor') }}">
+          <i class="fas fa-bolt"></i>  
+          <span>{{__('user.Add Sponsor')}}</span></a></li>
         </ul>
-
     </aside>
   </div>

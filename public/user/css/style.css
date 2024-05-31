@@ -2752,6 +2752,13 @@ HOME SERVOCES START
 	SUBSCRIBE PART END
 ========================*/
 
+/* SPONSOR PAGE START */
+.sponsor-page img {
+    width: 100%;
+    border-radius: 10px;
+}
+/* SPONSOR PAGE END */
+
 /*======================
 	FOOTER PART START
 ========================*/

@@ -55,6 +55,7 @@ return array (
     'Reviews' => 'Recenzii',
     'My Profile' => 'Profilul meu',
     'Visit Seller Dashboard' => 'Accesați Tabloul de bord al vânzătorului',
+    'Add Sponsor' => 'Adaugă Sponsor',
     'Seller Registration' => 'Înregistrarea vânzătorului',
     'Log out' => 'Deconectați-vă',
     'Update Profile' => 'Actualizare profil',
