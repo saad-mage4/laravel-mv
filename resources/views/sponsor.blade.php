@@ -25,7 +25,7 @@ $img3 = false;
                               <img src="https://picsum.photos/1280/500" alt="img-1">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/1280x500/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/1280x500/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <!-- 3 Images Section -->
@@ -35,7 +35,7 @@ $img3 = false;
                               <img src="https://picsum.photos/350/700" alt="img-2">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <div class="col-4 my-5">
@@ -44,7 +44,7 @@ $img3 = false;
                               <img src="https://picsum.photos/350/700" alt="img-3">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <div class="col-4 my-5">
@@ -53,7 +53,7 @@ $img3 = false;
                               <img src="https://picsum.photos/350/700" alt="img-4">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <!-- Middle Single Image -->
@@ -63,7 +63,7 @@ $img3 = false;
                               <img src="https://picsum.photos/1280/200" alt="img-1">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/1280x200/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/1280x200/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <!-- 3 Images Section -->
@@ -73,7 +73,7 @@ $img3 = false;
                               <img src="https://picsum.photos/350/700" alt="img-2">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <div class="col-4 my-5">
@@ -82,7 +82,7 @@ $img3 = false;
                               <img src="https://picsum.photos/350/700" alt="img-3">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
             <div class="col-4 my-5">
@@ -91,7 +91,7 @@ $img3 = false;
                               <img src="https://picsum.photos/350/700" alt="img-4">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg" alt="dummy-1">
+                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
             </div>
       </div>

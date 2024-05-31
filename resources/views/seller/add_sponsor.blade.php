@@ -25,7 +25,7 @@ $available = false;
                         <!-- Top Main Image -->
                         <div class="col-12 mt-3">
                               @if($available === true)
-                                    <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @else
                                     <a href="#!">
                                           <img src="https://picsum.photos/1280/500" alt="img-1">
@@ -39,7 +39,7 @@ $available = false;
                                           <img src="https://picsum.photos/350/700" alt="img-2">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         <div class="col-4 my-5">
@@ -48,7 +48,7 @@ $available = false;
                                           <img src="https://picsum.photos/350/700" alt="img-3">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         <div class="col-4 my-5">
@@ -57,7 +57,7 @@ $available = false;
                                           <img src="https://picsum.photos/350/700" alt="img-4">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         <!-- Middle Single Image -->
@@ -67,7 +67,7 @@ $available = false;
                                           <img src="https://picsum.photos/1280/200" alt="img-1">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/1280x200/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/1280x200/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         <!-- 3 Images Section -->
@@ -77,7 +77,7 @@ $available = false;
                                           <img src="https://picsum.photos/350/700" alt="img-2">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         <div class="col-4 my-5">
@@ -86,7 +86,7 @@ $available = false;
                                           <img src="https://picsum.photos/350/700" alt="img-3">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         <div class="col-4 my-5">
@@ -95,7 +95,7 @@ $available = false;
                                           <img src="https://picsum.photos/350/700" alt="img-4">
                                     </a>
                               @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg" alt="dummy-1">
+                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                               @endif
                         </div>
                         </div>
