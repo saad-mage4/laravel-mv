@@ -29,6 +29,7 @@ class SellerSponsorController extends Controller
      */
     public function addSponsorReq(Request $request): string
     {
+        dd($request);
         if (DB::table('sponsorships')->where('banner_name', $request->banner_name)->exists()) {
             Sponsorships::class->updateSponsor($request);
             $response = 'Banner has been updated successfully!';

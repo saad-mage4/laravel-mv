@@ -17,10 +17,11 @@ $(document).ready(function () {
     $("#add-sponsor-form").on("submit", function (e) {
         e.preventDefault();
         let formData = new FormData(this);
+      // let formData = $(this).serialize();
         console.log(formData);
         $.ajax({
             url: "/seller/add-sponsor-req",
-            method: "get",
+            method: "post",
             data: formData,
             processData: false,
             contentType: false,
