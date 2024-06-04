@@ -25,10 +25,12 @@ $available = false;
                         <!-- Top Main Image -->
                         <div class="col-12 mt-3">
                               @if($available === true)
-                                    <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
-                              @else
                                     <a href="#!">
                                           <img src="https://picsum.photos/1280/500" alt="img-1">
+                                    </a>
+                              @else
+                                    <a href="#!" class="first_image" data-slot="first_image">
+                                    <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                                     </a>
                               @endif
                         </div>
@@ -104,4 +106,4 @@ $available = false;
       </div>
 </section>
 </div>
-@endsection;
+@endsection

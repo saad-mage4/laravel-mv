@@ -15,4 +15,7 @@ class SellerSponsorController extends Controller
         $user = Auth::guard('web')->user();
         return view('seller.add_sponsor');
     }
+    public function addSponsorReq(Request $request) {
+        dd($request->slot);
+    }
 }

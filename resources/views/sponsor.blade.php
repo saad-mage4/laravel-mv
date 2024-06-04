@@ -3,7 +3,7 @@
     <title>Sponsor Page</title>
 @endsection
 @php
-$img1 = true;
+$img1 = false;
 $img2 = false;
 $img3 = false;
 @endphp

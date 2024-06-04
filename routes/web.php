@@ -337,7 +337,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('load-new-message/{id}', [SellerMessageContoller::class, 'loadNewMessage'])->name('load-new-message');
         Route::get('send-message', [SellerMessageContoller::class, 'sendMessage'])->name('send-message');
         Route::get('add-sponsor', [SellerSponsorController::class, 'addSponsor'])->name('add-sponsor');
-
+        Route::get('add-sponsor-req', [SellerSponsorController::class, 'addSponsorReq']);
     });
 
 

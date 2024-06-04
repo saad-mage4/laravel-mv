@@ -6,3 +6,19 @@
  */
 
 "use strict";
+
+$(document).ready(function () {
+    $(".first_image").on("click", function (e) {
+        e.preventDefault();
+        let slot = $(this).data("slot");
+        console.log(slot);
+        $.ajax({
+            url: "/seller/add-sponsor-req",
+            method: "get",
+            data: { slot, slot },
+            success: function (res) {
+                console.log(res);
+            },
+        });
+    });
+});
