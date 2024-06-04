@@ -29,7 +29,7 @@ $available = false;
                                           <img src="https://picsum.photos/1280/500" alt="img-1">
                                     </a>
                               @else
-                                    <a href="#!" class="first_image" data-slot="first_image">
+                                    <a href="#!" class="first_image" data-slot="first_image" data-toggle="modal" data-target="#add-sponsor-modal">
                                     <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg&text=Slot+Available" alt="dummy-1">
                                     </a>
                               @endif
@@ -105,5 +105,54 @@ $available = false;
             </div>
       </div>
 </section>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="add-sponsor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <form id="add-sponsor-form" enctype="multipart/form-data">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                  <div class="form-group">
+                  <label for="prod-link">Product Link</label>
+                  <input
+                  type="text"
+                  name="prod_link"
+                  id="prod-link"
+                  class="form-control"
+                  required
+                  />
+                  </div>
+            </div>
+            <div class="col-12">
+                  <div class="custom-file">
+                  <input
+                  type="file"
+                  name="banner_img"
+                  class="custom-file-input"
+                  id="banner-img"
+                  required
+                  />
+                  <label class="custom-file-label" for="banner-img">Choose file...</label>
+                  </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+            <input type="hidden" name="image_position" value="">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</form>
 </div>
 @endsection
