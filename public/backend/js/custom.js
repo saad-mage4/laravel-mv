@@ -15,7 +15,7 @@ $(document).ready(function () {
         $.ajax({
             url: "/seller/add-sponsor-req",
             method: "get",
-            data: { slot, slot },
+            data: {slot: slot },
             success: function (res) {
                 console.log(res);
             },
