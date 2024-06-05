@@ -77,6 +77,48 @@ class Sponsorships extends Model
             $details['price'] = '20';
             $details['days'] = '15';
         }
+        if ($position == 'second_image') {
+            $details['width'] = '350';
+            $details['height'] = '700';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        if ($position == 'third_image') {
+            $details['width'] = '350';
+            $details['height'] = '700';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        if ($position == 'fourth_image') {
+            $details['width'] = '350';
+            $details['height'] = '700';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        if ($position == 'fifth_image') {
+            $details['width'] = '1280';
+            $details['height'] = '200';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        if ($position == 'sixth_image') {
+            $details['width'] = '1280';
+            $details['height'] = '500';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        if ($position == 'seventh_image') {
+            $details['width'] = '350';
+            $details['height'] = '700';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        if ($position == 'eighth_image') {
+            $details['width'] = '350';
+            $details['height'] = '700';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
         return $details;
     }
 }

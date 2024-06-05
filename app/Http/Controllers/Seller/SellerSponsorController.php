@@ -42,11 +42,11 @@ class SellerSponsorController extends Controller
 
         if (DB::table('sponsorships')->where('banner_position', $request->image_position)->exists()) {
             $sponsorship->updateSponsor($request, $imagePath);
-            $response = 'Banner has been updated successfully!';
         } else {
             $sponsorship->addSponsor($request, $imagePath);
-            $response = 'Banner has been added successfully!';
         }
-        return $response;
+        $notification = 'Banner has been updated successfully!';
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->back()->with($notification);
     }
 }

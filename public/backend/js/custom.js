@@ -8,7 +8,7 @@
 "use strict";
 
 $(document).ready(function () {
-    $(".first_image").on("click", function (e) {
+    $(".slot-images").on("click", function (e) {
         e.preventDefault();
         let slot = $(this).data("slot");
         $('input[name="image_position"]').val(slot);
@@ -18,7 +18,7 @@ $(document).ready(function () {
         let fileName =
             e.target.files.length > 0
                 ? e.target.files[0].name
-                : "choose_file_not";
+                : "Choose file...";
         $("label[for='banner-img']").text(fileName);
     });
 

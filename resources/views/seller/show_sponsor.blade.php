@@ -25,12 +25,12 @@
                         <div class="row">
                             <!-- Top Main Image -->
                             <div class="col-12 mt-3">
-                                @if($available === true)
+                                @if((bool)$banners[0]->is_booked === false)
                                     <a href="#!">
-                                        <img src="https://picsum.photos/1280/500" alt="img-1">
+                                        <img src="{{URL::asset($banners[0]->image_url)}}" alt="img-1">
                                     </a>
                                 @else
-                                    <a href="#!" class="first_image" data-slot="first_image" data-toggle="modal"
+                                    <a href="#!" class="slot-images" data-slot="first_image" data-toggle="modal"
                                        data-target="#add-sponsor-modal">
                                         <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg&text=Slot+Available"
                                              alt="dummy-1">
@@ -44,8 +44,11 @@
                                         <img src="https://picsum.photos/350/700" alt="img-2">
                                     </a>
                                 @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
+                                    <a href="#!" class="slot-images" data-slot="second_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
+                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                             <div class="col-4 my-5">
@@ -54,8 +57,11 @@
                                         <img src="https://picsum.photos/350/700" alt="img-3">
                                     </a>
                                 @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
+                                    <a href="#!" class="slot-images" data-slot="third_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
+                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                             <div class="col-4 my-5">
@@ -64,8 +70,11 @@
                                         <img src="https://picsum.photos/350/700" alt="img-4">
                                     </a>
                                 @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
+                                    <a href="#!" class="slot-images" data-slot="fourth_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
+                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                             <!-- Middle Single Image -->
@@ -75,8 +84,11 @@
                                         <img src="https://picsum.photos/1280/200" alt="img-1">
                                     </a>
                                 @else
+                                    <a href="#!" class="slot-images" data-slot="fifth_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
                                     <img src="https://dummyimage.com/1280x200/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                             <!-- 3 Images Section -->
@@ -86,8 +98,11 @@
                                         <img src="https://picsum.photos/350/700" alt="img-2">
                                     </a>
                                 @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
+                                    <a href="#!" class="slot-images" data-slot="sixth_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
+                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                             <div class="col-4 my-5">
@@ -96,8 +111,11 @@
                                         <img src="https://picsum.photos/350/700" alt="img-3">
                                     </a>
                                 @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
+                                    <a href="#!" class="slot-images" data-slot="seventh_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
+                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                             <div class="col-4 my-5">
@@ -106,8 +124,11 @@
                                         <img src="https://picsum.photos/350/700" alt="img-4">
                                     </a>
                                 @else
-                                    <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
+                                    <a href="#!" class="slot-images" data-slot="eighth_image" data-slot="first_image" data-toggle="modal"
+                                       data-target="#add-sponsor-modal">
+                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
                                          alt="dummy-1">
+                                    </a>
                                 @endif
                             </div>
                         </div>
