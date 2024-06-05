@@ -109,7 +109,7 @@ $available = false;
 
 <!-- Modal -->
 <div class="modal fade" id="add-sponsor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <form id="add-sponsor-form" method="post" enctype="multipart/form-data">
+      <form id="add-sponsor-form" action="/seller/add-sponsor-req"  method="post" enctype="multipart/form-data">
             @csrf
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">

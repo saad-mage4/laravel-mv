@@ -14,20 +14,23 @@ $(document).ready(function () {
         $('input[name="image_position"]').val(slot);
     });
 
-    $("#add-sponsor-form").on("submit", function (e) {
-        e.preventDefault();
-        let formData = new FormData(this);
-      // let formData = $(this).serialize();
-        console.log(formData);
-        $.ajax({
-            url: "/seller/add-sponsor-req",
-            method: "post",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                console.log(res);
-            },
-        });
-    });
+    // $("#add-sponsor-form").on("submit", function (e) {
+    //     e.preventDefault();
+    //     let formData = new FormData(this);
+    //     console.log(formData);
+    //     $.ajax({
+    //         url: "/seller/add-sponsor-req",
+    //         method: "post",
+    //         data: formData,
+    //         success: function (res) {
+    //             console.log(res);
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error(xhr.responseText);
+    //         },
+    //         cache: false,
+    //         processData: false,
+    //         contentType: false,
+    //     });
+    // });
 });
