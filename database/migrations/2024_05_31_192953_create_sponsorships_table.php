@@ -15,13 +15,14 @@ class CreateSponsorshipsTable extends Migration
     {
         Schema::create('sponsorships', function (Blueprint $table) {
             $table->id();
-            $table->string('banner_name')->nullable();
+            $table->string('banner_position')->nullable();
             $table->string('width')->nullable();
             $table->string('height')->nullable();
             $table->string('price')->nullable();
-            $table->string('hours')->nullable();
+            $table->string('days')->nullable();
             $table->string('is_booked')->nullable();
             $table->string('image_url')->nullable();
+            $table->string('banner_redirect')->nullable();
             $table->string('sponsor_title')->nullable();
             $table->string('sponsor_name')->nullable();
             $table->timestamps();

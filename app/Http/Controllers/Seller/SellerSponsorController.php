@@ -29,12 +29,22 @@ class SellerSponsorController extends Controller
      */
     public function addSponsorReq(Request $request): string
     {
-        dd($request);
-        if (DB::table('sponsorships')->where('banner_name', $request->banner_name)->exists()) {
-            Sponsorships::class->updateSponsor($request);
+        $imagePath = null;
+        // Check if an image is uploaded
+        if ($request->hasFile('banner_img')) {
+            $image = $request->file('banner_img');
+            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('images/sponsors'), $imageName);
+            $imagePath = 'images/sponsors/' . $imageName;
+        }
+
+        $sponsorship = new Sponsorships();
+
+        if (DB::table('sponsorships')->where('banner_position', $request->image_position)->exists()) {
+            $sponsorship->updateSponsor($request, $imagePath);
             $response = 'Banner has been updated successfully!';
         } else {
-            Sponsorships::class->updateSponsor($request);
+            $sponsorship->addSponsor($request, $imagePath);
             $response = 'Banner has been added successfully!';
         }
         return $response;

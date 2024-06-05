@@ -9,23 +9,28 @@ class Sponsorships extends Model
 {
     use HasFactory;
 
-    /**
-     * @param $params
-     * @return void
-     */
-    public function addSponsor($params)
+    public function addSponsor($params, $image)
     {
+        $position = $params->image_position ?? null;
+        $isBooked = $params->is_booked ?? false;
+        $imgURL = $image ?? null;
+        $sponsorRedirect = $params->prod_link ?? null;
+        $sponsorTitle = $params->sponsor_title ?? null;
+        $sponsorName = $params->sponsor_name ?? null;
+        $details = $this->getBannerDetails($position);
+
         DB::table('sponsorships')->insert(
             [
-                'banner_name' => $params->banner_name,
-                'width' => $params->width,
-                'height' => $params->height,
-                'price' => $params->price,
-                'hours' => $params->hours,
-                'is_booked' => $params->is_booked,
-                'image_url' => $params->image_url,
-                'sponsor_title' => $params->sponsor_title,
-                'sponsor_name' => $params->sponsor_name,
+                'banner_position' => $position,
+                'width' => $details['width'],
+                'height' => $details['height'],
+                'price' => $details['price'],
+                'days' => $details['days'],
+                'is_booked' => $isBooked,
+                'image_url' => $imgURL,
+                'banner_redirect' => $sponsorRedirect,
+                'sponsor_title' => $sponsorTitle,
+                'sponsor_name' => $sponsorName,
             ]
         );
     }
@@ -34,19 +39,44 @@ class Sponsorships extends Model
      * @param $params
      * @return void
      */
-    public function updateSponsor($params)
+    public function updateSponsor($params, $image)
     {
-        DB::table('sponsorships')->where('banner_name', $params->banner_name)->update(
+        $position = $params->image_position ?? null;
+        $isBooked = $params->is_booked ?? false;
+        $imgURL = $image ?? null;
+        $sponsorRedirect = $params->prod_link ?? null;
+        $sponsorTitle = $params->sponsor_title ?? null;
+        $sponsorName = $params->sponsor_name ?? null;
+        $details = $this->getBannerDetails($position);
+        $width = $details['width'];
+        $height = $details['height'];
+        $price = $details['price'];
+        $days = $details['days'];
+
+        DB::table('sponsorships')->where('banner_position', $position)->update(
             [
-                ['width' => $params->width],
-                ['height' => $params->height],
-                ['price' => $params->price],
-                ['hours' => $params->hours],
-                ['is_booked' => $params->is_booked],
-                ['image_url' => $params->image_url],
-                ['sponsor_title' => $params->sponsor_title],
-                ['sponsor_name' => $params->sponsor_name],
+                'width' => $width,
+                'height' => $height,
+                'price' => $price,
+                'days' => $days,
+                'is_booked' => $isBooked,
+                'image_url' => $imgURL,
+                'banner_redirect' => $sponsorRedirect,
+                'sponsor_title' => $sponsorTitle,
+                'sponsor_name' => $sponsorName,
             ]
         );
+    }
+
+    public function getBannerDetails($position): array
+    {
+        $details = [];
+        if ($position == 'first_image') {
+            $details['width'] = '1280';
+            $details['height'] = '500';
+            $details['price'] = '20';
+            $details['days'] = '15';
+        }
+        return $details;
     }
 }
