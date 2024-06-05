@@ -14,6 +14,14 @@ $(document).ready(function () {
         $('input[name="image_position"]').val(slot);
     });
 
+    $("#banner-img").change(function (e) {
+        let fileName =
+            e.target.files.length > 0
+                ? e.target.files[0].name
+                : "choose_file_not";
+        $("label[for='banner-img']").text(fileName);
+    });
+
     // $("#add-sponsor-form").on("submit", function (e) {
     //     e.preventDefault();
     //     let formData = new FormData(this);
