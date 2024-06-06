@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Sponsorships;
 use Illuminate\Contracts\{Foundation\Application, View\Factory, View\View};
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 
@@ -25,6 +27,15 @@ class SellerSponsorController extends Controller
     public function frontShowSponsor() {
         $banners = DB::table('sponsorships')->get();
         return view('sponsor', compact('banners'));
+    }
+
+    /**
+     * @param Request $request
+     * @return Model|Builder|object|null
+     */
+    public function getSponsor(Request $request)
+    {
+        return DB::table('sponsorships')->where('banner_position', $request->position)->first();
     }
 
     /**

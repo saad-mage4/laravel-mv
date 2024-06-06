@@ -9,10 +9,15 @@ class Sponsorships extends Model
 {
     use HasFactory;
 
+    /**
+     * @param $params
+     * @param $image
+     * @return void
+     */
     public function addSponsor($params, $image)
     {
         $position = $params->image_position ?? null;
-        $isBooked = $params->is_booked ?? false;
+        $isBooked = isset($image);
         $imgURL = $image ?? null;
         $sponsorRedirect = $params->prod_link ?? null;
         $sponsorTitle = $params->sponsor_title ?? null;
@@ -37,28 +42,25 @@ class Sponsorships extends Model
 
     /**
      * @param $params
+     * @param $image
      * @return void
      */
     public function updateSponsor($params, $image)
     {
         $position = $params->image_position ?? null;
-        $isBooked = $params->is_booked ?? false;
+        $isBooked = isset($image);
         $imgURL = $image ?? null;
         $sponsorRedirect = $params->prod_link ?? null;
         $sponsorTitle = $params->sponsor_title ?? null;
         $sponsorName = $params->sponsor_name ?? null;
         $details = $this->getBannerDetails($position);
-        $width = $details['width'];
-        $height = $details['height'];
-        $price = $details['price'];
-        $days = $details['days'];
 
         DB::table('sponsorships')->where('banner_position', $position)->update(
             [
-                'width' => $width,
-                'height' => $height,
-                'price' => $price,
-                'days' => $days,
+                'width' => $details['width'],
+                'height' => $details['height'],
+                'price' => $details['price'],
+                'days' => $details['days'],
                 'is_booked' => $isBooked,
                 'image_url' => $imgURL,
                 'banner_redirect' => $sponsorRedirect,

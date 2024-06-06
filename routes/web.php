@@ -338,6 +338,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('send-message', [SellerMessageContoller::class, 'sendMessage'])->name('send-message');
         Route::get('show-sponsor', [SellerSponsorController::class, 'showSponsor'])->name('show-sponsor');
         Route::post('add-sponsor-req', [SellerSponsorController::class, 'addSponsorReq']);
+        Route::get('get-sponsor', [SellerSponsorController::class, 'getSponsor']);
     });
 
 

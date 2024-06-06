@@ -43,7 +43,7 @@
 
                                 <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4' }} mt-3 my-5">
                                     @if($isBooked)
-                                        <a href="/{{$sponsorUrl}}">
+                                        <a class="viewSponsor" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal">
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
                                         </a>
                                     @else
@@ -61,8 +61,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="add-sponsor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
+    <div class="modal fade" id="add-sponsor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <form id="add-sponsor-form" action="/seller/add-sponsor-req" method="post" enctype="multipart/form-data">
             @csrf
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -78,25 +77,19 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="prod-link">Product Link</label>
-                                    <input
-                                        type="text"
-                                        name="prod_link"
-                                        id="prod-link"
-                                        class="form-control"
-                                        required
-                                    />
+                                    <input type="text" name="prod_link" id="prod-link" class="form-control" required />
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="custom-file">
-                                    <input
-                                        type="file"
-                                        name="banner_img"
-                                        class="custom-file-input"
-                                        id="banner-img"
-                                        required
-                                    />
+                                    <input type="file" name="banner_img" class="custom-file-input" id="banner-img" required />
                                     <label class="custom-file-label" for="banner-img">Choose file...</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="sponsor-title">Sponsor Title</label>
+                                    <input type="text" name="sponsor_title" id="sponsor-title" class="form-control" required />
                                 </div>
                             </div>
                         </div>

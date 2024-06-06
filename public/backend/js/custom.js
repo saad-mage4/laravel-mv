@@ -22,6 +22,24 @@ $(document).ready(function () {
         $("label[for='banner-img']").text(fileName);
     });
 
+    $(".viewSponsor").on("click", function (e) {
+        e.preventDefault();
+        let position = $(this).data('position');
+
+        $.ajax({
+            url: "/seller/get-sponsor",
+            method: "get",
+            data: { position: position },
+            success: function (res) {
+                $("#add-sponsor-modal #prod-link").val(res.banner_redirect);
+                $("#add-sponsor-modal #sponsor-title").val(res.sponsor_title);
+                $("#add-sponsor-modal #banner-img").next('.custom-file-label').html('Choose file...');
+                $("#add-sponsor-modal input[name='image_position']").val(res.banner_position);
+                $("#add-sponsor-modal").modal('show');
+            }
+        });
+    });
+
     // $("#add-sponsor-form").on("submit", function (e) {
     //     e.preventDefault();
     //     let formData = new FormData(this);
