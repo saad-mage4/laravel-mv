@@ -3,10 +3,18 @@
     <title>{{__('user.Add Sponsor')}}</title>
 @endsection
 @php
-    $img1 = false;
-    $img2 = false;
-    $img3 = false;
-    $available = false;
+    use Illuminate\Support\Facades\URL;
+
+        $bannerPositions = [
+           'first_image' => '1280x500',
+           'second_image' => '350x700',
+           'third_image' => '350x700',
+           'fourth_image' => '350x700',
+           'fifth_image' => '1280x200',
+           'sixth_image' => '350x700',
+           'seventh_image' => '350x700',
+           'eighth_image' => '350x700'
+       ];
 @endphp
 @section('seller-content')
     <div class="main-content">
@@ -23,114 +31,27 @@
                 <div class="row">
                     <div class="col-8 mx-auto">
                         <div class="row">
-                            <!-- Top Main Image -->
-                            <div class="col-12 mt-3">
-                                @if((bool)$banners[0]->is_booked === false)
-                                    <a href="#!">
-                                        <img src="{{URL::asset($banners[0]->image_url)}}" alt="img-1">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                        <img src="https://dummyimage.com/1280x500/dbdbdb/000000.jpg&text=Slot+Available"
-                                             alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <!-- 3 Images Section -->
-                            <div class="col-4 my-5">
-                                @if($img2 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/350/700" alt="img-2">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="second_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="col-4 my-5">
-                                @if($img2 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/350/700" alt="img-3">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="third_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="col-4 my-5">
-                                @if($img2 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/350/700" alt="img-4">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="fourth_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <!-- Middle Single Image -->
-                            <div class="col-12">
-                                @if($img3 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/1280/200" alt="img-1">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="fifth_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                    <img src="https://dummyimage.com/1280x200/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <!-- 3 Images Section -->
-                            <div class="col-4 my-5">
-                                @if($img2 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/350/700" alt="img-2">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="sixth_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="col-4 my-5">
-                                @if($img2 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/350/700" alt="img-3">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="seventh_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
-                            <div class="col-4 my-5">
-                                @if($img2 === true)
-                                    <a href="#!">
-                                        <img src="https://picsum.photos/350/700" alt="img-4">
-                                    </a>
-                                @else
-                                    <a href="#!" class="slot-images" data-slot="eighth_image" data-slot="first_image" data-toggle="modal"
-                                       data-target="#add-sponsor-modal">
-                                          <img src="https://dummyimage.com/350x700/dbdbdb/000000.jpg&text=Slot+Available"
-                                         alt="dummy-1">
-                                    </a>
-                                @endif
-                            </div>
+                            @foreach($bannerPositions as $position => $size)
+                                @php
+                                    $banner = $banners->firstWhere('banner_position', $position);
+                                    $banner = $banners->firstWhere('banner_position', $position);
+                                    $isBooked = $banner ? (bool)$banner->is_booked : false;
+                                    $imageUrl = $isBooked ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Slot+Available";
+                                    $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
+                                @endphp
+
+                                <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4' }} mt-3 my-5">
+                                    @if($isBooked)
+                                        <a href="{{$sponsorUrl}}">
+                                            <img src="{{ $imageUrl }}" alt="img-{{ $loop->index + 1 }}">
+                                        </a>
+                                    @else
+                                        <a href="{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}" data-toggle="modal" data-target="#add-sponsor-modal">
+                                            <img src="{{ $imageUrl }}" alt="dummy-{{ $loop->index + 1 }}">
+                                        </a>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
