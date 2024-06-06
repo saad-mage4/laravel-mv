@@ -1684,6 +1684,9 @@ h6 .badge {
   display: flex; }
 
 /* Sponsor Start */
+.add-sponsor a {
+  width: 100%;
+}
 .add-sponsor img {
   width: 100%;
   border-radius: 10px;

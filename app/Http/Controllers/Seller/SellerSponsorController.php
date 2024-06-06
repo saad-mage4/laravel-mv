@@ -22,6 +22,10 @@ class SellerSponsorController extends Controller
         $banners = DB::table('sponsorships')->get();
         return view('seller.show_sponsor', compact('banners'));
     }
+    public function frontShowSponsor() {
+        $banners = DB::table('sponsorships')->get();
+        return view('sponsor', compact('banners'));
+    }
 
     /**
      * @param Request $request

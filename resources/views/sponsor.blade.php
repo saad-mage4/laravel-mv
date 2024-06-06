@@ -2,14 +2,24 @@
 @section('title')
     <title>Sponsor Page</title>
 @endsection
-@php
-$img1 = false;
-$img2 = false;
-$img3 = false;
-@endphp
 @section('meta')
     <meta name="description" content="">
 @endsection
+
+@php
+    use Illuminate\Support\Facades\URL;
+
+        $bannerPositions = [
+           'first_image' => '1280x500',
+           'second_image' => '350x700',
+           'third_image' => '350x700',
+           'fourth_image' => '350x700',
+           'fifth_image' => '1280x200',
+           'sixth_image' => '350x700',
+           'seventh_image' => '350x700',
+           'eighth_image' => '350x700'
+       ];
+@endphp
 
 @section('public-content')
 
@@ -19,81 +29,28 @@ $img3 = false;
                   <h1 class="text-center text-uppercase">Sponsor Page</h1>
             </div>
             <!-- Top Main Image -->
-            <div class="col-12">
-                  @if($img1 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/1280/500" alt="img-1">
+            @foreach($bannerPositions as $position => $size)
+                  @php
+                  $banner = $banners->firstWhere('banner_position', $position);
+                  $isBooked = $banner ? (bool)$banner->is_booked : false;
+                  $width = $banner->width ?? '';
+                  $height = $banner->height ?? '';
+                  $imageUrl = $isBooked ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Coming+Soon";
+                  $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
+                  @endphp
+
+                  <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4' }} mt-3 my-5">
+                  @if($isBooked)
+                        <a href="/{{$sponsorUrl}}">
+                              <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
                         </a>
                   @else
-                        <img src="https://dummyimage.com/1280x500/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
-            <!-- 3 Images Section -->
-            <div class="col-4 my-5">
-                  @if($img2 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/350/700" alt="img-2">
+                        <a href="/{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}" data-toggle="modal" data-target="#add-sponsor-modal">
+                              <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="dummy-{{ $loop->index + 1 }}">
                         </a>
-                  @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
                   @endif
-            </div>
-            <div class="col-4 my-5">
-                  @if($img2 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/350/700" alt="img-3">
-                        </a>
-                  @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
-            <div class="col-4 my-5">
-                  @if($img2 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/350/700" alt="img-4">
-                        </a>
-                  @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
-            <!-- Middle Single Image -->
-            <div class="col-12">
-                  @if($img3 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/1280/200" alt="img-1">
-                        </a>
-                  @else
-                        <img src="https://dummyimage.com/1280x200/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
-            <!-- 3 Images Section -->
-            <div class="col-4 my-5">
-                  @if($img2 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/350/700" alt="img-2">
-                        </a>
-                  @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
-            <div class="col-4 my-5">
-                  @if($img2 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/350/700" alt="img-3">
-                        </a>
-                  @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
-            <div class="col-4 my-5">
-                  @if($img2 === true)
-                        <a href="#!">
-                              <img src="https://picsum.photos/350/700" alt="img-4">
-                        </a>
-                  @else
-                        <img src="https://dummyimage.com/350x700/ffc1a6/000000.jpg&text=Sponsor+Coming+Soon" alt="dummy-1">
-                  @endif
-            </div>
+                  </div>
+            @endforeach
       </div>
 </div>
 

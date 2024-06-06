@@ -103,7 +103,7 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about-us');
     Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
-    Route::get('/sponsor', [HomeController::class, 'Sponsor'])->name('sponsor');
+    Route::get('/sponsor', [SellerSponsorController::class, 'frontShowSponsor'])->name('sponsor');
     Route::get('language/{locale}', function ($locale) {
         app()->setLocale($locale);
         session()->put('locale', $locale);
