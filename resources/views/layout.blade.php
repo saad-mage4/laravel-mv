@@ -423,7 +423,7 @@
                                 @endforeach
                             </ul>
                         </li>
-                        <li><a href="{{ route('sponsor') }}">{{__('user.sponsor')}}</a></li>
+                        <li><a href="{{ route('sponsor') }}">{{__('user.sponsors')}}</a></li>
                         @endif
                     </ul>
                     <ul class="wsus__menu_item wsus__menu_item_right ms-auto">

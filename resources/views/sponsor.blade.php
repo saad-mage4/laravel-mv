@@ -1,6 +1,6 @@
 @extends('layout')
 @section('title')
-    <title>Sponsor Page</title>
+    <title>Sponsors Page</title>
 @endsection
 @section('meta')
     <meta name="description" content="">
@@ -26,7 +26,7 @@
 <div class="container sponsor-page">
       <div class="row">
             <div class="col-12 my-5">
-                  <h1 class="text-center text-uppercase">Sponsor Page</h1>
+                  <h1 class="text-center text-uppercase">Sponsors Page</h1>
             </div>
             <!-- Top Main Image -->
             @foreach($bannerPositions as $position => $size)
@@ -39,7 +39,7 @@
                   $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
                   @endphp
 
-                  <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4' }} mt-3 my-5">
+                  <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
                   @if($isBooked)
                         <a href="/{{$sponsorUrl}}">
                               <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">

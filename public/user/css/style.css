@@ -2756,6 +2756,10 @@ HOME SERVOCES START
 .sponsor-page a {
     width: 100%;
 }
+.sponsor-page .h-700,
+.sponsor-page .h-700 * {
+  height: 700px;
+}
 .sponsor-page img {
     width: 100%;
     border-radius: 10px;

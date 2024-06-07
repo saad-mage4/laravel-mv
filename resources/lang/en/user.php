@@ -490,6 +490,6 @@
   'NIC Front' => 'NIC Front',
   'NIC Back' => 'NIC Back',
   'PDF Document' => 'PDF Document',
-  'sponsor' => 'Sponsor',
+  'sponsors' => 'Sponsors',
 );
  ?>
