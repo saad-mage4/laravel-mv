@@ -39,7 +39,7 @@
                   $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
                   @endphp
 
-                  <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
+                  <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '12 col-md-4 h-700' }} mt-3 my-5">
                   @if($isBooked)
                         <a href="/{{$sponsorUrl}}">
                               <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
