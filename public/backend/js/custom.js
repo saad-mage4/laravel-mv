@@ -11,6 +11,7 @@ $(document).ready(function () {
     $(".slot-images").on("click", function (e) {
         e.preventDefault();
         let slot = $(this).data("slot");
+        $("#banner-img").attr("required", true);
         $('input[name="image_position"]').val(slot);
     });
 
@@ -24,7 +25,7 @@ $(document).ready(function () {
 
     $(".viewSponsor").on("click", function (e) {
         e.preventDefault();
-        let position = $(this).data('position');
+        let position = $(this).data("position");
 
         $.ajax({
             url: "/seller/get-sponsor",
@@ -32,11 +33,12 @@ $(document).ready(function () {
             data: { position: position },
             success: function (res) {
                 $("#add-sponsor-modal #prod-link").val(res.banner_redirect);
-                $("#add-sponsor-modal #sponsor-title").val(res.sponsor_title);
-                $("#add-sponsor-modal #banner-img").next('.custom-file-label').html('Choose file...');
-                $("#add-sponsor-modal input[name='image_position']").val(res.banner_position);
-                $("#add-sponsor-modal").modal('show');
-            }
+                $("#add-sponsor-modal #banner-img").removeAttr("required");
+                $("#add-sponsor-modal input[name='image_position']").val(
+                    res.banner_position
+                );
+                $("#add-sponsor-modal").modal("show");
+            },
         });
     });
 

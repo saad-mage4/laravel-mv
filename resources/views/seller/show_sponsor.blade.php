@@ -86,12 +86,12 @@
                                     <label class="custom-file-label" for="banner-img">Choose file...</label>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <!-- <div class="col-12">
                                 <div class="form-group">
                                     <label for="sponsor-title">Sponsor Title</label>
                                     <input type="text" name="sponsor_title" id="sponsor-title" class="form-control" required />
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="modal-footer">
