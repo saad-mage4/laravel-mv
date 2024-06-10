@@ -34,6 +34,7 @@
                             @foreach($bannerPositions as $position => $size)
                                 @php
                                     $banner = $banners->firstWhere('banner_position', $position);
+                                    $days = 10;
                                     $isBooked = $banner ? (bool)$banner->is_booked : false;
                                     $banner_user_id = $banner ? (int)$banner->sponsor_user_id : null;
                                     $width = $banner->width ?? '';
@@ -43,7 +44,7 @@
                                 @endphp
                                 <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
                                 @if($isBooked)
-                                        <a class="viewSponsor {{ ($banner_user_id == $userID) && $isBooked ? '' : 'no-action' }}" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal">
+                                        <a class="viewSponsor {{ $banner_user_id == $userID ? 'own-this' : 'no-action' }}" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal" title="{{$days}}">
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
                                         </a>
                                     @else
