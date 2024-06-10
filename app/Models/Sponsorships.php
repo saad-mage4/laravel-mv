@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Factories\HasFactory, Model};
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Sponsorships extends Model
@@ -17,10 +21,9 @@ class Sponsorships extends Model
     public function addSponsor($params, $image)
     {
         $position = $params->image_position ?? null;
-        $isBooked = isset($image);
         $imgURL = $image ?? null;
         $sponsorRedirect = $params->prod_link ?? null;
-        $sponsorTitle = $params->sponsor_title ?? null;
+        $sponsorUser = Auth::user()->getAuthIdentifier() ?? null;
         $sponsorName = $params->sponsor_name ?? null;
         $details = $this->getBannerDetails($position);
 
@@ -31,10 +34,10 @@ class Sponsorships extends Model
                 'height' => $details['height'],
                 'price' => $details['price'],
                 'days' => $details['days'],
-                'is_booked' => $isBooked,
+                'is_booked' => false,
                 'image_url' => $imgURL,
                 'banner_redirect' => $sponsorRedirect,
-                'sponsor_title' => $sponsorTitle,
+                'sponsor_user_id' => $sponsorUser,
                 'sponsor_name' => $sponsorName,
             ]
         );
@@ -48,10 +51,8 @@ class Sponsorships extends Model
     public function updateSponsor($params, $image)
     {
         $position = $params->image_position ?? null;
-        $isBooked = isset($image);
-        $imgURL = $image ?? null;
         $sponsorRedirect = $params->prod_link ?? null;
-        $sponsorTitle = $params->sponsor_title ?? null;
+        $sponsorUser = Auth::user()->getAuthIdentifier() ?? null;
         $sponsorName = $params->sponsor_name ?? null;
         $details = $this->getBannerDetails($position);
 
@@ -61,13 +62,16 @@ class Sponsorships extends Model
                 'height' => $details['height'],
                 'price' => $details['price'],
                 'days' => $details['days'],
-                'is_booked' => $isBooked,
-                'image_url' => $imgURL,
+                'is_booked' => false,
                 'banner_redirect' => $sponsorRedirect,
-                'sponsor_title' => $sponsorTitle,
+                'sponsor_user_id' => $sponsorUser,
                 'sponsor_name' => $sponsorName,
             ]
         );
+
+        if (isset($image)) {
+            DB::table('sponsorships')->where('banner_position', $position)->update(['image_url' => $image]);
+        }
     }
 
     public function getBannerDetails($position): array

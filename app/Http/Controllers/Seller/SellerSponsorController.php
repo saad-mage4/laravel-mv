@@ -5,26 +5,49 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Sponsorships;
 use Illuminate\Contracts\{Foundation\Application, View\Factory, View\View};
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Database\{Eloquent\Model, Query\Builder};
+use Illuminate\Routing\Redirector;
+use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, DB};
+use Stripe\StripeClient;
 
 class SellerSponsorController extends Controller
 {
-    public function index() {
+    /**
+     * @param Request $request
+     * @return Application|RedirectResponse|Redirector
+     */
+    public function getSponsorPayment(Request $request)
+    {
+        if ($request->has('transaction_type') && request('transaction_type') == 'BuySponsorship') {
+            $position = $request->banner_position;
+            $current_user = Auth::user()->getAuthIdentifier();
+            $user = $request->user_id;
 
+            if ($current_user == (int)$user) {
+                DB::table('sponsorships')->where('banner_position', $position)->update(['is_booked' => '1']);
+            }
+        }
+
+        $notification = 'Payment Success! Banner has been uploaded successfully!';
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
+        return redirect('seller/show-sponsor')->with($notification);
     }
 
     /**
      * @return Application|Factory|View
      */
-    public function showSponsor() {
-        $user = Auth::guard('web')->user();
+    public function showSponsor()
+    {
         $banners = DB::table('sponsorships')->get();
         return view('seller.show_sponsor', compact('banners'));
     }
-    public function frontShowSponsor() {
+
+    /**
+     * @return Application|Factory|View
+     */
+    public function frontShowSponsor()
+    {
         $banners = DB::table('sponsorships')->get();
         return view('sponsor', compact('banners'));
     }
@@ -48,7 +71,7 @@ class SellerSponsorController extends Controller
         // Check if an image is uploaded
         if ($request->hasFile('banner_img')) {
             $image = $request->file('banner_img');
-            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/sponsors'), $imageName);
             $imagePath = 'images/sponsors/' . $imageName;
         }
@@ -60,8 +83,23 @@ class SellerSponsorController extends Controller
         } else {
             $sponsorship->addSponsor($request, $imagePath);
         }
-        $notification = 'Banner has been updated successfully!';
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
-            return redirect()->back()->with($notification);
+
+        $userId = Auth::user()->getAuthIdentifier();
+        $transactionType = 'BuySponsorship';
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        $session = $stripe->checkout->sessions->create([
+            'line_items' => [
+                [
+                    'price' => 'price_1PQ7cIGkiUoTaQu5x7UXEJeZ',
+                    'quantity' => 1,
+                ],
+            ],
+            'mode' => 'payment',
+            'success_url' => url('/seller/payment-success?session_id={CHECKOUT_SESSION_ID}&user_id=' . $userId . '&transaction_type=' . $transactionType . '&banner_position=' . $request->image_position),
+            'cancel_url' => url('/seller'),
+        ]);
+
+        return redirect($session->url);
     }
 }

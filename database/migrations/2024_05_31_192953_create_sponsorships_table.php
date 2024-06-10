@@ -23,7 +23,7 @@ class CreateSponsorshipsTable extends Migration
             $table->string('is_booked')->nullable();
             $table->string('image_url')->nullable();
             $table->string('banner_redirect')->nullable();
-            $table->string('sponsor_title')->nullable();
+            $table->string('sponsor_user_id')->nullable();
             $table->string('sponsor_name')->nullable();
             $table->timestamps();
         });
