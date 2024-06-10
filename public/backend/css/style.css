@@ -1695,6 +1695,9 @@ h6 .badge {
   width: 100%;
   border-radius: 10px;
 }
+.no-action {
+  pointer-events: none;
+}
 /* Sponsor End */
 
 @media (max-width: 575.98px) {

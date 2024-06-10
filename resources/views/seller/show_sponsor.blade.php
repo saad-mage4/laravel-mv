@@ -41,9 +41,9 @@
                                     $imageUrl = $isBooked ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Slot+Available+Size+{$size}";
                                     $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
                                 @endphp
-                                <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} {{ ($banner_user_id == $userID) && $isBooked ? '' : 'no-action' }} mt-3 my-5">
+                                <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
                                 @if($isBooked)
-                                        <a class="viewSponsor" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal">
+                                        <a class="viewSponsor {{ ($banner_user_id == $userID) && $isBooked ? '' : 'no-action' }}" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal">
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
                                         </a>
                                     @else
