@@ -35,14 +35,14 @@
                                 @php
                                     $banner = $banners->firstWhere('banner_position', $position);
                                     $isBooked = $banner ? (bool)$banner->is_booked : false;
-                                    $banner_user_id = (int)$banner->sponsor_user_id;
+                                    $banner_user_id = $banner ? (int)$banner->sponsor_user_id : null;
                                     $width = $banner->width ?? '';
                                     $height = $banner->height ?? '';
                                     $imageUrl = $isBooked ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Slot+Available+Size+{$size}";
                                     $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
                                 @endphp
-                                <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} {{ $banner_user_id == $userID ? '' : 'no-action' }} mt-3 my-5">
-                                    @if($isBooked)
+                                <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} {{ ($banner_user_id == $userID) && $isBooked ? '' : 'no-action' }} mt-3 my-5">
+                                @if($isBooked)
                                         <a class="viewSponsor" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal">
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
                                         </a>
