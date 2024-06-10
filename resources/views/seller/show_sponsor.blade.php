@@ -51,13 +51,14 @@
                                     $imageUrl = $isBooked && $diffInDays <= (int)$banner->days ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Slot+Available+Size+{$size}";
                                     $total_allowed_days = $banner ? (int)$banner->days : 0;
                                     $title = $total_allowed_days - $diffInDays;
+                                    $lastDay = ($title == 0) ? 'Last Day' : ($title == 1 ? $title.' day left': $title.' days left');
                                 @endphp
                                 <div
                                     class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
                                     @if($isBooked && $diffInDays <= 15)
                                         <a class="viewSponsor {{ $banner_user_id == $userID ? 'own-this' : 'no-action' }}"
                                            href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal"
-                                           data-target="#add-sponsor-modal" title="{{$title}}">
+                                           data-target="#add-sponsor-modal" title="{{$lastDay}}">
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}"
                                                  alt="img-{{ $loop->index + 1 }}">
                                         </a>
