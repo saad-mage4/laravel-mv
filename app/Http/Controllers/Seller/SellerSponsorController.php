@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sponsorships;
+use Carbon\Carbon;
 use Illuminate\Contracts\{Foundation\Application, View\Factory, View\View};
 use Illuminate\Database\{Eloquent\Model, Query\Builder};
 use Illuminate\Routing\Redirector;
@@ -25,7 +26,8 @@ class SellerSponsorController extends Controller
             $user = $request->user_id;
 
             if ($current_user == (int)$user) {
-                DB::table('sponsorships')->where('banner_position', $position)->update(['is_booked' => '1']);
+                DB::table('sponsorships')->where('banner_position', $position)
+                    ->update(['is_booked' => '1', 'activation_date' => Carbon::now()->format('Y-m-d H:i:s')]);
             }
         }
 
@@ -92,7 +94,7 @@ class SellerSponsorController extends Controller
         $session = $stripe->checkout->sessions->create([
             'line_items' => [
                 [
-                    'price' => 'price_1PQ6tQIOlYpo8jdEn4pWZ6gv',
+                    'price' => env('SPONSOR_PRODUCT_PRICE'),
                     'quantity' => 1,
                 ],
             ],

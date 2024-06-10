@@ -3,6 +3,7 @@
     <title>{{__('user.Add Sponsor')}}</title>
 @endsection
 @php
+    use Carbon\Carbon;
     use Illuminate\Support\Facades\URL;
 
         $bannerPositions = [
@@ -34,22 +35,37 @@
                             @foreach($bannerPositions as $position => $size)
                                 @php
                                     $banner = $banners->firstWhere('banner_position', $position);
-                                    $days = 10;
-                                    $isBooked = $banner ? (bool)$banner->is_booked : false;
+
                                     $banner_user_id = $banner ? (int)$banner->sponsor_user_id : null;
                                     $width = $banner->width ?? '';
                                     $height = $banner->height ?? '';
-                                    $imageUrl = $isBooked ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Slot+Available+Size+{$size}";
-                                    $sponsorUrl = $isBooked ? $banner->banner_redirect : "";
+
+                                    // Checking days for banner activation
+                                    $days = $banner ? $banner->activation_date : null;
+                                    $currentDate = Carbon::now();
+                                    $diffInDays = $banner ? $currentDate->diffInDays($days) : null;
+
+                                    // Setting values on behalf of days
+                                    $isBooked = $banner && $diffInDays <= (int)$banner->days ? (bool)$banner->is_booked : false;
+                                    $sponsorUrl = $isBooked && $diffInDays <= (int)$banner->days ? $banner->banner_redirect : "";
+                                    $imageUrl = $isBooked && $diffInDays <= (int)$banner->days ? URL::asset($banner->image_url) : "https://dummyimage.com/{$size}/dbdbdb/000000.jpg&text=Slot+Available+Size+{$size}";
+                                    $total_allowed_days = $banner ? (int)$banner->days : 0;
+                                    $title = $total_allowed_days - $diffInDays;
                                 @endphp
-                                <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
-                                @if($isBooked)
-                                        <a class="viewSponsor {{ $banner_user_id == $userID ? 'own-this' : 'no-action' }}" href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal" data-target="#add-sponsor-modal" title="{{$days}}">
-                                            <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
+                                <div
+                                    class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
+                                    @if($isBooked && $diffInDays <= 15)
+                                        <a class="viewSponsor {{ $banner_user_id == $userID ? 'own-this' : 'no-action' }}"
+                                           href="/{{$sponsorUrl}}" data-position="{{$position}}" data-toggle="modal"
+                                           data-target="#add-sponsor-modal" title="{{$title}}">
+                                            <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}"
+                                                 alt="img-{{ $loop->index + 1 }}">
                                         </a>
                                     @else
-                                        <a href="/{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}" data-toggle="modal" data-target="#add-sponsor-modal">
-                                            <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="dummy-{{ $loop->index + 1 }}">
+                                        <a href="/{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}"
+                                           data-toggle="modal" data-target="#add-sponsor-modal">
+                                            <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}"
+                                                 alt="dummy-{{ $loop->index + 1 }}">
                                         </a>
                                     @endif
                                 </div>
@@ -62,7 +78,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="add-sponsor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="add-sponsor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
         <form id="add-sponsor-form" action="/seller/add-sponsor-req" method="post" enctype="multipart/form-data">
             @csrf
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -78,12 +95,13 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="prod-link">Product Link</label>
-                                    <input type="text" name="prod_link" id="prod-link" class="form-control" required />
+                                    <input type="text" name="prod_link" id="prod-link" class="form-control" required/>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="custom-file">
-                                    <input type="file" name="banner_img" class="custom-file-input" id="banner-img" required />
+                                    <input type="file" name="banner_img" class="custom-file-input" id="banner-img"
+                                           required/>
                                     <label class="custom-file-label" for="banner-img">Choose file...</label>
                                 </div>
                             </div>
