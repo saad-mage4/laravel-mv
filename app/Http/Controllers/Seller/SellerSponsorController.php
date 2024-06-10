@@ -40,7 +40,8 @@ class SellerSponsorController extends Controller
     public function showSponsor()
     {
         $banners = DB::table('sponsorships')->get();
-        return view('seller.show_sponsor', compact('banners'));
+        $userID = Auth::user()->getAuthIdentifier();
+        return view('seller.show_sponsor', compact('banners', 'userID'));
     }
 
     /**
@@ -91,7 +92,7 @@ class SellerSponsorController extends Controller
         $session = $stripe->checkout->sessions->create([
             'line_items' => [
                 [
-                    'price' => 'price_1PQ7cIGkiUoTaQu5x7UXEJeZ',
+                    'price' => 'price_1PQ6tQIOlYpo8jdEn4pWZ6gv',
                     'quantity' => 1,
                 ],
             ],
