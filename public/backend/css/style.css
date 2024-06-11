@@ -1719,6 +1719,9 @@ h6 .badge {
 .no-action {
   pointer-events: none;
 }
+#url-linked {
+  background-color: #e9ecef;
+}
 /* Sponsor End */
 
 @media (max-width: 575.98px) {
