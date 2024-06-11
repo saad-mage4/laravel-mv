@@ -1684,6 +1684,10 @@ h6 .badge {
   display: flex; }
 
 /* Sponsor Start */
+.add-sponsor {
+  max-width: 1440px;
+  margin-inline: auto;
+}
 .add-sponsor .h-700,
 .add-sponsor .h-700 * {
   height: 700px;
@@ -1714,6 +1718,9 @@ h6 .badge {
 }
 .no-action {
   pointer-events: none;
+}
+#url-linked {
+  background-color: #e9ecef;
 }
 /* Sponsor End */
 

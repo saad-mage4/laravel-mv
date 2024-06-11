@@ -30,7 +30,7 @@
             </div>
             <div class="section-body add-sponsor">
                 <div class="row">
-                    <div class="col-8 mx-auto">
+                    <div class="col-12 mx-auto">
                         <div class="row">
                             @foreach($bannerPositions as $position => $size)
                                 @php
@@ -101,7 +101,13 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="prod-link">Product Link</label>
-                                    <input type="text" name="prod_link" id="prod-link" class="form-control" required/>
+                                    <!-- <input type="url" name="prod_link" id="prod-link" class="form-control" required placeholder="https://example.com"/> -->
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="url-linked">https://</span>
+                                        </div>
+                                        <input type="text" name="prod_link" class="form-control" id="prod-link" aria-describedby="url-linked">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">
