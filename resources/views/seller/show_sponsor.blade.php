@@ -101,7 +101,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="prod-link">Product Link</label>
-                                    <input type="text" name="prod_link" id="prod-link" class="form-control" required/>
+                                    <input type="url" name="prod_link" id="prod-link" class="form-control" required/>
                                 </div>
                             </div>
                             <div class="col-12">
