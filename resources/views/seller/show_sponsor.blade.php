@@ -58,7 +58,7 @@
                                     class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '4 h-700' }} mt-3 my-5">
                                     @if($isBooked && $diffInDays <= 15)
                                         <a class="viewSponsor {{$oneDayLeft}} {{ $banner_user_id == $userID ? 'own-this' : 'no-action' }}"
-                                           href="/{{$sponsorUrl}}"
+                                           href="{{$sponsorUrl}}"
                                            data-position="{{$position}}"
                                            data-toggle="modal"
                                            data-target="#add-sponsor-modal"
@@ -68,7 +68,7 @@
                                                  alt="img-{{ $loop->index + 1 }}">
                                         </a>
                                     @else
-                                        <a href="/{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}"
+                                        <a href="{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}"
                                            data-toggle="modal" data-target="#add-sponsor-modal">
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}"
                                                  alt="dummy-{{ $loop->index + 1 }}">

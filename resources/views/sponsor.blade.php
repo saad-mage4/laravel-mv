@@ -41,11 +41,11 @@
 
                   <div class="col-{{ $position == 'first_image' || $position == 'fifth_image' ? '12' : '12 col-md-4 h-700' }} mt-3 my-5">
                   @if($isBooked)
-                        <a href="/{{$sponsorUrl}}">
+                        <a href="{{$sponsorUrl}}" target="_blank">
                               <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="img-{{ $loop->index + 1 }}">
                         </a>
                   @else
-                        <a href="/{{$sponsorUrl}}" class="slot-images" data-slot="{{ $position }}" data-toggle="modal" data-target="#add-sponsor-modal">
+                        <a href="#!" class="slot-images" data-slot="{{ $position }}" data-toggle="modal" data-target="#add-sponsor-modal">
                               <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}" alt="dummy-{{ $loop->index + 1 }}">
                         </a>
                   @endif
