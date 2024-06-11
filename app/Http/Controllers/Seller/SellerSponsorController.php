@@ -32,6 +32,13 @@ class SellerSponsorController extends Controller
                 $sponsorship = new Sponsorships();
                 $details = $sponsorship->getBannerDetails($position);
 
+
+                if(strpos($request->prod_link, "https://") !== false) {
+                    $url_ = $banner['prod_link'];
+                 } else {
+                     $url_ = 'https://'.$banner['prod_link'];
+                 }
+
                 DB::table('sponsorships')->insert(
                     [
                         'banner_position' => $position,
@@ -109,11 +116,6 @@ class SellerSponsorController extends Controller
                 $sponsorship->updateSponsor($request, $imagePath);
                 return redirect()->back()->with(['messege' => 'Updated Successfully!', 'alert-type' => 'success']);
             }
-        }
-        if(strpos($request->prod_link, "https://") !== false) {
-           $url_ = $request->prod_link;
-        } else {
-            $url_ = 'https://'.$request->prod_link;
         }
         // Prepare banner details for the success URL
         $bannerDetails = [

@@ -11,7 +11,7 @@ $(document).ready(function () {
     $(".slot-images").on("click", function (e) {
         e.preventDefault();
         let slot = $(this).data("slot");
-        $("#add-sponsor-modal #prod-link").val("");
+        $("#add-sponsor-modal #prod-link").val("https://");
         $("#banner-img").attr("required", true);
         $('input[name="image_position"]').val(slot);
     });

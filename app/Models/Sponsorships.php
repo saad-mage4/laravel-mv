@@ -53,13 +53,19 @@ class Sponsorships extends Model
         $sponsorName = $params->sponsor_name ?? null;
         $details = $this->getBannerDetails($position);
 
+        if(strpos($sponsorRedirect, "https://") !== false) {
+            $url_ = $sponsorRedirect;
+            } else {
+            $url_ = 'https://'.$sponsorRedirect;
+            }
+
         DB::table('sponsorships')->where('banner_position', $position)->update(
             [
                 'width' => $details['width'],
                 'height' => $details['height'],
                 'price' => $details['price'],
                 'days' => $details['days'],
-                'banner_redirect' => $sponsorRedirect,
+                'banner_redirect' => $url_,
                 'sponsor_user_id' => $sponsorUser,
                 'sponsor_name' => $sponsorName,
             ]
