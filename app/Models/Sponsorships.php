@@ -59,7 +59,6 @@ class Sponsorships extends Model
                 'height' => $details['height'],
                 'price' => $details['price'],
                 'days' => $details['days'],
-                'is_booked' => false,
                 'banner_redirect' => $sponsorRedirect,
                 'sponsor_user_id' => $sponsorUser,
                 'sponsor_name' => $sponsorName,

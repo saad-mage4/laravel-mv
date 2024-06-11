@@ -10,6 +10,7 @@ use Illuminate\Database\{Eloquent\Model, Query\Builder};
 use Illuminate\Routing\Redirector;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, DB};
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class SellerSponsorController extends Controller
@@ -67,6 +68,7 @@ class SellerSponsorController extends Controller
     /**
      * @param Request $request
      * @return string
+     * @throws ApiErrorException
      */
     public function addSponsorReq(Request $request): string
     {
@@ -78,16 +80,20 @@ class SellerSponsorController extends Controller
             $image->move(public_path('images/sponsors'), $imageName);
             $imagePath = 'images/sponsors/' . $imageName;
         }
-
+        $userId = Auth::user()->getAuthIdentifier();
         $sponsorship = new Sponsorships();
 
-        if (DB::table('sponsorships')->where('banner_position', $request->image_position)->exists()) {
-            $sponsorship->updateSponsor($request, $imagePath);
+        $banner = DB::table('sponsorships')->where('banner_position', $request->image_position)->first();
+
+        if (!empty($banner)) {
+            if ($userId == (int)$banner->sponsor_user_id) {
+                $sponsorship->updateSponsor($request, $imagePath);
+                return redirect()->back()->with(['messege' => 'Updated Successfully!', 'alert-type' => 'success']);
+            }
         } else {
             $sponsorship->addSponsor($request, $imagePath);
         }
 
-        $userId = Auth::user()->getAuthIdentifier();
         $transactionType = 'BuySponsorship';
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
@@ -104,5 +110,22 @@ class SellerSponsorController extends Controller
         ]);
 
         return redirect($session->url);
+    }
+
+    /**
+     * @return void
+     */
+    public function bannerRemoveCron(): void {
+        $banners = DB::table('sponsorships')->get();
+        if (!empty($banners)) {
+            foreach ($banners as $banner) {
+                $days = $banner->activation_date ?? null;
+                $currentDate = Carbon::now();
+                $diffInDays = $banner ? $currentDate->diffInDays($days) : null;
+                if ($diffInDays >= 15) {
+                    DB::table('sponsorships')->where('banner_position', $banner->banner_position)->delete();
+                }
+            }
+        }
     }
 }
