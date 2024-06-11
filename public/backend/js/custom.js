@@ -27,12 +27,11 @@ $(document).ready(function () {
     $(".viewSponsor").on("click", function (e) {
         e.preventDefault();
         let position = $(this).data("position");
-        let isBooked = $(this).data("booked");
 
         $.ajax({
             url: "/seller/get-sponsor",
             method: "get",
-            data: { position: position, isBooked: isBooked },
+            data: { position: position },
             success: function (res) {
                 $("#add-sponsor-modal #prod-link").val(res.banner_redirect);
                 $("#add-sponsor-modal #banner-img").removeAttr("required");

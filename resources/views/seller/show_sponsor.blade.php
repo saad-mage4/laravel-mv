@@ -63,7 +63,6 @@
                                            data-toggle="modal"
                                            data-target="#add-sponsor-modal"
                                            title="{{$lastDay}}"
-                                           data-booked="{{$isBooked}}"
                                            >
                                             <img src="{{ $imageUrl }}" width="{{$width}}" height="{{$height}}"
                                                  alt="img-{{ $loop->index + 1 }}">
