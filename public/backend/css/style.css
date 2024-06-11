@@ -1705,6 +1705,9 @@ h6 .badge {
   font-size: 18px;
   color: #fff;
 }
+.add-sponsor .own-this.ending::before {
+  background-color: #fc544b;
+}
 .add-sponsor img {
   width: 100%;
   border-radius: 10px;
