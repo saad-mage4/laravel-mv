@@ -15,8 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
         $schedule->call('App\Http\Controllers\Seller\WithdrawController@automateWithdraw')
+            ->everyMinute()->timezone('Asia/Karachi');
+
+        $schedule->call('App\Http\Controllers\Seller\SellerSponsorController@bannerRemoveCron')
             ->everyMinute()->timezone('Asia/Karachi');
     }
 

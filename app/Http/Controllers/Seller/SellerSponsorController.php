@@ -21,18 +21,37 @@ class SellerSponsorController extends Controller
      */
     public function getSponsorPayment(Request $request)
     {
-        if ($request->has('transaction_type') && request('transaction_type') == 'BuySponsorship') {
-            $position = $request->banner_position;
+        $notification = null;
+        if ($request->has('transaction_type') && $request->transaction_type == 'BuySponsorship') {
+            $banner = json_decode($request->banner, true);
+            $position = $banner['image_position'];
             $current_user = Auth::user()->getAuthIdentifier();
             $user = $request->user_id;
 
             if ($current_user == (int)$user) {
-                DB::table('sponsorships')->where('banner_position', $position)
-                    ->update(['is_booked' => '1', 'activation_date' => Carbon::now()->format('Y-m-d H:i:s')]);
+                $sponsorship = new Sponsorships();
+                $details = $sponsorship->getBannerDetails($position);
+
+                DB::table('sponsorships')->insert(
+                    [
+                        'banner_position' => $position,
+                        'width' => $details['width'],
+                        'height' => $details['height'],
+                        'price' => $details['price'],
+                        'days' => $details['days'],
+                        'is_booked' => '1',
+                        'activation_date' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'image_url' => $banner['image_url'],
+                        'banner_redirect' => $banner['prod_link'],
+                        'sponsor_user_id' => $user,
+                        'sponsor_name' => $banner['sponsor_name'],
+                    ]
+                );
             }
+
+            $notification = 'Payment Success! Banner has been uploaded successfully!';
         }
 
-        $notification = 'Payment Success! Banner has been uploaded successfully!';
         $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect('seller/show-sponsor')->with($notification);
     }
@@ -90,9 +109,14 @@ class SellerSponsorController extends Controller
                 $sponsorship->updateSponsor($request, $imagePath);
                 return redirect()->back()->with(['messege' => 'Updated Successfully!', 'alert-type' => 'success']);
             }
-        } else {
-            $sponsorship->addSponsor($request, $imagePath);
         }
+        // Prepare banner details for the success URL
+        $bannerDetails = [
+            'image_position' => $request->image_position,
+            'prod_link' => $request->prod_link,
+            'sponsor_name' => $request->sponsor_name,
+            'image_url' => $imagePath,
+        ];
 
         $transactionType = 'BuySponsorship';
         $stripe = new StripeClient(env('STRIPE_SECRET'));
@@ -105,8 +129,8 @@ class SellerSponsorController extends Controller
                 ],
             ],
             'mode' => 'payment',
-            'success_url' => url('/seller/payment-success?session_id={CHECKOUT_SESSION_ID}&user_id=' . $userId . '&transaction_type=' . $transactionType . '&banner_position=' . $request->image_position),
-            'cancel_url' => url('/seller'),
+            'success_url' => url('/seller/payment-success?user_id=' . $userId . '&transaction_type=' . $transactionType . '&banner=' . urlencode(json_encode($bannerDetails))),
+            'cancel_url' => url('/seller/show-sponsor'),
         ]);
 
         return redirect($session->url);
