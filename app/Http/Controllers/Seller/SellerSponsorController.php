@@ -110,6 +110,11 @@ class SellerSponsorController extends Controller
                 return redirect()->back()->with(['messege' => 'Updated Successfully!', 'alert-type' => 'success']);
             }
         }
+        if(strpos($request->prod_link, "https://") !== false) {
+           $url_ = $request->prod_link;
+        } else {
+            $url_ = 'https://'.$request->prod_link;
+        }
         // Prepare banner details for the success URL
         $bannerDetails = [
             'image_position' => $request->image_position,
