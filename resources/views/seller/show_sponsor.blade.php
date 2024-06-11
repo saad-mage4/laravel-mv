@@ -30,7 +30,7 @@
             </div>
             <div class="section-body add-sponsor">
                 <div class="row">
-                    <div class="col-8 mx-auto">
+                    <div class="col-12 mx-auto">
                         <div class="row">
                             @foreach($bannerPositions as $position => $size)
                                 @php
