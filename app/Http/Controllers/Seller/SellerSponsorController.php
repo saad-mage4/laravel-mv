@@ -175,7 +175,7 @@ class SellerSponsorController extends Controller
                 $diffInMints = $banner ? $currentDate->diffInMinutes($checkInProgress) : null;
                 if ($diffInDays >= 15) {
                     DB::table('sponsorships')->where(['banner_position', $banner->banner_position])->delete();
-                } elseif ($diffInMints >= 2  && $banner->status == 'in-progress') {
+                } elseif ($diffInMints >= 10  && $banner->status == 'in-progress') {
                     DB::table('sponsorships')->where(['banner_position' => $banner->banner_position])->delete();
                 }
             }
