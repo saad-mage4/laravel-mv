@@ -165,6 +165,7 @@ class SellerSponsorController extends Controller
     public function bannerRemoveCron(): void {
         $banners = DB::table('sponsorships')->get();
         if (!empty($banners)) {
+            date_default_timezone_set("Asia/Karachi");
             foreach ($banners as $banner) {
                 $days = $banner->activation_date ?? null;
                 $currentDate = Carbon::now();
