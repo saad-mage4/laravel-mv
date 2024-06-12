@@ -49,32 +49,6 @@ class SellerSponsorController extends Controller
      */
     public function showSponsor(Request $request)
     {
-
-        $banners = DB::table('sponsorships')->get();
-        if (!empty($banners)) {
-            date_default_timezone_set("Asia/Karachi");
-            foreach ($banners as $banner) {
-                $days = $banner->activation_date ?? null;
-                $currentDate = Carbon::now();
-                $diffInDays = $banner ? $currentDate->diffInDays($days) : null;
-
-                $checkInProgress = $banner->created_at ?? null;
-                $currentDate = Carbon::now();
-                $diffInMints = $banner ? $currentDate->diffInMinutes($checkInProgress) : null;
-                dd($diffInMints);
-                if ($diffInDays >= 15) {
-                    DB::table('sponsorships')->where(['banner_position', $banner->banner_position])->delete();
-                } elseif ($diffInMints >= 10  && $banner->status == 'in-progress') {
-                    DB::table('sponsorships')->where(['banner_position' => $banner->banner_position])->delete();
-                }
-            }
-        }
-
-        exit();
-
-
-
-
         $userID = Auth::user()->getAuthIdentifier();
         if ($request->has('transaction_type') && $request->transaction_type == 'BuySponsorship') {
             $banner = json_decode($request->banner, true);
@@ -114,6 +88,7 @@ class SellerSponsorController extends Controller
      */
     public function addSponsorReq(Request $request): string
     {
+        date_default_timezone_set("Asia/Karachi");
         $sponsorship = new Sponsorships();
 
         // Validate the request inputs
@@ -195,10 +170,11 @@ class SellerSponsorController extends Controller
             foreach ($banners as $banner) {
                 $days = $banner->activation_date ?? null;
                 $currentDate = Carbon::now();
-                $diffInDays = $banner ? $currentDate->diffInDays($days) : null;
+                $diffInDays = $currentDate->diffInDays(Carbon::parse($days)) ?? null;
 
                 $checkInProgress = $banner->created_at ?? null;
-                $diffInMints = $banner ? $currentDate->diffInMinutes($checkInProgress) : null;
+                $diffInMints = Carbon::parse($checkInProgress)->diffInMinutes($currentDate) ?? null;
+
                 if ($diffInDays >= 15) {
                     DB::table('sponsorships')->where(['banner_position', $banner->banner_position])->delete();
                 } elseif ($diffInMints >= 10  && $banner->status == 'in-progress') {
