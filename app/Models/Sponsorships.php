@@ -3,12 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Factories\HasFactory, Model};
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
 
 class Sponsorships extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'banner_position',
+        'width',
+        'height',
+        'price',
+        'days',
+        'is_booked',
+        'status',
+        'image_url',
+        'banner_redirect',
+        'sponsor_user_id',
+        'sponsor_name',
+    ];
 
     /**
      * @param $params
@@ -23,13 +36,13 @@ class Sponsorships extends Model
         $sponsorName = $params->sponsor_name ?? null;
         $details = $this->getBannerDetails($position);
 
-        if(strpos($params->prod_link, "https://") !== false) {
+        if (strpos($params->prod_link, "https://") !== false) {
             $url_ = $params['prod_link'];
         } else {
-            $url_ = 'https://'.$params['prod_link'];
+            $url_ = 'https://' . $params['prod_link'];
         }
 
-        Sponsorships::query()->insert([
+        Sponsorships::create([
             'banner_position' => $position,
             'width' => $details['width'],
             'height' => $details['height'],
@@ -42,42 +55,6 @@ class Sponsorships extends Model
             'sponsor_user_id' => $sponsorUser,
             'sponsor_name' => $sponsorName,
         ]);
-    }
-
-    /**
-     * @param $params
-     * @param $image
-     * @return void
-     */
-    public function updateSponsor($params, $image)
-    {
-        $position = $params->image_position ?? null;
-        $sponsorRedirect = $params->prod_link ?? null;
-        $sponsorUser = Auth::user()->getAuthIdentifier() ?? null;
-        $sponsorName = $params->sponsor_name ?? null;
-        $details = $this->getBannerDetails($position);
-
-        if(strpos($sponsorRedirect, "https://") !== false) {
-            $url_ = $sponsorRedirect;
-        } else {
-            $url_ = 'https://'.$sponsorRedirect;
-        }
-
-        DB::table('sponsorships')->where('banner_position', $position)->update(
-            [
-                'width' => $details['width'],
-                'height' => $details['height'],
-                'price' => $details['price'],
-                'days' => $details['days'],
-                'banner_redirect' => $url_,
-                'sponsor_user_id' => $sponsorUser,
-                'sponsor_name' => $sponsorName,
-            ]
-        );
-
-        if (isset($image)) {
-            DB::table('sponsorships')->where('banner_position', $position)->update(['image_url' => $image]);
-        }
     }
 
     public function getBannerDetails($position): array
@@ -132,5 +109,41 @@ class Sponsorships extends Model
             $details['days'] = '15';
         }
         return $details;
+    }
+
+    /**
+     * @param $params
+     * @param $image
+     * @return void
+     */
+    public function updateSponsor($params, $image)
+    {
+        $position = $params->image_position ?? null;
+        $sponsorRedirect = $params->prod_link ?? null;
+        $sponsorUser = Auth::user()->getAuthIdentifier() ?? null;
+        $sponsorName = $params->sponsor_name ?? null;
+        $details = $this->getBannerDetails($position);
+
+        if (strpos($sponsorRedirect, "https://") !== false) {
+            $url_ = $sponsorRedirect;
+        } else {
+            $url_ = 'https://' . $sponsorRedirect;
+        }
+
+        DB::table('sponsorships')->where('banner_position', $position)->update(
+            [
+                'width' => $details['width'],
+                'height' => $details['height'],
+                'price' => $details['price'],
+                'days' => $details['days'],
+                'banner_redirect' => $url_,
+                'sponsor_user_id' => $sponsorUser,
+                'sponsor_name' => $sponsorName,
+            ]
+        );
+
+        if (isset($image)) {
+            DB::table('sponsorships')->where('banner_position', $position)->update(['image_url' => $image]);
+        }
     }
 }

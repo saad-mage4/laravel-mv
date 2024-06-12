@@ -10,8 +10,7 @@ use Illuminate\Database\{Eloquent\Model, Query\Builder};
 use Illuminate\Routing\Redirector;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, DB, Validator};
-use Stripe\Exception\ApiErrorException;
-use Stripe\StripeClient;
+use Stripe\{StripeClient, Exception\ApiErrorException};
 
 class SellerSponsorController extends Controller
 {
@@ -171,7 +170,7 @@ class SellerSponsorController extends Controller
                 $currentDate = Carbon::now();
                 $diffInDays = $banner ? $currentDate->diffInDays($days) : null;
 
-                $checkInProgress = $banner->updated_at ?? null;
+                $checkInProgress = $banner->created_at ?? null;
                 $diffInMints = $banner ? $currentDate->diffInMinutes($checkInProgress) : null;
                 if ($diffInDays >= 15) {
                     DB::table('sponsorships')->where(['banner_position', $banner->banner_position])->delete();
