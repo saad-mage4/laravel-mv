@@ -9,7 +9,7 @@ use Illuminate\Contracts\{Foundation\Application, View\Factory, View\View};
 use Illuminate\Database\{Eloquent\Model, Query\Builder};
 use Illuminate\Routing\Redirector;
 use Illuminate\Http\{RedirectResponse, Request};
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Validator};
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
@@ -89,23 +89,47 @@ class SellerSponsorController extends Controller
      */
     public function addSponsorReq(Request $request): string
     {
+        $sponsorship = new Sponsorships();
+
+        // Validate the request inputs
+        $validator = Validator::make($request->all(), [
+            'banner_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'prod_link' => 'required|url|regex:/^https:\/\/.*/',
+            'sponsor_name' => 'nullable|string|max:255',
+            'image_position' => 'required|string|max:255',
+        ], [
+            'prod_link.regex' => 'The product link must start with "https://".',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $imagePath = null;
-        // Check if an image is uploaded
         if ($request->hasFile('banner_img')) {
             $image = $request->file('banner_img');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            $details = $sponsorship->getBannerDetails($request->image_position);
+
+            list($width, $height) = getimagesize($image->getRealPath());
+
+            if ($width != $details['width'] || $height != $details['height']) {
+                return redirect()->back()->with(['messege' => 'Image dimensions must be . ' . $details['width'] . 'x' . $details['height'], 'alert-type' => 'error'])->withInput();
+            }
             $image->move(public_path('images/sponsors'), $imageName);
             $imagePath = 'images/sponsors/' . $imageName;
         }
+
         $userId = Auth::user()->getAuthIdentifier();
-        $sponsorship = new Sponsorships();
+
         $banner = DB::table('sponsorships')->where('banner_position', $request->image_position)->first();
         if (!empty($banner)) {
             if ($userId == (int)$banner->sponsor_user_id && $banner->is_booked == '1' && $banner->status == 'active') {
                 $sponsorship->updateSponsor($request, $imagePath);
                 return redirect()->back()->with(['messege' => 'Updated Successfully!', 'alert-type' => 'success']);
             } elseif ($banner->status == 'in-progress' && $userId != (int)$banner->sponsor_user_id) {
-                return redirect()->back()->with(['messege' => 'Sponsorship purchasing is on hold!', 'alert-type' => 'success']);
+                return redirect()->back()->with(['messege' => 'This slot is hold by another person', 'alert-type' => 'warning']);
             }
         }
         $sponsorship->addSponsor($request, $imagePath);
