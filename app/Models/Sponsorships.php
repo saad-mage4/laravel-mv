@@ -19,25 +19,29 @@ class Sponsorships extends Model
     {
         $position = $params->image_position ?? null;
         $imgURL = $image ?? null;
-        $sponsorRedirect = $params->prod_link ?? null;
         $sponsorUser = Auth::user()->getAuthIdentifier() ?? null;
         $sponsorName = $params->sponsor_name ?? null;
         $details = $this->getBannerDetails($position);
 
-        DB::table('sponsorships')->insert(
-            [
-                'banner_position' => $position,
-                'width' => $details['width'],
-                'height' => $details['height'],
-                'price' => $details['price'],
-                'days' => $details['days'],
-                'is_booked' => false,
-                'image_url' => $imgURL,
-                'banner_redirect' => $sponsorRedirect,
-                'sponsor_user_id' => $sponsorUser,
-                'sponsor_name' => $sponsorName,
-            ]
-        );
+        if(strpos($params->prod_link, "https://") !== false) {
+            $url_ = $params['prod_link'];
+        } else {
+            $url_ = 'https://'.$params['prod_link'];
+        }
+
+        Sponsorships::query()->insert([
+            'banner_position' => $position,
+            'width' => $details['width'],
+            'height' => $details['height'],
+            'price' => $details['price'],
+            'days' => $details['days'],
+            'is_booked' => false,
+            'status' => 'in-progress',
+            'image_url' => $imgURL,
+            'banner_redirect' => $url_,
+            'sponsor_user_id' => $sponsorUser,
+            'sponsor_name' => $sponsorName,
+        ]);
     }
 
     /**
@@ -55,9 +59,9 @@ class Sponsorships extends Model
 
         if(strpos($sponsorRedirect, "https://") !== false) {
             $url_ = $sponsorRedirect;
-            } else {
+        } else {
             $url_ = 'https://'.$sponsorRedirect;
-            }
+        }
 
         DB::table('sponsorships')->where('banner_position', $position)->update(
             [

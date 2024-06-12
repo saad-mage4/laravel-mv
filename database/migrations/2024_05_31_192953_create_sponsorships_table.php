@@ -21,6 +21,7 @@ class CreateSponsorshipsTable extends Migration
             $table->string('price')->nullable();
             $table->string('days')->nullable();
             $table->string('is_booked')->nullable();
+            $table->string('status')->nullable();
             $table->string('activation_date')->nullable();
             $table->string('image_url')->nullable();
             $table->string('banner_redirect')->nullable();

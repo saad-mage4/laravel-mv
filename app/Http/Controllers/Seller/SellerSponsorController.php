@@ -29,33 +29,14 @@ class SellerSponsorController extends Controller
             $user = $request->user_id;
 
             if ($current_user == (int)$user) {
-                $sponsorship = new Sponsorships();
-                $details = $sponsorship->getBannerDetails($position);
-
-
-                if(strpos($request->prod_link, "https://") !== false) {
-                    $url_ = $banner['prod_link'];
-                 } else {
-                     $url_ = 'https://'.$banner['prod_link'];
-                 }
-
-                DB::table('sponsorships')->insert(
-                    [
-                        'banner_position' => $position,
-                        'width' => $details['width'],
-                        'height' => $details['height'],
-                        'price' => $details['price'],
-                        'days' => $details['days'],
+                DB::table('sponsorships')
+                    ->where(['banner_position' => $position, 'sponsor_user_id' => $user])
+                    ->update([
                         'is_booked' => '1',
+                        'status' => 'active',
                         'activation_date' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'image_url' => $banner['image_url'],
-                        'banner_redirect' => $banner['prod_link'],
-                        'sponsor_user_id' => $user,
-                        'sponsor_name' => $banner['sponsor_name'],
-                    ]
-                );
+                    ]);
             }
-
             $notification = 'Payment Success! Banner has been uploaded successfully!';
         }
 
@@ -64,12 +45,22 @@ class SellerSponsorController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return Application|Factory|View
      */
-    public function showSponsor()
+    public function showSponsor(Request $request)
     {
-        $banners = DB::table('sponsorships')->get();
         $userID = Auth::user()->getAuthIdentifier();
+        if ($request->has('transaction_type') && $request->transaction_type == 'BuySponsorship') {
+            $banner = json_decode($request->banner, true);
+            $position = $banner['image_position'];
+            $user = $request->user_id;
+
+            if ($userID == (int)$user) {
+                DB::table('sponsorships')->where(['banner_position' => $position, 'sponsor_user_id' => $user])->delete();
+            }
+        }
+        $banners = DB::table('sponsorships')->get();
         return view('seller.show_sponsor', compact('banners', 'userID'));
     }
 
@@ -108,15 +99,17 @@ class SellerSponsorController extends Controller
         }
         $userId = Auth::user()->getAuthIdentifier();
         $sponsorship = new Sponsorships();
-
         $banner = DB::table('sponsorships')->where('banner_position', $request->image_position)->first();
-
         if (!empty($banner)) {
-            if ($userId == (int)$banner->sponsor_user_id) {
+            if ($userId == (int)$banner->sponsor_user_id && $banner->is_booked == '1' && $banner->status == 'active') {
                 $sponsorship->updateSponsor($request, $imagePath);
                 return redirect()->back()->with(['messege' => 'Updated Successfully!', 'alert-type' => 'success']);
+            } elseif ($banner->status == 'in-progress' && $userId != (int)$banner->sponsor_user_id) {
+                return redirect()->back()->with(['messege' => 'Sponsorship purchasing is on hold!', 'alert-type' => 'success']);
             }
         }
+        $sponsorship->addSponsor($request, $imagePath);
+
         // Prepare banner details for the success URL
         $bannerDetails = [
             'image_position' => $request->image_position,
@@ -137,7 +130,7 @@ class SellerSponsorController extends Controller
             ],
             'mode' => 'payment',
             'success_url' => url('/seller/payment-success?user_id=' . $userId . '&transaction_type=' . $transactionType . '&banner=' . urlencode(json_encode($bannerDetails))),
-            'cancel_url' => url('/seller/show-sponsor'),
+            'cancel_url' => url('/seller/show-sponsor?user_id=' . $userId . '&transaction_type=' . $transactionType . '&banner=' . urlencode(json_encode($bannerDetails))),
         ]);
 
         return redirect($session->url);
@@ -153,8 +146,13 @@ class SellerSponsorController extends Controller
                 $days = $banner->activation_date ?? null;
                 $currentDate = Carbon::now();
                 $diffInDays = $banner ? $currentDate->diffInDays($days) : null;
+
+                $checkInProgress = $banner->updated_at ?? null;
+                $diffInMints = $banner ? $currentDate->diffInMinutes($checkInProgress) : null;
                 if ($diffInDays >= 15) {
-                    DB::table('sponsorships')->where('banner_position', $banner->banner_position)->delete();
+                    DB::table('sponsorships')->where(['banner_position', $banner->banner_position])->delete();
+                } elseif ($diffInMints >= 2  && $banner->status == 'in-progress') {
+                    DB::table('sponsorships')->where(['banner_position' => $banner->banner_position])->delete();
                 }
             }
         }
