@@ -147,6 +147,7 @@
                 @endif
 
             @endif
+            <li><a class="{{ Route::is('user.private_seller') ? 'active' : '' }}" href="{{ route('user.private_seller') }}"><i class="fal fa-gift-card"></i> {{__('user.Private Seller')}}</a></li>
 
 
           <li><a class="{{ Route::is('user.change-password') ? 'active' : '' }}" href="{{ route('user.change-password') }}"><i class="fal fa-gift-card"></i> {{__('user.Change Password')}}</a></li>

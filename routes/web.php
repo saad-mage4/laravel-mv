@@ -95,6 +95,7 @@ use App\Http\Controllers\User\MessageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Seller\ProductHighlightPaymentController;
+use App\Http\Controllers\User\StripeController;
 
 Route::group(['middleware' => ['demo','XSS']], function () {
 
@@ -191,7 +192,10 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('change-password', [UserProfileController::class, 'changePassword'])->name('change-password');
         Route::post('update-password', [UserProfileController::class, 'updatePassword'])->name('update-password');
         Route::get('seller-registration', [UserProfileController::class, 'sellerRegistration'])->name('seller-registration');
+            // Private Registration
+            Route::get('private-registration', [UserProfileController::class, 'privateSellerRegistration'])->name('private-registration');
         Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->name('seller-membership');
+            Route::get('private_seller', [UserProfileController::class, 'privateMembership'])->name('private_seller');
         Route::get('/membership/subscribe', [UserProfileController::class, 'subscribe'])->name('membership.subscribe');
         Route::get('billing-address', [UserProfileController::class, 'editBillingAddress'])->name('billing-address');
         Route::post('update-billing-address', [UserProfileController::class, 'updateBillingAddress'])->name('update-billing-address');
@@ -248,13 +252,13 @@ Route::group(['middleware' => ['maintainance']], function () {
             Route::get('/pay-with-grab-pay', [PaymentController::class, 'payWithPaymongoGrabPay'])->name('pay-with-grab-pay');
             Route::get('/pay-with-gcash', [PaymentController::class, 'payWithPaymongoGcash'])->name('pay-with-gcash');
             Route::get('/paymongo-payment-success', [PaymentController::class, 'paymongoPaymentSuccess'])->name('paymongo-payment-success');
-            Route::get('/paymongo-payment-cancled', [PaymentController::class, 'paymongoPaymentCancled'])->name('paymongo-payment-cancled');
-
-
+                Route::get('/paymongo-payment-cancled', [PaymentController::class, 'paymongoPaymentCancled'])->name('paymongo-payment-cancled');
         });
 
         Route::get('state-by-country/{id}', [UserProfileController::class, 'stateByCountry'])->name('state-by-country');
         Route::get('city-by-state/{id}', [UserProfileController::class, 'cityByState'])->name('city-by-state');
+            // For Stripe Payment in the Seller
+            Route::get('stripe-payment', [StripeController::class, 'StripeController']);
     });
 
 
@@ -695,4 +699,3 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
 });
 
 // end admin routes
-

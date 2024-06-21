@@ -480,6 +480,7 @@
   'track' => 'track',
   'Become a Seller' => 'Become a Seller',
   'Membership' => 'Become a Seller',
+    'Private Seller' => 'Private Seller',
   'I have read and agree with terms and conditions' => 'I have read and agree with terms and conditions',
   'Paymongo' => 'Paymongo',
   'Card Payment' => 'Card Payment',
@@ -492,4 +493,4 @@
   'PDF Document' => 'PDF Document',
   'sponsors' => 'Sponsors',
 );
- ?>
+?>

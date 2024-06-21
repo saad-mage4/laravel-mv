@@ -477,6 +477,7 @@ return array (
     'order id' => 'id comandă',
     'track' => 'urmărește',
     'Become a Seller' => 'Devino Vânzător',
+    'Private Seller' => 'Vânzător privat',
     'I have read and agree with terms and conditions' => 'Am citit și sunt de acord cu termenii și condițiile',
     'Paymongo' => 'Paymongo',
     'Card Payment' => 'Plată cu Cardul',

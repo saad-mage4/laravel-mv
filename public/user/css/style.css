@@ -10055,7 +10055,8 @@ label.error[for*="cat_check"] {
 }
 
 .radio-1,
-.radio-2 {
+.radio-2,
+.radio-3 {
     width: 200px;
     height: 50px;
     border: 2px solid #204e77;
@@ -10069,7 +10070,8 @@ label.error[for*="cat_check"] {
     position: relative;
 }
 .radio-1 label::before,
-.radio-2 label::before {
+.radio-2 label::before,
+.radio-3 label::before {
     content: "";
     font-size: 20px;
     position: absolute;
@@ -10077,14 +10079,81 @@ label.error[for*="cat_check"] {
     right: 50px;
     transform: translateY(-50%);
 }
+
 .radio-1 label::before {
     content: "No";
 }
 .radio-2 label::before {
     content: "Yes";
 }
+.radio-3 label::before {
+    content: "Yes";
+}
 .radio-1 input,
 .radio-2 input {
+        position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            width: auto;
+        }
+
+
+        /* Become A Seller || Private Seller  */
+        .Seller_Method {
+            font-size: 20px;
+            font-weight: bold;
+            font-family: inherit;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+
+        .seller-1,
+        .seller-2,
+        .seller-3 {
+            width: 100%;
+            height: 50px;
+            border: 2px solid #204e77;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .seller-1 label,
+        .seller-2 label,
+        .seller-3 label {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .seller-1 label::before,
+        .seller-2 label::before,
+        .seller-3 label::before {
+            content: "";
+            font-size: 20px;
+            position: absolute;
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+        }
+
+        .seller-1 label::before {
+            content: attr(title);
+        }
+
+        .seller-2 label::before {
+            content: attr(title);
+        }
+
+        .seller-3 label::before {
+            content: attr(title);
+        }
+
+        .seller-1 input,
+        .seller-2 input,
+        .seller-3 input {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

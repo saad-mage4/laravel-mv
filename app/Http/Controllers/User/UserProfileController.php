@@ -388,16 +388,33 @@ class UserProfileController extends Controller
         }
     }
 
+    // Private Seller
+    public function privateMembership()
+    {
+        $setting = Setting::first();
+        $user = Auth::guard('web')->user();
+        $is_member = $user->is_member;
+        $user->save();
+        if ($user->is_member == 1 && $user->is_paid == 0) {
+            $notification = 'You have already Paid!';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect('user/seller-registration')->with($notification);
+        } else {
+            return view('user.private_seller', compact('setting', 'is_member'));
+        }
+    }
+
 
     public function subscribe(Request $request) {
         $response = $request->status;
+        $SellerType = $request->transaction_type;
         // dd($response);
         $user = Auth::guard('web')->user();
         $is_paid = $user->is_paid;
         // Set the Stripe API key
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        if ($response == 'success') {
+        if ($response == 'success' && $SellerType == "Public") {
             $user->is_member = 1;
             // Add one month to the current date
             $expiryDate = Carbon::now()->addMonth();
@@ -413,6 +430,22 @@ class UserProfileController extends Controller
                 $notification = array('messege'=>$notification,'alert-type'=>'success');
                 return redirect('user/seller-registration')->with($notification);
             }
+        } elseif ($response == 'success' && $SellerType == "Private") {
+            $user->is_member = 1;
+            // Add one month to the current date
+            $expiryDate = Carbon::now()->addMonth();
+            // Save the expiry date to the user's record
+            $user->subscription_expiry_date = $expiryDate;
+            $user->save();
+            if ($is_paid == 1) {
+                $notification = 'Payment has been made Successfully!';
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
+                return redirect('seller/dashboard')->with($notification);
+            } else {
+                $notification = 'Payment has been made Successfully!';
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
+                return redirect('user/private-registration')->with($notification);
+            }
         } else {
             $notification = 'Payment Failed. Please try again!';
             $notification = array('messege'=>$notification,'alert-type'=>'error');
@@ -420,6 +453,20 @@ class UserProfileController extends Controller
         }
     }
 
+
+    // For Private Registration
+    public function privateSellerRegistration()
+    {
+        $setting = Setting::first();
+        $user = Auth::guard('web')->user();
+        if ($user->is_member == 1) {
+            return view('user.private_registration', compact('setting', 'user'));
+        } else {
+            $notification = 'You Must Pay First!';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect('user/seller-membership')->with($notification);
+        }
+    }
 
     public function sellerRegistration(){
         $setting = Setting::first();
@@ -911,6 +958,4 @@ class UserProfileController extends Controller
         $notification = array('messege'=>$notification,'alert-type'=>'success');
         return redirect()->route('home')->with($notification);
     }
-
-
 }

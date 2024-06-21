@@ -1,6 +1,6 @@
 @extends('user.layout')
 @section('title')
-<title>{{__('user.Become a Seller')}}</title>
+<title>{{__('user.Private Seller')}}</title>
 @endsection
 @section('user-content')
 <link rel="stylesheet" href="{{ asset('user/css/seller_reg.css') }}">
@@ -16,7 +16,7 @@
 <div class="row">
   <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
     <div class="dashboard_content mt-2 mt-md-0">
-      <h3><i class="far fa-user"></i> {{__('user.Membership')}}</h3>
+      <h3><i class="far fa-user"></i> {{__('user.Private Seller')}}</h3>
       <div class="wsus__dashboard_profile mb-4 d-none">
         <div class="wsus__dash_pro_area">
           {!! $setting->seller_condition !!}
@@ -61,29 +61,12 @@
               </ul>
               </div>
             </div>
-            <div class="col-xl-6 col-md-6">
-                    <label for="Seller_Method" class="Seller_Method">Slelect Your Seller Type</label>
-                    <div class="wsus__dash_pro_single gap-3">
-                      <div class="seller-1">
-                        <label for="seller" title="Public"></label>
-                        <input type="radio" id="seller" name="seller" value="Public" required checked>
-                      </div>
-                      {{-- <div class="seller-2">
-                        <label for="sellerboprivatesellerth" title="Both"></label>
-                        <input type="radio" id="sellerboth" name="seller" value="Both" required>
-                      </div> --}}
-                       <div class="seller-3">
-                        <label for="privateseller" title="Private"></label>
-                        <input type="radio" id="privateseller" name="seller"  value="Private" required>
-                      </div>
-                    </div>
-                    <div class="col-xl-4">
-
-                          {{-- <a class="common_btn" href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a> --}}
-                 <a class="common_btn" id="Seller_Type_btn" href="#!" >Pay with Stripe</a>
-                    </div>
-                  </div>
 {{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
+              <div class="col-xl-4">
+
+                    <a class="common_btn" href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a>
+
+              </div>
           </div>
         </div>
       </div>
@@ -188,27 +171,12 @@
         $(`[id="v-pills-tabContent"] .tab-pane:nth-child(${index})`).addClass('active show').siblings().removeClass('active show');
       });
 
-    //   For Stripe Seller
-      let value = "Public";
-      $('input[name="seller"]').change(function (e) {
-        e.preventDefault();
-        value  = e?.target?.value;
-      });
+      // $(document).on('click', '.next', function(e){
+      //   e.preventDefault();
 
 
-      $('#Seller_Type_btn').click(function (e) {
-        e.preventDefault();
-        $.ajax({
-                type: "get",
-                url: "/user/stripe-payment",
-                data:{
-                    value: value,
-                },
-                success: function (response) {
-                     window.location.href = response;
-                }
-            });
-      });
+      // });
+
     });
   })(jQuery);
 </script>
