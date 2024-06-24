@@ -143,11 +143,14 @@
                 @elseif($user->is_member == false && $user->is_paid == 1 && $isSeller == true)
                 <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Membership')}}</a></li>
                 @else
-                    <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
+                @if ($user->is_member == true)
+                <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
+                @endif
                 @endif
 
             @endif
-            <li><a class="{{ Route::is('user.private_seller') ? 'active' : '' }}" href="{{ route('user.private_seller') }}"><i class="fal fa-gift-card"></i> {{__('user.Private Seller')}}</a></li>
+            {{-- Private Seller  --}}
+            {{-- <li><a class="{{ Route::is('user.private_seller') ? 'active' : '' }}" href="{{ route('user.private_seller') }}"><i class="fal fa-gift-card"></i> {{__('user.Private Seller')}}</a></li> --}}
 
 
           <li><a class="{{ Route::is('user.change-password') ? 'active' : '' }}" href="{{ route('user.change-password') }}"><i class="fal fa-gift-card"></i> {{__('user.Change Password')}}</a></li>

@@ -194,6 +194,9 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('seller-registration', [UserProfileController::class, 'sellerRegistration'])->name('seller-registration');
             // Private Registration
             Route::get('private-registration', [UserProfileController::class, 'privateSellerRegistration'])->name('private-registration');
+            Route::get('private-seller-request', [UserProfileController::class, 'privateSellerRequest'])->name('private-seller-request');
+
+            //! Default route if not verified
         Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->name('seller-membership');
             Route::get('private_seller', [UserProfileController::class, 'privateMembership'])->name('private_seller');
         Route::get('/membership/subscribe', [UserProfileController::class, 'subscribe'])->name('membership.subscribe');

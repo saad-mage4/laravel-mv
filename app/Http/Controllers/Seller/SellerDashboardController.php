@@ -26,16 +26,16 @@ class SellerDashboardController extends Controller
         $this->middleware('auth:web');
     }
 
+    //!! After Admin Approve the Seller Request
+
     public function index(){
         $user = Auth::guard('web')->user();
         $seller = $user->seller;
-
         if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {
             // Subscription has expired, set is_member to 0
             $user->is_member = 0;
             $user->save();
         }
-
         if($user->is_member == 0) {
             $notification = 'Your Monthly Subscription has been expired!';
             $notification = array('messege'=>$notification,'alert-type'=>'error');

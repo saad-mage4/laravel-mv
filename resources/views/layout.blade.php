@@ -14,7 +14,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -45,6 +45,7 @@
     @endif
 
     <link rel="stylesheet" href="{{ asset('user/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('user/css/loader.css') }}">
 
 
     <link rel="stylesheet" href="{{ asset('user/css/responsive.css') }}">
