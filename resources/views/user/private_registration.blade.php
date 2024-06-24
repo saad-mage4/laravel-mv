@@ -4,61 +4,60 @@
 @endsection
 @section('user-content')
 <div class="row">
-    <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
+  <form id="registrationForm">
+    <div class="col-12 col-md-8 mx-auto">
     <div class="dashboard_content mt-2 mt-md-0">
     <div class="wsus__dashboard_profile">
         <div class="wsus__dash_pro_area">
-        <form id="registrationForm">
               <div class="row mb-3" id="list-styled">
               <h1 class="mb-4 fs-5 text-uppercase">private registration form</h1>
               <div class="col-xl-6 col-md-6">
                     <label for="FirstName">First Name</label>
                     <div class="wsus__dash_pro_single ">
-                      <div class="flex-column">
-                        <input id="FirstName" type="text" id="FirstName" placeholder="First Name" name="firstName" value="" required  />
-                    <span id="firstNameError" class="error"></span>
-                      </div>
+                    
+                        <input type="text" id="FirstName" placeholder="First Name" name="firstName"   />
+                    
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="LastName">Last Name</label>
                     <div class="wsus__dash_pro_single">
-                        <div class="flex-column">
-                      <input id="LastName" type="text" id="LastName" placeholder="Last Name" name="lastName" value="" required  />
-                        <span id="lastNameError" class="error"></span>
-                        </div>
+                    
+                      <input type="text" id="LastName" placeholder="Last Name" name="lastName"   />
+                        
+                    
                     </div>
                   </div>
 
                   <div class="col-xl-6 col-md-6">
                     <label for="email">Email</label>
                     <div class="wsus__dash_pro_single">
-                        <div class="flex-column">
-                      <input type="email" id="email" placeholder="{{__('user.Email')}}" name="email" value="" required />
-                    <span id="emailError" class="error"></span>
-                        </div>
+                        
+                      <input type="email" id="email" placeholder="{{__('user.Email')}}" name="email"  />
+                    
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
-                    <label for="Phone Number">Phone Number</label>
+                    <label for="phone">Phone Number</label>
                     <div class="wsus__dash_pro_single">
-                        <div class="flex-column">
-                      <input id="phoneNo" type="number" placeholder="{{__('user.Phone')}}" name="phone" value="" required  />
-                      <span id="phoneNoError" class="error"></span>
-                        </div>
+                        
+                      <input id="phone" type="tel" placeholder="{{__('user.Phone')}}" name="phone"   />
+                      
+                        
                     </div>
                   </div>
           </div>
           <div class="col-xl-12 d-flex justify-content-md-end justify-content-center">
              <button id="submitButton" type="submit" class="common_btn mb-4 mt-2 next">
-                                    <div id="loader" class="loader" style="display:none;"></div> <!-- Loader element -->
-                                    Submit
+             <div id="loader" class="loader" style="display:none;"></div>
+                                    <span class="text-white">Submit</span>
                                 </button>
               </div>
         </div>
 </div>
 </div>
     </div>
+</form>
 </div>
 
 <script>
@@ -127,16 +126,48 @@
 
       $('#registrationForm').submit(function (e) {
         e.preventDefault();
-        const validate = $("#registrationForm").validate();
-        // let formdata = $(this).serialize();
-        if (validate.valid()) {
+
+  $('#registrationForm').validate({
+        rules: {
+            firstName: "required",
+            lastName: "required",
+            email: {
+                required: true,
+                email: true
+            },
+            phone: {
+                required: true,
+                digits: true
+            }
+        },
+        messages: {
+            firstName: "Please enter your first name",
+            lastName: "Please enter your last name",
+            email: {
+                required: "Please enter your email",
+                email: "Please enter a valid email address"
+            },
+            phone: {
+                required: "Please enter your phone number",
+                digits: "Please enter a valid phone number"
+            }
+        }
+    });
+        console.log('test: ',$("#registrationForm").valid());
+        if ($("#registrationForm").valid()) {
                $.ajax({
                 type: "get",
                 url: "/user/private-seller-request",
                 data:{
                     values: value,
                 },
+                beforeSend: function(){
+                  $('#submitButton span').text("");
+                  $('#loader').show();
+                },
                 success: function (response) {
+                  $('#submitButton span').text("Submit");
+                  $('#loader').hide();
                     //  window.location.href = response;
 
                 }
