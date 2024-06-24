@@ -132,18 +132,21 @@
                 @php
                     $authUser = Auth::guard('web')->user();
                     $isSeller = App\Models\Vendor::where('user_id', $authUser->id)->first();
-
+                    $Check_Status = $isSeller->status ?? 1; //if the vender is delete we add by default satats 1
 
                 @endphp
 
                 @if ($is_member == false && $user->is_paid == false && $isSeller == false)
                     <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Membership')}}</a></li>
-                @elseif($is_member == true && $user->is_paid == 0 && $isSeller == false)
+                @elseif($is_member == false && $user->seller_type == "Public" && $user->is_paid == 1 && $isSeller == false)
                     <li><a class="{{ Route::is('user.seller-registration') ? 'active' : '' }}" href="{{ route('user.seller-registration') }}"><i class="fal fa-gift-card"></i> {{__('user.Become a Seller')}}</a></li>
-                @elseif($user->is_member == false && $user->is_paid == 1 && $isSeller == true)
+                    @elseif($is_member == false && $user->seller_type == "Private" && $user->is_paid == 1 && $isSeller == false)
+                    <li><a class="{{ Route::is('user.private-registration') ? 'active' : '' }}" href="{{ route('user.private-registration') }}"><i class="fal fa-gift-card"></i> {{__('user.Become a Seller')}}</a></li>
+                @elseif($user->is_member == false  && $user->is_paid == 1 && $isSeller == true)
                 <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Membership')}}</a></li>
                 @else
-                @if ($user->is_member == true)
+                @if ($user->is_member == true &&
+                $Check_Status === 1)
                 <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
                 @endif
                 @endif

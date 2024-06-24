@@ -4,6 +4,21 @@
 @endsection
 @section('user-content')
 <div class="row">
+     @if ($setting->enable_multivendor == 1)
+                @php
+                    $authUser = Auth::guard('web')->user();
+                    $isSeller = App\Models\Vendor::where('user_id', $authUser->id)->first();
+                     $Check_Status = $isSeller->status ?? 1; //if the vender is delete we add by default satats 1
+
+                @endphp
+               @if ($Check_Status == 0)
+               <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto text-center alert alert-info">
+              <h3 class="mb-2">Your Request has been submitted</h3>
+              <p class="text-dark fs-5">Kindly wait for admin approvel, <strong>this might take 24 hours</strong></p>
+               </div>
+               @else
+                @endif
+    @endif
     <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
       <div class="dashboard_content">
         <div class="wsus__dashboard">
