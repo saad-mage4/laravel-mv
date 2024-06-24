@@ -14,36 +14,36 @@
               <div class="col-xl-6 col-md-6">
                     <label for="FirstName">First Name</label>
                     <div class="wsus__dash_pro_single ">
-                    
+
                         <input type="text" id="FirstName" placeholder="First Name" name="firstName"   />
-                    
+
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="LastName">Last Name</label>
                     <div class="wsus__dash_pro_single">
-                    
+
                       <input type="text" id="LastName" placeholder="Last Name" name="lastName"   />
-                        
-                    
+
+
                     </div>
                   </div>
 
                   <div class="col-xl-6 col-md-6">
                     <label for="email">Email</label>
                     <div class="wsus__dash_pro_single">
-                        
+
                       <input type="email" id="email" placeholder="{{__('user.Email')}}" name="email"  />
-                    
+
                     </div>
                   </div>
                   <div class="col-xl-6 col-md-6">
                     <label for="phone">Phone Number</label>
                     <div class="wsus__dash_pro_single">
-                        
+
                       <input id="phone" type="tel" placeholder="{{__('user.Phone')}}" name="phone"   />
-                      
-                        
+
+
                     </div>
                   </div>
           </div>
@@ -168,8 +168,7 @@
                 success: function (response) {
                   $('#submitButton span').text("Submit");
                   $('#loader').hide();
-                    //  window.location.href = response;
-
+                     window.location.href = response;
                 }
             });
       }

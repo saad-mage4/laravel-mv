@@ -37,6 +37,7 @@ use Slug;
 
 use App\Events\SellerToUser;
 use App\Models\PrivateSellerRegistration;
+use Illuminate\Support\Facades\DB;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -53,19 +54,20 @@ class UserProfileController extends Controller
     }
 
     //! User DashBoard !
-    public function dashboard(){
+    public function dashboard()
+    {
         $user = Auth::guard('web')->user();
-        $orders = Order::where('user_id',$user->id)->get();
-        $wishlists = Wishlist::where('user_id',$user->id)->get();
+        $orders = Order::where('user_id', $user->id)->get();
+        $wishlists = Wishlist::where('user_id', $user->id)->get();
         $reviews = ProductReview::where(['user_id' => $user->id, 'status' => 1])->get();
-
+        $setting = Setting::first();
         if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {
             // Subscription has expired, set is_member to 0
             $user->is_member = 0;
             $user->save();
         }
 
-        return view('user.dashboard', compact('orders','reviews','wishlists'));
+        return view('user.dashboard', compact('orders', 'reviews', 'wishlists', 'setting'));
     }
 
 
@@ -73,68 +75,76 @@ class UserProfileController extends Controller
      * * Orders  Function's
      * TODO: pending, complete , declined , orderShow
      * */
-    public function order(){
+    public function order()
+    {
         $user = Auth::guard('web')->user();
-        $orders = Order::orderBy('id','desc')->where('user_id', $user->id)->paginate(10);
+        $orders = Order::orderBy('id', 'desc')->where('user_id', $user->id)->paginate(10);
         $setting = Setting::first();
-        return view('user.order', compact('orders','setting'));
+        return view('user.order', compact('orders', 'setting'));
     }
 
-    public function pendingOrder(){
+    public function pendingOrder()
+    {
         $user = Auth::guard('web')->user();
-        $orders = Order::orderBy('id','desc')->where('user_id', $user->id)->where('order_status',0)->paginate(10);
+        $orders = Order::orderBy('id', 'desc')->where('user_id', $user->id)->where('order_status', 0)->paginate(10);
         $setting = Setting::first();
-        return view('user.order', compact('orders','setting'));
+        return view('user.order', compact('orders', 'setting'));
     }
 
-    public function completeOrder(){
+    public function completeOrder()
+    {
         $user = Auth::guard('web')->user();
-        $orders = Order::orderBy('id','desc')->where('user_id', $user->id)->where('order_status',3)->paginate(10);
+        $orders = Order::orderBy('id', 'desc')->where('user_id', $user->id)->where('order_status', 3)->paginate(10);
         $setting = Setting::first();
-        return view('user.order', compact('orders','setting'));
+        return view('user.order', compact('orders', 'setting'));
     }
 
-    public function declinedOrder(){
+    public function declinedOrder()
+    {
         $user = Auth::guard('web')->user();
-        $orders = Order::orderBy('id','desc')->where('user_id', $user->id)->where('order_status',4)->paginate(10);
+        $orders = Order::orderBy('id', 'desc')->where('user_id', $user->id)->where('order_status', 4)->paginate(10);
         $setting = Setting::first();
-        return view('user.order', compact('orders','setting'));
+        return view('user.order', compact('orders', 'setting'));
     }
 
-    public function orderShow($orderId){
+    public function orderShow($orderId)
+    {
         $user = Auth::guard('web')->user();
-        $order = Order::where('user_id', $user->id)->where('order_id',$orderId)->first();
+        $order = Order::where('user_id', $user->id)->where('order_id', $orderId)->first();
         $setting = Setting::first();
         $products = Product::all();
-        return view('user.show_order', compact('order','setting','products'));
+        return view('user.show_order', compact('order', 'setting', 'products'));
     }
 
 
-    public function wishlist(){
+    public function wishlist()
+    {
         $user = Auth::guard('web')->user();
         $wishlists = Wishlist::where(['user_id' => $user->id])->paginate(10);
         $setting = Setting::first();
-        return view('user.wishlist', compact('wishlists','setting'));
+        return view('user.wishlist', compact('wishlists', 'setting'));
     }
 
-    public function myProfile(){
+    public function myProfile()
+    {
         $user = Auth::guard('web')->user();
-        $countries = Country::orderBy('name','asc')->where('status',1)->get();
-        $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $user->country_id])->get();
-        $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => $user->state_id])->get();
+        $countries = Country::orderBy('name', 'asc')->where('status', 1)->get();
+        $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => $user->country_id])->get();
+        $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => $user->state_id])->get();
         $defaultProfile = BannerImage::whereId('15')->first();
-        return view('user.my_profile', compact('user','countries','cities','states','defaultProfile'));
+        return view('user.my_profile', compact('user', 'countries', 'cities', 'states', 'defaultProfile'));
     }
 
-    public function updateProfile(Request $request){
+    public function updateProfile(Request $request)
+    {
         $user = Auth::guard('web')->user();
         $rules = [
-            'name'=>'required',
-            'email'=>'required|unique:users,email,'.$user->id,
-            'phone'=>'required',
-            'country'=>'required',
-            'zip_code'=>'required',
-            'address'=>'required',
+            'name' => 'required',
+            'email' => 'required|unique:users,email,' . $user->id,
+            'phone' => 'required',
+            'country' => 'required',
+            'zip_code' => 'required',
+            'address' => 'required',
         ];
         $customMessages = [
             'name.required' => trans('user_validation.Name is required'),
@@ -145,7 +155,7 @@ class UserProfileController extends Controller
             'zip_code.required' => trans('user_validation.Zip code is required'),
             'address.required' => trans('user_validation.Address is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user->name = $request->name;
         $user->phone = $request->phone;
@@ -156,37 +166,39 @@ class UserProfileController extends Controller
         $user->address = $request->address;
         $user->save();
 
-        if($request->file('image')){
-            $old_image=$user->image;
-            $user_image=$request->image;
-            $extention=$user_image->getClientOriginalExtension();
-            $image_name= Str::slug($request->name).date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $image_name='uploads/custom-images/'.$image_name;
+        if ($request->file('image')) {
+            $old_image = $user->image;
+            $user_image = $request->image;
+            $extention = $user_image->getClientOriginalExtension();
+            $image_name = Str::slug($request->name) . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+            $image_name = 'uploads/custom-images/' . $image_name;
 
             Image::make($user_image)
-                ->save(public_path().'/'.$image_name);
+                ->save(public_path() . '/' . $image_name);
 
-            $user->image=$image_name;
+            $user->image = $image_name;
             $user->save();
-            if($old_image){
-                if(File::exists(public_path().'/'.$old_image))unlink(public_path().'/'.$old_image);
+            if ($old_image) {
+                if (File::exists(public_path() . '/' . $old_image)) unlink(public_path() . '/' . $old_image);
             }
         }
 
         $notification = trans('user_validation.Update Successfully');
-        $notification=array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
 
-    public function changePassword(){
+    public function changePassword()
+    {
         return view('user.change_password');
     }
 
-    public function updatePassword(Request $request){
+    public function updatePassword(Request $request)
+    {
         $rules = [
-            'current_password'=>'required',
-            'password'=>'required|min:4|confirmed',
+            'current_password' => 'required',
+            'password' => 'required|min:4|confirmed',
         ];
         $customMessages = [
             'current_password.required' => trans('user_validation.Current password is required'),
@@ -194,51 +206,54 @@ class UserProfileController extends Controller
             'password.min' => trans('user_validation.Password minimum 4 character'),
             'password.confirmed' => trans('user_validation.Confirm password does not match'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user = Auth::guard('web')->user();
-        if(Hash::check($request->current_password, $user->password)){
+        if (Hash::check($request->current_password, $user->password)) {
             $user->password = Hash::make($request->password);
             $user->save();
             $notification = 'Password change successfully';
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->back()->with($notification);
-        }else{
+        } else {
             $notification = trans('user_validation.Current password does not match');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
     }
 
-    public function address(){
+    public function address()
+    {
         $user = Auth::guard('web')->user();
         $billing = BillingAddress::where('user_id', $user->id)->first();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
-        return view('user.address', compact('billing','shipping'));
+        return view('user.address', compact('billing', 'shipping'));
     }
 
-    public function editBillingAddress(){
+    public function editBillingAddress()
+    {
         $user = Auth::guard('web')->user();
         $billing = BillingAddress::where('user_id', $user->id)->first();
-        $countries = Country::orderBy('name','asc')->where('status',1)->get();
+        $countries = Country::orderBy('name', 'asc')->where('status', 1)->get();
 
-        if($billing){
-            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $billing->country_id])->get();
-            $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => $billing->state_id])->get();
-        }else{
-            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
-            $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
+        if ($billing) {
+            $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => $billing->country_id])->get();
+            $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => $billing->state_id])->get();
+        } else {
+            $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => 0])->get();
+            $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => 0])->get();
         }
-        return view('user.edit_billing_address', compact('billing','countries','states','cities'));
+        return view('user.edit_billing_address', compact('billing', 'countries', 'states', 'cities'));
     }
 
-    public function updateBillingAddress(Request $request){
+    public function updateBillingAddress(Request $request)
+    {
         $rules = [
-            'name'=>'required',
-            'email'=>'required',
-            'phone'=>'required',
-            'country'=>'required',
-            'address'=>'required',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'country' => 'required',
+            'address' => 'required',
         ];
 
         $customMessages = [
@@ -250,11 +265,11 @@ class UserProfileController extends Controller
             'zip_code.required' => trans('user_validation.Zip code is required'),
             'address.required' => trans('user_validation.Address is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user = Auth::guard('web')->user();
         $billing = BillingAddress::where('user_id', $user->id)->first();
-        if($billing){
+        if ($billing) {
             $billing->name = $request->name;
             $billing->email = $request->email;
             $billing->phone = $request->phone;
@@ -266,9 +281,9 @@ class UserProfileController extends Controller
             $billing->save();
 
             $notification = trans('user_validation.Update Successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('user.address')->with($notification);
-        }else{
+        } else {
             $billing = new BillingAddress();
             $billing->user_id = $user->id;
             $billing->name = $request->name;
@@ -282,34 +297,36 @@ class UserProfileController extends Controller
             $billing->save();
 
             $notification = trans('user_validation.Update Successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('user.address')->with($notification);
         }
     }
 
 
-    public function editShippingAddress(){
+    public function editShippingAddress()
+    {
         $user = Auth::guard('web')->user();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
-        $countries = Country::orderBy('name','asc')->where('status',1)->get();
+        $countries = Country::orderBy('name', 'asc')->where('status', 1)->get();
 
-        if($shipping){
-            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $shipping->country_id])->get();
-            $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => $shipping->state_id])->get();
-        }else{
-            $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
-            $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
+        if ($shipping) {
+            $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => $shipping->country_id])->get();
+            $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => $shipping->state_id])->get();
+        } else {
+            $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => 0])->get();
+            $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => 0])->get();
         }
-        return view('user.edit_shipping_address', compact('shipping','countries','states','cities'));
+        return view('user.edit_shipping_address', compact('shipping', 'countries', 'states', 'cities'));
     }
 
-    public function updateShippingAddress(Request $request){
+    public function updateShippingAddress(Request $request)
+    {
         $rules = [
-            'name'=>'required',
-            'email'=>'required',
-            'phone'=>'required',
-            'country'=>'required',
-            'address'=>'required',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'country' => 'required',
+            'address' => 'required',
         ];
 
         $customMessages = [
@@ -321,11 +338,11 @@ class UserProfileController extends Controller
             'zip_code.required' => trans('user_validation.Zip code is required'),
             'address.required' => trans('user_validation.Address is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user = Auth::guard('web')->user();
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
-        if($shipping){
+        if ($shipping) {
             $shipping->name = $request->name;
             $shipping->email = $request->email;
             $shipping->phone = $request->phone;
@@ -337,9 +354,9 @@ class UserProfileController extends Controller
             $shipping->save();
 
             $notification = trans('user_validation.Update Successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('user.address')->with($notification);
-        }else{
+        } else {
             $shipping = new ShippingAddress();
             $shipping->user_id = $user->id;
             $shipping->name = $request->name;
@@ -353,32 +370,34 @@ class UserProfileController extends Controller
             $shipping->save();
 
             $notification = trans('user_validation.Update Successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('user.address')->with($notification);
         }
     }
 
 
-    public function stateByCountry($id){
+    public function stateByCountry($id)
+    {
         $states = CountryState::where(['status' => 1, 'country_id' => $id])->get();
-        $response='<option value="0">Select a State</option>';
-        if($states->count() > 0){
-            foreach($states as $state){
-                $response .= "<option value=".$state->id.">".$state->name."</option>";
+        $response = '<option value="0">Select a State</option>';
+        if ($states->count() > 0) {
+            foreach ($states as $state) {
+                $response .= "<option value=" . $state->id . ">" . $state->name . "</option>";
             }
         }
-        return response()->json(['states'=>$response]);
+        return response()->json(['states' => $response]);
     }
 
-    public function cityByState($id){
+    public function cityByState($id)
+    {
         $cities = City::where(['status' => 1, 'country_state_id' => $id])->get();
-        $response='<option value="0">Select Locality</option>';
-        if($cities->count() > 0){
-            foreach($cities as $city){
-                $response .= "<option value=".$city->id.">".$city->name."</option>";
+        $response = '<option value="0">Select Locality</option>';
+        if ($cities->count() > 0) {
+            foreach ($cities as $city) {
+                $response .= "<option value=" . $city->id . ">" . $city->name . "</option>";
             }
         }
-        return response()->json(['cities'=>$response]);
+        return response()->json(['cities' => $response]);
     }
 
     /**
@@ -484,54 +503,55 @@ class UserProfileController extends Controller
     }
 
     //!! After Form fill of Public Seller
-    public function sellerRequest(Request $request){
+    public function sellerRequest(Request $request)
+    {
 
         $user = Auth::guard('web')->user();
-        $categoryChecks = implode(',',$request->cat_check);
-        $seller = Vendor::where('user_id',$user->id)->first();
-        if($seller){
+        $categoryChecks = implode(',', $request->cat_check);
+        $seller = Vendor::where('user_id', $user->id)->first();
+        if ($seller) {
             $notification = 'Request Already exist';
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
 
         $rules = [
-            'banner_image'=>'required',
-            'shop_name'=>'required|unique:vendors',
-            'email'=>'required|unique:vendors',
-            'phone'=>'required',
-            'address'=>'required',
-            'open_at'=>'required',
-            'closed_at'=>'required',
-            'firstName'=>'required',
-            'lastName'=>'required',
-            'country'=>'required',
-            'state'=>'required',
-            'city'=>'required',
-            'companyName'=>'required',
-            'companyType'=>'required',
-            'urc'=>'required',
-            'iban'=>'required',
-            'bank'=>'required',
-            'swift'=>'required',
-            'localCurrency'=>'required',
-            'certificateRegistration'=>'required',
+            'banner_image' => 'required',
+            'shop_name' => 'required|unique:vendors',
+            'email' => 'required|unique:vendors',
+            'phone' => 'required',
+            'address' => 'required',
+            'open_at' => 'required',
+            'closed_at' => 'required',
+            'firstName' => 'required',
+            'lastName' => 'required',
+            'country' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'companyName' => 'required',
+            'companyType' => 'required',
+            'urc' => 'required',
+            'iban' => 'required',
+            'bank' => 'required',
+            'swift' => 'required',
+            'localCurrency' => 'required',
+            'certificateRegistration' => 'required',
             'idCardSignatory' => 'required|mimes:png,jpeg,jpg',
-            'bankStatement'=>'required',
-            'articlesOfIncorporation'=>'required',
-//            'firstName1'=>'required',
-//            'lastName1'=>'required',
-            'position'=>'required',
-            'legalEmail'=>'required',
-            'cLegalEmail'=>'required',
+            'bankStatement' => 'required',
+            'articlesOfIncorporation' => 'required',
+            //            'firstName1'=>'required',
+            //            'lastName1'=>'required',
+            'position' => 'required',
+            'legalEmail' => 'required',
+            'cLegalEmail' => 'required',
             // 'maxOrderTime'=>'required',
             'agree_terms_condition' => 'required',
-            'certificateRegistration'=>'required|mimes:pdf,png,jpeg,jpg',
-            'bankStatement'=>'required|mimes:pdf,png,jpeg,jpg',
-            'articlesOfIncorporation'=>'required|mimes:pdf,png,jpeg,jpg'
-//            'nic_front_image'=>'required',
-//            'nic_back_image'=>'required',
-//            'pdf'=>'required|m1imes:pdf'
+            'certificateRegistration' => 'required|mimes:pdf,png,jpeg,jpg',
+            'bankStatement' => 'required|mimes:pdf,png,jpeg,jpg',
+            'articlesOfIncorporation' => 'required|mimes:pdf,png,jpeg,jpg'
+            //            'nic_front_image'=>'required',
+            //            'nic_back_image'=>'required',
+            //            'pdf'=>'required|m1imes:pdf'
         ];
 
         $customMessages = [
@@ -561,8 +581,8 @@ class UserProfileController extends Controller
             'idCardSignatory.mimes' => trans('user_validation.ID Card Types'),
             'bankStatement.required' => trans('user_validation.bank required'),
             'articlesOfIncorporation.required' => trans('user_validation.article required'),
-//            'firstName1.required' => trans('user_validation.fname'),
-//            'lastName1.required' => trans('user_validation.lname'),
+            //            'firstName1.required' => trans('user_validation.fname'),
+            //            'lastName1.required' => trans('user_validation.lname'),
             'position.required' => trans('user_validation.position'),
             'legalEmail.required' => trans('user_validation.confirm lemail'),
             'cLegalEmail.required' => trans('user_validation.confirm cemail'),
@@ -571,12 +591,12 @@ class UserProfileController extends Controller
             'certificateRegistration.mimes' => trans('user_validation.valid certificateRegistration'),
             'bankStatement.mimes' => trans('user_validation.valid bankStatement'),
             'articlesOfIncorporation.mimes' => trans('user_validation.valid articlesOfIncorporation'),
-//            'nic_front_image.required' => trans('user_validation.NIC front required'),
-//            'nic_back_image.required' => trans('user_validation.NIC back required'),
-//            'pdf.required' => trans('user_validation.pdf required'),
+            //            'nic_front_image.required' => trans('user_validation.NIC front required'),
+            //            'nic_back_image.required' => trans('user_validation.NIC back required'),
+            //            'pdf.required' => trans('user_validation.pdf required'),
             'pdf.mimes' => trans('user_validation.valid pdf'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
         // dd('asas',$request);
         $user = Auth::guard('web')->user();
         $seller = new Vendor();
@@ -586,7 +606,7 @@ class UserProfileController extends Controller
         $seller->phone = $request->phone;
         $seller->address = $request->address;
         $seller->description = $request->about;
-        $seller->greeting_msg = trans('user_validation.Welcome to'). ' '. $request->shop_name;
+        $seller->greeting_msg = trans('user_validation.Welcome to') . ' ' . $request->shop_name;
         $seller->open_at = $request->open_at;
         $seller->closed_at = $request->closed_at;
         $seller->firstName = $request->firstName;
@@ -617,62 +637,62 @@ class UserProfileController extends Controller
         $seller->seo_title = $request->shop_name;
         $seller->seo_description = $request->shop_name;
 
-        if($request->banner_image){
+        if ($request->banner_image) {
             $exist_front_nic = $seller->banner_image; // Correct variable name
             $extention = $request->banner_image->getClientOriginalExtension();
-            $banner_name = 'seller-banner'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
-            $banner_name = 'uploads/custom-images/'.$banner_name;
+            $banner_name = 'seller-banner' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+            $banner_name = 'uploads/custom-images/' . $banner_name;
             Image::make($request->banner_image)
-                ->save(public_path().'/'.$banner_name);
+                ->save(public_path() . '/' . $banner_name);
             $seller->banner_image = $banner_name;
             $seller->save();
-            if($exist_front_nic){
-                if(File::exists(public_path().'/'.$exist_front_nic)) // Correct variable name
-                    unlink(public_path().'/'.$exist_front_nic); // Correct variable name
+            if ($exist_front_nic) {
+                if (File::exists(public_path() . '/' . $exist_front_nic)) // Correct variable name
+                    unlink(public_path() . '/' . $exist_front_nic); // Correct variable name
             }
         }
 
-        if($request->nic_front_image){
+        if ($request->nic_front_image) {
             $exist_front_nic = $seller->nic_front_image;
             $extention_f = $request->nic_front_image->getClientOriginalExtension();
-            $nic_front = 'nic-front'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_f;
-            $nic_front = 'uploads/custom-images/'.$nic_front;
+            $nic_front = 'nic-front' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention_f;
+            $nic_front = 'uploads/custom-images/' . $nic_front;
             Image::make($request->nic_front_image)
-                ->save(public_path().'/'.$nic_front);
+                ->save(public_path() . '/' . $nic_front);
             $seller->nic_front_image = $nic_front;
             $seller->save();
-            if($exist_front_nic){
-                if(File::exists(public_path().'/'.$exist_front_nic))unlink(public_path().'/'.$exist_front_nic);
+            if ($exist_front_nic) {
+                if (File::exists(public_path() . '/' . $exist_front_nic)) unlink(public_path() . '/' . $exist_front_nic);
             }
         }
 
 
 
-        if($request->nic_back_image){
+        if ($request->nic_back_image) {
             $exist_back_nic = $seller->nic_back_image;
             $extention_b = $request->nic_back_image->getClientOriginalExtension();
-            $nic_back = 'nic-back'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_b;
-            $nic_back = 'uploads/custom-images/'.$nic_back;
+            $nic_back = 'nic-back' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention_b;
+            $nic_back = 'uploads/custom-images/' . $nic_back;
             Image::make($request->nic_back_image)
-                ->save(public_path().'/'.$nic_back);
+                ->save(public_path() . '/' . $nic_back);
             $seller->nic_back_image = $nic_back;
             $seller->save();
-            if($exist_back_nic){
-                if(File::exists(public_path().'/'.$exist_back_nic))unlink(public_path().'/'.$exist_back_nic);
+            if ($exist_back_nic) {
+                if (File::exists(public_path() . '/' . $exist_back_nic)) unlink(public_path() . '/' . $exist_back_nic);
             }
         }
 
-        if($request->idCardSignatory){
+        if ($request->idCardSignatory) {
             $exist_id_Card = $seller->idCardSignatory;
             $extention_c = $request->idCardSignatory->getClientOriginalExtension();
-            $id_card = 'id-card'.date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention_c;
-            $id_card = 'uploads/custom-images/'.$id_card;
+            $id_card = 'id-card' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention_c;
+            $id_card = 'uploads/custom-images/' . $id_card;
             Image::make($request->idCardSignatory)
-                ->save(public_path().'/'.$id_card);
+                ->save(public_path() . '/' . $id_card);
             $seller->idCardSignatory = $id_card;
             $seller->save();
-            if($exist_id_Card){
-                if(File::exists(public_path().'/'.$exist_id_Card))unlink(public_path().'/'.$exist_id_Card);
+            if ($exist_id_Card) {
+                if (File::exists(public_path() . '/' . $exist_id_Card)) unlink(public_path() . '/' . $exist_id_Card);
             }
         }
 
@@ -781,9 +801,8 @@ class UserProfileController extends Controller
         $user->save();
         $seller->save();
         $notification = trans('user_validation.Request sumited successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.dashboard')->with($notification);
-
     }
 
     /**
@@ -826,30 +845,72 @@ class UserProfileController extends Controller
 
     public function privateSellerRequest(Request $request)
     {
-        dd($request->values);
-        // Extract the values from the request
         $data = $request->values;
-
         // Validate the request data
-        $validated = $request->validate([
-            'email' => 'required|email|unique:private_seller_registration,email',
-            'firstName' => 'nullable|string|max:255',
-            'lastName' => 'nullable|string|max:255',
-            'phone' => 'nullable|integer',
-        ]);
+        // $validated = $request->validate([
+        //     'email' => 'required|email|unique:private_seller_registration,email',
+        //     'firstName' => 'nullable|string|max:255',
+        //     'lastName' => 'nullable|string|max:255',
+        //     'phone' => 'nullable|integer',
+        // ]);
 
         // Save the validated data into the database
-        $privateSeller = PrivateSellerRegistration::create([
-            'email' => $validated['email'],
-            'first_name' => $validated['firstName'],
-            'last_name' => $validated['lastName'],
-            'phone_no' => $validated['phone'],
-        ]);
+        // $privateSeller = PrivateSellerRegistration::create([
+        //     'email' => $validated['email'],
+        //     'first_name' => $validated['firstName'],
+        //     'last_name' => $validated['lastName'],
+        //     'phone_no' => $validated['phone'],
+        // ]);
 
-        return response()->json([
-            'message' => 'Registration successful',
-            'data' => $privateSeller
-        ], 201);
+        // return response()->json([
+        //     'message' => 'Registration successful',
+        //     'data' => $privateSeller
+        // ], 201);
+
+        $user = Auth::guard('web')->user();
+        $seller = Vendor::where('user_id', $user->id)->first();
+        if ($seller) {
+            $notification = 'Request Already exist';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect()->back()->with($notification);
+        }
+
+
+
+        $Query_Exists = PrivateSellerRegistration::where(
+            'email',
+            '=',
+            $data['email']
+        )->exists();
+
+        if ($Query_Exists) {
+            PrivateSellerRegistration::where('email', $data['email'])->update([
+                'first_name' => $data['firstName'],
+                'last_name' => $data['lastName'],
+                'phone_no' => $data['phone']
+            ]);
+        } else {
+            $sellerRegistration = new PrivateSellerRegistration();
+            $sellerRegistration->first_name = $data['firstName'];
+            $sellerRegistration->last_name = $data['lastName'];
+            $sellerRegistration->email = $data['email'];
+            $sellerRegistration->phone_no = $data['phone'];
+            $sellerRegistration->save();
+            $user->is_member = 1;
+            $user->save();
+            // vender save
+            $seller = new Vendor();
+            $seller->user_id = $user->id;
+            // $seller->status = 1;
+            $seller->email = $data['email'];
+            $seller->phone = $data['phone'];
+            $seller->firstName = $data['firstName'];
+            $seller->lastName = $data['lastName'];
+            $seller->save();
+        }
+
+        return route("user.dashboard");
+        // return "Private Seller Register";
     }
 
     /**
@@ -859,28 +920,30 @@ class UserProfileController extends Controller
      *  ! removeWishlist : Remove the WishLists
      */
 
-    public function addToWishlist($id){
+    public function addToWishlist($id)
+    {
         $user = Auth::guard('web')->user();
         $product = Product::find($id);
         $isExist = Wishlist::where(['user_id' => $user->id, 'product_id' => $product->id])->count();
-        if($isExist == 0){
+        if ($isExist == 0) {
             $wishlist = new Wishlist();
             $wishlist->product_id = $id;
             $wishlist->user_id = $user->id;
             $wishlist->save();
             $message = trans('user_validation.Wishlist added successfully');
             return response()->json(['status' => 1, 'message' => $message]);
-        }else{
+        } else {
             $message = trans('user_validation.Already added');
             return response()->json(['status' => 0, 'message' => $message]);
         }
     }
 
-    public function removeWishlist($id){
+    public function removeWishlist($id)
+    {
         $wishlist = Wishlist::find($id);
         $wishlist->delete();
         $notification = trans('user_validation.Removed successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
@@ -891,12 +954,13 @@ class UserProfileController extends Controller
      *  ! storeProductReview : Products Review
      *  * updateReview: Update the Product Review
      */
-    public function storeProductReport(Request $request){
-        if($request->subject == null){
+    public function storeProductReport(Request $request)
+    {
+        if ($request->subject == null) {
             $message = trans('user_validation.Subject filed is required');
             return response()->json(['status' => 0, 'message' => $message]);
         }
-        if($request->description == null){
+        if ($request->description == null) {
             $message = trans('user_validation.Description filed is required');
             return response()->json(['status' => 0, 'message' => $message]);
         }
@@ -911,42 +975,43 @@ class UserProfileController extends Controller
 
         $message = trans('user_validation.Report Submited successfully');
         return response()->json(['status' => 1, 'message' => $message]);
-
     }
 
-    public function review(){
+    public function review()
+    {
         $user = Auth::guard('web')->user();
-        $reviews = ProductReview::orderBy('id','desc')->where(['user_id' => $user->id, 'status' => 1])->paginate(10);
-        return view('user.review',compact('reviews'));
+        $reviews = ProductReview::orderBy('id', 'desc')->where(['user_id' => $user->id, 'status' => 1])->paginate(10);
+        return view('user.review', compact('reviews'));
     }
 
 
-    public function storeProductReview(Request $request){
+    public function storeProductReview(Request $request)
+    {
         $rules = [
-            'rating'=>'required',
-            'review'=>'required',
-            'g-recaptcha-response'=>new Captcha()
+            'rating' => 'required',
+            'review' => 'required',
+            'g-recaptcha-response' => new Captcha()
         ];
         $customMessages = [
             'rating.required' => trans('user_validation.Rating is required'),
             'review.required' => trans('user_validation.Review is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user = Auth::guard('web')->user();
         $isExistOrder = false;
         $orders = Order::where(['user_id' => $user->id])->get();
         foreach ($orders as $key => $order) {
             foreach ($order->orderProducts as $key => $orderProduct) {
-                if($orderProduct->product_id == $request->product_id){
+                if ($orderProduct->product_id == $request->product_id) {
                     $isExistOrder = true;
                 }
             }
         }
 
-        if($isExistOrder){
+        if ($isExistOrder) {
             $isReview = ProductReview::where(['product_id' => $request->product_id, 'user_id' => $user->id])->count();
-            if($isReview > 0){
+            if ($isReview > 0) {
                 $message = trans('user_validation.You have already submited review');
                 return response()->json(['status' => 0, 'message' => $message]);
             }
@@ -959,17 +1024,17 @@ class UserProfileController extends Controller
             $review->save();
             $message = trans('user_validation.Review Submited successfully');
             return response()->json(['status' => 1, 'message' => $message]);
-        }else{
+        } else {
             $message = trans('user_validation.Opps! You can not review this product');
             return response()->json(['status' => 0, 'message' => $message]);
         }
-
     }
 
-    public function updateReview(Request $request, $id){
+    public function updateReview(Request $request, $id)
+    {
         $rules = [
-            'rating'=>'required',
-            'review'=>'required',
+            'rating' => 'required',
+            'review' => 'required',
         ];
         $this->validate($request, $rules);
         $user = Auth::guard('web')->user();
@@ -979,7 +1044,7 @@ class UserProfileController extends Controller
         $review->save();
 
         $notification = trans('user_validation.Updated successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->back()->with($notification);
     }
 
@@ -989,20 +1054,21 @@ class UserProfileController extends Controller
      *  TODO: delete_account
      * ! delete_account : Delete the Account
      * */
-    public function delete_account(){
+    public function delete_account()
+    {
 
-        if(env('APP_VERSION') == 0){
+        if (env('APP_VERSION') == 0) {
             $notification = trans('This Is Demo Version. You Can Not Change Anything');
-            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
 
         $user = Auth::guard('web')->user();
 
-        $isVendor = Vendor::where('user_id',$user->id)->first();
-        if($isVendor) {
+        $isVendor = Vendor::where('user_id', $user->id)->first();
+        if ($isVendor) {
             $notification = trans('user_validation.You can not delete your seller account');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
 
@@ -1010,26 +1076,26 @@ class UserProfileController extends Controller
         $id = $user->id;
         $user_image = $user->image;
 
-        if($user_image){
-            if(File::exists(public_path().'/'.$user_image))unlink(public_path().'/'.$user_image);
+        if ($user_image) {
+            if (File::exists(public_path() . '/' . $user_image)) unlink(public_path() . '/' . $user_image);
         }
-        ProductReport::where('user_id',$id)->delete();
-        ProductReview::where('user_id',$id)->delete();
-        ShippingAddress::where('user_id',$id)->delete();
-        BillingAddress::where('user_id',$id)->delete();
-        Wishlist::where('user_id',$id)->delete();
-        Message::where('customer_id',$id)->delete();
+        ProductReport::where('user_id', $id)->delete();
+        ProductReview::where('user_id', $id)->delete();
+        ShippingAddress::where('user_id', $id)->delete();
+        BillingAddress::where('user_id', $id)->delete();
+        Wishlist::where('user_id', $id)->delete();
+        Message::where('customer_id', $id)->delete();
 
-        $orders = Order::where('user_id',$user->id)->get();
+        $orders = Order::where('user_id', $user->id)->get();
 
-        foreach($orders as $order){
-            $orderProducts = OrderProduct::where('order_id',$order->id)->get();
-            $orderAddress = OrderAddress::where('order_id',$order->id)->first();
-            foreach($orderProducts as $orderProduct){
-                OrderProductVariant::where('order_product_id',$orderProduct->id)->delete();
+        foreach ($orders as $order) {
+            $orderProducts = OrderProduct::where('order_id', $order->id)->get();
+            $orderAddress = OrderAddress::where('order_id', $order->id)->first();
+            foreach ($orderProducts as $orderProduct) {
+                OrderProductVariant::where('order_product_id', $orderProduct->id)->delete();
                 $orderProduct->delete();
             }
-            OrderAddress::where('order_id',$order->id)->delete();
+            OrderAddress::where('order_id', $order->id)->delete();
             $order->delete();
         }
 
@@ -1038,7 +1104,7 @@ class UserProfileController extends Controller
         Auth::guard('web')->logout();
 
         $notification = trans('user_validation.Your account has been deleted successfully');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('home')->with($notification);
     }
 }
