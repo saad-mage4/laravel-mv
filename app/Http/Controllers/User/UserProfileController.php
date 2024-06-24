@@ -36,6 +36,7 @@ use Hash;
 use Slug;
 
 use App\Events\SellerToUser;
+use App\Models\PrivateSellerRegistration;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -50,6 +51,8 @@ class UserProfileController extends Controller
     {
         $this->middleware('auth:web');
     }
+
+    //! User DashBoard !
     public function dashboard(){
         $user = Auth::guard('web')->user();
         $orders = Order::where('user_id',$user->id)->get();
@@ -66,6 +69,10 @@ class UserProfileController extends Controller
     }
 
 
+    /**
+     * * Orders  Function's
+     * TODO: pending, complete , declined , orderShow
+     * */
     public function order(){
         $user = Auth::guard('web')->user();
         $orders = Order::orderBy('id','desc')->where('user_id', $user->id)->paginate(10);
@@ -374,22 +381,76 @@ class UserProfileController extends Controller
         return response()->json(['cities'=>$response]);
     }
 
-    public function sellerMembership(){
-        $setting = Setting::first();
+    /**
+     * * Stripe Subcribtion Logic
+     * TODO: subscribe
+     * ? subscribe : Check the subscribtion of the Stripe
+     */
+    public function subscribe(Request $request)
+    {
+        $response = $request->status;
+        $SellerType = $request->transaction_type;
+        // dd($response);
         $user = Auth::guard('web')->user();
-        $is_member = $user->is_member;
-        $user->save();
-        if($user->is_member == 1 && $user->is_paid == 0){
-            $notification = 'You have already Paid!';
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
-            return redirect('user/seller-registration')->with($notification);
+
+        // Set the Stripe API key
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        if ($response == 'success' && $SellerType == "Public") {
+            $user->is_paid = 1;
+            $user->seller_type = "Public";
+            // Add one month to the current date
+            $expiryDate = Carbon::now()->addMonth();
+            // Save the expiry date to the user's record
+            $user->subscription_expiry_date = $expiryDate;
+            $user->save();
+            $is_paid = $user->is_paid;
+            $user_seller_type = $user->seller_type;
+            // dd($user->is_paid);
+            if ($is_paid == 1 && $user_seller_type == "Public") {
+                $notification = 'Payment has been made Successfully!';
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
+                return redirect('user/seller-registration')->with($notification);
+            } else {
+                $notification = 'Unable to process ypur payment';
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
+                return redirect('seller/dashboard')->with($notification);
+            }
+        } elseif ($response == 'success' && $SellerType == "Private") {
+            $user->is_paid = 1;
+            $user->seller_type = "Private";
+            // Add one month to the current date
+            $expiryDate = Carbon::now()->addMonth();
+            // Save the expiry date to the user's record
+            $user->subscription_expiry_date = $expiryDate;
+            $user->save();
+            $is_paid = $user->is_paid;
+            $user_seller_type = $user->seller_type;
+            if ($is_paid == 1 && $user_seller_type == "Private") {
+                $notification = 'Payment has been made Successfully!';
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
+                return redirect('user/private-registration')->with($notification);
+            } else {
+                $notification = 'Unable to process ypur payment';
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
+                return redirect('seller/dashboard')->with($notification);
+            }
         } else {
-            return view('user.seller_membership', compact('setting', 'is_member'));
+            $notification = 'Payment Failed. Please try again!';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect()->back()->with($notification);
         }
     }
 
-    // Private Seller
-    public function privateMembership()
+    /**
+     * * Public Seller Logic
+     * TODO: Membership, Registration , sellerRequest
+     * ? sellerMembership : Check the if you are member or not (public)
+     *  ! sellerRegistration : Regester the public seller
+     *  * sellerRequest: Regester the public seller to add the data (premimum)
+     */
+
+    public function sellerMembership()
     {
         $setting = Setting::first();
         $user = Auth::guard('web')->user();
@@ -400,67 +461,21 @@ class UserProfileController extends Controller
             $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect('user/seller-registration')->with($notification);
         } else {
-            return view('user.private_seller', compact('setting', 'is_member'));
+            return view('user.seller_membership', compact('setting', 'is_member'));
         }
     }
 
-
-    public function subscribe(Request $request) {
-        $response = $request->status;
-        $SellerType = $request->transaction_type;
-        // dd($response);
-        $user = Auth::guard('web')->user();
-        $is_paid = $user->is_paid;
-        // Set the Stripe API key
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        if ($response == 'success' && $SellerType == "Public") {
-            $user->is_member = 1;
-            // Add one month to the current date
-            $expiryDate = Carbon::now()->addMonth();
-            // Save the expiry date to the user's record
-            $user->subscription_expiry_date = $expiryDate;
-            $user->save();
-            if($is_paid == 1) {
-                $notification = 'Payment has been made Successfully!';
-                $notification = array('messege'=>$notification,'alert-type'=>'success');
-                return redirect('seller/dashboard')->with($notification);
-            } else {
-                $notification = 'Payment has been made Successfully!';
-                $notification = array('messege'=>$notification,'alert-type'=>'success');
-                return redirect('user/seller-registration')->with($notification);
-            }
-        } elseif ($response == 'success' && $SellerType == "Private") {
-            $user->is_member = 1;
-            // Add one month to the current date
-            $expiryDate = Carbon::now()->addMonth();
-            // Save the expiry date to the user's record
-            $user->subscription_expiry_date = $expiryDate;
-            $user->save();
-            if ($is_paid == 1) {
-                $notification = 'Payment has been made Successfully!';
-                $notification = array('messege' => $notification, 'alert-type' => 'success');
-                return redirect('seller/dashboard')->with($notification);
-            } else {
-                $notification = 'Payment has been made Successfully!';
-                $notification = array('messege' => $notification, 'alert-type' => 'success');
-                return redirect('user/private-registration')->with($notification);
-            }
-        } else {
-            $notification = 'Payment Failed. Please try again!';
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
-            return redirect()->back()->with($notification);
-        }
-    }
-
-
-    // For Private Registration
-    public function privateSellerRegistration()
+    //**    Public Seller Registration  */
+    public function sellerRegistration()
     {
         $setting = Setting::first();
         $user = Auth::guard('web')->user();
-        if ($user->is_member == 1) {
-            return view('user.private_registration', compact('setting', 'user'));
+        $countries = Country::orderBy('name', 'asc')->where('status', 1)->get();
+        $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
+        $cities = City::orderBy('name', 'asc')->where(['status' => 1])->get();
+        $productCategories = Category::where(['status' => 1])->get();
+        if ($user->is_paid == 1) {
+            return view('user.seller_registration', compact('setting', 'states', 'cities', 'productCategories'));
         } else {
             $notification = 'You Must Pay First!';
             $notification = array('messege' => $notification, 'alert-type' => 'error');
@@ -468,22 +483,7 @@ class UserProfileController extends Controller
         }
     }
 
-    public function sellerRegistration(){
-        $setting = Setting::first();
-        $user = Auth::guard('web')->user();
-        $countries = Country::orderBy('name','asc')->where('status',1)->get();
-        $states = CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => $countries[0]['id']])->get();
-        $cities = City::orderBy('name','asc')->where(['status' => 1])->get();
-        $productCategories = Category::where(['status' => 1])->get();
-        if($user->is_member == 1) {
-            return view('user.seller_registration', compact('setting', 'states', 'cities','productCategories'));
-        } else {
-            $notification = 'You Must Pay First!';
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
-            return redirect('user/seller-membership')->with($notification);
-        }
-    }
-
+    //!! After Form fill of Public Seller
     public function sellerRequest(Request $request){
 
         $user = Auth::guard('web')->user();
@@ -531,7 +531,7 @@ class UserProfileController extends Controller
             'articlesOfIncorporation'=>'required|mimes:pdf,png,jpeg,jpg'
 //            'nic_front_image'=>'required',
 //            'nic_back_image'=>'required',
-//            'pdf'=>'required|mimes:pdf'
+//            'pdf'=>'required|m1imes:pdf'
         ];
 
         $customMessages = [
@@ -777,7 +777,7 @@ class UserProfileController extends Controller
         }
 
 
-        $user->is_paid = 1;
+        $user->is_member = 1;
         $user->save();
         $seller->save();
         $notification = trans('user_validation.Request sumited successfully');
@@ -786,7 +786,78 @@ class UserProfileController extends Controller
 
     }
 
+    /**
+     * * Private Seller Logic
+     * TODO: Membership, Registration , sellerRequest
+     * ? privateMembership : Check the if you are member or not
+     *  ! privateSellerRegistration : Regester the private seller
+     *  * privateSellerRequest: Regester the private seller to add the products
+     */
 
+    public function privateMembership()
+    {
+        $setting = Setting::first();
+        $user = Auth::guard('web')->user();
+        $is_member = $user->is_member;
+        $user->save();
+        if ($user->is_member == 1 && $user->is_paid == 0) {
+            $notification = 'You have already Paid!';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect('user/seller-registration')->with($notification);
+        } else {
+            return view('user.private_seller', compact('setting', 'is_member'));
+        }
+    }
+
+    public function privateSellerRegistration()
+    {
+        $setting = Setting::first();
+        $user = Auth::guard('web')->user();
+        $is_paid = $user->is_paid;
+        $user_seller_type = $user->seller_type;
+        if ($is_paid == 1 &&  $user_seller_type == "Private") {
+            return view('user.private_registration', compact('setting', 'user'));
+        } else {
+            $notification = 'You Must Pay First!';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect('user/seller-membership')->with($notification);
+        }
+    }
+
+    public function privateSellerRequest(Request $request)
+    {
+        dd($request->values);
+        // Extract the values from the request
+        $data = $request->values;
+
+        // Validate the request data
+        $validated = $request->validate([
+            'email' => 'required|email|unique:private_seller_registration,email',
+            'firstName' => 'nullable|string|max:255',
+            'lastName' => 'nullable|string|max:255',
+            'phone' => 'nullable|integer',
+        ]);
+
+        // Save the validated data into the database
+        $privateSeller = PrivateSellerRegistration::create([
+            'email' => $validated['email'],
+            'first_name' => $validated['firstName'],
+            'last_name' => $validated['lastName'],
+            'phone_no' => $validated['phone'],
+        ]);
+
+        return response()->json([
+            'message' => 'Registration successful',
+            'data' => $privateSeller
+        ], 201);
+    }
+
+    /**
+     * * Wish List Logic
+     * TODO: addToWishlist, removeWishlist
+     * ? addToWishlist : Add the WishLists
+     *  ! removeWishlist : Remove the WishLists
+     */
 
     public function addToWishlist($id){
         $user = Auth::guard('web')->user();
@@ -813,6 +884,13 @@ class UserProfileController extends Controller
         return redirect()->back()->with($notification);
     }
 
+    /**
+     * * Product Report & Review Logic
+     * TODO: storeProductReport,  storeProductReview , updateReview
+     * ? storeProductReport : Store the Products report
+     *  ! storeProductReview : Products Review
+     *  * updateReview: Update the Product Review
+     */
     public function storeProductReport(Request $request){
         if($request->subject == null){
             $message = trans('user_validation.Subject filed is required');
@@ -906,6 +984,11 @@ class UserProfileController extends Controller
     }
 
 
+    /**
+     *  * Delete the Account
+     *  TODO: delete_account
+     * ! delete_account : Delete the Account
+     * */
     public function delete_account(){
 
         if(env('APP_VERSION') == 0){
