@@ -903,9 +903,14 @@ class UserProfileController extends Controller
             $seller->user_id = $user->id;
             // $seller->status = 1;
             $seller->email = $data['email'];
+            $seller->slug  = $data['firstName'];
             $seller->phone = $data['phone'];
             $seller->firstName = $data['firstName'];
             $seller->lastName = $data['lastName'];
+            $seller->certificateRegistration = "";
+            $seller->idCardSignatory = "";
+            $seller->bankStatement = "";
+            $seller->articlesOfIncorporation = "";
             $seller->save();
         }
 

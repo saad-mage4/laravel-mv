@@ -289,7 +289,7 @@
         let currentURL = window.location.href
         let index = currentURL.indexOf("?");
         currentURL = currentURL.substr(index+1)
-        let url = "{{ url('search-product') }}" + "?" + currentURL;
+        let url = "{{ url('search-used-product') }}" + "?" + currentURL;
         console.log(url);
         $.ajax({
             type: 'get',

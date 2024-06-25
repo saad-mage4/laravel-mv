@@ -49,6 +49,7 @@ use Session;
 use Cart;
 use Carbon\Carbon;
 use Route;
+use Auth;
 class HomeController extends Controller
 {
     public function index()
@@ -440,9 +441,9 @@ class HomeController extends Controller
                     }
                     $query->whereIn('name', $sortArr);
                 }
-            })->where('status',1);
+            })->where('status', 1)->where('seller_type', 'Public');
         }else{
-            $products = Product::where('status',1);
+            $products = Product::where('status', 1)->where('seller_type', 'Public');
         }
 
 
@@ -524,9 +525,111 @@ class HomeController extends Controller
 
     }
 
+    // Private Products Search
+    public function searchUsedProduct(Request $request)
+    {
+        $paginateQty = CustomPagination::whereId('2')->first()->qty;
+        if ($request->variantItems) {
+            $products = Product::whereHas('variantItems', function ($query) use ($request) {
+                $sortArr = [];
+                if ($request->variantItems) {
+                    foreach ($request->variantItems as $variantItem) {
+                        $sortArr[] = $variantItem;
+                    }
+                    $query->whereIn('name', $sortArr);
+                }
+            })->where('status', 1)->where('seller_type', 'Private');
+        } else {
+            $products = Product::where('status', 1)->where('seller_type', 'Private');
+        }
+
+
+
+
+        if ($request->shorting_id) {
+            if (
+                $request->shorting_id == 1
+            ) {
+                $products = $products->orderBy('id', 'desc');
+            } else if ($request->shorting_id == 2) {
+                $products = $products->orderBy('price', 'asc');
+            } else if ($request->shorting_id == 3) {
+                $products = $products->orderBy('price', 'desc');
+            }
+        } else {
+            $products = $products->orderBy('id', 'desc');
+        }
+
+
+        if ($request->category) {
+            $category = Category::where('slug', $request->category)->first();
+            $products = $products->where('category_id', $category->id);
+        }
+
+
+        if ($request->sub_category) {
+            $sub_category = SubCategory::where('slug', $request->sub_category)->first();
+            $products = $products->where('sub_category_id', $sub_category->id);
+        }
+
+        if ($request->child_category) {
+            $child_category = ChildCategory::where('slug', $request->child_category)->first();
+            $products = $products->where('child_category_id', $child_category->id);
+        }
+
+        if ($request->brand) {
+            $brand = Brand::where('slug', $request->brand)->first();
+            $products = $products->where('brand_id', $brand->id);
+        }
+
+        $brandSortArr = [];
+        if ($request->brands) {
+            foreach ($request->brands as $brand) {
+                $brandSortArr[] = $brand;
+            }
+            $products = $products->whereIn('brand_id', $brandSortArr);
+        }
+
+        if ($request->price_range) {
+            $price_range = explode(';', $request->price_range);
+            $start_price = $price_range[0];
+            $end_price = $price_range[1];
+            $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
+        }
+
+        if ($request->shop_name) {
+            $slug = $request->shop_name;
+            $seller = Vendor::where(['slug' => $slug])->first();
+            $products = $products->where('vendor_id', $seller->id);
+        }
+
+        if ($request->search) {
+            $products = $products->where('name', 'LIKE', '%' . $request->search . "%")
+                ->orWhere('long_description', 'LIKE', '%' . $request->search . '%');
+        }
+
+        $products = $products->paginate($paginateQty);
+        $products = $products->appends($request->all());
+
+        $page_view = '';
+        if ($request->page_view) {
+            $page_view = $request->page_view;
+        } else {
+            $page_view = 'grid_view';
+        }
+        $user = Auth::guard('web')->user();
+        $Vendor = Vendor::where('user_id', $user->id)->first();
+        $currencySetting = Setting::first();
+        $setting = $currencySetting;
+        return view(
+            'ajax_used_products',
+            compact('products', 'page_view', 'currencySetting', 'setting', 'Vendor')
+        );
+    }
+
     public function productDetail($slug){
         $product = Product::where(['status' => 1, 'slug' => $slug])->first();
-        
+
         if(!$product){
             $notification = trans('user_validation.Something went wrong');
             $notification = array('messege'=>$notification,'alert-type'=>'error');
@@ -550,6 +653,37 @@ class HomeController extends Controller
             }
         }
         return view('product_detail', compact('product','productReviews','totalProductReviewQty','productVariants','recaptchaSetting','relatedProducts','currencySetting','banner','setting','defaultProfile','tags'));
+    }
+
+    public function productUsedDetail($slug)
+    {
+        $product = Product::where(['status' => 1, 'slug' => $slug])->first();
+        $user = Auth::guard('web')->user();
+        $Vendor = Vendor::where('user_id', $user->id)->first();
+
+        if (!$product) {
+            $notification = trans('user_validation.Something went wrong');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect()->back()->with($notification);
+        }
+        $paginateQty = CustomPagination::whereId('5')->first()->qty;
+        $productReviews = ProductReview::where(['status' => 1, 'product_id' => $product->id])->paginate($paginateQty);
+        $totalProductReviewQty = ProductReview::where(['status' => 1, 'product_id' => $product->id])->count();
+        $recaptchaSetting = GoogleRecaptcha::first();
+        $productVariants = ProductVariant::where(['status' => 1, 'product_id' => $product->id])->get();
+        $relatedProducts = Product::where(['category_id' => $product->category_id, 'status' => 1])->where('id', '!=', $product->id)->get()->take(10);
+        $currencySetting = Setting::first();
+        $banner = BannerImage::whereId('14')->first();
+        $setting = Setting::first();
+        $defaultProfile = BannerImage::whereId('15')->first();
+        $tagArray = json_decode($product->tags);
+        $tags = '';
+        if ($product->tags) {
+            foreach ($tagArray as $index => $tag) {
+                $tags .= $tag->value . ',';
+            }
+        }
+        return view('product_used_detail', compact('product', 'Vendor', 'productReviews', 'totalProductReviewQty', 'productVariants', 'recaptchaSetting', 'relatedProducts', 'currencySetting', 'banner', 'setting', 'defaultProfile', 'tags'));
     }
 
     public function addToCompare($id){
