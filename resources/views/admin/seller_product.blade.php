@@ -69,7 +69,7 @@
 
                                             @endif
                                         </td>
-                                        <td>{{$product->seller_type }}</td>
+                                        <td>{{ $product->seller_type }}</td>
                                         <td>
                                         <a href="{{ route('admin.product.edit',$product->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></a>
 
