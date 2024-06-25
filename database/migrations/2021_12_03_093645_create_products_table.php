@@ -15,10 +15,13 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->integer('vendor_id');
+            $table->text('tags')->nullable();
             $table->string('name');
             $table->string('short_name');
             $table->string('slug');
             $table->string('thumb_image');
+            $table->string('banner_image')->nullable();
             $table->integer('user_id')->default(0);
             $table->integer('category_id');
             $table->integer('sub_category_id');
@@ -48,6 +51,9 @@ class CreateProductsTable extends Migration
             $table->tinyInteger('is_flash_deal')->default(0);
             $table->tinyInteger('buyone_getone')->default(0);
             $table->tinyInteger('status')->default(0);
+            $table->string('seller_type');
+            $table->integer('is_highlight_1')->nullable();
+            $table->date('highlight_expiry_date')->nullable();
             $table->timestamps();
         });
     }

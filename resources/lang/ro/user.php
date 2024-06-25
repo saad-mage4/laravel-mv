@@ -381,6 +381,7 @@ return array (
     'SHOPPING CART' => 'COȘ DE CUMPĂRĂTURI',
     'Browse Categories' => 'Răsfoiește Categoriile',
     'Shop' => 'Cumpără',
+    'UsedProducts' => 'Produse folosite',
     'Shop Now' => 'Cumpără Acum',
     'Sellers' => 'Vânzători',
     'Pages' => 'Pagini',

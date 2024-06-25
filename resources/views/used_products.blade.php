@@ -37,7 +37,7 @@
         PRODUCT PAGE START
     ==============================-->
     <section id="wsus__product_page">
-        <h1>tahaha131313</h1>
+        <h1>saad</h1>
         <div class="container">
             <div class="row">
                 @if ($shop_page->status == 1)
@@ -290,6 +290,7 @@
         let index = currentURL.indexOf("?");
         currentURL = currentURL.substr(index+1)
         let url = "{{ url('search-product') }}" + "?" + currentURL;
+        console.log(url);
         $.ajax({
             type: 'get',
             url: url,

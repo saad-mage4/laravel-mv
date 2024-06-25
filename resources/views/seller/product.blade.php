@@ -1,3 +1,7 @@
+@php
+    $setting = App\Models\Setting::first();
+    $authUser = Auth::guard('web')->user();
+@endphp
 @extends('seller.master_layout')
 @section('title')
 <title>{{__('user.Products')}}</title>
@@ -31,6 +35,7 @@
                                     <th width="15%">{{__('user.Type')}}</th>
                                     <th width="10%">{{__('user.Status')}}</th>
                                     <th width="15%">{{__('user.Action')}}</th>
+                                    {{-- <th width="15%">Seller Type</th> --}}
                                   </tr>
                             </thead>
                             <tbody>
@@ -86,7 +91,10 @@
                                               <a class="dropdown-item has-icon" href="{{ route('seller.product-variant',$product->id) }}"><i class="fas fa-cog"></i> {{__('user.Product Variant')}}</a>
                                             </div>
                                           </div>
-
+                                         {{-- Seller Type  --}}
+                                        {{-- <td>
+                                        {{ $authUser->seller_type }}
+                                        </td> --}}
                                         </td>
                                     </tr>
                                   @endforeach
@@ -99,6 +107,7 @@
           </div>
         </section>
       </div>
+
 
       <!-- Modal -->
       <div class="modal fade" id="canNotDeleteModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">

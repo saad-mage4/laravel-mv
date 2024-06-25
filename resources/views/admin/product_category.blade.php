@@ -39,7 +39,8 @@
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->slug }}</td>
                                         <td> <i class="{{ $category->icon }}"></i></td>
-                                        <td>
+                                        @if ($category->slug !== 'used-products')
+                                    <td>
                                             @if($category->status == 1)
                                             <a href="javascript:;" onclick="changeProductCategoryStatus({{ $category->id }})">
                                                 <input id="status_toggle" type="checkbox" checked data-toggle="toggle" data-on="{{__('admin.Active')}}" data-off="{{__('admin.Inactive')}}" data-onstyle="success" data-offstyle="danger">
@@ -52,7 +53,7 @@
 
                                             @endif
                                         </td>
-                                        <td>
+                                    <td>
                                         <a href="{{ route('admin.product-category.edit',$category->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></a>
                                         @php
                                             $isPopular = false;
@@ -81,6 +82,8 @@
                                             <a href="javascript:;" data-toggle="modal" data-target="#canNotDeleteModal" class="btn btn-danger btn-sm" disabled><i class="fa fa-trash" aria-hidden="true"></i></a>
                                         @endif
                                     </td>
+                                @endif
+
 
                                     </tr>
                                   @endforeach

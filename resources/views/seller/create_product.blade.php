@@ -1,3 +1,7 @@
+@php
+    $setting = App\Models\Setting::first();
+    $authUser = Auth::guard('web')->user();
+@endphp
 @extends('seller.master_layout')
 @section('title')
 <title>{{__('user.Products')}}</title>
@@ -56,12 +60,24 @@
                                     <input type="text" id="slug" class="form-control"  name="slug" value="{{ old('slug') }}">
                                 </div>
 
+                                @if ($authUser->seller_type == "Private")
+                            @foreach ($categories as $item)
+                    @if (isset($item->slug) && $item->slug === 'used-products')
+                            <div class="form-group col-12">
+                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
+                                    <input name="category"  class="form-control"  readonly type="text" value="{{ $item['name']}}" />
+                                </div>
+                    @endif
+                @endforeach
+                                @else
                                 <div class="form-group col-12">
                                     <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
                                     <select name="category" class="form-control select2" id="category">
                                         <option value="">{{__('user.Select Category')}}</option>
                                         @foreach ($categories as $category)
+                                            @if ($category->slug !== 'used-products')
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -79,6 +95,8 @@
                                         <option value="">{{__('user.Select Child Category')}}</option>
                                     </select>
                                 </div>
+
+                                @endif
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Brand')}} <span class="text-danger">*</span></label>

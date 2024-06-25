@@ -26,11 +26,12 @@
                                 <tr>
                                     <th width="5%">{{__('admin.SN')}}</th>
                                     <th width="15%">{{__('admin.Seller')}}</th>
-                                    <th width="30%">{{__('admin.Product')}}</th>
+                                    <th width="25%">{{__('admin.Product')}}</th>
                                     <th width="10%">{{__('admin.Price')}}</th>
-                                    <th width="15%">{{__('admin.Type')}}</th>
+                                    <th width="10%">{{__('admin.Type')}}</th>
                                     <th width="10%">{{__('admin.Status')}}</th>
-                                    <th width="15%">{{__('admin.Action')}}</th>
+                                    <th width="10%"> Sellet Type</th>
+                                    <th width="20%">{{__('admin.Action')}}</th>
                                   </tr>
                             </thead>
                             <tbody>
@@ -68,6 +69,7 @@
 
                                             @endif
                                         </td>
+                                        <td>{{$product->seller_type }}</td>
                                         <td>
                                         <a href="{{ route('admin.product.edit',$product->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></a>
 

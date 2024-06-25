@@ -171,7 +171,7 @@ class HomeController extends Controller
         $seoSetting = SeoSetting::find(3);
         return view('contact_us', compact('contact','recaptchaSetting','seoSetting'));
     }
-    
+
     public function sendContactMessage(Request $request){
         $rules = [
             'name'=>'required',
@@ -364,6 +364,7 @@ class HomeController extends Controller
     }
 
     public function product(Request $request){
+        // dd($request);
         $variantsForSearch = ProductVariant::select('name','id')->groupBy('name')->get();
         $shop_page = ShopPage::first();
         $banner = BreadcrumbImage::where(['id' => 9])->first();
@@ -392,6 +393,41 @@ class HomeController extends Controller
         $setting = $currencySetting;
         return view('product', compact('banner','products','productCategories','brands','shop_page','variantsForSearch','seoSetting','currencySetting','setting'));
     }
+
+    // used Product (Private Seller )
+    public function Used_Products(Request $request)
+    {
+        // dd($request);
+        $variantsForSearch = ProductVariant::select('name', 'id')->groupBy('name')->get();
+        $shop_page = ShopPage::first();
+        $banner = BreadcrumbImage::where(['id' => 9])->first();
+        $productCategories = Category::where(['status' => 1])->get();
+        $brands = Brand::where(['status' => 1])->get();
+        $paginateQty = CustomPagination::whereId('2')->first()->qty;
+        $products = Product::orderBy('id', 'desc')->where(['status' => 1]);
+        // dd($request->category_id);
+        if ($request->category_id) {
+            $products = $products->where('category_id', $request->category_id);
+        }
+        // if ($request->sub_category_id) {
+        //     $products = $products->where('sub_category_id', $request->sub_category_id);
+        // }
+
+        // if ($request->child_category_id) {
+        //     $products = $products->where('child_category_id', $request->child_category_id);
+        // }
+
+        if ($request->brand_id) {
+            $products = $products->where('brand_id', $request->brand_id);
+        }
+
+        $products = $products->paginate($paginateQty);
+        $seoSetting = SeoSetting::find(9);
+        $currencySetting = Setting::first();
+        $setting = $currencySetting;
+        return view('used_products', compact('banner', 'products', 'productCategories', 'brands', 'shop_page', 'variantsForSearch', 'seoSetting', 'currencySetting', 'setting'));
+    }
+
 
     public function searchProduct(Request $request){
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
@@ -427,8 +463,10 @@ class HomeController extends Controller
 
         if($request->category) {
             $category = Category::where('slug',$request->category)->first();
-            $products = $products->where('category_id', $category->id);
+            $products = $products->where('category_id', 25);
+            dd($products);
         }
+
 
         if($request->sub_category) {
             $sub_category = SubCategory::where('slug',$request->sub_category)->first();
@@ -608,25 +646,5 @@ class HomeController extends Controller
             $notification = array('messege'=>$notification,'alert-type'=>'error');
             return redirect()->route('home')->with($notification);
         }
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

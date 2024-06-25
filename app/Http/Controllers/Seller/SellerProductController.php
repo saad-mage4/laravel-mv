@@ -103,7 +103,7 @@ class SellerProductController extends Controller
 
     public function store(Request $request)
     {
-
+        $user = Auth::guard('web')->user();
         if ($request->video_link) {
             $valid = preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $request->video_link);
 
@@ -175,6 +175,7 @@ class SellerProductController extends Controller
             $product->banner_image = $banner_name;
         }
 
+
         $product->vendor_id = $seller->id;
         $product->short_name = $request->short_name;
         $product->name = $request->name;
@@ -199,6 +200,10 @@ class SellerProductController extends Controller
         $product->is_specification = $request->is_specification ? 1 : 0;
         $product->seo_title = $request->seo_title ? $request->seo_title : $request->name;
         $product->seo_description = $request->seo_description ? $request->seo_description : $request->name;
+        $product->seller_type = $user->seller_type;
+        if ($user->seller_type == "Private") {
+            $product->status = 1;
+        }
         $product->save();
 
         if ($request->is_specification) {
@@ -578,6 +583,4 @@ class SellerProductController extends Controller
         $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('seller.product.index')->with($notification);
     }
-
-
 }
