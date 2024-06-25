@@ -463,8 +463,7 @@ class HomeController extends Controller
 
         if($request->category) {
             $category = Category::where('slug',$request->category)->first();
-            $products = $products->where('category_id', 25);
-            dd($products);
+            $products = $products->where('category_id', $category->id);
         }
 
 
@@ -527,6 +526,7 @@ class HomeController extends Controller
 
     public function productDetail($slug){
         $product = Product::where(['status' => 1, 'slug' => $slug])->first();
+        
         if(!$product){
             $notification = trans('user_validation.Something went wrong');
             $notification = array('messege'=>$notification,'alert-type'=>'error');

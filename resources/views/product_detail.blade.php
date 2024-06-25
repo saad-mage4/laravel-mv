@@ -533,6 +533,7 @@
                                                 <p><span>{{__('user.Phone')}}:</span> {{ $user->phone }}</p>
                                                 <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <a href="{{ route('seller-detail',['shop_name' => $user->seller->slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
+                                                
                                                 <a href="{{ route('user.chat-with-seller', $user->seller->slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
                                             </div>
                                         </div>
