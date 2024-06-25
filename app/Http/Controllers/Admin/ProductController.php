@@ -465,8 +465,4 @@ class ProductController extends Controller
         $notification=array('messege'=>$notification,'alert-type'=>'success');
         return redirect()->route('admin.product.index')->with($notification);
     }
-
-
-
-
 }

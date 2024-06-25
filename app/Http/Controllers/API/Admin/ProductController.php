@@ -54,6 +54,7 @@ class ProductController extends Controller
         $orderProducts = OrderProduct::all();
         $setting = Setting::first();
 
+
         return response()->json(['setting' => $setting , 'orderProducts' => $orderProducts, 'products' => $products], 200);
 
     }
@@ -470,8 +471,4 @@ class ProductController extends Controller
         $notification = trans('admin_validation.Update Successfully');
         return response()->json(['message' => $notification],200);
     }
-
-
-
-
 }

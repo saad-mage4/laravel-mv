@@ -383,6 +383,7 @@
   'SHOPPING CART' => 'SHOPPING CART',
   'Browse Categories' => 'Browse Categories',
   'Shop' => 'Shop',
+    'UsedProducts' => 'Used Product',
   'Shop Now' => 'Shop Now',
   'Sellers' => 'Sellers',
   'Pages' => 'Pages',

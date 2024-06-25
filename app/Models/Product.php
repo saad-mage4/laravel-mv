@@ -109,8 +109,4 @@ class Product extends Model
         'status' => 'integer',
         'is_specification' => 'integer',
     ];
-
-
-
-
 }

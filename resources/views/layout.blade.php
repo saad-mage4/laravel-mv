@@ -383,6 +383,7 @@
                             @endif
                         </li>
                         @endif
+                        <li><a href="{{ route('used_products') }}?category=used-products">{{__('user.UsedProducts')}}
                         @if ($menus->where('id',4)->first()->status == 1)
                             @if ($setting->enable_multivendor == 1)
                                 <li><a href="{{ route('sellers') }}">{{__('user.Sellers')}}</a></li>

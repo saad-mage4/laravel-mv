@@ -171,6 +171,7 @@
         </section>
     </div>
 
+
     <script src="https://js.stripe.com/v3/"></script>
     <script>
         $(document).ready(function(){
@@ -180,7 +181,7 @@
             });
         });
 
-        var stripe = Stripe('pk_test_51OJfb1A7He8cL1jepIHz4KyBS3mWU2807SOLepFT5YwTXkCs2T5wOABneh4dzGih7k1lzxv4U1ICQuZfHMBKxtWj002WMt9Wjq');
+        var stripe = Stripe('sk_test_51MznwlDXpr0Gb5SYft0B7AkHv5lK6Fk1hQT86iQbT3h5LG83K2KLhMT38zaivFB35Tesf4Rd2G0iVK7NjrQDEIB000nQIvKgS5');
         var elements = stripe.elements();
 
         // Create an instance of the card Element
