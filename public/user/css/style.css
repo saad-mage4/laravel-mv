@@ -11,6 +11,28 @@ body {
     top: 0 !important;
 }
 
+/* Private_Seller  */
+.detaile_private_seller {
+    border: .1rem solid rgba(0, 47, 52, .36);
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.detaile_private_seller:hover {
+    background-color: #ff5200 !important;
+    cursor: pointer;
+    border: none;
+}
+
+.detaile_private_seller span {
+    color: #002f34 !important;
+}
+
+.detaile_private_seller a:hover {
+    color: inherit !important;
+}
 .skiptranslate.goog-te-gadget {
     font-size: 0;
 }
@@ -10288,3 +10310,4 @@ label.label-period::before {
         margin-top: 40px;
     }
 }
+

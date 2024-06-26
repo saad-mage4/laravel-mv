@@ -75,30 +75,27 @@
                     </div>
                 </div>
                 {{-- seller information  --}}
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-4" >
                       @if ($product->vendor_id != 0)
                             @php
-                            // dd($seller);
                                 $user = $product;
-                                 
-                                // dd($user->seller);
                                 // $user = $user->user;
                             @endphp
-                  <div class="wsus__pro_det_vendor">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-xxl-5 col-md-4">
+                  <div class="wsus__pro_det_vendor p-4 rounded-3" style="border: 2px solid #d8dfe0">
+                                    {{-- <div class="row"> --}}
+                                        <div class="col-xl-4 col-xxl-5 col-md4">
                                             <div class="wsus__vebdor_img h-auto rounded-circle fa-w-20">
                                                 @if ($user->Vendor_banner)
-                                                <img src="{{ asset($user->Vendor_banner) }}" alt="vendor-db" class="img-fluid w-100">
+                                                <img src="{{ asset($user->Vendor_banner) }}" alt="vendor-db" class="img-fluid w-100" style="width: 20px">
                                                 @else
-                                                <img src="{{ asset($defaultProfile->image) }}" alt="vendor-default" class="img-fluid w-100">
+                                                <img src="{{ asset($defaultProfile->image) }}" alt="vendor-default" class="img-fluid w-100" style="width: 20px">
                                                 @endif
 
                                             </div>
                                         </div>
-                                       <div class="col-xl-12 col-xxl-12 col-md-12 mt-4 mt-md-0">
+                                       <div class="col-xl-12 col-xxl-12 col-md-12 mt-5 mt-md-0">
                                             <div class="wsus__pro_det_vendor_text">
-                                                <h4>{{ $user->firstName }} {{ $user->lastName }}</h4>
+                                                <h4 class="mt-3">{{ $user->firstName }} {{ $user->lastName }}</h4>
                                                 @php
                                                     $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->count();
                                                     $totalReview = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->sum('rating');
@@ -144,7 +141,7 @@
                                                         <i class="fal fa-star"></i>
                                                         <span>(0 {{ __('user.review') }})</span>
                                                     </p>
-                                                @endif 
+                                                @endif
 
                                                 <p><span>{{__('user.Store Name')}}:</span> {{ $user->shop_name }}</p>
                                                 <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
@@ -161,9 +158,9 @@
                                             <div class="wsus__vendor_details">
                                                 {!! clean($user->vendorDescription) !!}
                                             </div>
-                                        </div> 
+                                        </div>
                                     </div>
-                                </div>
+                                {{-- </div> --}}
                 @endif
                 {{-- Return Data  --}}
                  {{-- <div class="col-xl-3 col-md-12 mt-md-5 mt-lg-0"> --}}
@@ -223,10 +220,10 @@
                 {{-- </div> --}}
                 </div>
                 {{-- col-xl-5 col-md-7 col-lg-7 --}}
-                <div class="col-12">
-                    <div class="wsus__pro_details_text">
+                <div class="col-12 mt-5">
+                    <div class="wsus__pro_details_text p-3 rounded-3 " style="border: 2px solid #d8dfe0; ">
                         <a class="title" href="javascript:;">{{ $product->name }}</a>
-                        <h1>cddd</h1>
+                        <h4>$ <span id="mainProductPrice">{{$product->price}}</span>  <del>${{$product->offer_price}}</del></h4>
                             {{-- <input type="hidden" id="stock_qty" value="{{ $product->qty }}">
                             @if ($product->qty == 0)
                             <p class="wsus__stock_area"><span class="in_stock">{{__('user.Out of Stock')}}</span></p>
@@ -415,11 +412,12 @@
 
                     </form>
                         @if ($product->sku)
-                        <p class="brand_model"><span>{{__('user.Model')}} :</span> {{ $product->sku }}</p>
+                        <p class="brand_model detaile_private_seller"><span>{{__('user.Model')}} :</span> {{ $product->sku }}</p>
                         @endif
 
-                        <p class="brand_model"><span>{{__('user.Brand')}} :</span> <a href="{{ route('product',['brand' => $product->brandSlug]) }}">{{ $product->brandName }}</a></p>
-                        <p class="brand_model"><span>{{__('user.Category')}} :</span> <a href="{{ route('product',['category' => $product->categorySlug]) }}">{{ $product->CategoryName }}</a></p>
+                        <p class="brand_model detaile_private_seller" ><span>{{__('user.Brand')}} :</span>
+                            <a href="{{ route('product',['brand' => $product->brandSlug]) }}">{{ $product->brandName }}</a></p>
+                        <p class="brand_model detaile_private_seller"><span>{{__('user.Category')}} :</span> <a href="{{ route('product',['category' => $product->categorySlug]) }}">{{ $product->CategoryName }}</a></p>
                         <div class="wsus__pro_det_share d-none">
                             <h5>{{__('user.share')}} :</h5>
                             <ul class="d-flex">
@@ -556,7 +554,7 @@
                 <div class="col-xl-12">
                     <div class="wsus__pro_det_description">
                         <ul class="nav nav-pills mb-3" id="pills-tab3" role="tablist">
-                            <li class="nav-item w-50" role="presentation">
+                            <li class="nav-item <?= $product->is_specification == 1 ? 'w-50' : 'w-100' ?>" role="presentation">
                                 <button class="nav-link active" id="pills-home-tab7" data-bs-toggle="pill"
                                     data-bs-target="#pills-home22" type="button" role="tab" aria-controls="pills-home"
                                     aria-selected="true">{{__('user.Description')}}</button>
@@ -789,7 +787,7 @@
         <!--============================
         RELATED productSTART
     ==============================-->
- 
+
     <!--============================
         RELATED productEND
     ==============================-->
