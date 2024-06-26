@@ -174,14 +174,12 @@ class SellerProductController extends Controller
                 ->save(public_path() . '/' . $banner_name);
             $product->banner_image = $banner_name;
         }
-
         $productCategories = Category::where(['name' => $request->category])->get();
-        $ForPrivate_categoryID = $productCategories[0]->id;
         $product->vendor_id = $seller->id;
         $product->short_name = $request->short_name;
         $product->name = $request->name;
         $product->slug = $request->slug;
-        $product->category_id = $user->seller_type == "Private" ? $ForPrivate_categoryID : $request->category;
+        $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
         $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
         $product->child_category_id = $request->child_category ? $request->child_category : 0;
         $product->brand_id = $request->brand;
