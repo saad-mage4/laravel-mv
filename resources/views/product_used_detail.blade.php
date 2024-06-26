@@ -1,10 +1,10 @@
 @extends('layout')
-@section('title')
+<!-- @section('title')
     <title>{{ $product->seo_title }}</title>
 @endsection
 @section('meta')
     <meta name="description" content="{{ $product->seo_description }} {{ $tags }}">
-@endsection
+@endsection -->
 
 @section('public-content')
 
@@ -31,13 +31,13 @@
         BREADCRUMB END
     ==============================-->
 <!--============================
-        PRODUCT DETAILS START
+        productDETAILS START
     ==============================-->
     <section id="wsus__product_details">
         <div class="container">
             <div class="row">
                 {{-- col-xl-4 col-md-5 col-lg-5 --}}
-                {{-- View Product  --}}
+                {{-- View product --}}
                 <div class="col-12 col-md-8">
                     <div id="sticky_pro_zoom">
                         <div class="exzoom hidden" id="exzoom">
@@ -443,7 +443,7 @@
                                 $isExist = false;
                                 $orders = App\Models\Order::where(['user_id' => $user->id])->get();
                                 foreach ($orders as $key => $order) {
-                                    foreach ($order->orderProducts as $key => $orderProduct) {
+                                    foreach ($order->orderproduct as $key => $orderProduct) {
                                         if($orderProduct->product_id == $product->id){
                                             $isExist = true;
                                         }
@@ -452,7 +452,7 @@
                             @endphp
                         @if ($isExist)
                             <a class="wsus__pro_report" href="#" data-bs-toggle="modal" data-bs-target="#productReportModal"><i
-                            class="fal fa-comment-alt-smile"></i> {{__('user.Report incorrect product information')}}</a>
+                            class="fal fa-comment-alt-smile"></i> {{__('user.Report incorrect productinformation')}}</a>
                         @endif
 
                         @endauth
@@ -460,7 +460,7 @@
                     </div>
 
                     <!--==========================
-                    PRODUCT  REPORT MODAL VIEW
+                    product REPORT MODAL VIEW
                     ===========================-->
                     @auth
                         @if ($isExist)
@@ -502,7 +502,7 @@
                         @endif
                     @endauth
                     <!--==========================
-                    PRODUCT REPORT MODAL VIEW
+                    productREPORT MODAL VIEW
                     ===========================-->
                 </div>
 
@@ -582,7 +582,7 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
                                     data-bs-target="#pills-contact" type="button" role="tab"
-                                    aria-controls="pills-contact" aria-selected="false">{{__('user.Seller Information')}} Taha</button>
+                                    aria-controls="pills-contact" aria-selected="false">{{__('user.Seller Information')}}</button>
                             </li>
                             @endif
                             @endif --}}
@@ -791,26 +791,26 @@
         </div>
     </section>
     <!--============================
-        PRODUCT DETAILS END
+        productDETAILS END
     ==============================-->
 
 
         <!--============================
-        RELATED PRODUCT START
+        RELATED productSTART
     ==============================-->
-    @if ($relatedProducts->count() > 0)
+    @if ($relatedproduct->count() > 0)
     <section id="wsus__flash_sell">
         <div class="container">
             <div class="row">
                 <div class="col-xl-12">
                     <div class="wsus__section_header">
-                        <h3>{{__('user.Related Products')}}</h3>
+                        <h3>{{__('user.Related product')}}</h3>
                         <a class="see_btn" href="{{ route('product',['category' => $product->category->slug]) }}">{{__('user.see more')}} <i class="fas fa-caret-right"></i></a>
                     </div>
                 </div>
             </div>
             <div class="row flash_sell_slider ">
-                @foreach ($relatedProducts as $relatedProduct)
+                @foreach ($relatedproduct as $relatedProduct)
                     @php
                         $reviewQty = $relatedProduct->reviews->where('status',1)->count();
                         $totalReview = $relatedProduct->reviews->where('status',1)->sum('rating');
@@ -873,7 +873,7 @@
                     @endphp
                     <div class="col-xl-3">
                         <div class="wsus__product_item wsus__after">
-                            @if ($relatedProduct->new_product == 1)
+                            @if ($relatedProduct->new_product== 1)
                                 <span class="wsus__new">{{__('user.New')}}</span>
                             @elseif ($relatedProduct->is_featured == 1)
                                 <span class="wsus__new">{{__('user.Featured')}}</span>
@@ -952,7 +952,7 @@
                 @endforeach
             </div>
 
-            @foreach ($relatedProducts as $relatedProduct)
+            @foreach ($relatedproduct as $relatedProduct)
                 <section class="product_popup_modal">
                     <div class="modal fade" id="productModalView-{{ $relatedProduct->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog">
@@ -1190,7 +1190,7 @@
     </section>
     @endif
     <!--============================
-        RELATED PRODUCT END
+        RELATED productEND
     ==============================-->
 
 

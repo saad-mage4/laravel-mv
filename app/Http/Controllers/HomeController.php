@@ -43,6 +43,7 @@ use App\Models\Order;
 use App\Models\ShopPage;
 use App\Models\SeoSetting;
 use App\Rules\Captcha;
+use Illuminate\Support\Facades\DB;
 use Mail;
 use Str;
 use Session;
@@ -617,13 +618,20 @@ class HomeController extends Controller
         } else {
             $page_view = 'grid_view';
         }
-        $user = Auth::guard('web')->user();
-        $Vendor = Vendor::where('user_id', $user->id)->first();
+        // $user = Auth::guard('web')->user();
+        // $Vendor = Vendor::where('user_id', $user->id)->first();
+
+        $products = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->join('vendors', 'products.vendor_id', '=', 'vendors.id' )
+        ->select('products.*','vendors.phone','categories.name as CategoryName','categories.slug as categorySlug')->where('seller_type', 'Private')->get();
+
         $currencySetting = Setting::first();
         $setting = $currencySetting;
+        // dd($products);
         return view(
             'ajax_used_products',
-            compact('products', 'page_view', 'currencySetting', 'setting', 'Vendor')
+            compact('products', 'page_view', 'currencySetting', 'setting')
         );
     }
 
@@ -658,8 +666,8 @@ class HomeController extends Controller
     public function productUsedDetail($slug)
     {
         $product = Product::where(['status' => 1, 'slug' => $slug])->first();
-        $user = Auth::guard('web')->user();
-        $Vendor = Vendor::where('user_id', $user->id)->first();
+        // $user = Auth::guard('web')->user();
+        // $Vendor = Vendor::where('user_id', $user->id)->first();
 
         if (!$product) {
             $notification = trans('user_validation.Something went wrong');
@@ -683,7 +691,23 @@ class HomeController extends Controller
                 $tags .= $tag->value . ',';
             }
         }
-        return view('product_used_detail', compact('product', 'Vendor', 'productReviews', 'totalProductReviewQty', 'productVariants', 'recaptchaSetting', 'relatedProducts', 'currencySetting', 'banner', 'setting', 'defaultProfile', 'tags'));
+        $products = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->join('vendors', 'products.vendor_id', '=', 'vendors.id' )
+        ->select('products.*','vendors.phone','categories.name as CategoryName','categories.slug as categorySlug')->where('seller_type', 'Private')->get();
+        
+        $currencySetting = Setting::first();
+        $setting = $currencySetting;
+        $product = null;
+
+        foreach ($products as $product_item) {
+            // dd($product);
+            $product = $product_item;
+            break;
+        }
+        dd($product);
+
+        return view('product_used_detail', compact('product', 'productReviews', 'totalProductReviewQty', 'productVariants', 'recaptchaSetting', 'relatedProducts', 'currencySetting', 'banner', 'setting', 'defaultProfile', 'tags'));
     }
 
     public function addToCompare($id){

@@ -37,7 +37,6 @@
         PRODUCT PAGE START
     ==============================-->
     <section id="wsus__product_page">
-        <h1>tahaha131313</h1>
         <div class="container">
             <div class="row">
                 @if ($shop_page->status == 1)
