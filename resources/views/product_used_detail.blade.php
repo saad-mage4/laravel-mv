@@ -224,134 +224,11 @@
                     <div class="wsus__pro_details_text p-3 rounded-3 " style="border: 2px solid #d8dfe0; ">
                         <a class="title" href="javascript:;">{{ $product->name }}</a>
                         <h4>$ <span id="mainProductPrice">{{$product->price}}</span>  <del>${{$product->offer_price}}</del></h4>
-                            {{-- <input type="hidden" id="stock_qty" value="{{ $product->qty }}">
-                            @if ($product->qty == 0)
-                            <p class="wsus__stock_area"><span class="in_stock">{{__('user.Out of Stock')}}</span></p>
-                            @else
-                                <p class="wsus__stock_area"><span class="in_stock">{{__('user.In stock')}}</span>
-                                    @if ($setting->show_product_qty == 1)
-                                    ({{ $product->qty }} {{__('user.item')}})
-                                    @endif
-                                </p>
-                            @endif --}}
+                            {{-- Review Code  --}}
 
+                        {{-- <p class="description">{{ $product->short_description }}</p> --}}
 
-                        {{-- @php
-                            $reviewQty = $product->reviews->where('status',1)->count();
-                            $totalReview = $product->reviews->where('status',1)->sum('rating');
-
-                            if ($reviewQty > 0) {
-                                $average = $totalReview / $reviewQty;
-
-                                $intAverage = intval($average);
-
-                                $nextValue = $intAverage + 1;
-                                $reviewPoint = $intAverage;
-                                $halfReview=false;
-                                if($intAverage < $average && $average < $nextValue){
-                                    $reviewPoint= $intAverage + 0.5;
-                                    $halfReview=true;
-                                }
-                            }
-                        @endphp
-
-                        @php
-                            $variantPrice = 0;
-                            $variants = $product->variants->where('status', 1);
-                            if($variants->count() != 0){
-                                foreach ($variants as $variants_key => $variant) {
-                                    if($variant->variantItems->where('status',1)->count() != 0){
-                                        $item = $variant->variantItems->where('is_default',1)->first();
-                                        if($item){
-                                            $variantPrice += $item->price;
-                                        }
-                                    }
-                                }
-                            }
-                            $isCampaign = false;
-                            $today = date('Y-m-d H:i:s');
-                            $campaign = App\Models\CampaignProduct::where(['status' => 1, 'product_id' => $product->id])->first();
-                            if($campaign){
-                                $campaign = $campaign->campaign;
-                                if($campaign->start_date <= $today &&  $today <= $campaign->end_date){
-                                    $isCampaign = true;
-                                }
-                                $campaignOffer = $campaign->offer;
-                                $productPrice = $product->price;
-                                $campaignOfferPrice = ($campaignOffer / 100) * $productPrice;
-                                $totalPrice = $product->price;
-                                $campaignOfferPrice = $totalPrice - $campaignOfferPrice;
-                            }
-
-                            $totalPrice = $product->price;
-                            if($product->offer_price != null){
-                                $offerPrice = $product->offer_price;
-                                $offer = $totalPrice - $offerPrice;
-                                $percentage = ($offer * 100) / $totalPrice;
-                                $percentage = round($percentage);
-                            }
-
-
-                        @endphp --}}
-
-                        {{-- @if ($isCampaign)
-                            <h4>{{ $currencySetting->currency_icon }} <span id="mainProductPrice">{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }}</span>  <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></h4>
-                        @else
-                            @if ($product->offer_price == null)
-                                <h4>{{ $currencySetting->currency_icon }} <span id="mainProductPrice">{{ sprintf("%.2f", $totalPrice + $variantPrice) }}</span> </h4>
-                            @else
-                                <h4>{{ $currencySetting->currency_icon }} <span id="mainProductPrice">{{ sprintf("%.2f", $product->offer_price + $variantPrice) }}</span>  <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></h4>
-                            @endif
-                        @endif
-
-
-                        @if ($reviewQty > 0)
-                            <p class="review">
-                                @for ($i = 1; $i <=5; $i++)
-                                    @if ($i <= $reviewPoint)
-                                        <i class="fas fa-star"></i>
-                                    @elseif ($i> $reviewPoint )
-                                        @if ($halfReview==true)
-                                        <i class="fas fa-star-half-alt"></i>
-                                            @php
-                                                $halfReview=false
-                                            @endphp
-                                        @else
-                                        <i class="fal fa-star"></i>
-                                        @endif
-                                    @endif
-                                @endfor
-                                <span>({{ $reviewQty }} {{__('user.review')}})</span>
-                            </p>
-                        @endif
-
-                        @if ($reviewQty == 0)
-                            <p class="review">
-                                <i class="fal fa-star"></i>
-                                <i class="fal fa-star"></i>
-                                <i class="fal fa-star"></i>
-                                <i class="fal fa-star"></i>
-                                <i class="fal fa-star"></i>
-                                <span>(0 {{__('user.review')}})</span>
-                            </p>
-                        @endif
-
-                        <p class="description">{{ $product->short_description }}</p> --}}
-
-                        @if ($product->is_flash_deal == 1)
-                            @php
-                                $end_time = $product->flash_deal_date;
-                            @endphp
-                            <script>
-                                var end_year = {{ date('Y', strtotime($end_time)) }};
-                                var end_month = {{ date('m', strtotime($end_time)) }};
-                                var end_date = {{ date('d', strtotime($end_time)) }};
-                            </script>
-                            <div class="wsus_pro_hot_deals">
-                                <h5>{{__('user.offer ending time')}} : </h5>
-                                <div class="simply-countdown product-details"></div>
-                            </div>
-                        @endif
+                        {{-- Flash Deal  --}}
 
 
 
@@ -370,36 +247,7 @@
                         <input type="hidden" name="image" value="{{ $product->thumb_image }}">
                         <input type="hidden" name="slug" value="{{ $product->slug }}">
 
-                        @if ($productVariants->count() != 0)
-                            <div class="wsus__selectbox">
-                                <div class="row">
-                                    @foreach ($productVariants as $productVariant)
-                                        @php
-                                            $items = App\Models\ProductVariantItem::orderBy('is_default','desc')->where(['product_variant_id' => $productVariant->id, 'product_id' => $product->id])->get();
-                                        @endphp
-                                        @if ($items->count() != 0)
-                                            <div class="col-xl-6 col-sm-6 mb-3">
-                                                <h5 class="mb-2">{{ $productVariant->name }}:</h5>
-
-                                                <input type="hidden" name="variants[]" value="{{ $productVariant->id }}">
-                                                <input type="hidden" name="variantNames[]" value="{{ $productVariant->name }}">
-
-                                                <select class="select_2 productVariant" name="items[]">
-                                                    @foreach ($items as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                    @endforeach
-                                                </select>
-
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-
-
-
-
+                        {{-- productVariants --}}
                         <ul class="wsus__button_area">
                             {{-- <li><button type="submit" class="add_cart">{{__('user.add to cart')}}</button></li>
                             <li><a class="buy_now" href="javascript:;" id="buyNowBtn">{{__('user.buy now')}}</a></li>
