@@ -80,8 +80,15 @@
                     <div class="col-xl-4">
 
                           {{-- <a class="common_btn" href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a> --}}
-                 <a class="common_btn" id="Seller_Type_btn" href="#!" >Pay with Stripe</a>
-                    </div>
+                 {{-- <a class="common_btn" id="Seller_Type_btn" href="#!" >
+                    Pay with Stripe
+                    <div id="loader" class="loader" style="display:none;"></div>
+                </a>
+                    </div> --}}
+                    <button id="Seller_Type_btn" type="submit" class="common_btn mb-4 mt-2 next">
+             <div id="loader" class="loader" style="display:none;"></div>
+                                    <span class="text-white">Pay with Stripe</span>
+                                </button>
                   </div>
 {{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
           </div>
@@ -204,7 +211,13 @@
                 data:{
                     value: value,
                 },
+                  beforeSend: function(){
+                  $('#Seller_Type_btn span').text("");
+                  $('#loader').show();
+                },
                 success: function (response) {
+                  $('#Seller_Type_btn span').text("Pay with Stripe");
+                  $('#loader').hide();
                      window.location.href = response;
                 }
             });

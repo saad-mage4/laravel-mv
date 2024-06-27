@@ -13,8 +13,7 @@ class StripeController extends Controller
         $transactionType = $request->value;
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
-
-
+        // $transactionType == "Public" ? 'subscription'
         $session = $stripe->checkout->sessions->create([
             'line_items' => [
                 [
