@@ -438,10 +438,9 @@ class UserProfileController extends Controller
         } elseif ($response == 'success' && $SellerType == "Private") {
             $user->is_paid = 1;
             $user->seller_type = "Private";
-            // Add one month to the current date
-            $expiryDate = Carbon::now()->addMonth();
-            // Save the expiry date to the user's record
-            $user->subscription_expiry_date = $expiryDate;
+            // $expiryDate = Carbon::now()->addMonth();
+            // $expiryDate = Carbon::now();
+            $user->subscription_expiry_date = null;
             $user->save();
             $is_paid = $user->is_paid;
             $user_seller_type = $user->seller_type;
@@ -846,27 +845,6 @@ class UserProfileController extends Controller
     public function privateSellerRequest(Request $request)
     {
         $data = $request->values;
-        // Validate the request data
-        // $validated = $request->validate([
-        //     'email' => 'required|email|unique:private_seller_registration,email',
-        //     'firstName' => 'nullable|string|max:255',
-        //     'lastName' => 'nullable|string|max:255',
-        //     'phone' => 'nullable|integer',
-        // ]);
-
-        // Save the validated data into the database
-        // $privateSeller = PrivateSellerRegistration::create([
-        //     'email' => $validated['email'],
-        //     'first_name' => $validated['firstName'],
-        //     'last_name' => $validated['lastName'],
-        //     'phone_no' => $validated['phone'],
-        // ]);
-
-        // return response()->json([
-        //     'message' => 'Registration successful',
-        //     'data' => $privateSeller
-        // ], 201);
-
         $user = Auth::guard('web')->user();
         $seller = Vendor::where('user_id', $user->id)->first();
         if ($seller) {
@@ -914,8 +892,8 @@ class UserProfileController extends Controller
             $seller->save();
         }
 
+
         return route("user.dashboard");
-        // return "Private Seller Register";
     }
 
     /**
