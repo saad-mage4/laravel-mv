@@ -148,9 +148,9 @@
                                                 <p><span>{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
                                                 <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <div class="d-flex gap-3">
-                                                    <a href="{{ route('seller-detail',['shop_name' => $user->slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
+                                                    <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
 
-                                                <a href="{{ route('user.chat-with-seller', $user->slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
+                                                <a href="{{ route('user.chat-with-seller', $user->Vendor_Slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -275,7 +275,7 @@
                                 <li><a class="pinterest" href="https://www.pinterest.com/pin/create/button/?description={{ $product->name }}&media=&url={{ route('product-detail', $product->slug) }}"><i class="fab fa-pinterest-p"></i></a></li>
                             </ul>
                         </div>
-                        @auth
+                        {{-- @auth
                             @php
                                 $user = Auth::guard('web')->user();
                                 $isExist = false;
@@ -293,7 +293,7 @@
                             class="fal fa-comment-alt-smile"></i> {{__('user.Report incorrect productinformation')}}</a>
                         @endif
 
-                        @endauth
+                        @endauth --}}
 
                     </div>
 
@@ -399,6 +399,8 @@
 
                     </div>
                 </div> --}}
+
+                {{-- Description Shown  --}}
                 <div class="col-xl-12">
                     <div class="wsus__pro_det_description">
                         <ul class="nav nav-pills mb-3" id="pills-tab3" role="tablist">
@@ -476,7 +478,7 @@
 
                                             </div>
                                         </div>
-                                        <div class="col-xl-6 col-xxl-7 col-md-6 mt-4 mt-md-0">
+                                        <div class="col-xl-6 col-xxl-7 col-md-6 mt-4">
                                             <div class="wsus__pro_det_vendor_text">
                                                 <h4>{{ $user->name }}</h4>
                                                 @php
@@ -530,9 +532,9 @@
                                                 <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
                                                 <p><span>{{__('user.Phone')}}:</span> {{ $user->phone }}</p>
                                                 <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
-                                                <a href="{{ route('seller-detail',['shop_name' => $user->slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
+                                                <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
 
-                                                <a href="{{ route('user.chat-with-seller', $user->slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
+                                                <a href="{{ route('user.chat-with-seller', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
                                             </div>
                                         </div>
                                         <div class="col-xl-12">
