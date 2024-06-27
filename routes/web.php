@@ -128,15 +128,18 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/sellers', [HomeController::class, 'seller'])->name('sellers');
     Route::get('/seller-detail', [HomeController::class, 'sellerDetail'])->name('seller-detail');
     Route::get('/product', [HomeController::class, 'product'])->name('product');
-        // Used Products
+        // Private Used Products
         Route::get(
             '/used_products',
             [HomeController::class, 'Used_Products']
         )->name('used_products');
+        // Private Seller Details
+        Route::get('/seller_used_detail', [HomeController::class, 'sellerUsedDetail'])->name('seller_used_detail');
     Route::get('/search-product', [HomeController::class, 'searchProduct'])->name('search-product');
+        // private seller search
         Route::get('/search-used-product', [HomeController::class, 'searchUsedProduct'])->name('search-used-product');
-    Route::get('/product-detail/{slug}', [HomeController::class, 'productDetail'])->name('product-detail');
         Route::get('/product_used_detail/{slug}', [HomeController::class, 'productUsedDetail'])->name('product_used_detail');
+        Route::get('/product-detail/{slug}', [HomeController::class, 'productDetail'])->name('product-detail');
     Route::get('/compare', [HomeController::class, 'compare'])->name('compare');
     Route::get('/add-to-compare/{id}', [HomeController::class, 'addToCompare'])->name('add-to-compare');
     Route::get('/remove-compare/{id}', [HomeController::class, 'removeCompare'])->name('remove-compare');

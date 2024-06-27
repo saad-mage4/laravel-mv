@@ -387,6 +387,28 @@ class HomeController extends Controller
         return view('seller_detail', compact('banner', 'seller', 'products', 'reviewQty', 'totalReview', 'variantsForSearch', 'shop_page', 'productCategories', 'brands', 'currencySetting'));
     }
 
+
+    //! seller_used_detail
+
+    public function sellerUsedDetail(Request $request)
+    {
+        $slug = $request->shop_name;
+        $banner = BreadcrumbImage::where(['id' => 8])->first();
+        $seller = Vendor::where(['status' => 1, 'slug' => $slug])->first();
+        // dd($seller);
+        $paginateQty = CustomPagination::whereId('2')->first()->qty;
+        $products = Product::orderBy('id', 'desc')->where(['status' => 1, 'vendor_id' => $seller->id])->paginate($paginateQty);
+        $reviewQty = ProductReview::where('status', 1)->where('product_vendor_id', $seller->id)->count();
+        $totalReview = ProductReview::where('status', 1)->where('product_vendor_id', $seller->id)->sum('rating');
+
+        $variantsForSearch = ProductVariant::select('name', 'id')->groupBy('name')->get();
+        $shop_page = ShopPage::first();
+        $productCategories = Category::where(['status' => 1])->get();
+        $brands = Brand::where(['status' => 1])->get();
+        $currencySetting = Setting::first();
+        return view('seller_used_detail', compact('banner', 'seller', 'products', 'reviewQty', 'totalReview', 'variantsForSearch', 'shop_page', 'productCategories', 'brands', 'currencySetting'));
+    }
+
     public function product(Request $request)
     {
         // dd($request);
@@ -739,10 +761,11 @@ class HomeController extends Controller
                 'vendors.city',
                 'vendors.email',
                 'vendors.description as vendorDescription',
-                'vendors.banner_image as Vendor_banner'
+            'vendors.banner_image as Vendor_banner',
+            'vendors.slug as Vendor_Slug'
             )->where(['seller_type' => 'Private', 'products.status' => 1, 'products.slug' => $slug])->first();
         // 'vendors.id as Seller'
-        // dd($products);
+        // dd($product);
         $currencySetting = Setting::first();
         $setting = $currencySetting;
         // $product = [];
