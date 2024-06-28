@@ -94,7 +94,7 @@
                                             </div>
                                         </div>
                                        <div class="col-xl-12 col-xxl-12 col-md-12 mt-5 mt-md-0">
-                                            <div class="wsus__pro_det_vendor_text">
+                                            <div class="wsus__pro_det_vendor_text w-100">
                                                 <h4 class="mt-3">{{ $user->firstName }} {{ $user->lastName }}</h4>
                                                 @php
                                                     $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->count();
@@ -142,11 +142,11 @@
                                                         <span>(0 {{ __('user.review') }})</span>
                                                     </p>
                                                 @endif
-
-                                                <p><span>{{__('user.Store Name')}}:</span> {{ $user->shop_name }}</p>
-                                                <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
-                                                <p><span>{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
-                                                <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
+{{-- {{ $user->shop_name }} --}}
+                                                <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ $user->firstName }} {{ $user->lastName }}</p>
+                                                <p><span class="w-auto">{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
+                                                <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
+                                                <p><span class="w-auto">{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <div class="d-flex gap-3">
                                                     <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
 
@@ -223,10 +223,12 @@
                 <div class="col-12 mt-5">
                     <div class="wsus__pro_details_text p-3 rounded-3 " style="border: 2px solid #d8dfe0; ">
                         <a class="title" href="javascript:;">{{ $product->name }}</a>
-                        <h4>$ <span id="mainProductPrice">{{$product->price}}</span>  <del>${{$product->offer_price}}</del></h4>
+                        <h4>$ <span id="mainProductPrice">{{$product->price}}</span>
+                            {{-- <del>${{$product->offer_price}}</del> --}}
+                        </h4>
                             {{-- Review Code  --}}
 
-                        {{-- <p class="description">{{ $product->short_description }}</p> --}}
+                        <p class="description" style="max-height: 200px; overflow-y: auto">{{ $product->short_description }}</p>
 
                         {{-- Flash Deal  --}}
 

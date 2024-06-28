@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $page_view == 'grid_view' ? 'show active' : '' }} " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-    @if ($products->count() == 0)
+    @if ($products->count() == 0 || $products->isEmpty())
         <div class="row">
             <div class="col-12 text-center">
                 <h3 class="text-danger mt-5">{{__('user.Product not found')}}</h3>
@@ -8,7 +8,7 @@
     @endif
     <div class="row">
         @foreach ($products as $product)
-    
+
         <div class="col-xl-4  col-sm-6">
             <div class="wsus__product_item">
                 @if ($product->new_product == 1)
@@ -69,9 +69,12 @@
                         <span>(0 {{__('user.review')}})</span>
                     </p>
                 @endif --}}
-                    <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->short_name }}</a>
+                <h4 class="View_Price">$ <span id="mainProductPrice">{{$product->price}}</span>
+                    {{-- <del>${{$product->offer_price}}</del> --}}
+                </h4>
+                    <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name }}</a>
 
-                    
+                        {{-- <p class="">{{ $product->short_description }}</p> --}}
                      {{-- <a class="add_cart" onclick="addToCartMainProduct('{{ $product->id }}')" href="javascript:;">{{__('user.add to cart')}}</a> --}}
                     <a class="add_cart position-static mt-2"  href="tel:{{$product->phone}}">Call</a>
                     <a class="add_cart position-static mt-2"  href="#!{{$product->phone}}">Chat</a>
@@ -116,11 +119,11 @@
                     @endif
                 @endif --}}
 
-                <a class="wsus__pro_link" href="{{ route('product_used_detail', $product->slug) }}">
+                <a class="wsus__pro_link" style="height: 320px;" href="{{ route('product_used_detail', $product->slug) }}">
                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_2" />
                 </a>
-                <div class="wsus__product_details">
+                <div class="wsus__product_details ">
                     <a class="wsus__category" href="{{ route('used_products',['category' => $product->categorySlug]) }}">{{ $product->CategoryName }} </a>
 
                 {{-- @if ($reviewQty > 0)
@@ -152,10 +155,12 @@
                         <span>(0 {{__('user.review')}})</span>
                     </p>
                 @endif --}}
-                    <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->short_name }}</a>
-                    
-                    <p class="list_description">{{ $product->short_description }}</p>
-                    <ul class="wsus__single_pro_icon">
+                <h4 class="View_Price">$ <span id="mainProductPrice">{{$product->price}}</span>
+                    {{-- <del>${{$product->offer_price}}</del> --}}
+                </h4>
+                    <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name }}</a>
+                    <p class="" style="max-height: 80px; overflow-y: auto">{{ $product->short_description }}</p>
+                    <ul class="wsus__single_pro_icon mt-4">
                         <li><a class="add_cart"  href="tel:{{$product->phone}}">Call</a></li>
                     <li><a class="add_cart"  href="#!{{$product->phone}}">Chat</a></li>
                        {{-- <li><a class="add_cart" onclick="addToCartMainProduct('{{ $product->id }}')" href="javascript:;">{{__('user.add to cart')}}</a></li>
@@ -174,7 +179,7 @@
 
 
 @foreach ($products as $product)
-    
+
 
 
     <script src="{{ asset('user/js/slick.min.js') }}"></script>

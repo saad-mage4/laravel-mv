@@ -42,12 +42,19 @@
                 <div class="col-12">
                     <div class="row">
                         @foreach ($sellers as $seller)
+                        {{-- {{$seller->firstName}} {{ $seller->lastName}} --}}
                         <div class="col-xl-6 col-md-6">
                             <div class="wsus__vendor_single">
                                 <img src="{{ asset($seller->banner_image) }}" alt="vendor" class="img-fluid w-100">
                                 <div class="wsus__vendor_text">
                                     <div class="wsus__vendor_text_center">
-                                        <h4>{{ $seller->shop_name }}</h4>
+                                        <h4>
+                                            @if ($seller->shop_name == null)
+                                                {{$seller->firstName}} {{ $seller->lastName}}
+                                            @else
+                                            {{ $seller->shop_name ?? "test store" }}
+                                            @endif
+                                        </h4>
 
                                         @php
                                             $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$seller->id)->count();
