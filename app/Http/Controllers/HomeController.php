@@ -52,6 +52,7 @@ use Cart;
 use Carbon\Carbon;
 use Route;
 use Auth;
+use Illuminate\Database\Eloquent\Collection;
 
 class HomeController extends Controller
 {
@@ -360,6 +361,7 @@ class HomeController extends Controller
         return view('privacy_policy', compact('privacyPolicy'));
     }
 
+    //! Sellers List !
     public function seller()
     {
         $banner = BreadcrumbImage::where(['id' => 8])->first();
@@ -406,7 +408,8 @@ class HomeController extends Controller
         $productCategories = Category::where(['status' => 1])->get();
         $brands = Brand::where(['status' => 1])->get();
         $currencySetting = Setting::first();
-        return view('seller_used_detail', compact('banner', 'seller', 'products', 'reviewQty', 'totalReview', 'variantsForSearch', 'shop_page', 'productCategories', 'brands', 'currencySetting'));
+        $defaultProfile = BannerImage::whereId('15')->first();
+        return view('seller_used_detail', compact('banner', 'defaultProfile', 'seller', 'products', 'reviewQty', 'totalReview', 'variantsForSearch', 'shop_page', 'productCategories', 'brands', 'currencySetting'));
     }
 
     public function product(Request $request)
@@ -574,6 +577,8 @@ class HomeController extends Controller
     // Private Products Search
     public function searchUsedProduct(Request $request)
     {
+        // Initialize $products as an empty collection
+        // $products = Product::query();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
         if ($request->variantItems) {
             $products = Product::whereHas('variantItems', function ($query) use ($request) {
@@ -623,9 +628,19 @@ class HomeController extends Controller
             $products = $products->where('child_category_id', $child_category->id);
         }
 
+        //! Brands Filter
         if ($request->brand) {
             $brand = Brand::where('slug', $request->brand)->first();
-            $products = $products->where('brand_id', $brand->id);
+            if ($brand) {
+                $products = $products->where('brand_id', $brand->id);
+                // if ($products->isEmpty()) {
+                //     // $products = new Collection(); // Ensures $products is an empty collection
+                //     return null;
+                // }
+            }
+            // else {
+            //     $products = new Collection(); // No brand found
+            // }
         }
 
         $brandSortArr = [];
@@ -634,8 +649,19 @@ class HomeController extends Controller
                 $brandSortArr[] = $brand;
             }
             $products = $products->whereIn('brand_id', $brandSortArr);
-        }
+            // if ($products->isEmpty()) {
+            //     return null;
+            // }
 
+            // dd($products);
+        }
+        // $products = $products->get();
+        // if ($products->isEmpty()) {
+        //     $products = new Collection();
+        // }
+
+
+        //? Price Filter
         if ($request->price_range) {
             $price_range = explode(';', $request->price_range);
             $start_price = $price_range[0];
@@ -657,6 +683,7 @@ class HomeController extends Controller
         $products = $products->paginate($paginateQty);
         $products = $products->appends($request->all());
 
+        //* page View Filter
         $page_view = '';
         if ($request->page_view) {
             $page_view = $request->page_view;

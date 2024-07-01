@@ -38,88 +38,103 @@
     <section id="wsus__product_page" class="wsus__vendor_details_page">
         <div class="container">
             <div class="row">
-                <div class="col-xl-12">
-                    <div class="wsus__pro_page_bammer vendor_det_banner">
-                        <img src="{{ asset($seller->banner_image) }}" alt="banner" class="img-fluid w-100">
-                        <div class="wsus__pro_page_bammer_text wsus__vendor_det_banner_text">
-                            <div class="wsus__vendor_text_center">
-                                <h4>{{ $seller->shop_name }}</h4>
+                {{-- USer Deatils  --}}
+                <div class="col-xl-4 col-lg-4" >
+                    <div class="wsus__pro_page_bammer  vendor_det_banner">
+                        @if ($seller->banner_image)
+                        <img src="{{ asset($seller->banner_image)  }}" alt="banner" class="img-fluid w-100">
+                            @else
+                            <img src="{{ asset($defaultProfile->image)  }}" alt="banner" class="img-fluid w-100">
+                        @endif
+                        {{-- <div class="col-xl-6 col-xxl-5 col-md-6">
+                                            <div class="wsus__vebdor_img">
+                                                <img src="{{ asset($defaultProfile->image) }}" alt="vensor" class="img-fluid w-100">
+                                            </div>
+                        </div> --}}
+                         {{-- <div class="col-xl-6 col-xxl-7 col-md-6 mt-4"> --}}
+                                            <div class="wsus__pro_page_bammer_text wsus__vendor_det_banner_text">
+                                                <div class="wsus__vendor_text_center w-100 d-flex justify-content-center gap-3 flex-column ">
+                                                    {{-- {{ $seller->shop_name ?? 'tahaa' }} --}}
+                                                    <h4>{{$seller->firstName}} {{ $seller->lastName}}</h4>
 
-                                @php
-                                    if ($reviewQty > 0) {
-                                        $average = $totalReview / $reviewQty;
-                                        $intAverage = intval($average);
-                                        $nextValue = $intAverage + 1;
-                                        $reviewPoint = $intAverage;
-                                        $halfReview=false;
-                                        if($intAverage < $average && $average < $nextValue){
-                                            $reviewPoint= $intAverage + 0.5;
-                                            $halfReview=true;
-                                        }
-                                    }
-                                @endphp
-
-                                @if ($reviewQty > 0)
-                                    <p class="wsus__vendor_rating">
-                                        @for ($i = 1; $i <=5; $i++)
-                                            @if ($i <= $reviewPoint)
-                                                <i class="fas fa-star"></i>
-                                            @elseif ($i> $reviewPoint )
-                                                @if ($halfReview==true)
-                                                <i class="fas fa-star-half-alt"></i>
                                                     @php
-                                                        $halfReview=false
+                                                        if ($reviewQty > 0) {
+                                                            $average = $totalReview / $reviewQty;
+                                                            $intAverage = intval($average);
+                                                            $nextValue = $intAverage + 1;
+                                                            $reviewPoint = $intAverage;
+                                                            $halfReview=false;
+                                                            if($intAverage < $average && $average < $nextValue){
+                                                                $reviewPoint= $intAverage + 0.5;
+                                                                $halfReview=true;
+                                                            }
+                                                        }
                                                     @endphp
-                                                @else
-                                                <i class="fal fa-star"></i>
-                                                @endif
-                                            @endif
-                                        @endfor
-                                        <span>({{ $reviewQty }} {{__('user.review')}})</span>
-                                    </p>
-                                @endif
 
-                                @if ($reviewQty == 0)
-                                    <p class="wsus__vendor_rating">
-                                        <i class="fal fa-star"></i>
-                                        <i class="fal fa-star"></i>
-                                        <i class="fal fa-star"></i>
-                                        <i class="fal fa-star"></i>
-                                        <i class="fal fa-star"></i>
-                                        <span>(0 {{__('user.review')}})</span>
-                                    </p>
-                                @endif
+                                                    @if ($reviewQty > 0)
+                                                        <p class="wsus__vendor_rating">
+                                                            @for ($i = 1; $i <=5; $i++)
+                                                                @if ($i <= $reviewPoint)
+                                                                    <i class="fas fa-star"></i>
+                                                                @elseif ($i> $reviewPoint )
+                                                                    @if ($halfReview==true)
+                                                                    <i class="fas fa-star-half-alt"></i>
+                                                                        @php
+                                                                            $halfReview=false
+                                                                        @endphp
+                                                                    @else
+                                                                    <i class="fal fa-star"></i>
+                                                                    @endif
+                                                                @endif
+                                                            @endfor
+                                                            <span>({{ $reviewQty }} {{__('user.review')}})</span>
+                                                        </p>
+                                                    @endif
 
-                                <a href="callto:{{ $seller->phone }}"><i class="far fa-phone-alt"></i> {{ $seller->phone }}</a>
-                                <a href="mailto:{{ $seller->email }}"><i class="far fa-envelope"></i> {{ $seller->email }}</a>
-                                <p class="wsus__vendor_location"><i class="fal fa-map-marker-alt"></i> {{ $seller->address }} </p>
+                                                    @if ($reviewQty == 0)
+                                                        <p class="wsus__vendor_rating">
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <span>(0 {{__('user.review')}})</span>
+                                                        </p>
+                                                    @endif
 
-                                @php
-                                    $open_at = $seller->open_at;
-                                    $closed_at = $seller->closed_at;
-                                    $current_time =date('h:i');
-                                    $socialLinks = $seller->socialLinks;
-                                @endphp
+                                                    <a href="callto:{{ $seller->phone }}"><i class="far fa-phone-alt"></i> {{ $seller->phone }}</a>
+                                                    <a href="mailto:{{ $seller->email }}"><i class="far fa-envelope"></i> {{ $seller->email }}</a>
+                                                    <p class="wsus__vendor_location"><i class="fal fa-map-marker-alt"></i> {{ $seller->address }} </p>
 
-                                @if ($open_at >= $current_time && $current_time <= $closed_at)
-                                    <p class="wsus__open_store"><i class="fab fa-shopify"></i> {{__('user.store open')}}</p>
-                                @else
-                                    <p class="wsus__open_store"><i class="fab fa-shopify"></i> {{__('user.store Closed')}}</p>
-                                @endif
+                                                    @php
+                                                        $open_at = $seller->open_at;
+                                                        $closed_at = $seller->closed_at;
+                                                        $current_time =date('h:i');
+                                                        $socialLinks = $seller->socialLinks;
+                                                    @endphp
 
-                                @if ($socialLinks->count() > 0)
-                                    <ul class="d-flex">
-                                        @foreach ($socialLinks as $socialLink)
-                                        <li><a class="facebook" href="{{ $socialLink->link }}"><i class="{{ $socialLink->icon }}"></i></a></li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </div>
-                        </div>
+                                                    @if ($open_at >= $current_time && $current_time <= $closed_at)
+                                                        <p class="wsus__open_store"><i class="fab fa-shopify"></i> {{__('user.store open')}}</p>
+                                                    @else
+                                                        <p class="wsus__open_store"><i class="fab fa-shopify"></i> {{__('user.store Closed')}}</p>
+                                                    @endif
+
+                                                    @if ($socialLinks->count() > 0)
+                                                        <ul class="d-flex">
+                                                            @foreach ($socialLinks as $socialLink)
+                                                            <li><a class="facebook" href="{{ $socialLink->link }}"><i class="{{ $socialLink->icon }}"></i></a></li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </div>
+                                            </div>
+                        {{-- </div> --}}
+
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-lg-4">
+                {{-- col-xl-3 col-lg-4 --}}
+                <div class="d-none">
                     <div class="wsus__sidebar_filter ">
                         <p>{{__('user.filter')}}</p>
                         <span class="wsus__filter_icon">
@@ -128,9 +143,9 @@
                         </span>
                     </div>
                     <form id="searchProductFormId">
-                    <div class="wsus__product_sidebar" id="sticky_sidebar">
-                        <div class="accordion" id="accordionExample">
-                            <div class="accordion-item">
+                    <div class="wsus__product_sidebar d-none taha" id="sticky_sidebar">
+                        <div class="accordion " id="accordionExample">
+                            {{-- <div class="accordion-item">
                               <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     {{__('user.Filter By Categories')}}
@@ -141,15 +156,17 @@
                                     <ul>
                                         <li><a class="categoryForSearch" href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li>
                                         @foreach ($productCategories as $productCategory)
-                                            <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
-                                        @endforeach
+                                         @if ($productCategory->slug === "used-products")
+                                         <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
+                                         @endif
+                                         @endforeach
                                         <input type="hidden" name="category" value="" id="category_id_for_search">
                                         <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
                                         <input type="hidden" name="shop_name" value="" id="shop_name">
                                     </ul>
                                 </div>
                               </div>
-                            </div>
+                            </div> --}}
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree3">
@@ -216,10 +233,12 @@
                     </div>
                 </div>
 
-                <div class="col-xl-9 col-lg-8">
+
+
+                <div class="col-xl-8 col-lg-8">
                     <div class="row">
                         <div class="col-xl-12 d-none d-md-block mt-4 mt-lg-0">
-                            <div class="wsus__product_topbar">
+                            <div class="wsus__product_topbar ">
                                 <div class="wsus__product_topbar_left">
                                     <div class="nav nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                         <button onclick="setPageView('grid_view')" class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
@@ -230,7 +249,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="wsus__topbar_select">
+                                <div class="wsus__topbar_select d-none taha">
                                     <select class="select_2 shorting_id" name="shorting_id">
                                         <option value="1">{{__('user.default shorting')}}</option>
                                         <option value="2">{{__('user.low to high price')}} </option>
@@ -300,7 +319,7 @@
                     $.ajax({
                         type: 'get',
                         data: $('#searchProductFormId').serialize(),
-                        url: "{{ route('search-product') }}",
+                        url: "{{ route('search-used-product') }}",
                         success: function (response) {
                             $('.load_ajax_response').html(response);
                         },
@@ -351,7 +370,7 @@
         //     let currentURL = window.location.href
         //     let index = currentURL.indexOf("?");
         //     currentURL = currentURL.substr(index+1)
-        //     let url = "{{ url('search-product') }}" + "?" + currentURL;
+        //     let url = "{{ url('search-used-product') }}" + "?" + currentURL;
         //     let shop_name = getUrlParams('shop_name');
         //     $("#shop_name").val(shop_name);
 
@@ -387,7 +406,7 @@
             $.ajax({
                 type: 'get',
                 data: $('#searchProductFormId').serialize(),
-                url: "{{ route('search-product') }}",
+                url: "{{ route('search-used-product') }}",
                 success: function (response) {
                     $('.load_ajax_response').html(response);
                 },

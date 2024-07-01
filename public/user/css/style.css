@@ -33,6 +33,29 @@ body {
 .detaile_private_seller a:hover {
     color: inherit !important;
 }
+/* Price View in card  */
+.View_Price {
+    font-size: 35px;
+    font-weight: 700;
+    color: #ff5200;
+    margin: 10px 0px 5px 0px;
+    display: flex;
+    align-items: center;
+}
+
+.View_Price span {
+    margin-left: 5px;
+    display: inline-block;
+    font-size: 30px;
+    color: #ff5200;
+    font-weight: 700;
+}
+
+.View_Price del {
+    color: red;
+    font-size: 18px;
+    margin-left: 10px;
+}
 .skiptranslate.goog-te-gadget {
     font-size: 0;
 }
@@ -3138,7 +3161,7 @@ PPRODUCT PAGE START
 }
 
 .wsus__sidebar_filter {
-    background: #2a9cf5;
+    background: #ff5200;
     display: none;
     align-items: center;
     justify-content: space-between;

@@ -114,46 +114,80 @@ class SellerProductController extends Controller
             }
         }
 
-        $rules = [
-            'short_name' => 'required',
-            'name' => 'required',
-            'slug' => 'required|unique:products',
-            'thumb_image' => 'required',
-            'banner_image' => 'required',
-            'category' => 'required',
-            'short_description' => 'required',
-            'long_description' => 'required',
-            'brand' => 'required',
-            'price' => 'required|numeric',
-            'quantity' => 'required',
-            'tax' => 'required',
-            'is_return' => 'required',
-            'is_warranty' => 'required',
-            'return_policy_id' => $request->is_return == 1 ? 'required' : '',
-        ];
-        $customMessages = [
-            'short_name.required' => trans('user_validation.Short name is required'),
-            'short_name.unique' => trans('user_validation.Short name is required'),
-            'name.required' => trans('user_validation.Name is required'),
-            'name.unique' => trans('user_validation.Name is required'),
-            'slug.required' => trans('user_validation.Slug is required'),
-            'slug.unique' => trans('user_validation.Slug already exist'),
-            'category.required' => trans('user_validation.Category is required'),
-            'thumb_image.required' => trans('user_validation.thumbnail is required'),
-            'banner_image.required' => trans('user_validation.Banner is required'),
-            'short_description.required' => trans('user_validation.Short description is required'),
-            'long_description.required' => trans('user_validation.Long description is required'),
-            'brand.required' => trans('user_validation.Brand is required'),
-            'price.required' => trans('user_validation.Price is required'),
-            'quantity.required' => trans('user_validation.Quantity is required'),
-            'tax.required' => trans('user_validation.Tax is required'),
-            'is_return.required' => trans('user_validation.Return is required'),
-            'is_warranty.required' => trans('user_validation.Warranty is required'),
-            'return_policy_id.required' => trans('user_validation.Return policy is required'),
-            'status.required' => trans('user_validation.Status is required'),
-        ];
-        $this->validate($request, $rules, $customMessages);
+        $rules = [];
+        $customMessages = [];
 
+        if ($user->seller_type == "Private") {
+            $rules = [
+                'short_name' => 'required',
+                'name' => 'required',
+                'slug' => 'required|unique:products',
+                'thumb_image' => 'required',
+                'banner_image' => 'required',
+                'category' => 'required',
+                'short_description' => 'required',
+                'long_description' => 'required',
+                'brand' => 'required',
+                'price' => 'required|numeric',
+            ];
+            $customMessages = [
+                'short_name.required' => trans('user_validation.Short name is required'),
+                'short_name.unique' => trans('user_validation.Short name is required'),
+                'name.required' => trans('user_validation.Name is required'),
+                'name.unique' => trans('user_validation.Name is required'),
+                'slug.required' => trans('user_validation.Slug is required'),
+                'slug.unique' => trans('user_validation.Slug already exist'),
+                'category.required' => trans('user_validation.Category is required'),
+                'thumb_image.required' => trans('user_validation.thumbnail is required'),
+                'banner_image.required' => trans('user_validation.Banner is required'),
+                'short_description.required' => trans('user_validation.Short description is required'),
+                'long_description.required' => trans('user_validation.Long description is required'),
+                'brand.required' => trans('user_validation.Brand is required'),
+                'price.required' => trans('user_validation.Price is required'),
+                'status.required' => trans('user_validation.Status is required'),
+            ];
+        } else {
+            $rules = [
+                'short_name' => 'required',
+                'name' => 'required',
+                'slug' => 'required|unique:products',
+                'thumb_image' => 'required',
+                'banner_image' => 'required',
+                'category' => 'required',
+                'short_description' => 'required',
+                'long_description' => 'required',
+                'brand' => 'required',
+                'price' => 'required|numeric',
+                'quantity' => 'required',
+                'tax' => 'required',
+                'is_return' => 'required',
+                'is_warranty' => 'required',
+                'return_policy_id' => $request->is_return == 1 ? 'required' : '',
+            ];
+            $customMessages = [
+                'short_name.required' => trans('user_validation.Short name is required'),
+                'short_name.unique' => trans('user_validation.Short name is required'),
+                'name.required' => trans('user_validation.Name is required'),
+                'name.unique' => trans('user_validation.Name is required'),
+                'slug.required' => trans('user_validation.Slug is required'),
+                'slug.unique' => trans('user_validation.Slug already exist'),
+                'category.required' => trans('user_validation.Category is required'),
+                'thumb_image.required' => trans('user_validation.thumbnail is required'),
+                'banner_image.required' => trans('user_validation.Banner is required'),
+                'short_description.required' => trans('user_validation.Short description is required'),
+                'long_description.required' => trans('user_validation.Long description is required'),
+                'brand.required' => trans('user_validation.Brand is required'),
+                'price.required' => trans('user_validation.Price is required'),
+                'quantity.required' => trans('user_validation.Quantity is required'),
+                'tax.required' => trans('user_validation.Tax is required'),
+                'is_return.required' => trans('user_validation.Return is required'),
+                'is_warranty.required' => trans('user_validation.Warranty is required'),
+                'return_policy_id.required' => trans('user_validation.Return policy is required'),
+                'status.required' => trans('user_validation.Status is required'),
+            ];
+        }
+
+        $this->validate($request, $rules, $customMessages);
 
         $seller = Auth::guard('web')->user()->seller;
         $product = new Product();
@@ -185,20 +219,20 @@ class SellerProductController extends Controller
         $product->brand_id = $request->brand;
         $product->sku = $request->sku;
         $product->price = $request->price;
-        $product->offer_price = $request->offer_price;
-        $product->qty = $request->quantity;
+        $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
+        $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
-        $product->video_link = $request->video_link;
-        $product->tags = $request->tags;
-        $product->tax_id = $request->tax;
-        $product->is_warranty = $request->is_warranty;
-        $product->is_return = $request->is_return;
-        $product->return_policy_id = $request->is_return == 1 ? $request->return_policy_id : 0;
+        $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
+        $product->tags = $user->seller_type == "Private" ? null : $request->tags;
+        $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
+        $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
+        $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
+        $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
         $product->is_undefine = 1;
         $product->is_specification = $request->is_specification ? 1 : 0;
-        $product->seo_title = $request->seo_title ? $request->seo_title : $request->name;
-        $product->seo_description = $request->seo_description ? $request->seo_description : $request->name;
+        $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
+        $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
         $product->seller_type = $user->seller_type;
         if ($user->seller_type == "Private") {
             $product->status = 1;

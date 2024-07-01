@@ -67,7 +67,7 @@
                                     <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
                                     <input name="category"  class="form-control"  readonly type="text" value="{{ $item['name']}}" />
                                 </div>
-                    @endif
+                                @endif
                 @endforeach
                                 @else
                                 <div class="form-group col-12">
@@ -118,22 +118,27 @@
                                    <input type="text" class="form-control" name="price" value="{{ old('price') }}">
                                 </div>
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Offer Price')}}</label>
                                    <input type="text" class="form-control" name="offer_price" value="{{ old('offer_price') }}">
                                 </div>
+                                @endif
 
 
-
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Stock Quantity')}} <span class="text-danger">*</span></label>
                                    <input type="number" class="form-control" name="quantity" value="{{ old('quantity') }}">
                                 </div>
+                                @endif
 
+                                  @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Video Link')}}</label>
                                    <input type="text" class="form-control" name="video_link" value="{{ old('video_link') }}">
                                 </div>
+                                @endif
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Description')}} <span class="text-danger">*</span></label>
@@ -144,12 +149,13 @@
                                     <label>{{__('user.Long Description')}} <span class="text-danger">*</span></label>
                                     <textarea name="long_description" id="" cols="30" rows="10" class="summernote">{{ old('long_description') }}</textarea>
                                 </div>
-
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Tags')}}</label>
                                    <input type="text" class="form-control tags" name="tags" value="{{ old('tags') }}">
                                 </div>
-
+                                @endif
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Tax')}} <span class="text-danger">*</span></label>
                                     <select name="tax" class="form-control">
@@ -159,15 +165,17 @@
                                         @endforeach
                                     </select>
                                 </div>
-
-                                <div class="form-group col-12">
-                                    <label>{{__('user.Product Return Availabe ?')}} <span class="text-danger">*</span></label>
-                                    <select name="is_return" class="form-control" id="is_return" >
-                                        <option value="0">{{__('user.No')}}</option>
-                                        <option value="1">{{__('user.Yes')}}</option>
-                                    </select>
-                                </div>
-
+                                @endif
+                                @if ($authUser->seller_type == "Public")
+                                    <div class="form-group col-12">
+                                        <label>{{__('user.Product Return Availabe ?')}} <span class="text-danger">*</span></label>
+                                        <select name="is_return" class="form-control" id="is_return" >
+                                            <option value="0">{{__('user.No')}}</option>
+                                            <option value="1">{{__('user.Yes')}}</option>
+                                        </select>
+                                    </div>
+                                @endif
+                                  @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12 d-none" id="policy_box">
                                     <label>{{__('user.Return Policy')}} <span class="text-danger">*</span></label>
                                     <select name="return_policy_id" class="form-control">
@@ -176,7 +184,8 @@
                                         @endforeach
                                     </select>
                                 </div>
-
+                                @endif
+                                  @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Warranty Available ?')}}  <span class="text-danger">*</span></label>
                                     <select name="is_warranty" class="form-control">
@@ -184,16 +193,20 @@
                                         <option value="0">{{__('user.No')}}</option>
                                     </select>
                                 </div>
-
+                                @endif
+                                  @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.SEO Title')}}</label>
                                    <input type="text" class="form-control" name="seo_title" value="{{ old('seo_title') }}">
                                 </div>
-
+                                @endif
+                                  @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.SEO Description')}}</label>
                                     <textarea name="seo_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ old('seo_description') }}</textarea>
                                 </div>
+                                @endif
+
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Specifications')}}</label>
