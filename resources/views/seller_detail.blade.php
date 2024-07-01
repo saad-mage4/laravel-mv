@@ -140,8 +140,13 @@
                                 <div class="accordion-body">
                                     <ul>
                                         <li><a class="categoryForSearch" href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li>
+
                                         @foreach ($productCategories as $productCategory)
+                                        @if ($productCategory->slug === "used-products")
+                                            <li></li>
+                                            @else
                                             <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
+                                         @endif
                                         @endforeach
                                         <input type="hidden" name="category" value="" id="category_id_for_search">
                                         <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
