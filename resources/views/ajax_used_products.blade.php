@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $page_view == 'grid_view' ? 'show active' : '' }} " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-    @if ($products->count() == 0 || $products->isEmpty())
+    @if ($products->count() == 0)
         <div class="row">
             <div class="col-12 text-center">
                 <h3 class="text-danger mt-5">{{__('user.Product not found')}}</h3>
@@ -8,7 +8,6 @@
     @endif
     <div class="row">
         @foreach ($products as $product)
-
         <div class="col-xl-4  col-sm-6">
             <div class="wsus__product_item">
                 @if ($product->new_product == 1)
@@ -84,7 +83,7 @@
         @endforeach
 
         <div class="col-xl-12">
-            {{-- {{ $products->links('ajax_custom_paginator') }} --}}
+            {{ $products->links('ajax_custom_paginator') }}
         </div>
     </div>
 </div>
@@ -172,7 +171,7 @@
         </div>
         @endforeach
         <div class="col-xl-12">
-            {{-- {{ $products->links('ajax_custom_paginator') }} --}}
+            {{ $products->links('ajax_custom_paginator') }}
         </div>
     </div>
 </div>

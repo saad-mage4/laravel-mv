@@ -1,5 +1,5 @@
 <?php
-return array (
+return array(
     'Address' => 'Adresă',
     'Billing Address' => 'Adresa de facturare',
     'name' => 'nume',
@@ -381,7 +381,7 @@ return array (
     'SHOPPING CART' => 'COȘ DE CUMPĂRĂTURI',
     'Browse Categories' => 'Răsfoiește Categoriile',
     'Shop' => 'Cumpără',
-    'UsedProducts' => 'Produse folosite',
+    'UsedProducts' => 'Vop',
     'Shop Now' => 'Cumpără Acum',
     'Sellers' => 'Vânzători',
     'Pages' => 'Pagini',
@@ -490,4 +490,3 @@ return array (
     'NIC Back' => 'Spate CNI',
     'PDF Document' => 'Document PDF',
 );
-?>

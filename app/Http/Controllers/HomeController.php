@@ -577,9 +577,9 @@ class HomeController extends Controller
     // Private Products Search
     public function searchUsedProduct(Request $request)
     {
-        // Initialize $products as an empty collection
-        // $products = Product::query();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
+
+        //! Variants
         if ($request->variantItems) {
             $products = Product::whereHas('variantItems', function ($query) use ($request) {
                 $sortArr = [];
@@ -597,6 +597,7 @@ class HomeController extends Controller
 
 
 
+        //! Shorting
         if ($request->shorting_id) {
             if (
                 $request->shorting_id == 1
@@ -612,6 +613,7 @@ class HomeController extends Controller
         }
 
 
+        //! Category
         if ($request->category) {
             $category = Category::where('slug', $request->category)->first();
             $products = $products->where('category_id', $category->id);
@@ -629,45 +631,33 @@ class HomeController extends Controller
         }
 
         //! Brands Filter
-        if ($request->brand) {
-            $brand = Brand::where('slug', $request->brand)->first();
-            if ($brand) {
-                $products = $products->where('brand_id', $brand->id);
-                // if ($products->isEmpty()) {
-                //     // $products = new Collection(); // Ensures $products is an empty collection
-                //     return null;
-                // }
-            }
-            // else {
-            //     $products = new Collection(); // No brand found
-            // }
-        }
+        // if ($request->brands) {
+        //     $brand = Brand::where('slug', $request->brands)->first();
+        //     $products = $products->where('brand_id', $brand->id);
+        // }
 
-        $brandSortArr = [];
-        if ($request->brands) {
-            foreach ($request->brands as $brand) {
-                $brandSortArr[] = $brand;
-            }
-            $products = $products->whereIn('brand_id', $brandSortArr);
-            // if ($products->isEmpty()) {
-            //     return null;
-            // }
-
-            // dd($products);
-        }
-        // $products = $products->get();
-        // if ($products->isEmpty()) {
-        //     $products = new Collection();
+        // $brandSortArr = [];
+        // if ($request->brands) {
+        //     foreach ($request->brands as $brand) {
+        //         $brandSortArr[] = $brand;
+        //     }
+        //     $products = $products->whereIn('brand_id', $brandSortArr);
         // }
 
 
+        //! My Brand Filter Work
+        // $brands = $request->brands;
+        // if ($brands && $request->has('brands')) {
+        //     $products = Product::whereIn('brand_id', $brands)->where('seller_type', 'Private')->get();
+        // }
+
         //? Price Filter
-        if ($request->price_range) {
-            $price_range = explode(';', $request->price_range);
-            $start_price = $price_range[0];
-            $end_price = $price_range[1];
-            $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
-        }
+        // if ($request->price_range) {
+        //     $price_range = explode(';', $request->price_range);
+        //     $start_price = $price_range[0];
+        //     $end_price = $price_range[1];
+        //     $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
+        // }
 
         if ($request->shop_name) {
             $slug = $request->shop_name;
@@ -680,10 +670,11 @@ class HomeController extends Controller
                 ->orWhere('long_description', 'LIKE', '%' . $request->search . '%');
         }
 
-        $products = $products->paginate($paginateQty);
-        $products = $products->appends($request->all());
+        //! Pagatination
+        // $products = $products->paginate($paginateQty); //$paginateQty
+        // $products = $products->appends($request->all());
 
-        //* page View Filter
+        //! page View Filter
         $page_view = '';
         if ($request->page_view) {
             $page_view = $request->page_view;
@@ -693,10 +684,35 @@ class HomeController extends Controller
         // $user = Auth::guard('web')->user();
         // $Vendor = Vendor::where('user_id', $user->id)->first();
 
+        /**
+         * * Join the Tables beacuse user watch if its not login
+         * TODO: products , categories, vendors, brands , pagination, price filter
+         */
         $products = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->paginate($paginateQty)->appends($request->all());
+
+        $brands = $request->brands;
+        if ($brands && $request->has('brands')) {
+            // $products = Product::whereIn('brand_id', $brands)->where('seller_type', 'Private')->get();
+            $products = DB::table('products')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->get();
+            ->join('brands', 'products.brand_id', '=', 'brands.id')
+            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->whereIn('brand_id', $brands)->paginate($paginateQty)->appends($request->all());
+        }
+
+        if ($request->price_range && !$request->has('brands')) {
+            $price_range = explode(';', $request->price_range);
+            $start_price = $price_range[0];
+            $end_price = $price_range[1];
+            // $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
+            $products = DB::table('products')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+                ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->paginate($paginateQty)->appends($request->all());
+        }
 
         $currencySetting = Setting::first();
         $setting = $currencySetting;
