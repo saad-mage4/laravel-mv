@@ -64,7 +64,7 @@
                         </span>
                     </div>
                     <form id="searchProductFormId">
-                    <div class="wsus__product_sidebar" id="sticky_sidebar">
+                    <div class="wsus__product_sidebar taha" id="sticky_sidebar">
                         <div class="accordion" id="accordionExample">
                             <div class="accordion-item">
                               <h2 class="accordion-header" id="headingOne">
