@@ -61,17 +61,17 @@
               </ul>
               </div>
             </div>
-            <div class="col-xl-6 col-md-6">
+            <div class="col-xl-4 col-md-6">
                     <label for="Seller_Method" class="Seller_Method">Slelect Your Seller Type</label>
                     <div class="wsus__dash_pro_single gap-3">
                       <div class="seller-1">
                         <label for="seller" title="Public"></label>
                         <input type="radio" id="seller" name="seller" value="Public" required checked>
                       </div>
-                      {{-- <div class="seller-2">
-                        <label for="sellerboprivatesellerth" title="Both"></label>
-                        <input type="radio" id="sellerboth" name="seller" value="Both" required>
-                      </div> --}}
+                        {{-- <div class="seller-2">
+                            <label for="public/private" title="Public/Private"></label>
+                            <input type="radio" id="sellerboth" name="seller" value="both" required>
+                        </div> --}}
                        <div class="seller-3">
                         <label for="privateseller" title="Private"></label>
                         <input type="radio" id="privateseller" name="seller"  value="Private" required>
@@ -85,11 +85,11 @@
                     <div id="loader" class="loader" style="display:none;"></div>
                 </a>
                     </div> --}}
-                    <button id="Seller_Type_btn" type="submit" class="common_btn mb-4 mt-2 next">
-             <div id="loader" class="loader" style="display:none;"></div>
-                                    <span class="text-white">Pay with Stripe</span>
-                                </button>
-                  </div>
+                </div>
+                <button id="Seller_Type_btn" type="submit" class="common_btn mb-4 mt-2 next">
+         <div id="loader" class="loader" style="display:none;"></div>
+                                <span class="text-white">Pay with Stripe</span>
+                            </button>
 {{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
           </div>
         </div>
