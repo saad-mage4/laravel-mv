@@ -2,5 +2,6 @@
    "i18n-ally.localesPaths": [
       "resources/lang",
       "public/backend/summernote/lang"
-   ]
+   ],
+   "i18n-ally.keystyle": "nested"
 }

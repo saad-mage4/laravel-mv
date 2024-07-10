@@ -33,7 +33,7 @@ class SellerDashboardController extends Controller
         $seller = $user->seller;
         if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {
             // Subscription has expired, set is_member to 0
-            $user->is_member = 0;
+            $user->is_paid = 0;
             $user->save();
         }
         if($user->is_member == 0) {

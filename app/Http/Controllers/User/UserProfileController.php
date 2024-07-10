@@ -63,7 +63,7 @@ class UserProfileController extends Controller
         $setting = Setting::first();
         if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {
             // Subscription has expired, set is_member to 0
-            $user->is_member = 0;
+            $user->is_paid = 0;
             $user->save();
         }
 
@@ -409,7 +409,9 @@ class UserProfileController extends Controller
     {
         $response = $request->status;
         $SellerType = $request->transaction_type;
-        // dd($response);
+        $PrivateAds = $request->privateAds;
+
+        // dd($PrivateAds);
         $user = Auth::guard('web')->user();
 
         // Set the Stripe API key
@@ -418,38 +420,54 @@ class UserProfileController extends Controller
         if ($response == 'success' && $SellerType == "Public") {
             $user->is_paid = 1;
             $user->seller_type = "Public";
+            $user->private_ad = null;
             // Add one month to the current date
             $expiryDate = Carbon::now()->addMonth();
             // Save the expiry date to the user's record
             $user->subscription_expiry_date = $expiryDate;
-            $user->save();
             $is_paid = $user->is_paid;
             $user_seller_type = $user->seller_type;
+            $user->private_ad = $user->private_ad;
+            $user->save();
+
+            $CurrentDate = Carbon::now()->toDateString();
             // dd($user->is_paid);
-            if ($is_paid == 1 && $user_seller_type == "Public") {
+            if ($user->is_member == 0 && $is_paid == 1 && $user_seller_type == "Public") {
                 $notification = 'Payment has been made Successfully!';
                 $notification = array('messege' => $notification, 'alert-type' => 'success');
                 return redirect('user/seller-registration')->with($notification);
+            } elseif ($user->is_member == 1 && $user->is_paid == 1 && $user->seller_type == "Public") {
+                // $setting = Setting::first();
+                $notification = 'Your Subscription has been Upgrade';
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
+                return redirect('seller/dashboard')->with($notification);
+                // return view('seller.dashboard');
             } else {
-                $notification = 'Unable to process ypur payment';
+                $notification = 'Unable to process Your payment';
                 $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect('seller/dashboard')->with($notification);
             }
         } elseif ($response == 'success' && $SellerType == "Private") {
             $user->is_paid = 1;
             $user->seller_type = "Private";
+            $user->private_ad = $PrivateAds;
             // $expiryDate = Carbon::now()->addMonth();
             // $expiryDate = Carbon::now();
             $user->subscription_expiry_date = null;
-            $user->save();
             $is_paid = $user->is_paid;
             $user_seller_type = $user->seller_type;
-            if ($is_paid == 1 && $user_seller_type == "Private") {
+            $user->private_ad = $user->private_ad;
+            $user->save();
+            if ($is_paid == 1 && $user_seller_type == "Private" && $user->is_member == 0) {
                 $notification = 'Payment has been made Successfully!';
                 $notification = array('messege' => $notification, 'alert-type' => 'success');
                 return redirect('user/private-registration')->with($notification);
+            } elseif ($user->is_member == 1 && $user->is_paid == 1 && $user->seller_type == "Private") {
+                $notification = 'Your Ads Subscription has been Upgrade';
+                $notification = array('messege' => $notification, 'alert-type' => 'success');
+                return redirect('seller/dashboard')->with($notification);
             } else {
-                $notification = 'Unable to process ypur payment';
+                $notification = 'Unable to process Your payment';
                 $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect('seller/dashboard')->with($notification);
             }
@@ -474,13 +492,28 @@ class UserProfileController extends Controller
         $user = Auth::guard('web')->user();
         $is_member = $user->is_member;
         $user->save();
-        if ($user->is_member == 1 && $user->is_paid == 0) {
+
+        $CurrentDate = Carbon::now()->toDateString();
+
+        if ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Private" && $user->private_ad == 0) {
+            $notification = 'Your Ads Limit Reached!';
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
+            return redirect('user/test')->with($notification);
+            // return redirect('user.seller_membership')->with($notification);
+        } else if ($user->is_member == 0 && $user->is_paid == 1 && $user->seller_type == "Public") {
             $notification = 'You have already Paid!';
             $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect('user/seller-registration')->with($notification);
+        } elseif ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Public" && $user->subscription_expiry_date == $CurrentDate) {
+            return view('user.seller_membership', compact('setting', 'is_member'));
         } else {
             return view('user.seller_membership', compact('setting', 'is_member'));
         }
+    }
+
+    public function Test()
+    {
+        return view('user.test');
     }
 
     //**    Public Seller Registration  */
@@ -833,6 +866,7 @@ class UserProfileController extends Controller
         $user = Auth::guard('web')->user();
         $is_paid = $user->is_paid;
         $user_seller_type = $user->seller_type;
+        $private_Ads = $user->private_ad; // limit of the adds
         if ($is_paid == 1 &&  $user_seller_type == "Private") {
             return view('user.private_registration', compact('setting', 'user'));
         } else {
@@ -889,6 +923,7 @@ class UserProfileController extends Controller
             $seller->idCardSignatory = "";
             $seller->bankStatement = "";
             $seller->articlesOfIncorporation = "";
+            $seller->status = 1; // save By deafult not permission to the super admin
             $seller->save();
         }
 
