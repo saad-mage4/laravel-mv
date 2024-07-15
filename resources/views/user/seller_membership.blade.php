@@ -29,6 +29,79 @@ div#privateAdsContainer {
   color: #18587a;
 }
 
+
+/* price Adds */
+/* body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+} */
+
+.pricing-table {
+    display: flex;
+    gap: 20px;
+}
+
+.pricing-card {
+    background-color: #ff6600;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    width: 200px;
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+.ribbon {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    padding: 5px 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+}
+
+.content {
+    margin-top: 30px;
+}
+
+.buy-button {
+    background-color: black;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.buy-button:hover {
+    background-color: #333;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 </style>
 <div class="row">
   <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
@@ -98,14 +171,52 @@ div#privateAdsContainer {
                     </div>
 
                       <div id="privateAdsContainer" style="display: none;">
-                        <label for="private_ads" title="Seller Ads">Seller Ads</label>
+                        {{-- <label for="private_ads" title="Seller Ads">Seller Ads</label>
                     <select name="private_ads">
                     <option value="1">1</option>
                     <option value="30">30</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
                     </select>
-                     <p id="pricingInfo"></p>
+                     <p id="pricingInfo"></p> --}}
+                     <div class="pricing-table">
+        <div class="pricing-card">
+            <div class="ribbon">1 Ad Posting</div>
+            <div class="content">
+                <p>1 Ad posting on Voop</p>
+                <p>Personalized Dashboard</p>
+                <p>4.99 Euros</p>
+                <button class="buy-button">Buy</button>
+            </div>
+        </div>
+        <div class="pricing-card">
+            <div class="ribbon">30 Ads Posting</div>
+            <div class="content">
+                <p>30 Ad postings on Voop</p>
+                <p>Personalized Dashboard</p>
+                <p>14.99 Euros</p>
+                <button class="buy-button">Buy</button>
+            </div>
+        </div>
+        <div class="pricing-card">
+            <div class="ribbon">50 Ads Posting</div>
+            <div class="content">
+                <p>50 Ad postings on Voop</p>
+                <p>Personalized Dashboard</p>
+                <p>24.99 Euros</p>
+                <button class="buy-button">Buy</button>
+            </div>
+        </div>
+        <div class="pricing-card">
+            <div class="ribbon">100 Ads Posting</div>
+            <div class="content">
+                <p>100 Ads posting on Voop</p>
+                <p>Personalized Dashboard</p>
+                <p>49.99 Euros</p>
+                <button class="buy-button">Buy</button>
+            </div>
+        </div>
+    </div>
                     </div>
 
                     <div class="col-xl-8 col-md-6">
