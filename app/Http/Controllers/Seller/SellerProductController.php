@@ -30,7 +30,7 @@ use File;
 use Str;
 use Auth;
 use App\Mail\NewOfferPrice;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\{Mail, DB};
 class SellerProductController extends Controller
 {
     public function __construct()
@@ -101,9 +101,12 @@ class SellerProductController extends Controller
         return response()->json(['childCategories' => $response]);
     }
 
+
+    //! For Store the Product Dataa
     public function store(Request $request)
     {
         $user = Auth::guard('web')->user();
+
         if ($request->video_link) {
             $valid = preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $request->video_link);
 
@@ -208,36 +211,90 @@ class SellerProductController extends Controller
                 ->save(public_path() . '/' . $banner_name);
             $product->banner_image = $banner_name;
         }
-        $productCategories = Category::where(['name' => $request->category])->get();
-        $product->vendor_id = $seller->id;
-        $product->short_name = $request->short_name;
-        $product->name = $request->name;
-        $product->slug = $request->slug;
-        $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
-        $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
-        $product->child_category_id = $request->child_category ? $request->child_category : 0;
-        $product->brand_id = $request->brand;
-        $product->sku = $request->sku;
-        $product->price = $request->price;
-        $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
-        $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
-        $product->short_description = $request->short_description;
-        $product->long_description = $request->long_description;
-        $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
-        $product->tags = $user->seller_type == "Private" ? null : $request->tags;
-        $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
-        $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
-        $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
-        $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
-        $product->is_undefine = 1;
-        $product->is_specification = $request->is_specification ? 1 : 0;
-        $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
-        $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
-        $product->seller_type = $user->seller_type;
+
+
+
         if ($user->seller_type == "Private") {
-            $product->status = 1;
+            // For Private Ads
+            $user_data = User::where('id', $user->id)->first();
+
+            if ((int)$user_data->private_ad > 0) {
+                $ad = (int)$user_data->private_ad - 1;
+                DB::table('users')->where('id', $user->id)->update(['private_ad' => $ad]);
+
+                $productCategories = Category::where(['name' => $request->category])->get();
+                $product->vendor_id = $seller->id;
+                $product->short_name = $request->short_name;
+                $product->name = $request->name;
+                $product->slug = $request->slug; //Slug is required for unique url redirect of the products
+                $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
+                $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
+                $product->child_category_id = $request->child_category ? $request->child_category : 0;
+                $product->brand_id = $request->brand;
+                $product->sku = $user->seller_type == "Private" ? null : $request->sku;
+                $product->price = $request->price;
+                $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
+                $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
+                $product->short_description = $request->short_description;
+                $product->long_description = $request->long_description;
+                $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
+                $product->tags = $user->seller_type == "Private" ? null : $request->tags;
+                $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
+                $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
+                $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
+                $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
+                $product->is_undefine = 1;
+                $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
+                $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
+                $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
+                $product->seller_type = $user->seller_type;
+                if ($user->seller_type == "Private") {
+                    $product->status = 1;
+                }
+
+                if ($ad == 0) {
+                    DB::table('users')->where('id', $user->id)->update(['is_paid' => false]); //'is_member' => false
+                }
+                $product->save();
+            } else {
+                $notification = 'You have reached your limit for ads posting..';
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
+                return redirect('seller/product')->with($notification);
+            }
+        } else {
+            $productCategories = Category::where(['name' => $request->category])->get();
+            $product->vendor_id = $seller->id;
+            $product->short_name = $request->short_name;
+            $product->name = $request->name;
+            $product->slug = $request->slug; //Slug is required for unique url redirect of the products
+            $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
+            $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
+            $product->child_category_id = $request->child_category ? $request->child_category : 0;
+            $product->brand_id = $request->brand;
+            $product->sku = $user->seller_type == "Private" ? null : $request->sku;
+            $product->price = $request->price;
+            $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
+            $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
+            $product->short_description = $request->short_description;
+            $product->long_description = $request->long_description;
+            $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
+            $product->tags = $user->seller_type == "Private" ? null : $request->tags;
+            $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
+            $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
+            $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
+            $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
+            $product->is_undefine = 1;
+            $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
+            $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
+            $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
+            $product->seller_type = $user->seller_type;
+            if ($user->seller_type == "Private") {
+                $product->status = 1;
+            }
+            $product->save();
         }
-        $product->save();
+
+
 
         if ($request->is_specification) {
             $exist_specifications = [];

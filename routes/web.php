@@ -208,6 +208,7 @@ Route::group(['middleware' => ['maintainance']], function () {
 
             //! Default route if not verified
         Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->name('seller-membership');
+            Route::get('test', [UserProfileController::class, 'Test'])->name('test');
             Route::get('private_seller', [UserProfileController::class, 'privateMembership'])->name('private_seller');
         Route::get('/membership/subscribe', [UserProfileController::class, 'subscribe'])->name('membership.subscribe');
         Route::get('billing-address', [UserProfileController::class, 'editBillingAddress'])->name('billing-address');

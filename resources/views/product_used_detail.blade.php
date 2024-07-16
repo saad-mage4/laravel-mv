@@ -112,37 +112,37 @@
                                                     }
                                                 @endphp
 
-                                                 @if ($reviewQty > 0)
-                                                <p class="rating">
-                                                    @for ($i = 1; $i <=5; $i++)
-                                                        @if ($i <= $reviewPoint)
-                                                            <i class="fas fa-star"></i>
-                                                        @elseif ($i> $reviewPoint )
-                                                            @if ($halfReview==true)
-                                                            <i class="fas fa-star-half-alt"></i>
-                                                                @php
-                                                                    $halfReview=false
-                                                                @endphp
-                                                            @else
-                                                            <i class="fal fa-star"></i>
-                                                            @endif
-                                                        @endif
-                                                    @endfor
-                                                    <span>({{ $reviewQty }} {{ __('user.review') }})</span>
-                                                </p>
-                                                @endif
-
-                                                @if ($reviewQty == 0)
+                                                    {{-- @if ($reviewQty > 0)
                                                     <p class="rating">
-                                                        <i class="fal fa-star"></i>
-                                                        <i class="fal fa-star"></i>
-                                                        <i class="fal fa-star"></i>
-                                                        <i class="fal fa-star"></i>
-                                                        <i class="fal fa-star"></i>
-                                                        <span>(0 {{ __('user.review') }})</span>
+                                                        @for ($i = 1; $i <=5; $i++)
+                                                            @if ($i <= $reviewPoint)
+                                                                <i class="fas fa-star"></i>
+                                                            @elseif ($i> $reviewPoint )
+                                                                @if ($halfReview==true)
+                                                                <i class="fas fa-star-half-alt"></i>
+                                                                    @php
+                                                                        $halfReview=false
+                                                                    @endphp
+                                                                @else
+                                                                <i class="fal fa-star"></i>
+                                                                @endif
+                                                            @endif
+                                                        @endfor
+                                                        <span>({{ $reviewQty }} {{ __('user.review') }})</span>
                                                     </p>
-                                                @endif
-{{-- {{ $user->shop_name }} --}}
+                                                    @endif
+
+                                                    @if ($reviewQty == 0)
+                                                        <p class="rating">
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <i class="fal fa-star"></i>
+                                                            <span>(0 {{ __('user.review') }})</span>
+                                                        </p>
+                                                    @endif --}}
+                                                 {{-- {{ $user->shop_name }} --}}
                                                 <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ $user->firstName }} {{ $user->lastName }}</p>
                                                 <p><span class="w-auto">{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
                                                 <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
@@ -403,6 +403,13 @@
                 </div> --}}
 
                 {{-- Description Shown  --}}
+                                    {{-- <div class="col-12">
+                                        <div class="wsus__pro_det_description">
+                                            <h1 class="fw-bold  mb-3">Description :</h1>
+                                            {!! $product->long_description !!}
+                                        </div>
+                                    </div> --}}
+
                 <div class="col-xl-12">
                     <div class="wsus__pro_det_description">
                         <ul class="nav nav-pills mb-3" id="pills-tab3" role="tablist">
@@ -499,7 +506,7 @@
                                                     }
                                                 @endphp
 
-                                                @if ($reviewQty > 0)
+                                                {{-- @if ($reviewQty > 0)
                                                 <p class="rating">
                                                     @for ($i = 1; $i <=5; $i++)
                                                         @if ($i <= $reviewPoint)
@@ -528,7 +535,7 @@
                                                         <i class="fal fa-star"></i>
                                                         <span>(0 {{ __('user.review') }})</span>
                                                     </p>
-                                                @endif
+                                                @endif --}}
 
                                                 <p><span>{{__('user.Store Name')}}:</span> {{ $user->shop_name ?? '' }}</p>
                                                 <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>

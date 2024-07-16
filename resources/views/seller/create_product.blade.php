@@ -108,10 +108,12 @@
                                     </select>
                                 </div>
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.SKU')}} </label>
                                    <input type="text" class="form-control" name="sku">
                                 </div>
+                                @endif
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Price')}} <span class="text-danger">*</span></label>
@@ -208,6 +210,7 @@
                                 @endif
 
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Specifications')}}</label>
                                     <div>
@@ -216,7 +219,9 @@
                                         </a>
                                     </div>
                                 </div>
+                                @endif
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12" id="specification-box">
                                     <div class="row">
                                         <div class="col-md-5">
@@ -236,8 +241,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
 
-
+                                @if ($authUser->seller_type == "Public")
                                 <div id="hidden-specification-box" class="d-none">
                                     <div class="delete-specification-row">
                                         <div class="row mt-2">
@@ -259,6 +265,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endIf
                             </div>
                             <div class="row">
                                 <div class="col-12">

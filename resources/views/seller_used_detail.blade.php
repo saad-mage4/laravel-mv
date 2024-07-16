@@ -71,7 +71,7 @@
                                                         }
                                                     @endphp
 
-                                                    @if ($reviewQty > 0)
+                                                    {{-- @if ($reviewQty > 0)
                                                         <p class="wsus__vendor_rating">
                                                             @for ($i = 1; $i <=5; $i++)
                                                                 @if ($i <= $reviewPoint)
@@ -100,7 +100,7 @@
                                                             <i class="fal fa-star"></i>
                                                             <span>(0 {{__('user.review')}})</span>
                                                         </p>
-                                                    @endif
+                                                    @endif --}}
 
                                                     <a href="callto:{{ $seller->phone }}"><i class="far fa-phone-alt"></i> {{ $seller->phone }}</a>
                                                     <a href="mailto:{{ $seller->email }}"><i class="far fa-envelope"></i> {{ $seller->email }}</a>
