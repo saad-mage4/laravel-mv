@@ -421,6 +421,7 @@ class UserProfileController extends Controller
             $user->is_paid = 1;
             $user->seller_type = "Public";
             $user->private_ad = null;
+            $user->private_subscription_expiry_date = null;
             // Add one month to the current date
             $expiryDate = Carbon::now()->addMonth();
             // Save the expiry date to the user's record
@@ -451,9 +452,9 @@ class UserProfileController extends Controller
             $user->is_paid = 1;
             $user->seller_type = "Private";
             $user->private_ad = $PrivateAds;
-            // $expiryDate = Carbon::now()->addMonth();
-            // $expiryDate = Carbon::now();
-            $user->subscription_expiry_date = null;
+            $user->subscription_expiry_date = null; //public subscibtion
+            $expiryDate = Carbon::now()->addMonth(); // Add the Montly subscibe in the private ads
+            $user->private_subscription_expiry_date = $expiryDate;
             $is_paid = $user->is_paid;
             $user_seller_type = $user->seller_type;
             $user->private_ad = $user->private_ad;
@@ -495,7 +496,7 @@ class UserProfileController extends Controller
 
         $CurrentDate = Carbon::now()->toDateString();
 
-        if ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Private" && $user->private_ad == 0) {
+        if ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Private" && $user->private_ad == 0 && $user->private_subscription_expiry_date =  $CurrentDate) {
             $notification = 'Your Ads Limit Reached!';
             $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect('user/test')->with($notification);
@@ -511,6 +512,7 @@ class UserProfileController extends Controller
         }
     }
 
+    //? Private Route For if the is_paid && montly subcripe is over
     public function Test()
     {
         return view('user.test');
@@ -867,6 +869,10 @@ class UserProfileController extends Controller
         $is_paid = $user->is_paid;
         $user_seller_type = $user->seller_type;
         $private_Ads = $user->private_ad; // limit of the adds
+        $expiryDate = Carbon::now()->addMonth(); // Add the Montly subscibe in the private ads
+        $user->private_subscription_expiry_date = $expiryDate;
+        $private_subscription_expiry_date = $user->private_subscription_expiry_date;
+
         if ($is_paid == 1 &&  $user_seller_type == "Private") {
             return view('user.private_registration', compact('setting', 'user'));
         } else {
@@ -896,11 +902,15 @@ class UserProfileController extends Controller
         )->exists();
 
         if ($Query_Exists) {
-            PrivateSellerRegistration::where('email', $data['email'])->update([
-                'first_name' => $data['firstName'],
-                'last_name' => $data['lastName'],
-                'phone_no' => $data['phone']
-            ]);
+            // PrivateSellerRegistration::where('email', $data['email'])->update([
+            //     'first_name' => $data['firstName'],
+            //     'last_name' => $data['lastName'],
+            //     'phone_no' => $data['phone']
+            // ]);
+            return response()->json([
+                'message' => 'Email already exists',
+                'alertType' => 'error'
+            ], 400);
         } else {
             $sellerRegistration = new PrivateSellerRegistration();
             $sellerRegistration->first_name = $data['firstName'];

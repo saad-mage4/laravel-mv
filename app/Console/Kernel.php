@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
         ->everyMinute()->timezone('Asia/Karachi');
 
         // For Private Seller Ads Cron job
-        // $schedule->call('App\Http\Controllers\User\StripeController.php@PrivateAdsCron')
-        // ->everyMinute()->timezone('Asia/Karachi');
+        $schedule->call('App\Http\Controllers\User\StripeController@PrivateAdsCron')
+        ->everyMinute()->timezone('Asia/Karachi');
     }
 
     /**

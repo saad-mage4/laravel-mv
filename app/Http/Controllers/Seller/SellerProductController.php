@@ -219,6 +219,7 @@ class SellerProductController extends Controller
             // For Private Ads
             $user_data = User::where('id', $user->id)->first();
 
+
             if ((int)$user_data->private_ad > 0) {
                 $ad = (int)$user_data->private_ad - 1;
                 DB::table('users')->where('id', $user->id)->update(['private_ad' => $ad]);
@@ -252,9 +253,8 @@ class SellerProductController extends Controller
                 if ($user->seller_type == "Private") {
                     $product->status = 1;
                 }
-
                 if ($ad == 0) {
-                    DB::table('users')->where('id', $user->id)->update(['is_paid' => false]); //'is_member' => false
+                    DB::table('users')->where('id', $user->id)->update(['is_paid' => false, 'private_subscription_expiry_date' => null]); //'is_member' => false
                 }
                 $product->save();
             } else {

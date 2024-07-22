@@ -169,7 +169,16 @@
                   $('#submitButton span').text("Submit");
                   $('#loader').hide();
                      window.location.href = response;
-                }
+                },
+                error: function(xhr) {
+            $('#submitButton span').text("Submit");
+            $('#loader').hide();
+            if (xhr.status === 400) {
+                alert(xhr.responseJSON.message);
+            } else {
+                alert("An error occurred. Please try again.");
+            }
+        }
             });
       }
         })
