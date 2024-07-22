@@ -1,3 +1,7 @@
+@php
+    $setting = App\Models\Setting::first();
+    $authUser = Auth::guard('web')->user();
+@endphp
 @extends('seller.master_layout')
 @section('title')
 <title>{{__('user.Products')}}</title>
@@ -64,12 +68,59 @@
                                     <input type="text" id="slug" class="form-control"  name="slug" value="{{ $product->slug }}">
                                 </div>
 
-                                <div class="form-group col-12">
+                                {{-- <div class="form-group col-12">
                                     <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
                                     <select name="category" class="form-control select2" id="category">
                                         <option value="">{{__('user.Select Category')}}</option>
                                         @foreach ($categories as $category)
                                             <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group col-12">
+                                    <label>{{__('user.Sub Category')}}</label>
+                                    <select name="sub_category" class="form-control select2" id="sub_category">
+                                        <option value="">{{__('user.Select Sub Category')}}</option>
+                                        @if ($product->sub_category_id != 0)
+                                            @foreach ($subCategories as $subCategory)
+                                            <option {{ $product->sub_category_id == $subCategory->id ? 'selected' : '' }} value="{{ $subCategory->id }}">{{ $subCategory->name }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label>{{__('user.Child Category')}}</label>
+                                    <select name="child_category" class="form-control select2" id="child_category">
+                                        <option value="">{{__('user.Select Child Category')}}</option>
+                                        @if ($product->child_category_id != 0)
+                                            @foreach ($childCategories as $childCategory)
+                                            <option {{ $product->child_category_id == $childCategory->id ? 'selected' : '' }} value="{{ $childCategory->id }}">{{ $childCategory->name }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div> --}}
+
+                                   @if ($authUser->seller_type == "Private")
+                            @foreach ($categories as $item)
+                    @if (isset($item->slug) && $item->slug === 'used-products')
+                            <div class="form-group col-12">
+                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
+                                    <input name="category"  class="form-control"  readonly type="text" value="{{ $item['name']}}" />
+                                </div>
+                                @endif
+                @endforeach
+                                @else
+                                <div class="form-group col-12">
+                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
+                                    <select name="category" class="form-control select2" id="category">
+                                        <option value="">{{__('user.Select Category')}}</option>
+                                        @foreach ($categories as $category)
+                                            @if ($category->slug !== 'used-products')
+                                            <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -98,6 +149,9 @@
                                     </select>
                                 </div>
 
+                                @endif
+
+
                                 <div class="form-group col-12">
                                     <label>{{__('user.Brand')}} <span class="text-danger">*</span></label>
                                     <select name="brand" class="form-control select2" id="brand">
@@ -108,23 +162,26 @@
                                     </select>
                                 </div>
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.SKU')}} </label>
                                    <input type="text" class="form-control" name="sku" value="{{ $product->sku }}">
                                 </div>
+                                @endIf
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Price')}} <span class="text-danger">*</span></label>
                                    <input type="text" class="form-control" name="price" value="{{ $product->price }}">
                                 </div>
-
+                                 @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Offer Price')}}</label>
                                    <input type="text" class="form-control" name="offer_price" value="{{ $product->offer_price }}">
                                 </div>
+                                @endIf
 
 
-
+@if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Stock Quantity')}} <span class="text-danger">*</span></label>
                                    <input type="number" class="form-control" name="quantity" value="{{ $product->qty }}">
@@ -149,7 +206,7 @@
                                     <label>{{__('user.Video Link')}}</label>
                                    <input type="text" class="form-control" name="video_link" value="{{ $product->video_link }}">
                                 </div>
-
+@endIf
 
 
                                 <div class="form-group col-12">
@@ -164,7 +221,7 @@
 
 
 
-
+@if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Tags')}}</label>
                                    <input type="text" class="form-control tags" name="tags" value="{{ $tags }}">
@@ -358,6 +415,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+@endif
                             </div>
                             <div class="row">
                                 <div class="col-12">

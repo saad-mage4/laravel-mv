@@ -73,6 +73,6 @@ class SellerDashboardController extends Controller
 
 
 
-        return view('seller.dashboard',compact('todayOrders','totalOrders','setting','monthlyOrders','yearlyOrders','products','reviews','reports','seller','totalWithdraw','totalPendingWithdraw'));
+        return view('seller.dashboard', compact('user', 'todayOrders', 'totalOrders', 'setting', 'monthlyOrders', 'yearlyOrders', 'products', 'reviews', 'reports', 'seller', 'totalWithdraw', 'totalPendingWithdraw'));
     }
 }
