@@ -51,7 +51,7 @@ class StripeController extends Controller
                         'quantity' => 1,
                     ],
                 ],
-                'mode' => $transactionType == "Public" ? 'subscription' :  'payment',
+                'mode' => 'subscription',
                 'success_url' => url('/user/membership/subscribe?transaction_type=' . $transactionType . '&status=success&privateAds=' . $privateAd),
                 'cancel_url' => url('/user/seller-membership?transaction_type=' . $transactionType),
             ]);

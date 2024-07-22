@@ -108,6 +108,7 @@
                                     </select>
                                 </div>
 
+
                                 @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.SKU')}} </label>

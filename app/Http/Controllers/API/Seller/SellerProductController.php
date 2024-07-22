@@ -255,6 +255,7 @@ class SellerProductController extends Controller
 
     }
 
+    // Update the Product Controller Forn Private Seller
     public function update(Request $request, $id)
     {
         if($request->video_link) {
@@ -508,5 +509,4 @@ class SellerProductController extends Controller
         $notification = trans('user_validation.Update Successfully');
         return response()->json(['notification' => $notification]);
     }
-
 }

@@ -276,6 +276,7 @@ Route::group(['middleware' => ['maintainance']], function () {
     });
 
 
+    // Sller Admin Routes
     Route::group(['as'=> 'seller.', 'prefix' => 'seller','middleware' => ['checkseller']],function (){
         Route::get('language/{locale}', function ($locale) {
             app()->setLocale($locale);

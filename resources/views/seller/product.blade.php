@@ -46,6 +46,7 @@
                                         <td>{{ $setting->currency_icon }}{{ $product->price }}</td>
                                         <td> <img class="rounded-circle" src="{{ asset($product->thumb_image) }}" alt="" width="80px"></td>
                                         <td>
+                                            {{-- $authUser->seller_type --}}
                                             @if ($product->is_undefine == 1)
                                             {{__('user.Undefine Product')}}
                                             @elseif ($product->new_product == 1)

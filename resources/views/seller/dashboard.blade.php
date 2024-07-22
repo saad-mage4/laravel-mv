@@ -9,9 +9,9 @@
       <div class="section-header">
         <h1>{{__('user.Dashbaord')}}</h1>
       </div>
-
       <div class="section-body">
         <div class="row">
+            @if ($user->seller_type == "Public")
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-primary">
@@ -73,23 +73,39 @@
                 </div>
               </div>
             </div>
+            @endif
 
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-warning">
-                  <i class="fas fa-shopping-cart"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>{{__('user.Total Declined Order')}}</h4>
-                  </div>
-                  <div class="card-body">
-                    {{ $totalOrders->where('order_status',4)->count() }}
-                  </div>
-                </div>
-              </div>
-            </div>
+
+             @php
+                        $thisYearEarning = 0;
+                        $thisYearProductSale = 0;
+                        foreach ($yearlyOrders as $key => $yearlyOrder) {
+                            $orderProducts = $yearlyOrder->orderProducts->where('seller_id',$seller->id);
+                            foreach ($orderProducts as $key => $orderProduct) {
+                                $price = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
+                                $thisYearEarning = $thisYearEarning + $price;
+                                $thisYearProductSale = $thisYearProductSale + $orderProduct->qty;
+                            }
+                        }
+                    @endphp
+
+                      @php
+                        $totalEarning = 0;
+                        $totalProductSale = 0;
+                        foreach ($totalOrders as $key => $totalOrder) {
+                            $orderProducts = $totalOrder->orderProducts->where('seller_id',$seller->id);
+                            foreach ($orderProducts as $key => $orderProduct) {
+                                $price = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
+                                $totalEarning = $totalEarning + $price;
+                                $totalProductSale = $totalProductSale + $orderProduct->qty;
+                            }
+                        }
+                    @endphp
+
+
+
+
 
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
@@ -102,6 +118,23 @@
                   </div>
                   <div class="card-body">
                     {{ $totalOrders->where('order_status',3)->count() }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            @if ($user->seller_type == "Public")
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+              <div class="card card-statistic-1">
+                <div class="card-icon bg-warning">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="card-wrap">
+                  <div class="card-header">
+                    <h4>{{__('user.Total Declined Order')}}</h4>
+                  </div>
+                  <div class="card-body">
+                    {{ $totalOrders->where('order_status',4)->count() }}
                   </div>
                 </div>
               </div>
@@ -263,6 +296,21 @@
                 </div>
               </div>
             </div>
+            @endif
+
+            {{-- Montly Saving  --}}
+                       @php
+                        $thisMonthEarning = 0;
+                        $thisMonthProductSale = 0;
+                        foreach ($monthlyOrders as $key => $monthlyOrder) {
+                            $orderProducts = $monthlyOrder->orderProducts->where('seller_id',$seller->id);
+                            foreach ($orderProducts as $key => $orderProduct) {
+                                $price = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
+                                $thisMonthEarning = $thisMonthEarning + $price;
+                                $thisMonthProductSale = $thisMonthProductSale + $orderProduct->qty;
+                            }
+                        }
+                    @endphp
 
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">

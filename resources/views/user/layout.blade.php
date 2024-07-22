@@ -144,14 +144,14 @@
                     <li><a class="{{ Route::is('user.private-registration') ? 'active' : '' }}" href="{{ route('user.private-registration') }}"><i class="fal fa-gift-card"></i> {{__('user.Become a Seller')}}</a></li>
                 @elseif($user->is_member == true  && $user->seller_type == "Private" && $user->is_paid == 0 && $isSeller == true && $user->private_ad == 0)
                 <li><a class="{{ Route::is('user.test') ? 'active' : '' }}" href="{{ route('user.test') }}"><i class="fal fa-gift-card"></i>{{__('user.Public Seller')}}</a></li>
-                <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i>{{__('user.Visit Seller Dashboard')}}</a></li>
+                <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i>Private Seller Dashboard</a></li>
                 @elseif($user->is_member == true  && $user->seller_type == "Public" && $user->is_paid == 0 && $isSeller == true)
                 <li><a class="{{ Route::is('user.seller-membership') ? 'active' : '' }}" href="{{ route('user.seller-membership') }}"><i class="fal fa-gift-card"></i> {{__('user.Private Seller')}}</a></li>
                   {{-- <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li> --}}
                 @else
                 @if ($user->is_member == true &&
                 $Check_Status === 1)
-                <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li>
+                <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{ $user->seller_type == "Public" ?  "Public Seller Dashboard" :  __('user.Visit Seller Dashboard') }} </a></li>
                 @endif
                 @endif
 
