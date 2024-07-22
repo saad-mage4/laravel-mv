@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Stripe\{StripeClient, Exception\ApiErrorException};
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class StripeController extends Controller
@@ -61,26 +62,19 @@ class StripeController extends Controller
         }
     }
 
-    // public function PrivateAdsCron()
-    // {
-    //     $users = Auth::guard('web')->user();
-
-    //     foreach ($users as $user) {
-    //         $adCount = $user->private_ad;
-
-    //         // Check if user exceeds ad limit
-    //         $adLimit = $user->ad_limit; // Assuming you store ad limit in user model
-
-    //         if ($adCount > $adLimit) {
-    //             // Take action (e.g., disable extra ads, send notification, etc.)
-    //             DB::table('products')->where('vendor_id', $user->id)->where('status', '1')
-    //                 ->orderBy('created_at', 'desc')
-    //                 ->take($adCount - $adLimit)
-    //                 ->update(['status' => 'disabled']);
-
-    //             // Optionally, notify the user
-    //             // Notification::send($user, new AdLimitExceededNotification());
-    //         }
-    //     }
-    // }
+    //! For Private Monthly Subscribtion
+    public function PrivateAdsCron()
+    {
+        $currentTime = Carbon::now()->format('Y-m-d');
+        $users = User::where("is_paid", '=', "1")->whereNotNull('private_subscription_expiry_date')->get();
+        foreach ($users  as $user) {
+            $differnce = Carbon::parse($user->private_subscription_expiry_date)->diffInDays($currentTime, false);
+            if ($differnce > 0) {
+                $user->is_paid = 0;
+                $user->private_ad = 0;
+                $user->private_subscription_expiry_date = null;
+                $user->update();
+            }
+        }
+    }
 }

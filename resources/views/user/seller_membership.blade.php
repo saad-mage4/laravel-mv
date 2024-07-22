@@ -143,7 +143,7 @@
 $Ads = [
             "1" => [
                 "header" => "1 Ad Posting",
-                "price" => "4.99",
+                "price" => "2.99",
                 "title" => "1 Ad posting on Voop",
                 "content" => "Personalized Dashboard",
                 "button" => "Buy"

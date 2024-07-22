@@ -454,7 +454,8 @@ class HomeController extends Controller
         $productCategories = Category::where(['status' => 1])->get();
         $brands = Brand::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
-        $products = Product::orderBy('id', 'desc')->where(['status' => 1]);
+        // $products = Product::orderBy('id', 'desc')->where(['status' => 1]);
+        $products = Product::where(['status' => 1])->orderBy('created_at', 'desc')->get();
         // dd($request->category_id);
         if ($request->category_id) {
             $products = $products->where('category_id', $request->category_id);
