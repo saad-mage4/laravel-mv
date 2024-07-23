@@ -168,13 +168,13 @@
                                     </div>
 
                                 </div>
-                                <div class="wsus__topbar_select">
+                                {{-- <div class="wsus__topbar_select">
                                     <select class="select_2 shorting_id" name="shorting_id">
                                         <option value="1">{{__('user.default shorting')}}</option>
                                         <option value="2">{{__('user.low to high price')}} </option>
                                         <option value="3">{{__('user.high to low price')}}</option>
                                     </select>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </form>

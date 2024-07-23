@@ -454,11 +454,12 @@ class HomeController extends Controller
         $productCategories = Category::where(['status' => 1])->get();
         $brands = Brand::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
-        // $products = Product::orderBy('id', 'desc')->where(['status' => 1]);
-        $products = Product::where(['status' => 1])->orderBy('created_at', 'desc')->get();
-        // dd($request->category_id);
+        // $products = Product::where(['status' => 1])->orderBy('id', 'desc');
+        $products = DB::table('products')->where('status', '1')->orderBy('id', 'desc')->paginate($paginateQty);
+
+        // $products = Product::where(['status' => 1])->orderBy('created_at', 'desc')->get();
         if ($request->category_id) {
-            $products = $products->where('category_id', $request->category_id);
+            $products = DB::table('products')->where('category_id', $request->category_id);
         }
         // if ($request->sub_category_id) {
         //     $products = $products->where('sub_category_id', $request->sub_category_id);
@@ -469,10 +470,10 @@ class HomeController extends Controller
         // }
 
         if ($request->brand_id) {
-            $products = $products->where('brand_id', $request->brand_id);
+            $products = DB::table('products')->where('brand_id', $request->brand_id);
         }
 
-        $products = $products->paginate($paginateQty);
+        // $products = $products->paginate($paginateQty);
         $seoSetting = SeoSetting::find(9);
         $currencySetting = Setting::first();
         $setting = $currencySetting;
@@ -575,7 +576,7 @@ class HomeController extends Controller
         return view('ajax_products', compact('products', 'page_view', 'currencySetting', 'setting'));
     }
 
-    // Private Products Search
+    //!! Private Products Search (In this function all the used_products ajax request logic like: filters, Products order Sorting)
     public function searchUsedProduct(Request $request)
     {
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
@@ -692,16 +693,15 @@ class HomeController extends Controller
         $products = DB::table('products')
         ->join('categories', 'products.category_id', '=', 'categories.id')
         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->paginate($paginateQty)->appends($request->all());
+        ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
 
         $brands = $request->brands;
         if ($brands && $request->has('brands')) {
-            // $products = Product::whereIn('brand_id', $brands)->where('seller_type', 'Private')->get();
             $products = DB::table('products')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
             ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->whereIn('brand_id', $brands)->paginate($paginateQty)->appends($request->all());
+            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->whereIn('brand_id', $brands)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
         }
 
         if ($request->price_range && !$request->has('brands')) {
@@ -712,7 +712,7 @@ class HomeController extends Controller
             $products = DB::table('products')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-                ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->paginate($paginateQty)->appends($request->all());
+            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
         }
 
         $currencySetting = Setting::first();
