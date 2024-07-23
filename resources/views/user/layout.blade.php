@@ -150,7 +150,7 @@
                   {{-- <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{__('user.Visit Seller Dashboard')}}</a></li> --}}
                 @else
                 @if ($user->is_member == true &&
-                $Check_Status === 1)
+                $Check_Status == 1)
                 <li><a class="" href="{{ route('seller.dashboard') }}"><i class="fal fa-gift-card"></i> {{ $user->seller_type == "Public" ?  "Public Seller Dashboard" : $user->seller_type == "Private" ? "Private Seller Dashboard"  :  __('user.Visit Seller Dashboard') }} </a></li>
                 @endif
                 @endif
