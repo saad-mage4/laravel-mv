@@ -269,8 +269,12 @@ Route::group(['middleware' => ['maintainance']], function () {
                 Route::get('/paymongo-payment-cancled', [PaymentController::class, 'paymongoPaymentCancled'])->name('paymongo-payment-cancled');
         });
 
-        Route::get('state-by-country/{id}', [UserProfileController::class, 'stateByCountry'])->name('state-by-country');
-        Route::get('city-by-state/{id}', [UserProfileController::class, 'cityByState'])->name('city-by-state');
+            // Country Checkout Change State
+            Route::get('state-by-country/{id}', [UserProfileController::class, 'stateByCountry'])->name('state-by-country');
+            Route::get('city-by-state/{id}', [UserProfileController::class, 'cityByState'])->name('city-by-state');
+            // Country Private  Change State
+            Route::get('private/state-by-country/{id}', [UserProfileController::class, 'PrivateStateByCountry'])->name('private-state-by-country');
+            Route::get('private/city-by-state/{id}', [UserProfileController::class, 'PrivateCityByState'])->name('private-city-by-state');
             // For Stripe Payment in the Seller
             Route::get('stripe-payment', [StripeController::class, 'StripeController']);
     });

@@ -791,6 +791,8 @@ class HomeController extends Controller
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
             ->join('brands', 'products.brand_id', '=', 'brands.id')
+            ->join('cities', 'vendors.city', 'cities.id')
+            ->join('country_states', 'vendors.state', 'country_states.id')
             ->select(
                 'products.*',
                 'vendors.phone',
@@ -803,10 +805,14 @@ class HomeController extends Controller
                 'vendors.shop_name',
                 'vendors.address',
                 'vendors.city',
+            'vendors.country',
+            'vendors.state',
                 'vendors.email',
                 'vendors.description as vendorDescription',
             'vendors.banner_image as Vendor_banner',
-            'vendors.slug as Vendor_Slug'
+            'vendors.slug as Vendor_Slug',
+            'cities.name as City_Name',
+            'country_states.name as State_Name',
             )->where(['seller_type' => 'Private', 'products.status' => 1, 'products.slug' => $slug])->first();
         // 'vendors.id as Seller'
         // dd($product);
