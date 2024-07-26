@@ -222,7 +222,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
         required :"Please select a city"
       }
         }
-    });
+});
         console.log('test: ',$("#registrationForm").valid());
         if ($("#registrationForm").valid()) {
                $.ajax({

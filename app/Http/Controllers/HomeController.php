@@ -723,6 +723,14 @@ class HomeController extends Controller
         );
     }
 
+
+    // Custom Search function for used product private page
+
+    public function searchPrivateCustomUsedProduct(Request $request)
+    {
+        dd($request->values);
+    }
+
     public function productDetail($slug)
     {
         $product = Product::where(['status' => 1, 'slug' => $slug])->first();

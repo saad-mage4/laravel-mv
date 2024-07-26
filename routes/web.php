@@ -138,6 +138,8 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/search-product', [HomeController::class, 'searchProduct'])->name('search-product');
         // private seller search
         Route::get('/search-used-product', [HomeController::class, 'searchUsedProduct'])->name('search-used-product');
+        // private seller used product page custon search
+        Route::get('/search-private-used-product', [HomeController::class, 'searchPrivateCustomUsedProduct'])->name('search-private-used-product');
         Route::get('/product_used_detail/{slug}', [HomeController::class, 'productUsedDetail'])->name('product_used_detail');
         Route::get('/product-detail/{slug}', [HomeController::class, 'productDetail'])->name('product-detail');
     Route::get('/compare', [HomeController::class, 'compare'])->name('compare');
