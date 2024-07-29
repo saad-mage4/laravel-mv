@@ -183,6 +183,11 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/user/logout', [LoginController::class, 'userLogout'])->name('user.logout');
 
 
+        // Country Private  Change State && Private Listing Page Search Filter
+        Route::get('private/search-filter/state-by-country/{id}', [HomeController::class, 'PrivateStateByCountry'])->name('private-search-filter-state-by-country');
+        Route::get('private/search-filter/city-by-state/{id}', [HomeController::class, 'PrivateCityByState'])->name('private-search-filter-city-by-state');
+
+
 //    Route::get('/payment/success', [UserProfileController::class, 'paymentSuccess'])->name('payment.success');
     Route::group(['as'=> 'user.', 'prefix' => 'user'],function (){
 
@@ -274,7 +279,7 @@ Route::group(['middleware' => ['maintainance']], function () {
             // Country Checkout Change State
             Route::get('state-by-country/{id}', [UserProfileController::class, 'stateByCountry'])->name('state-by-country');
             Route::get('city-by-state/{id}', [UserProfileController::class, 'cityByState'])->name('city-by-state');
-            // Country Private  Change State
+            // Country Private  Change State && Private Listing Page Search Filter
             Route::get('private/state-by-country/{id}', [UserProfileController::class, 'PrivateStateByCountry'])->name('private-state-by-country');
             Route::get('private/city-by-state/{id}', [UserProfileController::class, 'PrivateCityByState'])->name('private-city-by-state');
             // For Stripe Payment in the Seller

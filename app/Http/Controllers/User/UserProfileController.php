@@ -376,6 +376,7 @@ class UserProfileController extends Controller
     }
 
 
+    //* Checkout Form
     public function stateByCountry($id)
     {
         $states = CountryState::where(['status' => 1, 'country_id' => $id])->get();
@@ -391,7 +392,7 @@ class UserProfileController extends Controller
     public function cityByState($id)
     {
         $cities = City::where(['status' => 1, 'country_state_id' => $id])->get();
-        $response = '<option value="0">Select Locality</option>';
+        $response = '<option value="0">City</option>';
         if ($cities->count() > 0) {
             foreach ($cities as $city) {
                 $response .= "<option value=" . $city->id . ">" . $city->name . "</option>";
@@ -400,11 +401,11 @@ class UserProfileController extends Controller
         return response()->json(['cities' => $response]);
     }
 
-
+    //! For Private Member Form Fileds
     public function PrivateStateByCountry($id)
     {
         $states = CountryState::where(['status' => 1, 'country_id' => $id])->get();
-        $response = '<option value="">Select a State</option>';
+        $response = '<option value="">County</option>';
         if ($states->count() > 0) {
             foreach ($states as $state) {
                 $response .= "<option value=" . $state->id . " data-name=" . $state->name . ">" . $state->name . "</option>";
@@ -416,7 +417,7 @@ class UserProfileController extends Controller
     public function PrivateCityByState($id)
     {
         $cities = City::where(['status' => 1, 'country_state_id' => $id])->get();
-        $response = '<option value="">Select Locality</option>';
+        $response = '<option value="">City</option>';
         if ($cities->count() > 0) {
             foreach ($cities as $city) {
                 $response .= "<option  value=" . $city->id . " data-name=" . $city->name . ">" . $city->name . "</option>";

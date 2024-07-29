@@ -21,31 +21,22 @@
     transform: translateY(0);
   }
 }
-
 .animated-container {
-  display: flex;
-  flex-wrap: nowrap;
-justify-content: center;
-align-items: center;
-    width: 100%;
+    padding: 25px 10px;
+}
+@media (min-width:768px) {
+    .animated-container {
     border: 2px solid #000;
     border-radius: 50px;
-    padding: 25px 10px;
-     gap: 10px;
+}
 }
 
 .animated-container  .search {
-    width: 55%;
+    /* width: 45%;
     display: flex;
-    gap: 10px;
+    gap: 10px; */
+    position: relative;
 }
-
-.animated-container .search > .form-control {
-  flex: 1 1 auto;
-  /* margin-right: 0.5rem; */
-}
-
-
 .animated-container .search  .form-control,
 .animated-container .input_Search  .form-control {
 display: block;
@@ -61,10 +52,24 @@ display: block;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
+
+.animated-container .search .form-control:focus,
+.animated-container .input_Search  .form-control:focus
+{
+    box-shadow: none;
+}
+
 .search::after {
-    content: "|";
+    content: "";
     font-size: 20px;
     font-weight: bold;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    height: 150%;
+    width: 2px;
+    border-right: 3px dashed #000;
+    transform: translateY(-50%);
 }
 /* select .form-control .animated-element::after {
     content: "|";
@@ -93,12 +98,11 @@ display: block;
 
 
 .input_Search {
-    width: 45%;
-    display: flex;
     position: relative;
 }
 
-.input_Search button {
+@media (min-width:768px) {
+    .input_Search button {
     line-height: 0;
     background: none;
     border: none;
@@ -110,6 +114,7 @@ display: block;
     color: #333;
     font-size: 25px;
 }
+}
 
 
 
@@ -119,19 +124,23 @@ display: block;
 }
 
    @media  (max-width: 599px) {
-    .animated-container {
-        flex-direction: column
-    }
-    .animated-container .search {
-        flex-direction: column
-    }
-    .search::after {
-    content: "";
-}
 
-.input_Search {
+    .search::after {
+    content: unset;
+}
+input#searchInput {
+    border: 1px solid !important;
+    padding: 10px;
+    margin-block: 10px;
+}
+#searchButton {
     width: 100%;
-    padding-inline: 20px;
+}
+#searchButton.btn-orange {
+    background-color: #ff5200;
+}
+#searchButton.btn-orange i {
+    display: none;
 }
    }
 
@@ -173,31 +182,35 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
         <div class="container">
             <div class="row">
                 {{-- Search  --}}
-        <div class="col-md-7  my-3 offset-md-3">
-        <div class="animated-container">
-         <div class="search">
-               <select name="country" id="country_id" class="form-control animated-element">
+        <div class="col-md-6  my-3 offset-md-3">
+        <div class="animated-container row">
+         <div class="col-6 col-md-3 search">
+               {{-- <select name="country" id="country_id" class="form-control animated-element">
            <option value="">Country</option>
             @foreach ($countries as $country)
                 <option value="{{ $country->id }}" data-name="{{ $country->name }}">{{ $country->name }}</option>
             @endforeach
-          </select>
+          </select> --}}
           <select name="state" id="state_id" class="form-control animated-element">
-            <option value="">State</option>
+            <option value="">County</option>
             @foreach ($states as $state)
             <option value="{{ $state->id }}" data-name="{{ $state->name }}">{{ $state->name }}</option>
             @endforeach
           </select>
-          <select name="city" id="city_id" class="form-control animated-element">
+         </div>
+         <div class="col-6 col-md-3 search">
+            <select name="city" id="city_id" class="form-control animated-element">
             <option value="">City</option>
             @foreach ($cities as $city)
                 <option value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
             @endforeach
           </select>
          </div>
-          <div class="input_Search">
+          <div class="col-12 col-md-6 input_Search">
                <input type="text" id="searchInput" class="form-control animated-element" placeholder="Search By Anything..">
-               <button type="submit" id="searchButton"><i class="far fa-search" aria-hidden="true"></i></button>
+               <button type="submit" id="searchButton" class="btn btn-orange">
+                <span class="text d-inline-block text-white d-md-none">Search</span>
+                <i class="far fa-search" aria-hidden="true"></i></button>
           </div>
           {{-- <div class="input-group-append">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -302,7 +315,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
 
                                 <div id="collapseThree2-{{ $variantForSearch->id }}" class="accordion-collapse collapse show" aria-labelledby="headingThree2-{{ $variantForSearch->id }}" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        @php
+                                        @php84
                                             $variantItemsForSearch = App\Models\ProductVariantItem::groupBy('name')->select('name','id')->where('product_variant_name', $variantForSearch->name)->get();
                                         @endphp
 
@@ -431,58 +444,46 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
 
 
             // Search Work
-
                 let value = {
-                country: "",
+                country: 1,
                 state: "",
                 city: "",
                 input_value: ""
                 };
 
                //   Country Select
-        $("#country_id").on("change",function(e){
-        e.preventDefault();
-                let countryId = $("#country_id").val();
-                let countryName = $("#country_id option:selected").data('name');
-                value.country = countryName;
-                if(countryId){
-                    $.ajax({
-                        type:"get",
-                        url:"{{url('/user/private/state-by-country/')}}"+"/"+countryId,
-                        success:function(response){
-                            $("#state_id").html(response.states);
-                            $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
-                        },
-                        error:function(err){
-                            console.table(err);
-                        }
-                    })
-                }else{
-                    $("#state_id").html("<option value=''>{{__('user.Select a State')}}</option>");
-                    $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
-                }
-
+            $.ajax({
+            type:"get",
+            url:`/private/search-filter/state-by-country/${1}`,
+            success:function(response){
+            $("#state_id").html(response.states);
+            $("#city_id").html("<option value=''>City</option>");
+            },
+            error:function(err){
+            console.table(err);
+            }
             })
 
-            $("#state_id").on("change",function(e){
-                e.preventDefault();
-                let stateId = $("#state_id").val();
-                const stateName = $("#state_id option:selected").data('name');
-                value.state = stateId;
-                if(stateId){
-                    $.ajax({
-                        type:"get",
-                        url:"{{url('/user/private/city-by-state/')}}"+"/"+stateId,
-                        success:function(response){
-                            $("#city_id").html(response.cities);
-                        },
-                        error:function(err){
-                            console.table(err);
-                        }
-                    })
-                }else{
-                   $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
-                }
+
+        $("#state_id").on("change",function(e){
+        e.preventDefault();
+        let stateId = $("#state_id").val();
+        const stateName = $("#state_id option:selected").data('name');
+        value.state = stateId;
+        if(stateId){
+        $.ajax({
+            type:"get",
+            url: `/private/search-filter/city-by-state/${stateId}`,
+            success:function(response){
+                $("#city_id").html(response.cities);
+            },
+            error:function(err){
+                console.table(err);
+            }
+        })
+        }else{
+        $("#city_id").html("<option value=''>City</option>");
+        }
 
             })
 
@@ -510,7 +511,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                     values: value,
                 },
                 success: function (response) {
-
+                  $('.load_ajax_response').html(response);
                 }
             });
 
@@ -559,6 +560,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
         });
     }
 
+    // Filter By Side bar
     function submitSearchForm(){
         let loader = $("#loadeer-hidden-content").html();
         $('.load_ajax_response').html(loader);
@@ -570,7 +572,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             success: function (response) {
                 $('.load_ajax_response').html(response);
             },
-            error: function(err) {}
+            error: function(err) {console.error(err)}
         });
     }
 </script>
