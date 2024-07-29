@@ -96,21 +96,21 @@
                                        <div class="col-xl-12 col-xxl-12 col-md-12 mt-5 mt-md-0">
                                             <div class="wsus__pro_det_vendor_text w-100">
                                                 <h4 class="mt-3">{{ $user->firstName }} {{ $user->lastName }}</h4>
-                                                @php
-                                                    $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->count();
-                                                    $totalReview = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->sum('rating');
-                                                    if ($reviewQty > 0) {
-                                                        $average = $totalReview / $reviewQty;
-                                                        $intAverage = intval($average);
-                                                        $nextValue = $intAverage + 1;
-                                                        $reviewPoint = $intAverage;
-                                                        $halfReview = false;
-                                                        if($intAverage < $average && $average < $nextValue){
-                                                            $reviewPoint= $intAverage + 0.5;
-                                                            $halfReview=true;
+                                                    {{-- @php
+                                                        $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->count();
+                                                        $totalReview = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->sum('rating');
+                                                        if ($reviewQty > 0) {
+                                                            $average = $totalReview / $reviewQty;
+                                                            $intAverage = intval($average);
+                                                            $nextValue = $intAverage + 1;
+                                                            $reviewPoint = $intAverage;
+                                                            $halfReview = false;
+                                                            if($intAverage < $average && $average < $nextValue){
+                                                                $reviewPoint= $intAverage + 0.5;
+                                                                $halfReview=true;
+                                                            }
                                                         }
-                                                    }
-                                                @endphp
+                                                    @endphp --}}
 
                                                     {{-- @if ($reviewQty > 0)
                                                     <p class="rating">
@@ -142,10 +142,14 @@
                                                             <span>(0 {{ __('user.review') }})</span>
                                                         </p>
                                                     @endif --}}
-                                                 {{-- {{ $user->shop_name }} --}}
+                                                 {{-- {{ dd($user) }} --}}
                                                 <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ $user->firstName }} {{ $user->lastName }}</p>
-                                                <p><span class="w-auto">{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
+                                                {{-- <p><span class="w-auto">{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p> --}}
                                                 <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
+                                                <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
+                                                <p><span class="w-auto">Country:</span> {{ $product->country }}</p>
+                                                <p><span class="w-auto">City:</span> {{ $product->City_Name }}</p>
+                                                <p><span class="w-auto">State:</span> {{ $product->State_Name }}</p>
                                                 <p><span class="w-auto">{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <div class="d-flex gap-3">
                                                     <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
@@ -538,7 +542,7 @@
                                                 @endif --}}
 
                                                 <p><span>{{__('user.Store Name')}}:</span> {{ $user->shop_name ?? '' }}</p>
-                                                <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p>
+                                                {{-- <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p> --}}
                                                 <p><span>{{__('user.Phone')}}:</span> {{ $user->phone }}</p>
                                                 <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn">{{__('user.visit store')}}</a>

@@ -19,6 +19,9 @@ class CreatePrivateSellerRegistration extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->integer('phone_no')->nullable();
+            $table->string('country')->nullable();
+            $table->integer('state')->nullable();
+            $table->integer('city')->nullable();
             $table->timestamps();
         });
     }

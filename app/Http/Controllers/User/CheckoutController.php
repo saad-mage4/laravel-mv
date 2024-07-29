@@ -243,9 +243,4 @@ class CheckoutController extends Controller
         }
         return redirect()->route('user.checkout.payment');
     }
-
-
-
-
-
 }

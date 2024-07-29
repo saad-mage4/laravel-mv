@@ -186,13 +186,20 @@
                                     <option value="">{{__('user.All Category')}}</option>
                                     @if (request()->has('category'))
                                         @foreach ($productCategories as $productCategory)
-                                            dd($productCategory);
-                                            <option {{ request()->get('category') == $productCategory->slug ? 'selected' : ''  }} value="{{ $productCategory->slug }}">{{ $productCategory->name }}</option>
+                                        @if ($productCategory->slug === "used-products")
+                                         <option value=""></option>
+                                        @else
+                                        <option {{ request()->get('category') == $productCategory->slug ? 'selected' : ''  }} value="{{ $productCategory->slug }}">{{ $productCategory->name }}</option>
+                                            @endif
                                         @endforeach
                                     @else
                                         @foreach ($productCategories as $productCategory)
+                                          @if ($productCategory->slug == "used-products")
+                                          <option value=""></option>
+                                          @else
                                             <option value="{{ $productCategory->slug }}">{{ $productCategory->name }}</option>
-                                        @endforeach
+                                            @endif
+                                            @endforeach
                                     @endif
 
                                 </select>

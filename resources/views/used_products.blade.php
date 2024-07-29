@@ -8,6 +8,144 @@
 
 @section('public-content')
 
+<style>
+    /* Animate.css - Simple animation styles */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animated-container {
+    padding: 25px 10px;
+}
+@media (min-width:768px) {
+    .animated-container {
+    border: 2px solid #000;
+    border-radius: 50px;
+}
+}
+
+.animated-container  .search {
+    /* width: 45%;
+    display: flex;
+    gap: 10px; */
+    position: relative;
+}
+.animated-container .search  .form-control,
+.animated-container .input_Search  .form-control {
+display: block;
+    width: 100%;
+    padding: 0px;
+    font-size: 1.2rem;
+    appearance: auto;
+    font-weight: bold;
+    line-height: 1.5;
+    color: #000;
+    background-color: transparent !important;
+    border: none !important;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+
+.animated-container .search .form-control:focus,
+.animated-container .input_Search  .form-control:focus
+{
+    box-shadow: none;
+}
+
+.search::after {
+    content: "";
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    height: 150%;
+    width: 2px;
+    border-right: 3px dashed #000;
+    transform: translateY(-50%);
+}
+/* select .form-control .animated-element::after {
+    content: "|";
+    font-size: 20px;
+    font-weight: bold;
+} */
+
+.animated-element {
+  animation: fadeIn 1s ease-in-out;
+  animation-fill-mode: both;
+}
+
+/* Add delay to stagger animations */
+.animated-element:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.animated-element:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.animated-element:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.animated-element:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+
+.input_Search {
+    position: relative;
+}
+
+@media (min-width:768px) {
+    .input_Search button {
+    line-height: 0;
+    background: none;
+    border: none;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    outline: none;
+    color: #333;
+    font-size: 25px;
+}
+}
+
+
+
+.input-group-append {
+  display: flex;
+  align-items: center;
+}
+
+   @media  (max-width: 599px) {
+
+    .search::after {
+    content: unset;
+}
+input#searchInput {
+    border: 1px solid !important;
+    padding: 10px;
+    margin-block: 10px;
+}
+#searchButton {
+    width: 100%;
+}
+#searchButton.btn-orange {
+    background-color: #ff5200;
+}
+#searchButton.btn-orange i {
+    display: none;
+}
+   }
+
+</style>
+
 
     <!--============================
          BREADCRUMB START
@@ -31,14 +169,58 @@
         BREADCRUMB END
     ==============================-->
 
-
+<?php
+$countries = App\Models\Country::orderBy('name','asc')->where('status',1)->get();
+$states = App\Models\CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
+$cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
+?>
 
     <!--============================
-        PRODUCT PAGE START
+        PRODUCT USED PAGE START
     ==============================-->
     <section id="wsus__product_page">
         <div class="container">
             <div class="row">
+                {{-- Search  --}}
+        <div class="col-md-6  my-3 offset-md-3">
+        <div class="animated-container row">
+         <div class="col-6 col-md-3 search">
+               {{-- <select name="country" id="country_id" class="form-control animated-element">
+           <option value="">Country</option>
+            @foreach ($countries as $country)
+                <option value="{{ $country->id }}" data-name="{{ $country->name }}">{{ $country->name }}</option>
+            @endforeach
+          </select> --}}
+          <select name="state" id="state_id" class="form-control animated-element">
+            <option value="">County</option>
+            @foreach ($states as $state)
+            <option value="{{ $state->id }}" data-name="{{ $state->name }}">{{ $state->name }}</option>
+            @endforeach
+          </select>
+         </div>
+         <div class="col-6 col-md-3 search">
+            <select name="city" id="city_id" class="form-control animated-element">
+            <option value="">City</option>
+            @foreach ($cities as $city)
+                <option value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
+            @endforeach
+          </select>
+         </div>
+          <div class="col-12 col-md-6 input_Search">
+               <input type="text" id="searchInput" class="form-control animated-element" placeholder="Search By Anything..">
+               <button type="submit" id="searchButton" class="btn btn-orange">
+                <span class="text d-inline-block text-white d-md-none">Search</span>
+                <i class="far fa-search" aria-hidden="true"></i></button>
+          </div>
+          {{-- <div class="input-group-append">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <button id="searchButton" class="btn btn-primary animated-element" type="button">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div> --}}
+
+        </div>
+      </div>
                 @if ($shop_page->status == 1)
                     <div class="col-xl-12">
                         <div class="wsus__pro_page_bammer">
@@ -133,7 +315,7 @@
 
                                 <div id="collapseThree2-{{ $variantForSearch->id }}" class="accordion-collapse collapse show" aria-labelledby="headingThree2-{{ $variantForSearch->id }}" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        @php
+                                        @php84
                                             $variantItemsForSearch = App\Models\ProductVariantItem::groupBy('name')->select('name','id')->where('product_variant_name', $variantForSearch->name)->get();
                                         @endphp
 
@@ -215,7 +397,7 @@
         </div>
     </section>
     <!--============================
-        PRODUCT PAGE END
+        PRODUCT USED PAGE END
     ==============================-->
 
 
@@ -261,6 +443,82 @@
 
 
 
+            // Search Work
+                let value = {
+                country: 1,
+                state: "",
+                city: "",
+                input_value: ""
+                };
+
+               //   Country Select
+            $.ajax({
+            type:"get",
+            url:`/private/search-filter/state-by-country/${1}`,
+            success:function(response){
+            $("#state_id").html(response.states);
+            $("#city_id").html("<option value=''>City</option>");
+            },
+            error:function(err){
+            console.table(err);
+            }
+            })
+
+
+        $("#state_id").on("change",function(e){
+        e.preventDefault();
+        let stateId = $("#state_id").val();
+        const stateName = $("#state_id option:selected").data('name');
+        value.state = stateId;
+        if(stateId){
+        $.ajax({
+            type:"get",
+            url: `/private/search-filter/city-by-state/${stateId}`,
+            success:function(response){
+                $("#city_id").html(response.cities);
+            },
+            error:function(err){
+                console.table(err);
+            }
+        })
+        }else{
+        $("#city_id").html("<option value=''>City</option>");
+        }
+
+            })
+
+            $("#city_id").on("change", function() {
+            let cityId = $("#city_id").val();
+            const cityName = $("#city_id option:selected").data('name');
+                value.city = cityId ?? "";
+        });
+
+        // input Value
+
+        $("#searchInput").change(function (e) {
+            e.preventDefault();
+             value.input_value = e?.target?.value
+        });
+
+        // Button Click
+
+        $("#searchButton").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "get",
+                url: "/search-private-used-product",
+                data:{
+                    values: value,
+                },
+                success: function (response) {
+                  $('.load_ajax_response').html(response);
+                }
+            });
+
+        });
+
+
+
         });
     })(jQuery);
 
@@ -302,6 +560,7 @@
         });
     }
 
+    // Filter By Side bar
     function submitSearchForm(){
         let loader = $("#loadeer-hidden-content").html();
         $('.load_ajax_response').html(loader);
@@ -313,7 +572,7 @@
             success: function (response) {
                 $('.load_ajax_response').html(response);
             },
-            error: function(err) {}
+            error: function(err) {console.error(err)}
         });
     }
 </script>

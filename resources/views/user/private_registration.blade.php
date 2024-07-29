@@ -3,6 +3,11 @@
 <title>{{__('user.Become a Seller')}}</title>
 @endsection
 @section('user-content')
+<?php
+$countries = App\Models\Country::orderBy('name','asc')->where('status',1)->get();
+$states = App\Models\CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
+$cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
+?>
 <div class="row">
   <form id="registrationForm">
     <div class="col-12 col-md-8 mx-auto">
@@ -46,6 +51,38 @@
 
                     </div>
                   </div>
+
+            <div class="col-xl-6 col-md-6">
+                                        <div class="wsus__dash_pro_single">
+                                            <select class="form-select" style="padding: 12px 10px;" name="country" id="country_id">
+                                                <option value="">{{__('user.Select Country')}}*</option>
+                                                @foreach ($countries as $country)
+                                                    <option value="{{ $country->id }}" data-name="{{ $country->name }}">{{ $country->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-6">
+                                        <div class="wsus__dash_pro_single">
+                                            <select class="form-select" style="padding: 12px 10px;" name="state" id="state_id">
+                                                <option value="">{{__('user.Select State')}}</option>
+                                                @foreach ($states as $state)
+                                                    <option value="{{ $state->id }}" data-name="{{ $state->name }}">{{ $state->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-6">
+                                        <div class="wsus__dash_pro_single">
+                                            <select class="form-select" style="padding: 12px 10px;" name="city" id="city_id">
+                                                <option value="">{{__('user.Select City')}}</option>
+                                                @foreach ($cities as $city)
+                                                    <option value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
           </div>
           <div class="col-xl-12 d-flex justify-content-md-end justify-content-center">
              <button id="submitButton" type="submit" class="common_btn mb-4 mt-2 next">
@@ -70,58 +107,79 @@
         firstName: "",
         lastName:"",
         email:"",
-        phone: ""
+        phone: "",
+        country: "",
+        state: "",
+        city: ""
       };
-
-       // Initialize jQuery Validation Plugin
-    // $('#registrationForm').validate({
-    //     rules: {
-    //         firstName: "required",
-    //         lastName: "required",
-    //         email: {
-    //             required: true,
-    //             email: true
-    //         },
-    //         phone: {
-    //             required: true,
-    //             digits: true
-    //         }
-    //     },
-    //     messages: {
-    //         firstName: "Please enter your first name",
-    //         lastName: "Please enter your last name",
-    //         email: {
-    //             required: "Please enter your email",
-    //             email: "Please enter a valid email address"
-    //         },
-    //         phone: {
-    //             required: "Please enter your phone number",
-    //             digits: "Please enter a valid phone number"
-    //         }
-    //     },
-    //     errorPlacement: function (error, element) {
-    //         let name = element.attr("name");
-    //         $(`#${name}Error`).text(error.text());
-    //     },
-    //     success: function (label, element) {
-    //         let name = $(element).attr("name");
-    //         $(`#${name}Error`).text("");
-    //     }
-    // });
 
 
       $('#registrationForm input').change(function (e) {
         e.preventDefault();
         const { name, value: inputValue } = e.target;
             value[name] = inputValue;
-            console.log(inputValue);
             if (inputValue === "") {
                 $(`#${name}Error`).text("This field is required");
             } else {
                 $(`#${name}Error`).text("");
             }
-            console.log("change",value);
       });
+
+
+    //   Country Select
+    $("#country_id").on("change",function(e){
+        e.preventDefault();
+                let countryId = $("#country_id").val();
+                let countryName = $("#country_id option:selected").data('name');
+                value.country = countryName;
+                if(countryId){
+                    $.ajax({
+                        type:"get",
+                        url:"{{url('/user/private/state-by-country/')}}"+"/"+countryId,
+                        success:function(response){
+                            console.log(response);
+                            $("#state_id").html(response.states);
+                            $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                        },
+                        error:function(err){
+                            console.table(err);
+                        }
+                    })
+                }else{
+                    $("#state_id").html("<option value=''>{{__('user.Select a State')}}</option>");
+                    $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                }
+
+            })
+
+            $("#state_id").on("change",function(e){
+                e.preventDefault();
+                let stateId = $("#state_id").val();
+                const stateName = $("#state_id option:selected").data('name');
+                value.state = stateId;
+                if(stateId){
+                    $.ajax({
+                        type:"get",
+                        url:"{{url('/user/private/city-by-state/')}}"+"/"+stateId,
+                        success:function(response){
+                            $("#city_id").html(response.cities);
+                        },
+                        error:function(err){
+                            console.table(err);
+                        }
+                    })
+                }else{
+                   $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                }
+
+            })
+
+
+        $("#city_id").on("change", function() {
+        let cityId = $("#city_id").val();
+        const cityName = $("#city_id option:selected").data('name');
+          value.city = cityId ?? "";
+        });
 
 
       $('#registrationForm').submit(function (e) {
@@ -138,7 +196,10 @@
             phone: {
                 required: true,
                 digits: true
-            }
+            },
+            country: "required",
+            state: "required",
+            city: "required"
         },
         messages: {
             firstName: "Please enter your first name",
@@ -150,9 +211,18 @@
             phone: {
                 required: "Please enter your phone number",
                 digits: "Please enter a valid phone number"
-            }
+            },
+            country: {
+                required: "Please select a country"
+            },
+      state: {
+        required :"Please select a state"
+      },
+      city: {
+        required :"Please select a city"
+      }
         }
-    });
+});
         console.log('test: ',$("#registrationForm").valid());
         if ($("#registrationForm").valid()) {
                $.ajax({

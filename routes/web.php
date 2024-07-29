@@ -138,6 +138,8 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/search-product', [HomeController::class, 'searchProduct'])->name('search-product');
         // private seller search
         Route::get('/search-used-product', [HomeController::class, 'searchUsedProduct'])->name('search-used-product');
+        // private seller used product page custon search
+        Route::get('/search-private-used-product', [HomeController::class, 'searchPrivateCustomUsedProduct'])->name('search-private-used-product');
         Route::get('/product_used_detail/{slug}', [HomeController::class, 'productUsedDetail'])->name('product_used_detail');
         Route::get('/product-detail/{slug}', [HomeController::class, 'productDetail'])->name('product-detail');
     Route::get('/compare', [HomeController::class, 'compare'])->name('compare');
@@ -179,6 +181,11 @@ Route::group(['middleware' => ['maintainance']], function () {
     Route::get('/reset-password/{token}', [LoginController::class, 'resetPasswordPage'])->name('reset-password');
     Route::post('/store-reset-password/{token}', [LoginController::class, 'storeResetPasswordPage'])->name('store-reset-password');
     Route::get('/user/logout', [LoginController::class, 'userLogout'])->name('user.logout');
+
+
+        // Country Private  Change State && Private Listing Page Search Filter
+        Route::get('private/search-filter/state-by-country/{id}', [HomeController::class, 'PrivateStateByCountry'])->name('private-search-filter-state-by-country');
+        Route::get('private/search-filter/city-by-state/{id}', [HomeController::class, 'PrivateCityByState'])->name('private-search-filter-city-by-state');
 
 
 //    Route::get('/payment/success', [UserProfileController::class, 'paymentSuccess'])->name('payment.success');
@@ -269,8 +276,12 @@ Route::group(['middleware' => ['maintainance']], function () {
                 Route::get('/paymongo-payment-cancled', [PaymentController::class, 'paymongoPaymentCancled'])->name('paymongo-payment-cancled');
         });
 
-        Route::get('state-by-country/{id}', [UserProfileController::class, 'stateByCountry'])->name('state-by-country');
-        Route::get('city-by-state/{id}', [UserProfileController::class, 'cityByState'])->name('city-by-state');
+            // Country Checkout Change State
+            Route::get('state-by-country/{id}', [UserProfileController::class, 'stateByCountry'])->name('state-by-country');
+            Route::get('city-by-state/{id}', [UserProfileController::class, 'cityByState'])->name('city-by-state');
+            // Country Private  Change State && Private Listing Page Search Filter
+            Route::get('private/state-by-country/{id}', [UserProfileController::class, 'PrivateStateByCountry'])->name('private-state-by-country');
+            Route::get('private/city-by-state/{id}', [UserProfileController::class, 'PrivateCityByState'])->name('private-city-by-state');
             // For Stripe Payment in the Seller
             Route::get('stripe-payment', [StripeController::class, 'StripeController']);
     });

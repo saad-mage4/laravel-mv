@@ -376,6 +376,7 @@ class UserProfileController extends Controller
     }
 
 
+    //* Checkout Form
     public function stateByCountry($id)
     {
         $states = CountryState::where(['status' => 1, 'country_id' => $id])->get();
@@ -391,10 +392,35 @@ class UserProfileController extends Controller
     public function cityByState($id)
     {
         $cities = City::where(['status' => 1, 'country_state_id' => $id])->get();
-        $response = '<option value="0">Select Locality</option>';
+        $response = '<option value="0">City</option>';
         if ($cities->count() > 0) {
             foreach ($cities as $city) {
                 $response .= "<option value=" . $city->id . ">" . $city->name . "</option>";
+            }
+        }
+        return response()->json(['cities' => $response]);
+    }
+
+    //! For Private Member Form Fileds
+    public function PrivateStateByCountry($id)
+    {
+        $states = CountryState::where(['status' => 1, 'country_id' => $id])->get();
+        $response = '<option value="">County</option>';
+        if ($states->count() > 0) {
+            foreach ($states as $state) {
+                $response .= "<option value=" . $state->id . " data-name=" . $state->name . ">" . $state->name . "</option>";
+            }
+        }
+        return response()->json(['states' => $response]);
+    }
+
+    public function PrivateCityByState($id)
+    {
+        $cities = City::where(['status' => 1, 'country_state_id' => $id])->get();
+        $response = '<option value="">City</option>';
+        if ($cities->count() > 0) {
+            foreach ($cities as $city) {
+                $response .= "<option  value=" . $city->id . " data-name=" . $city->name . ">" . $city->name . "</option>";
             }
         }
         return response()->json(['cities' => $response]);
@@ -917,18 +943,23 @@ class UserProfileController extends Controller
             $sellerRegistration->last_name = $data['lastName'];
             $sellerRegistration->email = $data['email'];
             $sellerRegistration->phone_no = $data['phone'];
+            $sellerRegistration->country = $data['country'];
+            $sellerRegistration->state = $data['state'];
+            $sellerRegistration->city = $data['city'];
             $sellerRegistration->save();
             $user->is_member = 1;
             $user->save();
             // vender save
             $seller = new Vendor();
             $seller->user_id = $user->id;
-            // $seller->status = 1;
             $seller->email = $data['email'];
             $seller->slug  = $data['firstName'];
             $seller->phone = $data['phone'];
             $seller->firstName = $data['firstName'];
             $seller->lastName = $data['lastName'];
+            $seller->country = $data['country'];
+            $seller->state = $data['state'];
+            $seller->city = $data['city'];
             $seller->certificateRegistration = "";
             $seller->idCardSignatory = "";
             $seller->bankStatement = "";
