@@ -305,7 +305,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </div>
                               </div>
                             </div>
-                            @foreach ($variantsForSearch as $variantForSearch)
+                            {{-- @foreach ($variantsForSearch as $variantForSearch)
                                 <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree2-{{ $variantForSearch->id }}">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree2-{{ $variantForSearch->id }}" aria-expanded="false" aria-controls="collapseThree">
@@ -330,7 +330,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                     </div>
                                 </div>
                                 </div>
-                            @endforeach
+                            @endforeach --}}
                         </div>
                     </div>
                 </div>
