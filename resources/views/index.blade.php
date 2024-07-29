@@ -27,7 +27,11 @@
                     <ul class="wsus_menu_cat_item">
                         @foreach ($productCategories as $productCategory)
                             @if ($productCategory->subCategories->count() == 0)
+                            @if ($productCategory->slug == "used-products")
+                           <li></li>
+                            @else
                                 <li><a href="{{ route('product',['category' => $productCategory->slug]) }}"><i class="{{ $productCategory->icon }}"></i> {{ $productCategory->name }}</a></li>
+                            @endif
                             @else
                                 <li><a class="wsus__droap_arrow" href="{{ route('product',['category' => $productCategory->slug]) }}"><i class="{{ $productCategory->icon }}"></i> {{ $productCategory->name }} </a>
                                     <ul class="wsus_menu_cat_droapdown">
@@ -130,7 +134,7 @@
                             <li><a href="{{ route('sellers') }}">{{__('user.Sellers')}}</a></li>
                         @endif
                     @endif
-                    <li><a href="{{ route('sponsor') }}">{{__('user.sponsors')}}</a></li> 
+                    <li><a href="{{ route('sponsor') }}">{{__('user.sponsors')}}</a></li>
                     @if ($menus->where('id',5)->first()->status == 1)
                     <li><a href="{{ route('blog') }}">{{__('user.Blog')}}</a></li>
                     @endif

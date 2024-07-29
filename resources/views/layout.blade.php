@@ -318,9 +318,17 @@
 
                     <ul class="wsus_menu_cat_item show_home toggle_menu">
                         @foreach ($productCategories as $productCategory)
-                            {{ $productCategory->name }} <br>
+                        @if ($productCategory->slug == "used-products")
+                           <li></li>
+                        @else
+                        {{ $productCategory->name }} <br>
+                        @endif
                             @if ($productCategory->subCategories->count() == 0)
+                            @if ($productCategory->slug == "used-products")
+                             <li></li>
+                        @else
                                 <li><a href="{{ route('product',['category' => $productCategory->slug]) }}"><i class="{{ $productCategory->icon }}"></i> {{ $productCategory->name }}</a></li>
+                        @endif
                             @else
                                 <li><a class="wsus__droap_arrow" href="{{ route('product',['category' => $productCategory->slug]) }}"><i class="{{ $productCategory->icon }}"></i> {{ $productCategory->name }} </a>
                                     <ul class="wsus_menu_cat_droapdown">
