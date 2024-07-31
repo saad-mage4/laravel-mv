@@ -22,6 +22,7 @@ use App\Models\OrderAddress;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\StripePayment;
+use Stripe\{StripeClient, Exception\ApiErrorException};
 use App\Mail\OrderSuccessfully;
 use App\Helpers\MailHelper;
 use App\Models\EmailTemplate;
@@ -285,6 +286,8 @@ class PaymentController extends Controller
     public function payWithStripe(Request $request)
     {
 
+        // dd($request);
+
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -350,8 +353,8 @@ class PaymentController extends Controller
 
 
         $stripe = StripePayment::first();
-        $payableAmount = round($total_price * $stripe->currency_rate, 2);
         Stripe\Stripe::setApiKey($stripe->stripe_secret);
+        $payableAmount = round($total_price * $stripe->currency_rate, 2);
 
         $result = Stripe\Charge::create([
             "amount" => $payableAmount * 100,
@@ -512,7 +515,8 @@ class PaymentController extends Controller
                 }
             }
         }
-        Session::forget('hipping_method');
+        // Session::forget('cart');
+        Session::forget('shipping_method');
         Session::forget('coupon_price');
         Session::forget('coupon_name');
         Session::forget('offer_type');
@@ -2925,6 +2929,4 @@ class PaymentController extends Controller
         $notification = array('messege' => $notification, 'alert-type' => 'error');
         return redirect()->route('user.checkout.payment')->with($notification);
     }
-
-
 }

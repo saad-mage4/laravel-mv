@@ -22,6 +22,7 @@ use App\Models\ProductReport;
 use App\Models\ProductReview;
 use App\Models\Wishlist;
 use App\Models\Setting;
+use App\Rules\NotSvg;
 use Image;
 use File;
 use Str;
@@ -80,8 +81,8 @@ class ProductController extends Controller
             'short_name' => 'required',
             'name' => 'required',
             'slug' => 'required|unique:products',
-            'thumb_image' => 'required',
-            'banner_image' => 'required',
+            'thumb_image' =>  ['required', 'image', new NotSvg()],
+            'banner_image' =>  ['required', 'image', new NotSvg()],
             'category' => 'required',
             'short_description' => 'required',
             'long_description' => 'required',
@@ -230,6 +231,8 @@ class ProductController extends Controller
         $rules = [
             'short_name' => 'required',
             'name' => 'required',
+            'thumb_image' =>  ['required', 'image', new NotSvg()],
+            'banner_image' =>  ['required', 'image', new NotSvg()],
             'slug' => 'required|unique:products,slug,'.$product->id,
             'category' => 'required',
             'short_description' => 'required',

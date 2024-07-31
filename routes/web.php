@@ -188,7 +188,7 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('private/search-filter/city-by-state/{id}', [HomeController::class, 'PrivateCityByState'])->name('private-search-filter-city-by-state');
 
 
-//    Route::get('/payment/success', [UserProfileController::class, 'paymentSuccess'])->name('payment.success');
+        // Route::get('/payment/success', [UserProfileController::class, 'paymentSuccess'])->name('payment.success');
     Route::group(['as'=> 'user.', 'prefix' => 'user'],function (){
 
         Route::get('language/{locale}', function ($locale) {

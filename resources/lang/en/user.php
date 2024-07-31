@@ -493,5 +493,5 @@ return array(
     'NIC Front' => 'NIC Front',
     'NIC Back' => 'NIC Back',
     'PDF Document' => 'PDF Document',
-    'sponsors' => 'Sponsors',
+    'sponsors' => 'Advertising',
 );

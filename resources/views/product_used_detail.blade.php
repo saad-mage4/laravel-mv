@@ -143,9 +143,8 @@
                                                         </p>
                                                     @endif --}}
                                                  {{-- {{ dd($user) }} --}}
-                                                <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ $user->firstName }} {{ $user->lastName }}</p>
+                                                <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ $user->shop_name ?? "test Store" }}</p>
                                                 {{-- <p><span class="w-auto">{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p> --}}
-                                                <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
                                                 <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
                                                 <p><span class="w-auto">Country:</span> {{ $product->country }}</p>
                                                 <p><span class="w-auto">City:</span> {{ $product->City_Name }}</p>
@@ -158,11 +157,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-12">
+                                        {{-- <div class="col-xl-12">
                                             <div class="wsus__vendor_details">
                                                 {!! clean($user->vendorDescription) !!}
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 {{-- </div> --}}
                 @endif

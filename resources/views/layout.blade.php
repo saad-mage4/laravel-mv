@@ -179,6 +179,10 @@
                 </div>
                 <div class="col-xl-6 col-lg-5 d-none d-lg-block">
                     @if ($menus->where('id',25)->first()->status == 1)
+                    @if (request()->is('*used_products*'))
+                         <div class="wsus__search">
+                         </div>
+                    @else
                     <div class="wsus__search">
                         <form action="{{ route('product') }}">
                             <div class="wsus__category_search">
@@ -208,6 +212,7 @@
                             <button type="submit"><i class="far fa-search"></i></button>
                         </form>
                     </div>
+                    @endif
                     @endif
                 </div>
                 <div class="col-xl-4 col-3 col-lg-5">
@@ -483,10 +488,14 @@
             @endif
         </ul>
         @if ($menus->where('id',25)->first()->status == 1)
+        @if (request()->is('*used_products*'))
+
+        @else
         <form action="{{ route('product') }}">
             <input type="text" placeholder="{{__('user.Search')}}" name="search">
             <button type="submit"><i class="far fa-search"></i></button>
         </form>
+        @endif
         @endif
 
         @php

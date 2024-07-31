@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Rules\NotSvg;
 use Illuminate\Http\Request;
 use  Image;
 use File;
@@ -35,7 +36,7 @@ class ProductBrandController extends Controller
             'slug' => 'required|unique:brands',
             'status' => 'required',
             'rating' => 'required',
-            'logo' => 'required'
+            'logo' => ['required', 'image', new NotSvg()],
         ];
         $customMessages = [
             'name.required' => trans('admin_validation.Name is required'),
@@ -82,7 +83,8 @@ class ProductBrandController extends Controller
             'name' => 'required|unique:brands,name,'.$brand->id,
             'slug' => 'required|unique:brands,slug,'.$brand->id,
             'rating' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'logo' => ['required', 'image', new NotSvg()],
         ];
         $customMessages = [
             'name.required' => trans('admin_validation.Name is required'),

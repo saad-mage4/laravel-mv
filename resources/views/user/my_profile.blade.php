@@ -34,7 +34,7 @@
                     <div class="col-md-12">
                         <div class="wsus__add_address_single">
                           <div class="wsus__topbar_select">
-                          <input type="text" name="country" id="country_id" value="{{$countries[0]['name']}}">
+                          <input readonly type="text" name="country" id="country_id" value="{{$countries[0]['name']}}">
                         </div>
                       </div>
                     </div>
@@ -106,28 +106,52 @@
         "use strict";
         $(document).ready(function () {
 
-            $("#country_id").on("change",function(){
-                var countryId = $("#country_id").val();
-                if(countryId){
-                    $.ajax({
-                        type:"get",
-                        url:"{{url('/user/state-by-country/')}}"+"/"+countryId,
-                        success:function(response){
-                            $("#state_id").html(response.states);
-                            var response= "<option value=''>{{__('user.Select a City')}}</option>";
-                            $("#city_id").html(response);
-                        },
-                        error:function(err){
-                            console.log(err);
-                        }
-                    })
-                }else{
-                    var response= "<option value=''>{{__('user.Select a State')}}</option>";
-                    $("#state_id").html(response);
-                    var response= "<option value=''>{{__('user.Select a City')}}</option>";
-                    $("#city_id").html(response);
-                }
+            // $("#country_id").on("change",function(){
+            //     var countryId = $("#country_id").val();
+            //     if(countryId){
+            //         $.ajax({
+            //             type:"get",
+            //             url:"{{url('/user/state-by-country/')}}"+"/"+countryId,
+            //             success:function(response){
+            //                 $("#state_id").html(response.states);
+            //                 var response= "<option value=''>{{__('user.Select a City')}}</option>";
+            //                 $("#city_id").html(response);
+            //             },
+            //             error:function(err){
+            //                 console.log(err);
+            //             }
+            //         })
+            //     }else{
+            //         var response= "<option value=''>{{__('user.Select a State')}}</option>";
+            //         $("#state_id").html(response);
+            //         var response= "<option value=''>{{__('user.Select a City')}}</option>";
+            //         $("#city_id").html(response);
+            //     }
 
+            // })
+            //   $.ajax({
+            //             type:"get",
+            //             url:"{{url('/user/state-by-country/')}}"+"/"+1,
+            //             success:function(response){
+            //                 $("#state_id").html(response.states);
+            //                 var response= "<option value=''>{{__('user.Select a City')}}</option>";
+            //                 $("#city_id").html(response);
+            //             },
+            //             error:function(err){
+            //                 console.log(err);
+            //             }
+            //         })
+
+            $.ajax({
+            type:"get",
+            url:`/user/state-by-country/${1}`,
+            success:function(response){
+            $("#state_id").html(response.states);
+            $("#city_id").html("<option value=''>City</option>");
+            },
+            error:function(err){
+            console.table(err);
+            }
             })
 
             $("#state_id").on("change",function(){
@@ -137,7 +161,6 @@
                         type:"get",
                         url:"{{url('/user/city-by-state/')}}"+"/"+countryId,
                         success:function(response){
-                            console.log(response);
                             $("#city_id").html(response.cities);
                         },
                         error:function(err){
@@ -150,6 +173,12 @@
                 }
 
             })
+
+             $("#city_id").on("change", function() {
+            let cityId = $("#city_id").val();
+                // value.city = cityId ?? "";
+        });
+
 
 
         });

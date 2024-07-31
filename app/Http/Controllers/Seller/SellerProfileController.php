@@ -164,6 +164,8 @@ class SellerProfileController extends Controller
 
     public function updateSellerSop(Request $request){
 
+        // dd($request);
+
         $user = Auth::guard('web')->user();
         $seller = Vendor::where('user_id',$user->id)->first();
         $rules = [
@@ -190,6 +192,8 @@ class SellerProfileController extends Controller
         ];
         $this->validate($request, $rules,$customMessages);
 
+        $seller->shop_name = $request->shop_name;
+        $seller->email = $request->email;
         $seller->phone = $request->phone;
         $seller->open_at = $request->opens_at;
         $seller->closed_at = $request->closed_at;
