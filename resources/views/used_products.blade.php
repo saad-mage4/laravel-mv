@@ -277,7 +277,10 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                   </button>
                                 </h2>
                                 <div id="collapseThree3" class="accordion-collapse collapse show" aria-labelledby="headingThree3" data-bs-parent="#accordionExample">
-                                  <div class="accordion-body">
+                                    <div class="col-12 p-3">
+                                     <input type="text" id="searchBrands" class="form-control animated-element" placeholder="Search By Brands..">
+                                    </div>
+                                    <div class="accordion-body">
                                       @foreach ($brands as $brand)
                                         <div class="form-check">
                                             <input name="brands[]" class="form-check-input brand_item" type="checkbox" value="{{ $brand->id }}" id="flexCheckDefault11-{{ $brand->id }}">
@@ -517,6 +520,20 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
 
         });
 
+
+
+        // Search By Brands
+            $('#searchBrands').on('keyup', function() {
+      var value = $(this).val().toLowerCase();
+      $('.form-check').each(function() {
+        var brandName = $(this).text().toLowerCase();
+        if (brandName.indexOf(value) > -1) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
 
 
         });

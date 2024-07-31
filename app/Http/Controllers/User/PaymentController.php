@@ -43,7 +43,7 @@ use Exception;
 use Redirect;
 
 use Mollie\Laravel\Facades\Mollie;
-
+use Swift_TransportException;
 
 class PaymentController extends Controller
 {
@@ -509,8 +509,11 @@ class PaymentController extends Controller
                             'name' => $user->name,
                             'email' => $user->email
                         ];
-
-                        Mail::to($user->email)->send(new OrderShipped($details));
+                        try {
+                            Mail::to($user->email)->send(new OrderShipped($details));;
+                        } catch (Swift_TransportException $e) {
+                            echo $e->getMessage();
+                        }
                     }
                 }
             }
