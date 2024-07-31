@@ -3256,6 +3256,12 @@ PPRODUCT PAGE START
     text-transform: capitalize;
 }
 
+/* Custom Css For Brands Search  */
+.accordion-item .accordion-body {
+    padding: 1rem 1.25rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
 .accordion-item:first-of-type .accordion-button {
     border-top: 0 !important;
 }

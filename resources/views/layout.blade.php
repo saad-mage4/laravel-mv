@@ -412,7 +412,7 @@
                         @if ($menus->where('id',5)->first()->status == 1)
                         <li><a href="{{ route('blog') }}">{{__('user.Blog')}}</a></li>
                         @endif
-                        @if ($menus->where('id',6)->first()->status == 1)
+                        {{-- @if ($menus->where('id',6)->first()->status == 1)
                         <li><a href="{{ route('campaign') }}">{{__('user.Campaign')}}</a></li>
                         @endif
                         @if ($menus->where('id',7)->first()->status == 1)
@@ -445,8 +445,8 @@
                                 @endforeach
                             </ul>
                         </li>
+                        @endif --}}
                         <li><a href="{{ route('sponsor') }}">{{__('user.sponsors')}}</a></li>
-                        @endif
                     </ul>
                     <ul class="wsus__menu_item wsus__menu_item_right ms-auto">
                         @if ($menus->where('id',15)->first()->status == 1)

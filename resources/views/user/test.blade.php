@@ -43,21 +43,26 @@
 
 .pricing-table {
     display: grid;
-    gap: 20px;
+    gap: 30px;
     grid-template-columns: repeat(4, 1fr);
+    place-items: center;
 }
 .pricing-card {
     background-color: #ff6600;
     border-radius: 20px;
     color: #fff;
     text-align: center;
-    padding: 30px;
+    /* padding: 40px; */
     position: relative;
-    width: 200px;
+    width: 100%;
     animation: fadeInUp 0.5s ease-in-out;
     box-shadow: 0px 5px 0px black;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-
 .ribbon {
     background-color: black;
     color: white;
@@ -113,11 +118,7 @@
 }
 
 .pricing-card {
-    width: 300px;
     height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 .content p {
     color: #fff;
@@ -272,7 +273,9 @@ $Ads = [
                       </div>
                     </div>
 
-<div id="privateAdsContainer" style="display: none;">
+</div>
+
+          <div id="privateAdsContainer" style="display: none;">
         {{-- <label for="private_ads" title="Seller Ads">Seller Ads</label>
         <select name="private_ads">
         <option value="1">1</option>
@@ -283,7 +286,7 @@ $Ads = [
         <p id="pricingInfo"></p> --}}
         <div class="pricing-table">
             @foreach ($Ads as $key => $Ad)
-<div class="pricing-card">
+        <div class="pricing-card">
             <div class="ribbon">{{ $Ad['header'] }}</div>
             <div class="content">
                 <p>{{ $Ad['title'] }}</p>
@@ -291,7 +294,7 @@ $Ads = [
                 <p>{{ $Ad['price'] }} Euros</p>
 
                 <button data-private-ads="{{ $key }}" class="buy-button">
-                     <div id="loader" class="loader" style="display:none;"></div>
+                        <div id="loader" class="loader" style="display:none;"></div>
                 <span data-text="{{ $Ad['button'] }}">{{ $Ad['button'] }}</span>
                 </button>
             </div>
@@ -300,7 +303,11 @@ $Ads = [
         </div>
         </div>
 
-                    <div class="col-xl-12 col-md-12">
+
+        </div>
+
+        {{-- Buttons  --}}
+         {{-- <div class="col-xl-12 col-md-12"> --}}
                           {{-- <a class="common_btn" href="https://buy.stripe.com/test_bIY3fta3L1i79QQ4gi">Pay with Stripe</a> --}}
                  {{-- <a class="common_btn" id="Seller_Type_btn" href="#!" >
                     Pay with Stripe
@@ -308,21 +315,14 @@ $Ads = [
                 </a>
                     </div> --}}
 
-                </div>
+                {{-- </div> --}}
 
                 <button id="Seller_Type_btn" type="submit" class="common_btn mb-4 mt-2 next">
          <div id="loader" class="loader" style="display:none;"></div>
                                 <span class="text-white">Pay with Stripe</span>
                             </button>
-{{--              @php(dd(\Illuminate\Support\Facades\Auth::id()))--}}
 </div>
 
-
-
-
-
-        </div>
-      </div>
 
     </div>
   </div>

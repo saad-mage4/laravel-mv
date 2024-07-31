@@ -136,9 +136,9 @@
                     @endif
                     <li><a href="{{ route('sponsor') }}">{{__('user.sponsors')}}</a></li>
                     @if ($menus->where('id',5)->first()->status == 1)
-                    <li><a href="{{ route('blog') }}">{{__('user.Blog')}}</a></li>
+                    <li><a href="{{ route('blog') }}">{{__('user.Blog')}} 123</a></li>
                     @endif
-                    @if ($menus->where('id',6)->first()->status == 1)
+                    {{-- @if ($menus->where('id',6)->first()->status == 1)
                     <li><a href="{{ route('campaign') }}">{{__('user.Campaign')}}</a></li>
                     @endif
                     @if ($menus->where('id',8)->first()->status == 1)
@@ -161,10 +161,10 @@
                     @endif
                     @if ($menus->where('id',14)->first()->status == 1)
                     <li><a href="{{ route('terms-and-conditions') }}">{{__('user.Terms and Conditions')}}</a></li>
-                    @endif
-                    @foreach ($customPages as $customPage)
+                    @endif --}}
+                    {{-- @foreach ($customPages as $customPage)
                         <li><a href="{{ route('page', $customPage->slug) }}">{{ $customPage->page_name }}</a></li>
-                    @endforeach
+                    @endforeach --}}
                     @if ($menus->where('id',15)->first()->status == 1)
                     <li><a href="{{ route('track-order') }}">{{__('user.Track Order')}}</a></li>
                     @endif
