@@ -238,8 +238,8 @@ class PaymentController extends Controller
 
     }
 
-    public function payWithStripe(Request $request){
-
+    public function payWithStripe(Request $request)
+    {
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -304,7 +304,7 @@ class PaymentController extends Controller
         $payableAmount = round($total_price * $stripe->currency_rate,2);
         Stripe\Stripe::setApiKey($stripe->stripe_secret);
 
-        $result = Stripe\Charge::create ([
+        $result = Stripe\Charge::create([
                 "amount" => $payableAmount * 100,
                 "currency" => $stripe->currency_code,
                 "source" => $request->stripeToken,
@@ -2474,10 +2474,4 @@ class PaymentController extends Controller
         $notification = array('messege'=>$notification,'alert-type'=>'error');
         return redirect()->route('user.checkout.payment')->with($notification);
     }
-
-
-
-
-
-
 }

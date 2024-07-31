@@ -37,12 +37,12 @@
 
                         <div class="form-group col-12">
                             <label>{{__('user.Shop Name')}} <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" value="{{ $seller->shop_name }}" name="shop_name" readonly>
+                            <input type="text" class="form-control" value="{{ $seller->shop_name }}" name="shop_name">
                         </div>
 
                         <div class="form-group col-12">
                             <label>{{__('user.Email')}} <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" value="{{ $seller->email }}" name="email" readonly>
+                            <input type="email" class="form-control" value="{{ $seller->email }}" name="email">
                         </div>
 
                         <div class="form-group col-12">
