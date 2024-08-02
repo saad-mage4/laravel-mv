@@ -101,6 +101,18 @@ display: block;
     position: relative;
 }
 
+ .input_Search .X__icon {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    display: none;
+}
+
 @media (min-width:768px) {
     .input_Search button {
     line-height: 0;
@@ -142,6 +154,12 @@ input#searchInput {
 #searchButton.btn-orange i {
     display: none;
 }
+
+.input_Search .X__icon {
+    right: 30px;
+    top: 30%;
+}
+
    }
 
 </style>
@@ -208,6 +226,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
          </div>
           <div class="col-12 col-md-6 input_Search">
                <input type="text" id="searchInput" class="form-control animated-element" placeholder="Search By Anything..">
+               <span id="resetInput" class="X__icon">x</span>
                <button type="submit" id="searchButton" class="btn btn-orange">
                 <span class="text d-inline-block text-white d-md-none">Search</span>
                 <i class="far fa-search" aria-hidden="true"></i></button>
@@ -472,6 +491,14 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
         e.preventDefault();
         let stateId = $("#state_id").val();
         const stateName = $("#state_id option:selected").data('name');
+        if (stateId === "") {
+            loadAllProducts();
+        }
+        if (stateId) {
+        $("#resetInput").show();
+    } else {
+        $("#resetInput").hide();
+    }
         value.state = stateId;
         if(stateId){
         $.ajax({
@@ -493,14 +520,40 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             $("#city_id").on("change", function() {
             let cityId = $("#city_id").val();
             const cityName = $("#city_id option:selected").data('name');
+             if (cityId === "") {
+            loadAllProducts();
+        }
+            if (cityId) {
+        $("#resetInput").show();
+    } else {
+        $("#resetInput").hide();
+    }
                 value.city = cityId ?? "";
         });
 
         // input Value
 
-        $("#searchInput").change(function (e) {
-            e.preventDefault();
-             value.input_value = e?.target?.value
+$("#searchInput").on("input", function () {
+    const inputValue = $(this).val();
+    if (inputValue) {
+        $("#resetInput").show();
+    } else {
+        $("#resetInput").hide();
+    }
+    value.input_value = inputValue;
+});
+
+
+        // Reset the input and show all products when reset icon is clicked
+        $("#resetInput").click(function () {
+        $("#searchInput").val('');
+        $("#state_id").val('');
+         $("#city_id").val('');
+        $(this).hide();
+        value.input_value = '';
+         value.state = '';
+         value.city = '';
+        loadAllProducts();
         });
 
         // Button Click
@@ -519,6 +572,25 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             });
 
         });
+
+    // Deault Reset the filter
+    function loadAllProducts() {
+    $.ajax({
+        type: "get",
+        url: "/search-private-used-product",
+        data: {
+            values: {
+                country: 1,
+                state: "",
+                city: "",
+                input_value: ""
+             },
+        },
+        success: function (response) {
+            $('.load_ajax_response').html(response);
+        }
+    });
+}
 
 
 

@@ -67,10 +67,11 @@ class LoginController extends Controller
                         $isVendor = Vendor::where('user_id',$user->id)->first();
                         if($isVendor) {
                             if($isVendor->status == 1) {
-                                return redirect()->intended(route('seller.dashboard'))->with($notification);
+                                // return redirect()->intended(route('user.dashboard'))->with($notification);
+                                return redirect()->intended(route('home'))->with($notification);
                             }
                         }else {
-                            return redirect()->intended(route('user.dashboard'))->with($notification);
+                            return redirect()->intended(route('home'))->with($notification);
                         }
 
                     }

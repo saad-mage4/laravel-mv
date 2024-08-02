@@ -755,7 +755,7 @@ class HomeController extends Controller
         return response()->json(['cities' => $response]);
     }
 
-
+    //! searchPrivateCustomUsedProduct in Private Page
     public function searchPrivateCustomUsedProduct(Request $request)
     {
         $data = $request->values;
@@ -781,68 +781,78 @@ class HomeController extends Controller
         $city = $data['city'];
         $input_value = $data['input_value'];
 
-        // Search by all fileds
-        if ($state != '' && $input_value != '' && $city != '') {
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('vendors.city', $city)->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
+        $productsQuery = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        ->join('brands', 'products.brand_id', '=', 'brands.id')
+        ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
+        ->where('seller_type', 'Private');
 
-        // search by only State
-        if ($state != '' && $input_value == '' && $city == '') {
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
-
-
-        // Search by state & city only
-
-        if ($state != '' && $input_value == '' && $city != '') {
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('vendors.city', $city)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
-
-
-        // Search by input-name only
-        if ($state == '' && $input_value != '' && $city == '') {
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
-
-
-        // Search by state & input-name only
-        if ($state != '' && $input_value != '' && $city == '') {
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
-
-
-
-        // dd($products);
-        // if ($request->price_range && !$request->has('brands')) {
-        //     $price_range = explode(';', $request->price_range);
-        //     $start_price = $price_range[0];
-        //     $end_price = $price_range[1];
-        //     // $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
+        // // Search by all fileds
+        // if ($state != '' && $input_value != '' && $city != '') {
         //     $products = DB::table('products')
         //     ->join('categories', 'products.category_id', '=', 'categories.id')
         //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        //     ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
+        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('vendors.city', $city)->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
         // }
+
+        // // search by only State
+        // if ($state != '' && $input_value == '' && $city == '') {
+        //     $products = DB::table('products')
+        //     ->join('categories', 'products.category_id', '=', 'categories.id')
+        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
+        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+        // }
+
+
+        // // Search by state & city only
+
+        // if ($state != '' && $input_value == '' && $city != '') {
+        //     $products = DB::table('products')
+        //     ->join('categories', 'products.category_id', '=', 'categories.id')
+        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
+        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('vendors.city', $city)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+        // }
+
+
+        // // Search by input-name only
+        // if ($state == '' && $input_value != '' && $city == '') {
+        //     $products = DB::table('products')
+        //     ->join('categories', 'products.category_id', '=', 'categories.id')
+        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
+        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+        // }
+
+
+        // // Search by state & input-name only
+        // if ($state != '' && $input_value != '' && $city == '') {
+        //     $products = DB::table('products')
+        //     ->join('categories', 'products.category_id', '=', 'categories.id')
+        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
+        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+        // }
+
+
+        // New change
+        if (!empty($data['state'])) {
+            $productsQuery->where('vendors.state', $data['state']);
+        }
+
+        if (!empty($data['city'])) {
+            $productsQuery->where('vendors.city', $data['city']);
+        }
+
+        if (!empty($data['input_value'])) {
+            $productsQuery->where('products.name', 'like', '%' . $data['input_value'] . '%');
+        }
+
+
+        $products = $productsQuery->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
 
         $currencySetting = Setting::first();
         $setting = $currencySetting;

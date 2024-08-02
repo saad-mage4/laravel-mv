@@ -18,6 +18,7 @@ class OrderController extends Controller
 
     public function index(){
         $orders = Order::with('user')->orderBy('id','desc')->get();
+        // dd($orders);
         $title = trans('admin_validation.All Orders');
         $setting = Setting::first();
         return view('admin.order', compact('orders','title','setting'));
