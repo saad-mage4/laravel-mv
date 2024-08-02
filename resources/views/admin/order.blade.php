@@ -36,9 +36,10 @@
                             </thead>
                             <tbody>
                                 @foreach ($orders as $index => $order)
+                                {{-- {{dd($order)}} --}}
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        <td>{{ $order->user->name }}</td>
+                                        <td>{{ $order->user ? $order->user->name : 'N/A' }}</td>
                                         <td>{{ $order->order_id }}</td>
                                         <td>{{ $order->created_at->format('d F, Y') }}</td>
                                         <td>{{ $order->product_qty }}</td>

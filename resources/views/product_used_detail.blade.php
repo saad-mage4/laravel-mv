@@ -85,6 +85,7 @@
                                     {{-- <div class="row"> --}}
                                         <div class="col-xl-4 col-xxl-5 col-md4">
                                             <div class="wsus__vebdor_img h-auto rounded-circle fa-w-20">
+                                                {{-- {{dd($user)}} --}}
                                                 @if ($user->Vendor_banner)
                                                 <img src="{{ asset($user->Vendor_banner) }}" alt="vendor-db" class="img-fluid w-100" style="width: 20px">
                                                 @else

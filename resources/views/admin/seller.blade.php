@@ -34,14 +34,17 @@
                             </thead>
                             <tbody>
                                 @foreach ($sellers as $index => $seller)
+                                {{-- {{dd($seller)}} --}}
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        <td>{{ $seller->user->name }}</td>
-                                        <td>{{ $seller->user->email }}</td>
+                                        <td>{{ $seller->user ? $seller->user->name : 'N/A' }}</td>
+                                        <td>{{ $seller->user ? $seller->user->email : 'N/A' }}</td>
                                         <td>
-                                            @if ($seller->user->image)
+                                           @if ($seller->user)
+                                                @if ($seller->user->image)
                                             <img src="{{ asset($seller->user->image) }}" class="rounded-circle" alt="" width="80px">
                                             @endif
+                                           @endif
                                         </td>
                                         <td>
                                             @if($seller->status == 1)
