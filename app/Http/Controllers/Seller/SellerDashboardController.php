@@ -19,6 +19,8 @@ use App\Models\OrderProduct;
 use App\Models\SellerWithdraw;
 use Carbon\Carbon;
 use Auth;
+use Illuminate\Support\Facades\DB;
+
 class SellerDashboardController extends Controller
 {
     public function __construct()
@@ -29,6 +31,7 @@ class SellerDashboardController extends Controller
     //!! After Admin Approve the Seller Request
 
     public function index(){
+
         $user = Auth::guard('web')->user();
         $seller = $user->seller;
         if ($user->subscription_expiry_date != null && Carbon::now()->gt($user->subscription_expiry_date)) {

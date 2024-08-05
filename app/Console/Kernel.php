@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->call('App\Http\Controllers\Seller\SellerSponsorController@bannerRemoveCron')
         ->everyMinute()->timezone('Asia/Karachi');
 
-        // For Private Seller Ads Cron job
+        // For Private Seller Ads Cron job montly/2months
         $schedule->call('App\Http\Controllers\User\StripeController@PrivateAdsCron')
         ->everyMinute()->timezone('Asia/Karachi');
     }

@@ -437,7 +437,6 @@ class UserProfileController extends Controller
         $SellerType = $request->transaction_type;
         $PrivateAds = $request->privateAds;
 
-        // dd($PrivateAds);
         $user = Auth::guard('web')->user();
 
         // Set the Stripe API key
@@ -455,7 +454,7 @@ class UserProfileController extends Controller
             $is_paid = $user->is_paid;
             $user_seller_type = $user->seller_type;
             $user->private_ad = $user->private_ad;
-            $user->save();
+            $user->update();
 
             $CurrentDate = Carbon::now()->toDateString();
             // dd($user->is_paid);
@@ -475,16 +474,27 @@ class UserProfileController extends Controller
                 return redirect('seller/dashboard')->with($notification);
             }
         } elseif ($response == 'success' && $SellerType == "Private") {
+            //! Making products live again (60 days products subcriptio work)
+            $vendor_id = DB::table('vendors')->select('id')->where('user_id', '=', $user->id)->get()->toArray();
+            $vendor_id = implode(array_column($vendor_id, 'id'));
+            $products = Product::where('vendor_id', $vendor_id)->get();
+            foreach ($products as $product) {
+                $product->status = '1';
+                $product->update();
+            }
+
+            //? Setting new expiry for user
             $user->is_paid = 1;
             $user->seller_type = "Private";
             $user->private_ad = $PrivateAds;
-            $user->subscription_expiry_date = null; //public subscibtion
-            $expiryDate = Carbon::now()->addMonth(); // Add the Montly subscibe in the private ads
+            $user->subscription_expiry_date = null; //public subcription
+            $expiryDate = Carbon::now()->format('Y-m-d'); // Add the Montly subscibe in the private ads
             $user->private_subscription_expiry_date = $expiryDate;
             $is_paid = $user->is_paid;
             $user_seller_type = $user->seller_type;
             $user->private_ad = $user->private_ad;
-            $user->save();
+            $user->update();
+
             if ($is_paid == 1 && $user_seller_type == "Private" && $user->is_member == 0) {
                 $notification = 'Payment has been made Successfully!';
                 $notification = array('messege' => $notification, 'alert-type' => 'success');
@@ -538,7 +548,7 @@ class UserProfileController extends Controller
         }
     }
 
-    //? Private Route For if the is_paid && montly subcripe is over
+    //! Private Route For if the is_paid && montly subcripe is over
     public function Test()
     {
         return view('user.test');
@@ -888,6 +898,7 @@ class UserProfileController extends Controller
         }
     }
 
+    //! Private Seller Registration page
     public function privateSellerRegistration()
     {
         $setting = Setting::first();
@@ -895,7 +906,7 @@ class UserProfileController extends Controller
         $is_paid = $user->is_paid;
         $user_seller_type = $user->seller_type;
         $private_Ads = $user->private_ad; // limit of the adds
-        $expiryDate = Carbon::now()->addMonth(); // Add the Montly subscibe in the private ads
+        $expiryDate = Carbon::now()->format('Y-m-d'); //! Add the Montly subscibe in the private ads
         $user->private_subscription_expiry_date = $expiryDate;
         $private_subscription_expiry_date = $user->private_subscription_expiry_date;
 
@@ -908,6 +919,7 @@ class UserProfileController extends Controller
         }
     }
 
+    //! Private Seller Form Request
     public function privateSellerRequest(Request $request)
     {
         $data = $request->values;

@@ -8,6 +8,7 @@
     @endif
     <div class="row">
         @foreach ($products as $product)
+        @if ($product->status == 1)
         <div class="col-xl-4  col-sm-6">
             <div class="wsus__product_item">
                 @if ($product->new_product == 1)
@@ -37,7 +38,7 @@
                     <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li>
                 </ul> --}}
                 <div class="wsus__product_details">
-                <a class="wsus__category" href="#!">{{ $product->CategoryName }} </a>
+                <a class="wsus__category" href="#!">{{ $product->private_ad_type ?? "" }}</a>
 
                 {{-- @if ($reviewQty > 0)
                     <p class="wsus__pro_rating">
@@ -80,6 +81,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @endforeach
 
         <div class="col-xl-12">
@@ -97,7 +99,7 @@
     @endif
     <div class="row">
         @foreach ($products as $product)
-
+        @if ($product->status == 1)
         <div class="col-xl-12">
             <div class="wsus__product_item wsus__list_view">
                 @if ($product->new_product == 1)
@@ -169,6 +171,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @endforeach
         <div class="col-xl-12">
             {{ $products->links('ajax_custom_paginator') }}

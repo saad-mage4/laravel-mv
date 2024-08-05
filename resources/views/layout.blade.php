@@ -326,7 +326,7 @@
                         @if ($productCategory->slug == "used-products")
                            <li></li>
                         @else
-                        {{ $productCategory->name }} <br>
+                        {{-- {{ $productCategory->name }} <br> --}}
                         @endif
                             @if ($productCategory->subCategories->count() == 0)
                             @if ($productCategory->slug == "used-products")

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Stripe\{StripeClient, Exception\ApiErrorException};
-use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -39,12 +39,7 @@ class StripeController extends Controller
                     return response()->json(['error' => 'Invalid private ad value'], 400);
             }
         }
-
-        // $transactionType == "Public" ? env('SPONSOR_PRODUCT_PRICE') :
-        // env('SPONSOR_PRODUCT_PRICE_PRIVATE')
-
         try {
-            // $transactionType == "Public" ? 'subscription'
             $session = $stripe->checkout->sessions->create([
                 'line_items' => [
                     [
@@ -62,18 +57,28 @@ class StripeController extends Controller
         }
     }
 
-    //! For Private Monthly Subscribtion
+    //! For Private Monthly Subscribtion && 2 months products status 0
     public function PrivateAdsCron()
     {
         $currentTime = Carbon::now()->format('Y-m-d');
-        $users = User::where("is_paid", '=', "1")->whereNotNull('private_subscription_expiry_date')->get();
+        $users = User::whereNotNull('private_subscription_expiry_date')->get();
         foreach ($users  as $user) {
-            $differnce = Carbon::parse($user->private_subscription_expiry_date)->diffInDays($currentTime, false);
-            if ($differnce > 0) {
+            $differnce = Carbon::parse($user->private_subscription_expiry_date)->diffInDays($currentTime);
+            if ($differnce > 30) {
                 $user->is_paid = 0;
                 $user->private_ad = 0;
-                $user->private_subscription_expiry_date = null;
+                // $user->private_subscription_expiry_date = null;
                 $user->update();
+            }
+            //! After 2months the products status get 0 (Not shown inthe UI)
+            elseif ($differnce > 60) {
+                $vendor_id = DB::table('vendors')->select('id')->where('user_id', '=', $user->id)->get()->toArray();
+                $vendor_id = implode(array_column($vendor_id, 'id'));
+                $products = Product::where('vendor_id', $vendor_id)->get();
+                foreach ($products as $product) {
+                    $product->status = '0';
+                    $product->update();
+                }
             }
         }
     }

@@ -103,7 +103,7 @@ class SellerProductController extends Controller
     }
 
 
-    //! For Store the Product Dataa
+    //! For Store the Product Data
     public function store(Request $request)
     {
         $user = Auth::guard('web')->user();
@@ -133,6 +133,7 @@ class SellerProductController extends Controller
                 'long_description' => 'required',
                 'brand' => 'required',
                 'price' => 'required|numeric',
+                'private_ad_type' => 'required'
             ];
             $customMessages = [
                 'short_name.required' => trans('user_validation.Short name is required'),
@@ -149,6 +150,7 @@ class SellerProductController extends Controller
                 'brand.required' => trans('user_validation.Brand is required'),
                 'price.required' => trans('user_validation.Price is required'),
                 'status.required' => trans('user_validation.Status is required'),
+                'private_ad_type.required' => 'Add Type is required'
             ];
         } else {
             $rules = [
@@ -250,11 +252,12 @@ class SellerProductController extends Controller
                 $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
                 $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
                 $product->seller_type = $user->seller_type;
+                $product->private_ad_type = $user->seller_type == "Private" ? $request->private_ad_type : null;
                 if ($user->seller_type == "Private") {
                     $product->status = 1;
                 }
                 if ($ad == 0) {
-                    DB::table('users')->where('id', $user->id)->update(['is_paid' => false, 'private_subscription_expiry_date' => null]); //'is_member' => false
+                    DB::table('users')->where('id', $user->id)->update(['is_paid' => false]); //'is_member' => false
                 }
                 $product->save();
             } else {
@@ -289,6 +292,7 @@ class SellerProductController extends Controller
             $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
             $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
             $product->seller_type = $user->seller_type;
+            $product->private_ad_type = null;
             if ($user->seller_type == "Private") {
                 $product->status = 1;
             }
@@ -352,6 +356,7 @@ class SellerProductController extends Controller
                 'long_description' => 'required',
                 'brand' => 'required',
                 'price' => 'required|numeric',
+                'private_ad_type' => 'required'
             ];
             $customMessages = [
                 'short_name.required' => trans('user_validation.Short name is required'),
@@ -368,6 +373,7 @@ class SellerProductController extends Controller
                 'brand.required' => trans('user_validation.Brand is required'),
                 'price.required' => trans('user_validation.Price is required'),
                 'status.required' => trans('user_validation.Status is required'),
+                'private_ad_type.required' => 'Add Type is required'
             ];
         } else {
             $rules = [
@@ -564,7 +570,7 @@ class SellerProductController extends Controller
             $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
             $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
             $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
-            $product->seller_type = $user->seller_type;
+            $product->private_ad_type = $user->seller_type == "Private" ? $request->private_ad_type : null;
             // Update price Logic Default
 
             // Check if the offer_price has changed
@@ -634,7 +640,7 @@ class SellerProductController extends Controller
             $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
             $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
             $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
-
+            $product->private_ad_type = null;
             // Update price Logic Default
 
             // Check if the offer_price has changed

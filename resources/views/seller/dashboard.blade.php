@@ -438,6 +438,24 @@
               </div>
             </div>
 
+             @if ($user->seller_type == "Private")
+     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+              <div class="card card-statistic-1">
+                <div class="card-icon bg-success">
+                  <i class="far fa-check-circle"></i>
+                </div>
+                <div class="card-wrap">
+                  <div class="card-header">
+                    <h4>Remaining Ads</h4>
+                  </div>
+                  <div class="card-body">
+                  {{ $user->private_ad }}
+                  </div>
+                </div>
+              </div>
+            </div>
+             @endif
+
 
           </div>
       </div>
