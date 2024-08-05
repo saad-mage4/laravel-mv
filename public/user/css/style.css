@@ -24,6 +24,7 @@ body {
     background-color: #ff5200 !important;
     cursor: pointer;
     border: none;
+    color: #fff !important;
 }
 
 .detaile_private_seller span {
@@ -32,6 +33,9 @@ body {
 
 .detaile_private_seller a:hover {
     color: inherit !important;
+}
+.detaile_private_seller span:hover {
+    color: #fff !important
 }
 /* Price View in card  */
 .View_Price {

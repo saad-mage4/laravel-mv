@@ -54,6 +54,7 @@ class CreateProductsTable extends Migration
             $table->string('seller_type');
             $table->integer('is_highlight_1')->nullable();
             $table->date('highlight_expiry_date')->nullable();
+            $table->enum('private_ad_type', ['New', 'Used'])->nullable();
             $table->timestamps();
         });
     }
