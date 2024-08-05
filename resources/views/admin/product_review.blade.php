@@ -34,10 +34,20 @@
                             </thead>
                             <tbody>
                                 @foreach ($reviews as $index => $review)
+                                {{-- {{dd($review)}} --}}
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        <td>{{ $review->user->name }}</td>
-                                        <td><a href="{{ route('admin.product.edit', $review->product->id) }}">{{ $review->product->name }}</a></td>
+                                        <td>{{ $review ? $review->user->name : "No data" }}</td>
+                                        <td>
+                                        @if ($review->product)
+                                        <a href="{{ route('admin.product.edit', $review->product->id) }}">
+                                        {{ $review->product->name }}
+                                        </a>
+                                        @else
+                                        No data
+                                        @endif
+                                            {{-- <a href="{{ route('admin.product.edit', $product->id) }}">{{ $product ? $product->name : "No data" }}</a> --}}
+                                        </td>
 
                                         <td>{{ $review->rating }}</td>
                                         <td>

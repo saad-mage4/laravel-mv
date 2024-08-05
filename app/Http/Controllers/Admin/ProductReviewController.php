@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use Auth;
@@ -15,7 +16,8 @@ class ProductReviewController extends Controller
 
 
     public function index(){
-        $reviews = ProductReview::with('user','product')->orderBy('id','desc')->get();
+        $reviews = ProductReview::with('user', 'product')->orderBy('id', 'desc')->get();
+        // $products = Product::orderBy('id', 'desc')->get();
         return view('admin.product_review', compact('reviews'));
     }
 

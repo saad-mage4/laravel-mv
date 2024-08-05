@@ -37,8 +37,8 @@
                             <tbody>
                                 @foreach ($products as $index => $product)
                                     <tr>
-                                        <td>{{ ++$index }}</td>
-                                        <td><a href="{{ route('admin.seller-show', $product->vendor_id) }}">{{ $product->seller->user->name }}</a></td>
+                                        <td>{{ ++$index }} 123</td>
+                                        <td><a href="{{ route('admin.seller-show', $product->vendor_id) }}">{{ $product->seller ? $product->seller->user->name: "No data" }}</a></td>
                                         <td><a href="{{ route('product-detail', $product->slug) }}">{{ $product->short_name }}</a></td>
                                         <td>{{ $setting->currency_icon }}{{ $product->price }}</td>
                                         <td>

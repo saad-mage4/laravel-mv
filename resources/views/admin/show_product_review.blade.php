@@ -33,7 +33,14 @@
                            </tr>
                            <tr>
                                <td>{{__('admin.Product')}}</td>
-                               <td><a href="{{ route('admin.product.edit', $review->product->id) }}">{{ $review->product->name }}</a></td>
+                               @if ($review->product)
+                                        <a href="{{ route('admin.product.edit', $review->product->id) }}">
+                                        {{ $review->product->name }}
+                                        </a>
+                                        @else
+                                        No data
+                                        @endif
+                               {{-- <td><a href="{{ route('admin.product.edit', $review->product->id) }}">{{ $review->product->name }}</a></td> --}}
                            </tr>
                            <tr>
                                <td>{{__('admin.Rating')}}</td>
