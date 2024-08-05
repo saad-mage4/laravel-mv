@@ -42,7 +42,12 @@ class ProductController extends Controller
     }
 
     public function sellerProduct(){
-        $products = Product::with('category')->where('vendor_id','!=',0)->where('status',1)->get();
+
+        // $products = Product::with('category', 'seller', 'brand', 'gallery', 'specifications', 'reviews', 'variants', 'returnPolicy', 'tax', 'variantItems')->where('vendor_id', '!=', 0)->where('status', 0)->get();
+        // $orderProducts = OrderProduct::all();
+        // $setting = Setting::first();
+
+        $products = Product::with('category', 'seller')->where('vendor_id', '!=', 0)->where('status', 1)->get();
         $orderProducts = OrderProduct::all();
         $setting = Setting::first();
         return view('admin.seller_product',compact('products','orderProducts','setting'));

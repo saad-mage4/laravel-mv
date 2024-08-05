@@ -31,6 +31,12 @@ class Product extends Model
         return $this->belongsTo(Vendor::class,'vendor_id');
     }
 
+    // for user
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'vendor_id');
+    // }
+
     public function brand(){
         return $this->belongsTo(Brand::class);
     }
