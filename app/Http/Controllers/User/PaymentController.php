@@ -66,7 +66,7 @@ class PaymentController extends Controller
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
         $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
-        $shipping_fee = $shippingMethod->fee;
+        $shipping_fee = $shippingMethod ? $shippingMethod->fee : 0;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
             $tax_amount = $tax_amount + $tax;
@@ -128,7 +128,7 @@ class PaymentController extends Controller
         $order->payment_method = 'Cash on Delivery';
         $order->payment_status = 0;
         $order->shipping_method = $shippingMethod->title;
-        $order->shipping_cost = $shippingMethod->fee;
+        $order->shipping_cost = $shippingMethod ? $shippingMethod->fee : 0;
         $order->coupon_coast = $coupon_price;
         $order->order_vat = $tax_amount;
         $order->order_status = 0;
@@ -285,9 +285,6 @@ class PaymentController extends Controller
 
     public function payWithStripe(Request $request)
     {
-
-        // dd($request);
-
         $tax_amount = 0;
         $total_price = 0;
         $coupon_price = 0;
@@ -304,7 +301,7 @@ class PaymentController extends Controller
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
         $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
-        $shipping_fee = $shippingMethod->fee;
+        $shipping_fee = $shippingMethod ? $shippingMethod->fee : 0;
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
             $tax_amount = $tax_amount + $tax;
@@ -352,6 +349,7 @@ class PaymentController extends Controller
         $currency_name = $setting->currency_name;
 
 
+        //! For Stripe In App Checkout
         $stripe = StripePayment::first();
         Stripe\Stripe::setApiKey($stripe->stripe_secret);
         $payableAmount = round($total_price * $stripe->currency_rate, 2);
@@ -378,7 +376,7 @@ class PaymentController extends Controller
         $order->payment_method = 'Stripe';
         $order->payment_status = 1;
         $order->shipping_method = $shippingMethod->title;
-        $order->shipping_cost = $shippingMethod->fee;
+        $order->shipping_cost = $shippingMethod ? $shippingMethod->fee : 0;
         $order->coupon_coast = $coupon_price;
         $order->order_vat = $tax_amount;
         $order->order_status = 0;
@@ -509,6 +507,7 @@ class PaymentController extends Controller
                             'name' => $user->name,
                             'email' => $user->email
                         ];
+                        //! Send Scure mail through hostigner web mail
                         try {
                             Mail::to($user->email)->send(new OrderShipped($details));;
                         } catch (Swift_TransportException $e) {
@@ -561,7 +560,7 @@ class PaymentController extends Controller
                 $cartContents = Cart::content();
                 $shipping_method = Session::get('shipping_method');
                 $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
-                $shipping_fee = $shippingMethod->fee;
+                $shipping_fee = $shippingMethod ? $shippingMethod->fee : 0;
                 foreach ($cartContents as $key => $content) {
                     $tax = $content->options->tax * $content->qty;
                     $tax_amount = $tax_amount + $tax;
@@ -623,7 +622,7 @@ class PaymentController extends Controller
                 $order->payment_method = 'Razorpay';
                 $order->payment_status = 1;
                 $order->shipping_method = $shippingMethod->title;
-                $order->shipping_cost = $shippingMethod->fee;
+                $order->shipping_cost = $shippingMethod ? $shippingMethod->fee : 0;
                 $order->coupon_coast = $coupon_price;
                 $order->order_vat = $tax_amount;
                 $order->order_status = 0;
@@ -826,7 +825,7 @@ class PaymentController extends Controller
             $cartContents = Cart::content();
             $shipping_method = Session::get('shipping_method');
             $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
-            $shipping_fee = $shippingMethod->fee;
+            $shipping_fee = $shippingMethod ? $shippingMethod->fee : 0;
             foreach ($cartContents as $key => $content) {
                 $tax = $content->options->tax * $content->qty;
                 $tax_amount = $tax_amount + $tax;
@@ -888,7 +887,7 @@ class PaymentController extends Controller
             $order->payment_method = 'Flutterwave';
             $order->payment_status = 1;
             $order->shipping_method = $shippingMethod->title;
-            $order->shipping_cost = $shippingMethod->fee;
+            $order->shipping_cost = $shippingMethod ? $shippingMethod->fee : 0;
             $order->coupon_coast = $coupon_price;
             $order->order_vat = $tax_amount;
             $order->order_status = 0;

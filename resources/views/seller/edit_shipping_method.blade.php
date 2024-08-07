@@ -1,26 +1,26 @@
-@extends('admin.master_layout')
+@extends('seller.master_layout')
 @section('title')
 <title>{{__('admin.Shipping')}}</title>
 @endsection
-@section('admin-content')
+@section('seller-content')
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
           <div class="section-header">
             <h1>{{__('admin.Edit Shipping')}}</h1>
             <div class="section-header-breadcrumb">
-              <div class="breadcrumb-item active"><a href="{{ route('admin.shipping.index') }}">{{__('admin.Shipping')}}</a></div>
+              <div class="breadcrumb-item active"><a href="{{ route('seller.shipping.index') }}">{{__('admin.Shipping')}}</a></div>
               <div class="breadcrumb-item">{{__('admin.Edit Shipping')}}</div>
             </div>
           </div>
 
           <div class="section-body">
-            <a href="{{ route('admin.shipping.index') }}" class="btn btn-primary"><i class="fas fa-list"></i> {{__('admin.Shipping')}}</a>
+            <a href="{{ route('seller.shipping.index') }}" class="btn btn-primary"><i class="fas fa-list"></i> {{__('admin.Shipping')}}</a>
             <div class="row mt-4">
                 <div class="col-12">
                   <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.shipping.update',$shipping->id) }}" method="POST">
+                        <form action="{{ route('seller.shipping.update',$shipping->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="row">

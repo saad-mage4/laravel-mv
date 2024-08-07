@@ -270,7 +270,11 @@
                                         @endif
                                     @else
                                         <div class="form-check">
-                                            <input required class="form-check-input shipping_method" type="radio" name="shipping_method" id="shipping_method-{{ $shippingMethod }}" value="{{ $shippingMethod->id }}">
+                                            <input
+                                            {{ $shippingMethod->id   ? 'checked' : '' }}
+                                             required class="form-check-input shipping_method"
+                                              type="radio" name="shipping_method"
+                                               id="shipping_method-{{ $shippingMethod->id }}" value="{{ $shippingMethod->id }}">
                                             <label class="form-check-label" for="shipping_method-{{ $shippingMethod }}">
                                                 {{ $shippingMethod->title }}
                                                 <span>{{ $shippingMethod->description }}</span>
@@ -279,6 +283,8 @@
                                     @endif
 
                                 @endforeach
+
+
 
                                 <div class="wsus__order_details_summery">
                                     <p>{{__('user.subtotal')}}: <span>{{ $setting->currency_icon }}{{ $subTotal }}</span></p>
@@ -309,7 +315,7 @@
     ==============================-->
 
 
-    <script>
+    {{-- <script>
         (function($) {
             "use strict";
             $(document).ready(function () {
@@ -324,6 +330,28 @@
                 })
             });
         })(jQuery);
+
+    </script> --}}
+
+    <script>
+        $(document).ready(function () {
+    function updateTotal() {
+        let id = $(".shipping_method:checked").val();
+        let fee = $("#shipping_price-" + id).val();
+        $("#shipping_amount").text(fee);
+        let total = $("#hidden_total_price").val();
+        total = (total * 1) + (fee * 1);
+        total = total.toFixed(2);
+        $("#total_price").text(total);
+    }
+
+    $(".shipping_method").on('click', function() {
+        updateTotal();
+    });
+
+    // Trigger the click event on the default checked radio button
+    updateTotal();
+});
 
     </script>
 

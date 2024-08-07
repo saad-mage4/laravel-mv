@@ -58,6 +58,12 @@
           </li>
 
 
+          {{-- Shipping Route  --}}
+          @if ($authUser->seller_type == "Public")
+           <li class="{{ Route::is('seller.shipping.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('seller.shipping.index') }}"> <i class="fas fa-shipping-fast"></i> <span>{{__('admin.Shipping')}}</span></a></li>
+          @endif
+           {{-- Shipping Route End  --}}
+
           <li class="nav-item dropdown {{ Route::is('seller.product.*') || Route::is('seller.product-brand.*') || Route::is('seller.product-variant') || Route::is('seller.create-product-variant') || Route::is('seller.edit-product-variant') || Route::is('seller.product-gallery') || Route::is('seller.product-variant-item') || Route::is('seller.create-product-variant-item') || Route::is('seller.edit-product-variant-item') || Route::is('seller.product-review') || Route::is('seller.wholesale') || Route::is('seller.create-wholesale') || Route::is('seller.edit-wholesale') || Route::is('seller.pending-product') || Route::is('admin.product-highlight') || Route::is('seller.show-product-review')  || Route::is('seller.show-product-report') || Route::is('seller.product-report') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i><span>{{__('user.Manage Products')}}</span></a>
 
