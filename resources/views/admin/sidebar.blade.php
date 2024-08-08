@@ -82,7 +82,7 @@
           </li>
 
           {{-- || Route::is('admin.shipping.*') --}}
-          <li class="nav-item dropdown {{ Route::is('admin.product-tax.*') || Route::is('admin.return-policy.*') || Route::is('admin.specification-key.*') || Route::is('admin.campaign.*') || Route::is('admin.campaign-product') || Route::is('admin.currency.*')  || Route::is('admin.coupon.*') || Route::is('admin.shipping.*') || Route::is('admin.payment-method') ? 'active' : '' }}">
+          <li class="nav-item dropdown {{ Route::is('admin.product-tax.*') || Route::is('admin.return-policy.*') || Route::is('admin.specification-key.*') || Route::is('admin.campaign.*') || Route::is('admin.campaign-product') || Route::is('admin.currency.*')  || Route::is('admin.coupon.*')  || Route::is('admin.payment-method') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown"><i class="fas fa-shopping-cart"></i><span>{{__('admin.Ecommerce')}}</span></a>
 
             <ul class="dropdown-menu">
@@ -97,7 +97,7 @@
                 <li class="{{ Route::is('admin.specification-key.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.specification-key.index') }}">{{__('admin.Specification Key')}}</a></li>
 
                 {{-- Shipping Routes  --}}
-                <li class="{{ Route::is('admin.shipping.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.shipping.index') }}">{{__('admin.Shipping')}}</a></li>
+                {{-- <li class="{{ Route::is('admin.shipping.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.shipping.index') }}">{{__('admin.Shipping')}}</a></li> --}}
 
                 <li class="{{ Route::is('admin.payment-method') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.payment-method') }}">{{__('admin.Payment Method')}}</a></li>
 

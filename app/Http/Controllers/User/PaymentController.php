@@ -300,8 +300,48 @@ class PaymentController extends Controller
         $shipping = ShippingAddress::where('user_id', $user->id)->first();
         $cartContents = Cart::content();
         $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
-        $shipping_fee = $shippingMethod ? $shippingMethod->fee : 0;
+        // $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
+        // $shipping_fee = $shippingMethod ? $shippingMethod->fee : 0;
+        // $admin_check = ShippingMethod::where('super_admin_status', '1')->exists();
+
+        // if ($admin_check) {
+        //     $shippingMethods = ShippingMethod::where([
+        //         ['status', '=', 1],
+        //         ['super_admin_status', '=', '1']
+        //     ])->get();
+        // }
+        $vendorIds = [];
+        foreach ($cartContents as $cart) {
+            $product = Product::select('vendor_id')->where('id', $cart->id)->first();
+            if ($product) {
+                $vendorIds[] = $product->vendor_id;
+            }
+        }
+        $vendorIds = array_unique($vendorIds);
+        $shippingMethod = [];
+        if (!empty($vendorIds)) {
+            // $shippingMethod = ShippingMethod::select('fee')->whereIn('vendor_id', $vendorIds)
+            //     ->where('status', 1)
+            //     ->get()->toArray();
+            $shippingMethod = ShippingMethod::whereIn('vendor_id', $vendorIds)
+                ->where('status', 1)
+                ->get();
+        }
+
+        $new_fees = [];
+        foreach ($shippingMethod as $methodsfees) {
+            $new_fees[] = $methodsfees->fee;
+        }
+        // $new_shipping_fee = array_column($shippingMethod, 'fee');
+        $new_fee = 0;
+
+        foreach ($new_fees as $fee) {
+            $new_fee += $fee;
+        }
+        // dd($new_fee);
+
+        $shipping_fee = $new_fee ?? 0;
+
         foreach ($cartContents as $key => $content) {
             $tax = $content->options->tax * $content->qty;
             $tax_amount = $tax_amount + $tax;
@@ -375,8 +415,16 @@ class PaymentController extends Controller
         $order->product_qty = Cart::count();
         $order->payment_method = 'Stripe';
         $order->payment_status = 1;
-        $order->shipping_method = $shippingMethod->title;
-        $order->shipping_cost = $shippingMethod ? $shippingMethod->fee : 0;
+        $new_title = "";
+        foreach ($shippingMethod as $title) {
+            $new_title .= $title->title . ",";
+        }
+        $new_title = rtrim($new_title, ",");
+
+        // $order->shipping_method = $shippingMethod->title;
+        // $order->shipping_cost = $shippingMethod ? $shippingMethod->fee : 0;
+        $order->shipping_method = $new_title ?? "No data";
+        $order->shipping_cost = $new_fee ?? 0;
         $order->coupon_coast = $coupon_price;
         $order->order_vat = $tax_amount;
         $order->order_status = 0;
@@ -474,7 +522,7 @@ class PaymentController extends Controller
         $message = str_replace('{{phone}}', $orderAddress->billing_phone, $message);
         $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
-        $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
+        $message = str_replace('{{shipping}}', $new_title, $message); //$shippingMethod->title
         Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
 
         /* Custom logic for sending emails to vendors */

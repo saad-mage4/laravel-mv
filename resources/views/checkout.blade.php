@@ -256,7 +256,7 @@
                                 @endphp
 
                                 <p class="wsus__product">{{__('user.shipping Methods')}}</p>
-                                @foreach ($shippingMethods as $shippingMethod)
+                                {{-- @foreach ($shippingMethods as $shippingMethod)
                                 <input type="hidden" value="{{ $shippingMethod->fee }}" id="shipping_price-{{ $shippingMethod->id }}">
                                     @if ($shippingMethod->id == 1)
                                         @if ($shippingMethod->minimum_order <= $total_price)
@@ -282,7 +282,26 @@
                                         </div>
                                     @endif
 
-                                @endforeach
+                                @endforeach --}}
+
+                        @foreach ($shippingMethods as $shippingMethod)
+                        <input type="hidden" value="{{ $shippingMethod->fee }}" id="shipping_price-{{ $shippingMethod->id }}">
+                        <div class="form-check">
+                        <input
+                        checked="{{ $shippingMethod->id   ? 'checked' : '' }}"
+                        disabled
+                        required
+                        class="form-check-input shipping_method"
+                        type="checkbox"
+                        id="shipping_method-{{ $shippingMethod->id }}"
+                        name="shipping_method[]"
+                        value="{{ $shippingMethod->id }}">
+                        <label class="form-check-label" for="shipping_method-{{ $shippingMethod->id }}">
+                        {{ $shippingMethod->title }} (${{ $shippingMethod->fee }})
+                        <span>{{ $shippingMethod->description }}</span>
+                        </label>
+                        </div>
+                        @endforeach
 
 
 
@@ -335,21 +354,42 @@
 
     <script>
         $(document).ready(function () {
-    function updateTotal() {
-        let id = $(".shipping_method:checked").val();
-        let fee = $("#shipping_price-" + id).val();
-        $("#shipping_amount").text(fee);
-        let total = $("#hidden_total_price").val();
-        total = (total * 1) + (fee * 1);
+    // function updateTotal() {
+    //     let id = $(".shipping_method:checked").val();
+    //     let fee = $("#shipping_price-" + id).val();
+    //     $("#shipping_amount").text(fee);
+    //     let total = $("#hidden_total_price").val();
+    //     total = (total * 1) + (fee * 1);
+    //     total = total.toFixed(2);
+    //     $("#total_price").text(total);
+    // }
+
+    // $(".shipping_method").on('click', function() {
+    //     updateTotal();
+    // });
+
+    // updateTotal();
+
+ function updateTotal() {
+        let totalShippingFee = 0;
+
+        $(".shipping_method:checked").each(function() {
+            let id = $(this).val();
+            let fee = $("#shipping_price-" + id).val();
+            totalShippingFee += parseFloat(fee);
+        });
+
+        $("#shipping_amount").text(totalShippingFee.toFixed(2));
+
+        let total = parseFloat($("#hidden_total_price").val()) + totalShippingFee;
         total = total.toFixed(2);
         $("#total_price").text(total);
-    }
+}
 
-    $(".shipping_method").on('click', function() {
+    $(".shipping_method").on('change', function() {
         updateTotal();
     });
 
-    // Trigger the click event on the default checked radio button
     updateTotal();
 });
 

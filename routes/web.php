@@ -673,8 +673,8 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
 
 
     //! Super Admin Seller Shipping Routes
-    Route::resource('shipping', ShippingMethodController::class);
-    Route::put('shipping-status/{id}',[ShippingMethodController::class,'changeStatus'])->name('shipping-status');
+    // Route::resource('shipping', ShippingMethodController::class);
+    // Route::put('shipping-status/{id}',[ShippingMethodController::class,'changeStatus'])->name('shipping-status');
 
     Route::resource('withdraw-method', WithdrawMethodController::class);
     Route::put('withdraw-method-status/{id}',[WithdrawMethodController::class,'changeStatus'])->name('withdraw-method-status');
