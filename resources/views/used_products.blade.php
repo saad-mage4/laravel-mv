@@ -279,7 +279,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                         {{-- <li><a class="categoryForSearch" href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li> --}}
                                         @foreach ($productCategories as $productCategory)
                                          @if ($productCategory->slug === "used-products")
-                                         <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name ? " New/Used" : $productCategory->name  }}</a></li>
+                                         <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name ? "New/Used" : $productCategory->name  }}</a></li>
                                          @endif
                                          @endforeach
                                         <input type="hidden" name="category" value="" id="category_id_for_search">
@@ -327,6 +327,27 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </div>
                               </div>
                             </div>
+                          <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree3">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree3" aria-expanded="false" aria-controls="collapseThree">
+                                     Filter By Ads Type
+                                  </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingThree3" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                            @foreach ($products as $product)
+                            @if (!$product->private_ad_type == null)
+                            <div class="form-check">
+                                <input name="AdType[]" class="form-check-input brand_item" type="checkbox" value="{{ $product->id }}" id="flexCheckDefault11-{{ $product->id }}">
+                                <label class="form-check-label" for="flexCheckDefault11-{{ $product->id }}">
+                                {{ $product->private_ad_type }}
+                                </label>
+                            </div>
+                            @endif
+                                      @endforeach
+                                  </div>
+                                </div>
+                              </div>
                             {{-- @foreach ($variantsForSearch as $variantForSearch)
                                 <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree2-{{ $variantForSearch->id }}">
@@ -445,6 +466,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                     data: $('#searchProductFormId').serialize(),
                     url: "{{ route('search-used-product') }}",
                     success: function (response) {
+                        console.log("ATHAA",response);
                         $('.load_ajax_response').html(response);
                     },
                     error: function(err) {}
