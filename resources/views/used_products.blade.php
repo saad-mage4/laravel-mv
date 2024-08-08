@@ -328,12 +328,12 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                               </div>
                             </div>
                           <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree3">
-                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree3" aria-expanded="false" aria-controls="collapseThree">
+                                <h2 class="accordion-header" id="headingFour">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                      Filter By Ads Type
                                   </button>
                                 </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingThree3" data-bs-parent="#accordionExample">
+                                <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
                             @foreach ($products as $product)
                             @if (!$product->private_ad_type == null)
