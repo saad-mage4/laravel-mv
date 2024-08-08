@@ -23,7 +23,10 @@ use App\Models\BankPayment;
 use App\Models\InstamojoPayment;
 use App\Models\PaypalPayment;
 use App\Models\PaymongoPayment;
+use App\Models\Product;
+use App\Models\User;
 use Cart;
+use Illuminate\Support\Facades\DB;
 use Session;
 class CheckoutController extends Controller
 {
@@ -54,7 +57,64 @@ class CheckoutController extends Controller
             $cities = City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
         }
         $banner = BreadcrumbImage::where(['id' => 2])->first();
-        $shippingMethods = ShippingMethod::where('status',1)->get();
+
+        //!  setting shipping option by checking admin config
+        $admin_check = ShippingMethod::where('super_admin_status', '1')->exists();
+
+        if ($admin_check) {
+            $shippingMethods = ShippingMethod::where([
+                ['status', '=', 1],
+                ['super_admin_status', '=', '1']
+            ])->get();
+        } else {
+            // $userId = Auth::id();
+            // foreach ($cartContents as $cart) {
+            //     $products = Product::select('vendor_id')->where('id', $cart->id)->get();
+            // }
+            // // $products = Product::select('id')->where('vendor_id', $vendor->id)->first();
+
+            // // $products = Product::where('vendor_id', $vendor->id)->get();
+            // foreach ($products as $product) {
+            //     $shippingMethods = ShippingMethod::where([
+            //         ['status', '=', 1],
+            //         ['vendor_id', '=', $product->vendor_id]
+            //     ])->get();
+            // }
+
+
+            $vendorIds = [];
+            foreach ($cartContents as $cart) {
+                $product = Product::select('vendor_id')->where('id', $cart->id)->first();
+                if ($product) {
+                    $vendorIds[] = $product->vendor_id;
+                }
+            }
+
+            // Remove duplicate vendor IDs
+            $vendorIds = array_unique($vendorIds);
+
+            // Initialize an array to store shipping methods
+            $shippingMethods = [];
+
+            // Fetch shipping methods for all unique vendor IDs
+            if (!empty($vendorIds)) {
+                $shippingMethods = ShippingMethod::whereIn('vendor_id', $vendorIds)
+                    ->where('status', 1)
+                    ->get();
+            }
+
+
+
+            //! Setting admin shipping []
+            if ($shippingMethods->isEmpty()) {
+                $shippingMethods = ShippingMethod::where([
+                    ['status', '=', 1],
+                    ['is_free', '=', '1']
+                ])->get();
+            }
+        }
+
+        // $shippingMethods = ShippingMethod::where('status',1)->get();
         $setting = Setting::first();
         $currencySetting = $setting;
         return view('checkout', compact('banner','cartContents','shipping','states','cities','countries','shippingMethods','setting','currencySetting'));
@@ -64,12 +124,6 @@ class CheckoutController extends Controller
         if(!Session::get('is_billing') && !Session::put('is_shipping')) {
             return redirect()->route('user.checkout.billing-address');
         }
-
-        $shipping_fee = 0;
-        $shipping_method = Session::get('shipping_method');
-        $shippingMethod = ShippingMethod::where('id',$shipping_method)->first();
-        $shipping_fee = $shippingMethod->fee;
-
         $banner = BreadcrumbImage::where(['id' => 2])->first();
         $cartContents = Cart::content();
         $setting = Setting::first();
@@ -82,6 +136,54 @@ class CheckoutController extends Controller
         $instamojoPayment = InstamojoPayment::first();
         $paypal = PaypalPayment::first();
         $paymongo = PaymongoPayment::first();
+
+
+        // $shipping_fee = 0;
+        // $shipping_method = Session::get('shipping_method');
+        // dd($shipping_method);
+        // $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
+        // $shipping_fee = $shippingMethod->fee;
+
+        $admin_check = ShippingMethod::where('super_admin_status', '1')->exists();
+
+        if ($admin_check) {
+            $shippingMethods = ShippingMethod::where([
+                ['status', '=', 1],
+                ['super_admin_status', '=', '1']
+            ])->get();
+        } else {
+            $vendorIds = [];
+            foreach ($cartContents as $cart) {
+                $product = Product::select('vendor_id')->where('id', $cart->id)->first();
+                if ($product) {
+                    $vendorIds[] = $product->vendor_id;
+                }
+            }
+            $vendorIds = array_unique($vendorIds);
+            $shippingMethods = [];
+            if (!empty($vendorIds)) {
+                $shippingMethods = ShippingMethod::select('fee')->whereIn('vendor_id', $vendorIds)
+                    ->where('status', 1)
+                    ->get()->toArray();
+            }
+            $new_shipping_fee = array_column($shippingMethods, 'fee');
+            // $new_shipping_fee = array_sum($shippingMethods);
+
+
+            $new_fee = 0;
+
+            foreach ($new_shipping_fee as $fee) {
+                $new_fee += $fee;
+            }
+
+
+            // $shipping_fee = 0;
+            // $shipping_method = Session::get('shipping_method');
+            // $shippingMethod = ShippingMethod::where('id', $shipping_method)->first();
+            // $shipping_fee = $shippingMethod->fee;
+            $shipping_fee =  $new_fee ?? 0;
+        }
+
         return view('payment', compact('banner','cartContents','shipping_fee','setting','stripe','razorpay','flutterwave','user','paystack','bankPayment','instamojoPayment','paypal','paymongo'));
     }
 
@@ -191,7 +293,7 @@ class CheckoutController extends Controller
             'phone'=>'required',
             'country'=>'required',
             'address'=>'required',
-            'shipping_method'=>'required',
+            // 'shipping_method'=>'required',
             'agree_terms_condition'=>'required',
         ];
 

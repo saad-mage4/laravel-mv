@@ -95,6 +95,7 @@ use App\Http\Controllers\User\MessageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Seller\ProductHighlightPaymentController;
+use App\Http\Controllers\Seller\SellerShippingMethodController;
 use App\Http\Controllers\User\StripeController;
 
 Route::group(['middleware' => ['demo','XSS']], function () {
@@ -287,7 +288,7 @@ Route::group(['middleware' => ['maintainance']], function () {
     });
 
 
-    // Sller Admin Routes
+    //!  Seller Admin Routes
     Route::group(['as'=> 'seller.', 'prefix' => 'seller','middleware' => ['checkseller']],function (){
         Route::get('language/{locale}', function ($locale) {
             app()->setLocale($locale);
@@ -361,6 +362,10 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('cash-on-delivery', [SellerOrderController::class, 'cashOnDelivery'])->name('cash-on-delivery');
         Route::get('order-show/{id}', [SellerOrderController::class, 'show'])->name('order-show');
         Route::put('update-order-status/{id}', [SellerOrderController::class, 'updateOrderStatus'])->name('update-order-status');
+
+            //? Seller Admin Shipping Routes
+            Route::resource('shipping', SellerShippingMethodController::class);
+            Route::put('shipping-status/{id}', [SellerShippingMethodController::class, 'changeStatus'])->name('shipping-status');
 
         Route::get('message', [SellerMessageContoller::class, 'index'])->name('message');
         Route::get('load-chat-box/{id}', [SellerMessageContoller::class, 'loadChatBox'])->name('load-chat-box');
@@ -667,8 +672,9 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
 
 
 
-    Route::resource('shipping', ShippingMethodController::class);
-    Route::put('shipping-status/{id}',[ShippingMethodController::class,'changeStatus'])->name('shipping-status');
+    //! Super Admin Seller Shipping Routes
+    // Route::resource('shipping', ShippingMethodController::class);
+    // Route::put('shipping-status/{id}',[ShippingMethodController::class,'changeStatus'])->name('shipping-status');
 
     Route::resource('withdraw-method', WithdrawMethodController::class);
     Route::put('withdraw-method-status/{id}',[WithdrawMethodController::class,'changeStatus'])->name('withdraw-method-status');

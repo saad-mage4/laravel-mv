@@ -88,6 +88,11 @@ class Product extends Model
 
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
 
     protected $casts = [
         'vendor_id' => 'integer',

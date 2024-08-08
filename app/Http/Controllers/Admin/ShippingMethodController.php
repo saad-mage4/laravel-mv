@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ShippingMethod;
 use App\Models\Setting;
+use App\Models\Vendor;
+use Illuminate\Support\Facades\Auth;
+
 class ShippingMethodController extends Controller
 {
     public function __construct()
@@ -14,10 +17,22 @@ class ShippingMethodController extends Controller
     }
 
     public function index(){
-        $shippings = ShippingMethod::orderBy('id','asc')->get();
+
+        $admin_shipping_enabled = ShippingMethod::where('super_admin_status', '1')->exists();
+        $userId = Auth::id();
+        $shippings = ShippingMethod::where('vendor_id', $userId)->orderBy('id', 'asc')->get();
         $setting = Setting::first();
-        return view('admin.shipping_method', compact('shippings','setting'));
+        return view('admin.shipping_method', compact('shippings', 'setting', 'admin_shipping_enabled'));
+
+
+        // $shippings = ShippingMethod::orderBy('id','asc')->get();
+        // $setting = Setting::first();
+        // return view('admin.shipping_method', compact('shippings','setting'));
     }
+
+
+
+
 
     public function create(){
         $setting = Setting::first();
@@ -43,6 +58,7 @@ class ShippingMethodController extends Controller
         $shipping->fee = $request->shipping_coast;
         $shipping->description = $request->description;
         $shipping->status = 1;
+        $shipping->vendor_id = Auth::id();
         $shipping->save();
 
         $notification=trans('admin_validation.Created Successfully');
@@ -125,5 +141,4 @@ class ShippingMethodController extends Controller
         }
         return response()->json($message);
     }
-
 }
