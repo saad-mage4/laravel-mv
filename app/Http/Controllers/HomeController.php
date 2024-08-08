@@ -449,7 +449,6 @@ class HomeController extends Controller
     // used Product (Private Seller )
     public function Used_Products(Request $request)
     {
-        // dd($request);
         $variantsForSearch = ProductVariant::select('name', 'id')->groupBy('name')->get();
         $shop_page = ShopPage::first();
         $banner = BreadcrumbImage::where(['id' => 9])->first();
@@ -579,13 +578,183 @@ class HomeController extends Controller
     }
 
     //!! Private Products Search (In this function all the used_products ajax request logic like: filters, Products order Sorting)
+    // public function searchUsedProduct(Request $request)
+    // {
+    //     $paginateQty = CustomPagination::whereId('2')->first()->qty;
+
+    //     //! Variants
+    //     if ($request->variantItems) {
+    //         $products = Product::whereHas('variantItems', function ($query) use ($request) {
+    //             $sortArr = [];
+    //             if ($request->variantItems) {
+    //                 foreach ($request->variantItems as $variantItem) {
+    //                     $sortArr[] = $variantItem;
+    //                 }
+    //                 $query->whereIn('name', $sortArr);
+    //             }
+    //         })->where('status', 1)->where('seller_type', 'Private');
+    //     } else {
+    //         $products = Product::where('status', 1)->where('seller_type', 'Private');
+    //     }
+
+
+
+
+    //     //! Shorting
+    //     if ($request->shorting_id) {
+    //         if (
+    //             $request->shorting_id == 1
+    //         ) {
+    //             $products = $products->orderBy('id', 'desc');
+    //         } else if ($request->shorting_id == 2) {
+    //             $products = $products->orderBy('price', 'asc');
+    //         } else if ($request->shorting_id == 3) {
+    //             $products = $products->orderBy('price', 'desc');
+    //         }
+    //     } else {
+    //         $products = $products->orderBy('id', 'desc');
+    //     }
+
+
+    //     //! Category
+    //     if ($request->category) {
+    //         $category = Category::where('slug', $request->category)->first();
+    //         $products = $products->where('category_id', $category->id);
+    //     }
+
+
+    //     if ($request->sub_category) {
+    //         $sub_category = SubCategory::where('slug', $request->sub_category)->first();
+    //         $products = $products->where('sub_category_id', $sub_category->id);
+    //     }
+
+    //     if ($request->child_category) {
+    //         $child_category = ChildCategory::where('slug', $request->child_category)->first();
+    //         $products = $products->where('child_category_id', $child_category->id);
+    //     }
+
+    //     //! Brands Filter
+    //     // if ($request->brands) {
+    //     //     $brand = Brand::where('slug', $request->brands)->first();
+    //     //     $products = $products->where('brand_id', $brand->id);
+    //     // }
+
+    //     // $brandSortArr = [];
+    //     // if ($request->brands) {
+    //     //     foreach ($request->brands as $brand) {
+    //     //         $brandSortArr[] = $brand;
+    //     //     }
+    //     //     $products = $products->whereIn('brand_id', $brandSortArr);
+    //     // }
+
+
+    //     //! My Brand Filter Work
+    //     // $brands = $request->brands;
+    //     // if ($brands && $request->has('brands')) {
+    //     //     $products = Product::whereIn('brand_id', $brands)->where('seller_type', 'Private')->get();
+    //     // }
+
+    //     //? Price Filter
+    //     // if ($request->price_range) {
+    //     //     $price_range = explode(';', $request->price_range);
+    //     //     $start_price = $price_range[0];
+    //     //     $end_price = $price_range[1];
+    //     //     $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
+    //     // }
+
+    //     if ($request->shop_name) {
+    //         $slug = $request->shop_name;
+    //         $seller = Vendor::where(['slug' => $slug])->first();
+    //         $products = $products->where('vendor_id', $seller->id);
+    //     }
+
+    //     if ($request->search) {
+    //         $products = $products->where('name', 'LIKE', '%' . $request->search . "%")
+    //             ->orWhere('long_description', 'LIKE', '%' . $request->search . '%');
+    //     }
+
+    //     //! Pagatination
+    //     // $products = $products->paginate($paginateQty); //$paginateQty
+    //     // $products = $products->appends($request->all());
+
+    //     //! page View Filter
+    //     $page_view = '';
+    //     if ($request->page_view) {
+    //         $page_view = $request->page_view;
+    //     } else {
+    //         $page_view = 'grid_view';
+    //     }
+    //     // $user = Auth::guard('web')->user();
+    //     // $Vendor = Vendor::where('user_id', $user->id)->first();
+
+    //     /**
+    //      * * Join the Tables beacuse user watch if its not login
+    //      * TODO: products , categories, vendors, brands , pagination, price filter
+    //      */
+    //     $products = DB::table('products')
+    //     ->join('categories', 'products.category_id', '=', 'categories.id')
+    //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+    //     ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+
+    //     $brands = $request->brands;
+    //     if ($brands && $request->has('brands')) {
+    //         $products = DB::table('products')
+    //         ->join('categories', 'products.category_id', '=', 'categories.id')
+    //         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+    //         ->join('brands', 'products.brand_id', '=', 'brands.id')
+    //         ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->whereIn('brand_id', $brands)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+    //     }
+
+    //     // dd($request->all());
+
+    //     // product New/Used Filter AdType
+    //     $productsfilter = $request->AdType;
+    //     if ($productsfilter && $request->has('AdType')) {
+    //         // dd($productsfilter);
+    //         $products = DB::table('products')
+    //         ->join('categories', 'products.category_id', '=', 'categories.id')
+    //         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+    //         // ->join('brands', 'products.brand_id', '=', 'brands.id')
+    //         ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
+    //         ->where('products.seller_type', 'Private')
+    //         ->where('products.private_ad_type', true)
+    //         // ->whereIn('products.brand_id', $brands)0;200000
+    //         ->orderBy('products.id', 'desc')
+    //             ->paginate($paginateQty)
+    //             ->appends($request->all());
+    //     }
+
+    //     if ($request->price_range && !$request->has('brands')) {
+    //         $price_range = explode(';', $request->price_range);
+    //         $start_price = $price_range[0];
+    //         $end_price = $price_range[1];
+    //         // $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
+    //         $products = DB::table('products')
+    //         ->join('categories', 'products.category_id', '=', 'categories.id')
+    //         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+    //         ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+    //     }
+
+    //     $currencySetting = Setting::first();
+    //     $setting = $currencySetting;
+    //     return view(
+    //         'ajax_used_products',
+    //         compact('products', 'page_view', 'currencySetting', 'setting')
+    //     );
+    // }
+
+    // new Way
     public function searchUsedProduct(Request $request)
     {
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
 
+        //! Initialize the products query
+        $products = Product::where('status', 1)
+        ->where('seller_type', 'Private');
+
         //! Variants
         if ($request->variantItems) {
-            $products = Product::whereHas('variantItems', function ($query) use ($request) {
+            $products = $products->whereHas('variantItems', function ($query) use ($request) {
                 $sortArr = [];
                 if ($request->variantItems) {
                     foreach ($request->variantItems as $variantItem) {
@@ -593,36 +762,27 @@ class HomeController extends Controller
                     }
                     $query->whereIn('name', $sortArr);
                 }
-            })->where('status', 1)->where('seller_type', 'Private');
-        } else {
-            $products = Product::where('status', 1)->where('seller_type', 'Private');
+            });
         }
-
-
-
 
         //! Shorting
         if ($request->shorting_id) {
-            if (
-                $request->shorting_id == 1
-            ) {
+            if ($request->shorting_id == 1) {
                 $products = $products->orderBy('id', 'desc');
-            } else if ($request->shorting_id == 2) {
+            } elseif ($request->shorting_id == 2) {
                 $products = $products->orderBy('price', 'asc');
-            } else if ($request->shorting_id == 3) {
+            } elseif ($request->shorting_id == 3) {
                 $products = $products->orderBy('price', 'desc');
             }
         } else {
             $products = $products->orderBy('id', 'desc');
         }
 
-
-        //! Category
+        //! Category Filters
         if ($request->category) {
             $category = Category::where('slug', $request->category)->first();
             $products = $products->where('category_id', $category->id);
         }
-
 
         if ($request->sub_category) {
             $sub_category = SubCategory::where('slug', $request->sub_category)->first();
@@ -634,95 +794,51 @@ class HomeController extends Controller
             $products = $products->where('child_category_id', $child_category->id);
         }
 
-        //! Brands Filter
-        // if ($request->brands) {
-        //     $brand = Brand::where('slug', $request->brands)->first();
-        //     $products = $products->where('brand_id', $brand->id);
-        // }
+        //! Brand Filter
+        if ($request->brands) {
+            $brandIds = $request->brands;
+            $products = $products->whereIn('brand_id', $brandIds);
+        }
 
-        // $brandSortArr = [];
-        // if ($request->brands) {
-        //     foreach ($request->brands as $brand) {
-        //         $brandSortArr[] = $brand;
-        //     }
-        //     $products = $products->whereIn('brand_id', $brandSortArr);
-        // }
+        //! AdType Filter
+        if ($request->AdType) {
+            $products = $products->whereIn('id', $request->AdType);
+        }
 
+        //! Price Range Filter
+        if ($request->price_range) {
+            $price_range = explode(';', $request->price_range);
+            $start_price = $price_range[0];
+            $end_price = $price_range[1];
+            $products = $products->whereBetween('price', [$start_price, $end_price]);
+        }
 
-        //! My Brand Filter Work
-        // $brands = $request->brands;
-        // if ($brands && $request->has('brands')) {
-        //     $products = Product::whereIn('brand_id', $brands)->where('seller_type', 'Private')->get();
-        // }
-
-        //? Price Filter
-        // if ($request->price_range) {
-        //     $price_range = explode(';', $request->price_range);
-        //     $start_price = $price_range[0];
-        //     $end_price = $price_range[1];
-        //     $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
-        // }
-
+        //! Vendor Filter
         if ($request->shop_name) {
             $slug = $request->shop_name;
             $seller = Vendor::where(['slug' => $slug])->first();
             $products = $products->where('vendor_id', $seller->id);
         }
 
+        //! Search Filter
         if ($request->search) {
-            $products = $products->where('name', 'LIKE', '%' . $request->search . "%")
-                ->orWhere('long_description', 'LIKE', '%' . $request->search . '%');
+            $products = $products->where(function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request->search . "%")
+                    ->orWhere('long_description', 'LIKE', '%' . $request->search . '%');
+            });
         }
 
-        //! Pagatination
-        // $products = $products->paginate($paginateQty); //$paginateQty
-        // $products = $products->appends($request->all());
+        //! Pagination
+        $products = $products->paginate($paginateQty)->appends($request->all());
 
-        //! page View Filter
-        $page_view = '';
-        if ($request->page_view) {
-            $page_view = $request->page_view;
-        } else {
-            $page_view = 'grid_view';
-        }
-        // $user = Auth::guard('web')->user();
-        // $Vendor = Vendor::where('user_id', $user->id)->first();
+        //! Page View Filter
+        $page_view = $request->page_view ?? 'grid_view';
 
-        /**
-         * * Join the Tables beacuse user watch if its not login
-         * TODO: products , categories, vendors, brands , pagination, price filter
-         */
-        $products = DB::table('products')
-        ->join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-
-        $brands = $request->brands;
-        if ($brands && $request->has('brands')) {
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->whereIn('brand_id', $brands)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
-
-        if ($request->price_range && !$request->has('brands')) {
-            $price_range = explode(';', $request->price_range);
-            $start_price = $price_range[0];
-            $end_price = $price_range[1];
-            // $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
-            $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        }
-
+        //! Get currency settings
         $currencySetting = Setting::first();
         $setting = $currencySetting;
-        return view(
-            'ajax_used_products',
-            compact('products', 'page_view', 'currencySetting', 'setting')
-        );
+
+        return view('ajax_used_products', compact('products', 'page_view', 'currencySetting', 'setting'));
     }
 
 
@@ -856,6 +972,7 @@ class HomeController extends Controller
 
         $currencySetting = Setting::first();
         $setting = $currencySetting;
+
         return view(
             'ajax_used_products',
             compact('products', 'page_view', 'currencySetting', 'setting')
