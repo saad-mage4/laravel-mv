@@ -101,6 +101,7 @@ class SellerOrderController extends Controller
         $this->validate($request, $rules);
 
         $order = Order::find($id);
+        // dd($request->all());
         if($request->order_status == 0){
             $order->order_status = 0;
             $order->save();
@@ -122,18 +123,28 @@ class SellerOrderController extends Controller
             $order->save();
         }
 
-        if($request->payment_status == 0){
-            $order->payment_status = 0;
-            $order->save();
-        }elseif($request->payment_status == 1){
-            $order->payment_status = 1;
-            $order->payment_approval_date = date('Y-m-d');
-            $order->save();
-        }
+        // if($request->payment_status == 0){
+        //     $order->payment_status = 0;
+        //     $order->save();
+        // }elseif($request->payment_status == 1){
+        //     $order->payment_status = 1;
+        //     $order->payment_approval_date = date('Y-m-d');
+        //     $order->save();
+        // }
+
+
+        //! For payment Success Pending
+        // if ($request->payment_status == 1) {
+        //     $order->payment_status = 1;
+        //     $order->payment_approval_date = date('Y-m-d');
+        //     $order->save();
+        // } else {
+        //     $order->payment_status = 0;
+        //     $order->save();
+        // }
 
         $notification = trans('admin_validation.Order Status Updated successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
         return redirect()->back()->with($notification);
     }
-
 }

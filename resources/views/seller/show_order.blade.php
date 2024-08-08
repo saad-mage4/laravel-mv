@@ -72,6 +72,7 @@
                         <address>
                           <strong>{{__('user.Payment Information')}}:</strong><br>
                           {{__('user.Method')}}: {{ $order->payment_method }}<br>
+                          {{-- {{dd($order->payment_status)}} --}}
                           {{__('user.Status')}} : @if ($order->payment_status == 1)
                               <span class="badge badge-success">{{__('user.Success')}}</span>
                               @else
@@ -129,7 +130,7 @@
                             @endphp
                             <tr>
                                 <td>{{ ++$index }}</td>
-                                <td><a href="{{ route('product-detail', $product->slug) }}">{{ $orderProduct->product_name }}</a></td>
+                                <td><a href="{{ route('product-detail', $product ? $product->slug : "no") }}">{{ $orderProduct->product_name }}</a></td>
                                 <td>
                                     @foreach ($orderProduct->orderProductVariants as $indx => $variant)
                                         {{ $variant->variant_name.' : '.$variant->variant_value }}{{ $totalVariant == ++$indx ? '' : ',' }}

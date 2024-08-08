@@ -260,7 +260,7 @@ $Ads = [
                     <label for="Seller_Method" class="Seller_Method">Slelect Your Seller Type</label>
                     <div class="wsus__dash_pro_single gap-3">
                       <div class="seller-1">
-                        <label for="seller" title="Public"></label>
+                        <label for="seller" title="Company"></label>
                         <input type="radio" id="seller" name="seller" value="Public" required checked>
                       </div>
                         {{-- <div class="seller-2">
