@@ -158,7 +158,7 @@
             <i class="fal fa-gift-card"></i>
             {{
                 $user->seller_type == "Public"
-                ? "Public  Seller Dashboard"
+                ? "Company  Seller Dashboard"
                 : ($user->seller_type == "Private"
                     ? "Private Seller Dashboard"
                     : __('user.Visit Seller Dashboard'))
