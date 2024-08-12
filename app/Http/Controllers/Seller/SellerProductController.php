@@ -30,6 +30,9 @@ use File;
 use Str;
 use Auth;
 use App\Mail\NewOfferPrice;
+use App\Models\PrivateCategory;
+use App\Models\PrivateChildCategoryModel;
+use App\Models\PrivateSubCategoryModel;
 use Illuminate\Support\Facades\{Mail, DB};
 
 class SellerProductController extends Controller
@@ -74,11 +77,12 @@ class SellerProductController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $privates_categories = PrivateCategory::all(); //private category
         $brands = Brand::all();
         $productTaxs = ProductTax::where('status', 1)->get();
         $retrunPolicies = ReturnPolicy::where('status', 1)->get();
         $specificationKeys = ProductSpecificationKey::all();
-        return view('seller.create_product', compact('categories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys'));
+        return view('seller.create_product', compact('categories', 'privates_categories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys'));
     }
 
 
@@ -96,6 +100,29 @@ class SellerProductController extends Controller
     {
         $childCategories = ChildCategory::where('sub_category_id', $id)->get();
         $response = '<option value="">' . trans('user_validation.Select Child Category') . '</option>';
+        foreach ($childCategories as $childCategory) {
+            $response .= "<option value=" . $childCategory->id . ">" . $childCategory->name . "</option>";
+        }
+        return response()->json(['childCategories' => $response]);
+    }
+
+
+
+    // Private Sub Category & child Category
+    public function getPrivateSubcategoryByCategory($id)
+    {
+        $subCategories = PrivateSubCategoryModel::where('private_category_id', $id)->get();
+        $response = "<option value=''>" . trans('admin_validation.Select sub category') . "</option>";
+        foreach ($subCategories as $subCategory) {
+            $response .= "<option value=" . $subCategory->id . ">" . $subCategory->name . "</option>";
+        }
+        return response()->json(['subCategories' => $response]);
+    }
+
+    public function getPrivateChildcategoryBySubCategory($id)
+    {
+        $childCategories = PrivateChildCategoryModel::where('private_sub_category_id', $id)->get();
+        $response = '<option value="">' . trans('admin_validation.Select Child Category') . '</option>';
         foreach ($childCategories as $childCategory) {
             $response .= "<option value=" . $childCategory->id . ">" . $childCategory->name . "</option>";
         }
@@ -128,7 +155,8 @@ class SellerProductController extends Controller
                 'slug' => 'required|unique:products',
                 'thumb_image' => 'required',
                 'banner_image' => 'required',
-                'category' => 'required',
+                // 'category' => 'required',
+                'private_category' => 'required',
                 'short_description' => 'required',
                 'long_description' => 'required',
                 'brand' => 'required',
@@ -142,7 +170,8 @@ class SellerProductController extends Controller
                 'name.unique' => trans('user_validation.Name is required'),
                 'slug.required' => trans('user_validation.Slug is required'),
                 'slug.unique' => trans('user_validation.Slug already exist'),
-                'category.required' => trans('user_validation.Category is required'),
+                // 'category.required' => trans('user_validation.Category is required'),
+                'private_category.required' => 'Private Category is required',
                 'thumb_image.required' => trans('user_validation.thumbnail is required'),
                 'banner_image.required' => trans('user_validation.Banner is required'),
                 'short_description.required' => trans('user_validation.Short description is required'),
@@ -227,11 +256,15 @@ class SellerProductController extends Controller
                 DB::table('users')->where('id', $user->id)->update(['private_ad' => $ad]);
 
                 $productCategories = Category::where(['name' => $request->category])->get();
+                // $productPrivateCategories = PrivateCategory::where(['name' => $request->private_category])->get();
                 $product->vendor_id = $seller->id;
                 $product->short_name = $request->short_name;
                 $product->name = $request->name;
                 $product->slug = $request->slug; //Slug is required for unique url redirect of the products
                 $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
+                $product->private_category_id  = $request->private_category;
+                $product->private_sub_category_id  = $request->private_sub_category;
+                $product->private_child_category_id  = $request->private_child_category;
                 $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
                 $product->child_category_id = $request->child_category ? $request->child_category : 0;
                 $product->brand_id = $request->brand;
@@ -272,6 +305,9 @@ class SellerProductController extends Controller
             $product->name = $request->name;
             $product->slug = $request->slug; //Slug is required for unique url redirect of the products
             $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
+            $product->private_category_id  = 0; //private category
+            $product->private_sub_category_id  = 0; //private sub category
+            $product->private_child_category_id  = 0; // private child category
             $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
             $product->child_category_id = $request->child_category ? $request->child_category : 0;
             $product->brand_id = $request->brand;
@@ -351,7 +387,8 @@ class SellerProductController extends Controller
                 'slug' => 'required|unique:products',
                 'thumb_image' => 'required',
                 'banner_image' => 'required',
-                'category' => 'required',
+                // 'category' => 'required',
+                'private_category' => 'required',
                 'short_description' => 'required',
                 'long_description' => 'required',
                 'brand' => 'required',
@@ -365,7 +402,8 @@ class SellerProductController extends Controller
                 'name.unique' => trans('user_validation.Name is required'),
                 'slug.required' => trans('user_validation.Slug is required'),
                 'slug.unique' => trans('user_validation.Slug already exist'),
-                'category.required' => trans('user_validation.Category is required'),
+                // 'category.required' => trans('user_validation.Category is required'),
+                'private_category.required' => 'Private Category is required',
                 'thumb_image.required' => trans('user_validation.thumbnail is required'),
                 'banner_image.required' => trans('user_validation.Banner is required'),
                 'short_description.required' => trans('user_validation.Short description is required'),
@@ -546,11 +584,15 @@ class SellerProductController extends Controller
 
         if ($user->seller_type == "Private") {
             $productCategories = Category::where(['name' => $request->category])->get();
+            // $productPrivateCategories = PrivateCategory::where(['name' => $request->private_category])->get();
             $product->vendor_id = $seller->id;
             $product->short_name = $request->short_name;
             $product->name = $request->name;
             $product->slug = $request->slug; //Slug is required for unique url redirect of the products
             $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
+            $product->private_category_id  = $request->private_category;
+            $product->private_sub_category_id  = $request->private_sub_category;
+            $product->private_child_category_id  = $request->private_child_category;
             $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
             $product->child_category_id = $request->child_category ? $request->child_category : 0;
             $product->brand_id = $request->brand;
@@ -621,6 +663,9 @@ class SellerProductController extends Controller
             $product->name = $request->name;
             $product->slug = $request->slug; //Slug is required for unique url redirect of the products
             $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
+            $product->private_category_id  = 0; //private
+            $product->private_sub_category_id  = 0; //private
+            $product->private_child_category_id  = 0; //private
             $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
             $product->child_category_id = $request->child_category ? $request->child_category : 0;
             $product->brand_id = $request->brand;
@@ -735,8 +780,13 @@ class SellerProductController extends Controller
             return redirect()->route('seller.product.index')->with($notification);
         }
         $categories = Category::all();
+        $privates_categories = PrivateCategory::all(); //private category
         $subCategories = SubCategory::all();
         $childCategories = ChildCategory::all();
+        // Private Sub Category & Child
+        $private_subCategories = PrivateSubCategoryModel::all();
+        $private_childCategories = PrivateChildCategoryModel::all();
+        // Private Sub Category & Child End
         $brands = Brand::all();
         $productTaxs = ProductTax::where('status', 1)->get();
         $retrunPolicies = ReturnPolicy::where('status', 1)->get();
@@ -750,7 +800,7 @@ class SellerProductController extends Controller
             }
         }
 
-        return view('seller.edit_product', compact('categories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys', 'product', 'subCategories', 'childCategories', 'tags', 'productSpecifications'));
+        return view('seller.edit_product', compact('categories', 'privates_categories', 'private_subCategories', 'private_childCategories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys', 'product', 'subCategories', 'childCategories', 'tags', 'productSpecifications'));
     }
 
 

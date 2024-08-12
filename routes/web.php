@@ -61,10 +61,9 @@ use App\Http\Controllers\Admin\HomepageVisibilityController;
 use App\Http\Controllers\Admin\MenuVisibilityController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\AdvertisementController;
-
-
-
-
+use App\Http\Controllers\Admin\PrivateCategory;
+use App\Http\Controllers\Admin\PrivateChildCategory;
+use App\Http\Controllers\Admin\PrivateSubCategory;
 use App\Http\Controllers\Seller\SellerDashboardController;
 use App\Http\Controllers\Seller\SellerProfileController;
 use App\Http\Controllers\Seller\SellerProductController;
@@ -320,6 +319,11 @@ Route::group(['middleware' => ['maintainance']], function () {
         Route::get('childcategory-by-subcategory/{id}', [SellerProductController::class,'getChildcategoryBySubCategory'])->name('childcategory-by-subcategory');
 
 
+            //* Private Sub & Child Category (Seller)
+            Route::get('private_subcategory-by-category/{id}', [SellerProductController::class, 'getPrivateSubcategoryByCategory'])->name('private_subcategory-by-category');
+            Route::get('private_childcategory-by-subcategory/{id}', [SellerProductController::class, 'getPrivateChildcategoryBySubCategory'])->name('private_childcategory-by-subcategory');
+
+
         Route::get('product-variant/{id}', [SellerProductVariantController::class,'index'])->name('product-variant');
         Route::get('create-product-variant/{id}', [SellerProductVariantController::class,'create'])->name('create-product-variant');
         Route::post('store-product-variant', [SellerProductVariantController::class,'store'])->name('store-product-variant');
@@ -404,9 +408,24 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
     Route::get('profile', [AdminProfileController::class,'index'])->name('profile');
     Route::put('profile-update', [AdminProfileController::class,'update'])->name('profile.update');
 
+    //! Admin category
     Route::resource('product-category', ProductCategoryController::class);
     Route::put('product-category-status/{id}', [ProductCategoryController::class,'changeStatus'])->name('product.category.status');
 
+        //! private category
+        Route::resource('private_category', PrivateCategory::class);
+        Route::put('private_category-status/{id}', [PrivateCategory::class, 'changeStatus'])->name('private_category.status');
+
+        //! Private Sub & Child Category
+        Route::resource('private_sub_category', PrivateSubCategory::class);
+        Route::put('private_sub_category-status/{id}', [PrivateSubCategory::class, 'changeStatus'])->name('private_sub_category.status');
+
+        Route::resource('private_child_category', PrivateChildCategory::class);
+        Route::put('private_child_category-status/{id}', [PrivateChildCategory::class, 'changeStatus'])->name('private_child_category.status');
+        Route::get('private_subcategory-by-category/{id}', [PrivateChildCategory::class, 'getSubcategoryByCategory'])->name('private_subcategory-by-category');
+        Route::get('private_childcategory-by-subcategory/{id}', [PrivateChildCategory::class, 'getChildcategoryBySubCategory'])->name('private_childcategory-by-subcategory');
+
+        //! Public Sub Category & Child Category
     Route::resource('product-sub-category', ProductSubCategoryController::class);
     Route::put('product-sub-category-status/{id}', [ProductSubCategoryController::class,'changeStatus'])->name('product.sub.category.status');
 
@@ -607,7 +626,7 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
     Route::put('update-home-page-first-two-column-banner', [AdvertisementController::class, 'updateHomePageFirstTwoColumnBanner'])->name('update-home-page-first-two-column-banner');
     Route::put('update-home-page-second-two-column-banner', [AdvertisementController::class, 'updateHomePageSecondTwoColumnBanner'])->name('update-home-page-second-two-column-banner');
     Route::put('update-home-page-third-two-column-banner', [AdvertisementController::class, 'updateHomePageThirdTwoColumnBanner'])->name('update-home-page-third-two-column-banner');
-    Route::put('update-shop-page',[AdvertisementController::Class, 'updateShopPage'])->name('update-shop-page');
+        Route::put('update-shop-page', [AdvertisementController::class, 'updateShopPage'])->name('update-shop-page');
     Route::put('update-product-detail-banner', [AdvertisementController::class, 'updateProductDetailBanner'])->name('update-product-detail-banner');
     Route::put('update-cart-bottom-banner', [AdvertisementController::class, 'updateShoppingCartBottomBanner'])->name('update-cart-bottom-banner');
     Route::put('update-campaign-page-banner', [AdvertisementController::class, 'updateCampaignPageBanner'])->name('update-campaign-page-banner');

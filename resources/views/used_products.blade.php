@@ -267,7 +267,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                     <form id="searchProductFormId">
                     <div class="wsus__product_sidebar taha" id="sticky_sidebar">
                         <div class="accordion" id="accordionExample">
-                            <div class="accordion-item">
+                            {{-- <div class="accordion-item">
                               <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     {{__('user.Filter By Categories')}}
@@ -276,13 +276,32 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                               <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <ul>
-                                        {{-- <li><a class="categoryForSearch" href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li> --}}
                                         @foreach ($productCategories as $productCategory)
                                          @if ($productCategory->slug === "used-products")
                                          <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name ? "New/Used" : $productCategory->name  }}</a></li>
                                          @endif
                                          @endforeach
                                         <input type="hidden" name="category" value="" id="category_id_for_search">
+                                        <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
+                                    </ul>
+                                </div>
+                              </div>
+                            </div> --}}
+
+                          <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    {{__('user.Filter By Categories')}}
+                                </button>
+                              </h2>
+                              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li><a class="categoryForSearch" href="javascript:;" data-private_category="0">{{__('user.All Categories')}}</a></li>
+                                        @foreach ($productPrivateCategories as $productCategory)
+                                        <li><a class="categoryForSearch" href="javascript:;" data-private_category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
+                                        @endforeach
+                                        <input type="hidden" name="private_category" value="" id="private_category_id_for_search">
                                         <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
                                     </ul>
                                 </div>
@@ -457,6 +476,14 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                 submitSearchForm()
             })
 
+
+            // Private Search Filter
+            $(".categoryForSearch").on("click", function(){
+                let categoryId = $(this).data('private_category');
+                $("#private_category_id_for_search").val(categoryId);
+                submitSearchForm()
+            })
+
             $("#searchProductFormId").on("submit", function(e){
                 e.preventDefault();
                 let loader = $("#loadeer-hidden-content").html();
@@ -466,7 +493,6 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                     data: $('#searchProductFormId').serialize(),
                     url: "{{ route('search-used-product') }}",
                     success: function (response) {
-                        console.log("ATHAA",response);
                         $('.load_ajax_response').html(response);
                     },
                     error: function(err) {}

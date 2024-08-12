@@ -42,6 +42,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantItem;
 use App\Models\GoogleRecaptcha;
 use App\Models\Order;
+use App\Models\PrivateCategory;
 use App\Models\ProductGallery;
 use App\Models\ShopPage;
 use App\Models\SeoSetting;
@@ -453,6 +454,7 @@ class HomeController extends Controller
         $shop_page = ShopPage::first();
         $banner = BreadcrumbImage::where(['id' => 9])->first();
         $productCategories = Category::where(['status' => 1])->get();
+        $productPrivateCategories = PrivateCategory::where(['status' => 1])->get();
         $brands = Brand::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
         // $products = Product::where(['status' => 1])->orderBy('id', 'desc');
@@ -478,7 +480,7 @@ class HomeController extends Controller
         $seoSetting = SeoSetting::find(9);
         $currencySetting = Setting::first();
         $setting = $currencySetting;
-        return view('used_products', compact('banner', 'products', 'productCategories', 'brands', 'shop_page', 'variantsForSearch', 'seoSetting', 'currencySetting', 'setting'));
+        return view('used_products', compact('banner', 'products', 'productCategories', 'productPrivateCategories', 'brands', 'shop_page', 'variantsForSearch', 'seoSetting', 'currencySetting', 'setting'));
     }
 
 
@@ -782,6 +784,13 @@ class HomeController extends Controller
         if ($request->category) {
             $category = Category::where('slug', $request->category)->first();
             $products = $products->where('category_id', $category->id);
+        }
+
+        //! for Private Category Filter
+
+        if ($request->private_category) {
+            $category = PrivateCategory::where('slug', $request->private_category)->first();
+            $products = $products->where(' 	private_category_id', $category->id);
         }
 
         if ($request->sub_category) {

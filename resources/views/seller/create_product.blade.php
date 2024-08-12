@@ -60,10 +60,12 @@
                                     <input type="text" id="slug" class="form-control"  name="slug" value="{{ old('slug') }}">
                                 </div>
 
+                                {{-- Category of in Private  --}}
+
                                 @if ($authUser->seller_type == "Private")
                             @foreach ($categories as $item)
                     @if (isset($item->slug) && $item->slug === 'used-products')
-                            <div class="form-group col-12">
+                            <div class="form-group col-12 d-none">
                                     <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
                                     <input name="category"  class="form-control"  readonly type="text" value="{{ $item['name']}}" />
                                 </div>
@@ -82,6 +84,7 @@
                                     </select>
                                 </div>
 
+
                                 <div class="form-group col-12">
                                     <label>{{__('user.Sub Category')}}</label>
                                     <select name="sub_category" class="form-control select2" id="sub_category">
@@ -97,6 +100,35 @@
                                 </div>
 
                                 @endif
+
+
+
+
+                                      @if ($authUser->seller_type == "Private")
+                                <div class="form-group col-12">
+                                    <label>Private Category<span class="text-danger">*</span></label>
+                                    <select name="private_category" class="form-control select2" id="private_category">
+                                        <option value="">Select Private Category</option>
+                                        @foreach ($privates_categories as $private_category)
+                                            <option value="{{ $private_category->id }}">{{ $private_category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label>Private Sub Category</label>
+                                    <select name="private_sub_category" class="form-control select2" id="private_sub_category">
+                                        <option value="">{{__('user.Select Sub Category')}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label>Private Child Category</label>
+                                    <select name="private_child_category" class="form-control select2" id="private_child_category">
+                                        <option value="">{{__('user.Select Child Category')}}</option>
+                                    </select>
+                                </div>
+                                @endIf
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Brand')}} <span class="text-danger">*</span></label>
@@ -347,6 +379,57 @@
                 }
 
             })
+
+            // For Private Sub & Child Category
+
+             $("#private_category").on("change",function(){
+                var categoryId = $("#private_category").val();
+                if(categoryId){
+                    $.ajax({
+                        type:"get",
+                        url:"{{url('/seller/private_subcategory-by-category/')}}"+"/"+categoryId,
+                        success:function(response){
+                            $("#private_sub_category").html(response.subCategories);
+                            var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
+                            $("#private_child_category").html(response);
+                        },
+                        error:function(err){
+                            console.log(err);
+
+                        }
+                    })
+                }else{
+                    var response= "<option value=''>{{__('user.Select Sub Category')}}</option>";
+                    $("#private_sub_category").html(response);
+                    var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
+                    $("#private_child_category").html(response);
+                }
+
+
+            })
+
+            $("#private_sub_category").on("change",function(){
+                var SubCategoryId = $("#private_sub_category").val();
+                if(SubCategoryId){
+                    $.ajax({
+                        type:"get",
+                        url:"{{url('/seller/private_childcategory-by-subcategory/')}}"+"/"+SubCategoryId,
+                        success:function(response){
+                            $("#private_child_category").html(response.childCategories);
+                        },
+                        error:function(err){
+                            console.log(err);
+
+                        }
+                    })
+                }else{
+                    var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
+                    $("#private_child_category").html(response);
+                }
+
+            })
+
+            // Private Sub Category End
 
             $("#is_return").on('change',function(){
                 var returnId = $("#is_return").val();
