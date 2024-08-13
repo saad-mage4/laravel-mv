@@ -34,7 +34,35 @@
 
 
           <li class="nav-item dropdown {{ Route::is('admin.product-category.*') || Route::is('admin.private_category.*') || Route::is('admin.product-sub-category.*') || Route::is('admin.private_sub_category.*') || Route::is('admin.product-child-category.*') || Route::is('admin.private_child_category.*') ? 'active' : '' }}">
-            <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i><span>{{__('admin.Manage Categories')}}</span></a>
+            <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i><span>
+                {{-- {{__('admin.Manage Categories')}} --}}
+               Company Categories
+            </span></a>
+
+            {{-- <ul class="dropdown-menu">
+
+               <li class="{{ Route::is('admin.private_category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.private_category.index') }}">Private Categories</a></li>
+
+               <li class="{{ Route::is('admin.private_sub_category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.private_sub_category.index') }}">Private Sub Category</a></li>
+
+                <li class="{{ Route::is('admin.private_child_category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.private_child_category.index') }}">Private Child Category</a></li>
+              </ul> --}}
+
+            <ul class="dropdown-menu">
+
+              <li class="{{ Route::is('admin.product-category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.product-category.index') }}">{{__('admin.Categories')}}</a></li>
+
+              <li class="{{ Route::is('admin.product-sub-category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.product-sub-category.index') }}">{{__('admin.Sub Categories')}}</a></li>
+
+              <li class="{{ Route::is('admin.product-child-category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.product-child-category.index') }}">{{__('admin.Child Categories')}}</a></li>
+            </ul>
+          </li>
+
+          {{-- Private Categories  --}}
+          <li class="nav-item dropdown {{  Route::is('admin.private_category.*') || Route::is('admin.private_sub_category.*') ||  Route::is('admin.private_child_category.*') ? 'active' : '' }}">
+            <a href="#" class="nav-link has-dropdown"><i class="fas fa-user-shield"></i><span>
+                Private Categories
+            </span></a>
 
             <ul class="dropdown-menu">
 
@@ -47,15 +75,6 @@
                {{-- Private Child Category  --}}
                 <li class="{{ Route::is('admin.private_child_category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.private_child_category.index') }}">Private Child Category</a></li>
               </ul>
-
-            <ul class="dropdown-menu">
-
-              <li class="{{ Route::is('admin.product-category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.product-category.index') }}">{{__('admin.Categories')}}</a></li>
-
-              <li class="{{ Route::is('admin.product-sub-category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.product-sub-category.index') }}">{{__('admin.Sub Categories')}}</a></li>
-
-              <li class="{{ Route::is('admin.product-child-category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.product-child-category.index') }}">{{__('admin.Child Categories')}}</a></li>
-            </ul>
           </li>
 
 

@@ -14,6 +14,11 @@ class PrivateChildCategoryModel extends Model
         return $this->belongsTo(PrivateSubCategoryModel::class);
     }
 
+    public function private_subCategories()
+    {
+        return $this->belongsTo(PrivateSubCategoryModel::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(PrivateCategory::class);

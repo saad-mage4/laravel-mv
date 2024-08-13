@@ -164,6 +164,100 @@ input#searchInput {
 
 </style>
 
+<style>
+/* mobile  */
+
+div#accordionCategories .accordion-button {
+    background: transparent !important;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+.desktop-menu  .wsus_menu_cat_item {
+list-style: none;
+padding: 0;
+margin: 0;
+min-height: 50px;
+}
+
+.desktop-menu  .wsus_menu_cat_item > .category-item {
+position: relative;
+}
+
+.desktop-menu  .wsus_menu_cat_item > .category-item > a {
+display: block;
+text-decoration: none;
+color: #353535;
+}
+
+/* Initially hide dropdown menus */
+.desktop-menu  .wsus_menu_cat_droapdown {
+ display: unset;
+position: absolute;
+left: 0;
+top:  0;
+background: #fff;
+list-style: none;
+padding: 0;
+margin: 0;
+z-index: 9999;
+visibility: hidden;
+opacity: 0;
+min-height: 300px;
+transition: none
+}
+
+#wsus__product_page  .wsus__product_sidebar{
+    overflow: visible;
+}
+
+#wsus__product_page  .wsus__product_sidebar ul li a{
+    transition: none;
+}
+
+.desktop-menu  .category-item.active_cat-menu .wsus_menu_cat_droapdown{
+    visibility: visible;
+    opacity: 1;
+}
+
+.sub-category-item {
+position: relative;
+}
+
+/* Initially hide child category dropdowns */
+.child-category-dropdown {
+display: none;
+position: absolute;
+left: 100%;
+top: 0;
+background: #fff;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+border: 1px solid #ddd;
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+/* Show child categories on hover */
+.sub-category-item:hover .child-category-dropdown {
+display: block;
+}
+
+.wsus_menu_cat_droapdown li,
+.child-category-dropdown li {
+padding: 10px;
+}
+
+.wsus_menu_cat_droapdown li a,
+.child-category-dropdown li a {
+text-decoration: none;
+color: #000;
+display: block;
+}
+
+</style>
+
+
 
     <!--============================
          BREADCRUMB START
@@ -288,25 +382,152 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                               </div>
                             </div> --}}
 
-                          <div class="accordion-item">
-                              <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    {{__('user.Filter By Categories')}}
-                                </button>
-                              </h2>
-                              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li><a class="categoryForSearch" href="javascript:;" data-private_category="0">{{__('user.All Categories')}}</a></li>
-                                        @foreach ($productPrivateCategories as $productCategory)
-                                        <li><a class="categoryForSearch" href="javascript:;" data-private_category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
-                                        @endforeach
-                                        <input type="hidden" name="private_category" value="" id="private_category_id_for_search">
-                                        <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
-                                    </ul>
-                                </div>
-                              </div>
-                            </div>
+                          {{-- Private Categories  --}}
+
+            {{-- Mobile View  --}}
+            <div class="accordion-item d-lg-none d-block">
+            <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            {{__('user.Filter By Categories')}}
+            </button>
+            </h2>
+            <div id="collapseCategories" class="accordion-collapse collapse show" aria-labelledby="headingCategories" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+            <ul class="list-unstyled">
+            <div class="accordion" id="accordionCategories">
+            @foreach ($productPrivateCategories as $category)
+            <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCategory{{ $loop->index }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategory{{ $loop->index }}" aria-expanded="false" aria-controls="collapseCategory{{ $loop->index }}">
+            <li class="list-group-item border-0 ps-0">
+            <a class="categoryForSearch d-block py-1" href="javascript:;" data-private_category="{{ $category->slug }}">{{ $category->name }}</a>
+            </li>
+            </button>
+
+            </h2>
+            <div id="collapseCategory{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingCategory{{ $loop->index }}" data-bs-parent="#accordionCategories">
+            <div class="accordion-body ps-4">
+            @if ($category->private_subCategories->count() > 0)
+            <!-- Subcategories Accordion -->
+            <div class="accordion" id="accordionSubcategories{{ $loop->index }}">
+            @foreach ($category->private_subCategories as $subCategory)
+            <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSubcategory{{ $loop->parent->index }}{{ $loop->index }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}" aria-expanded="false" aria-controls="collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}">
+            <li class="list-group-item border-0 ps-0">
+            <a class="categoryForSearch d-block py-1" href="javascript:;" data-private_sub_category="{{ $subCategory->slug }}">{{ $subCategory->name }}</a>
+            </button>
+            </h2>
+
+            <div id="collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingSubcategory{{ $loop->parent->index }}{{ $loop->index }}" data-bs-parent="#accordionSubcategories{{ $loop->parent->index }}">
+            <div class="accordion-body ps-4">
+            @if ($subCategory->childCategories->count() > 0)
+            <!-- Child Categories List -->
+            <ul class="list-group">
+            @foreach ($subCategory->childCategories as $childCategory)
+            <li class="list-group-item border-0 ps-0">
+            <a class="categoryForSearch d-block py-1" href="javascript:;" data-private_child_category="{{ $childCategory->slug }}">{{ $childCategory->name }}</a>
+            </li>
+            @endforeach
+            </ul>
+            @endif
+            </div>
+            </div>
+            </div>
+            @endforeach
+            </div>
+            @endif
+            </div>
+            </div>
+            </div>
+            @endforeach
+            </div>
+            </ul>
+            <input type="hidden" name="private_category" value="" id="private_category_id_for_search">
+            <input type="hidden" name="private_sub_category" value="" id="private_sub_category_id_for_search">
+            <input type="hidden" name="private_child_category" value="" id="private_child_category_id_for_search">
+            <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
+            </div>
+            </div>
+            </div>
+
+
+
+     {{-- Desktop View  --}}
+    <div class="accordion-item  d-none d-lg-block">
+    <h2 class="accordion-header" id="headingOne">
+    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+    {{__('user.Filter By Categories')}}
+    </button>
+    </h2>
+    <div id="collapseCategories" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+    <div class="desktop-menu">
+    <ul class="wsus_menu_cat_item">
+    <!-- Main Categories -->
+    @foreach ($productPrivateCategories as $category)
+    <li class="category-item">
+    <a class="categoryForSearch wsus__droap_arrow" href="javascript:;" data-private_category="{{ $category->slug }}">
+    <i class="{{ $category->icon }}" aria-hidden="true"></i>
+    {{ $category->name }}
+    </a>
+    @if ($category->private_subCategories->count() > 0)
+    <ul class="wsus_menu_cat_droapdown">
+    <!-- Subcategories -->
+    @foreach ($category->private_subCategories as $subCategory)
+    <li class="sub-category-item">
+    <a class="categoryForSearch wsus__droap_arrow" href="javascript:;" data-private_sub_category="{{ $subCategory->slug }}">
+    {{ $subCategory->name }}
+    </a>
+    @if ($subCategory->childCategories->count() > 0)
+    <ul class="child-category-dropdown">
+    <!-- Child Categories -->
+    @foreach ($subCategory->childCategories as $childCategory)
+    <li>
+    <a
+    class="categoryForSearch"
+    href="javascript:;" data-private_child_category="{{ $childCategory->slug }}">
+    {{ $childCategory->name }}
+    </a>
+    </li>
+    @endforeach
+    </ul>
+    @endif
+    </li>
+    @endforeach
+    </ul>
+    @endif
+    </li>
+    @endforeach
+    </ul>
+    </div>
+    <!-- Hidden inputs -->
+    <input type="hidden" name="private_category" value="" id="private_category_id_for_search_desktop">
+    <input type="hidden" name="private_sub_category" value="" id="private_sub_category_id_for_search_desktop">
+    <input type="hidden" name="private_child_category" value="" id="private_child_category_id_for_search_desktop">
+    <input type="hidden" name="page_view" value="grid_view" id="page_view_id">
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree3">
@@ -346,6 +567,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </div>
                               </div>
                             </div>
+                            @if ($products->count() > 0)
                           <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingFour">
                                   <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -394,6 +616,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </div>
                             @endforeach --}}
                         </div>
+                            @endif
                     </div>
                 </div>
                 <div class="col-xl-9 col-lg-8">
@@ -477,12 +700,65 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             })
 
 
-            // Private Search Filter
-            $(".categoryForSearch").on("click", function(){
+
+            // Hover Menu
+            $('.desktop-menu .category-item').on('mouseover', function(){
+                $(this).addClass('active_cat-menu')
+            });
+            $('.desktop-menu  .category-item').on('mouseleave', function(){
+                $(this).removeClass('active_cat-menu')
+            });
+
+
+
+            // Private Category, Sub-Category, and Child Category Search Filter
+                $(".categoryForSearch").on("click", function(){
                 let categoryId = $(this).data('private_category');
+                let subID = $(this).data('private_sub_category');
+                let childID = $(this).data('private_child_category');
+
+                // Reset all inputs
+                // for mobile
+                $("#private_category_id_for_search").val("");
+                $("#private_sub_category_id_for_search").val("");
+                $("#private_child_category_id_for_search").val("");
+
+                // for desktop
+                $("#private_category_id_for_search_desktop").val("");
+                $("#private_sub_category_id_for_search_desktop").val("");
+                $("#private_child_category_id_for_search_desktop").val("");
+
+                // Mobile
+                if (categoryId !== undefined) {
                 $("#private_category_id_for_search").val(categoryId);
-                submitSearchForm()
-            })
+                }
+
+                if (subID !== undefined) {
+                $("#private_sub_category_id_for_search").val(subID);
+                }
+
+                if (childID !== undefined) {
+                $("#private_child_category_id_for_search").val(childID);
+                }
+
+
+                // Desktop
+
+                if (categoryId !== undefined) {
+                $("#private_category_id_for_search_desktop").val(categoryId);
+                }
+
+                if (subID !== undefined) {
+                $("#private_sub_category_id_for_search_desktop").val(subID);
+                }
+
+                if (childID !== undefined) {
+                $("#private_child_category_id_for_search_desktop").val(childID);
+                }
+
+                submitSearchForm();
+                });
+
 
             $("#searchProductFormId").on("submit", function(e){
                 e.preventDefault();

@@ -6,7 +6,7 @@
             </div>
         </div>
     @endif
-    <div class="row">
+    <div class="row" style="position: relative; z-index: -1;">
         @foreach ($products as $product)
         @if ($product->status == 1)
         <div class="col-xl-4  col-sm-6">

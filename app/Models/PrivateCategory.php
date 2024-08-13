@@ -12,10 +12,10 @@ class PrivateCategory extends Model
     protected $table = 'private_categories';
 
 
-    // public function subCategories()
-    // {
-    //     return $this->hasMany(SubCategory::class);
-    // }
+    public function private_subCategories()
+    {
+        return $this->hasMany(PrivateSubCategoryModel::class);
+    }
 
     public function private_products()
     {

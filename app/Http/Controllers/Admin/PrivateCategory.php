@@ -22,7 +22,7 @@ class PrivateCategory extends Controller
 
     public function index()
     {
-        $categories = PrivateCategoryModel::with('private_products')->get();
+        $categories = PrivateCategoryModel::with('private_subCategories', 'private_products')->get();
         // $pupoularCategory = PopularCategory::first();
         // $threeColCategory = ThreeColumnCategory::first();
         return view('admin.private_category', compact('categories'));

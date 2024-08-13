@@ -43,6 +43,8 @@ use App\Models\ProductVariantItem;
 use App\Models\GoogleRecaptcha;
 use App\Models\Order;
 use App\Models\PrivateCategory;
+use App\Models\PrivateChildCategoryModel;
+use App\Models\PrivateSubCategoryModel;
 use App\Models\ProductGallery;
 use App\Models\ShopPage;
 use App\Models\SeoSetting;
@@ -447,14 +449,24 @@ class HomeController extends Controller
         return view('product', compact('banner', 'products', 'productCategories', 'brands', 'shop_page', 'variantsForSearch', 'seoSetting', 'currencySetting', 'setting'));
     }
 
-    // used Product (Private Seller )
+    //* used Product (Private Seller )
     public function Used_Products(Request $request)
     {
         $variantsForSearch = ProductVariant::select('name', 'id')->groupBy('name')->get();
         $shop_page = ShopPage::first();
         $banner = BreadcrumbImage::where(['id' => 9])->first();
         $productCategories = Category::where(['status' => 1])->get();
-        $productPrivateCategories = PrivateCategory::where(['status' => 1])->get();
+        // $productPrivateCategories = PrivateCategory::where(['status' => 1])->get();
+        // $productPrivateCategories = PrivateCategory::where('status', 1)
+        // ->with('private_subCategories')
+        // ->get();
+
+        $productPrivateCategories = PrivateCategory::where('status', 1)
+        ->whereHas('private_subCategories', function ($query) {
+            $query->whereHas('childCategories');
+        })
+            ->with(['private_subCategories.childCategories'])
+            ->get();
         $brands = Brand::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
         // $products = Product::where(['status' => 1])->orderBy('id', 'desc');
@@ -471,6 +483,22 @@ class HomeController extends Controller
         // if ($request->child_category_id) {
         //     $products = $products->where('child_category_id', $request->child_category_id);
         // }
+
+        //! For Private Category Data
+
+        if ($request->private_category_id) {
+            $products = DB::table('products')->where('private_category_id', $request->private_category_id);
+        }
+
+        if ($request->private_sub_category_id) {
+            $products = $products->where('private_sub_category_id', $request->private_sub_category_id);
+        }
+
+        if ($request->private_child_category_id) {
+            $products = $products->where('private_child_category_id', $request->private_child_category_id);
+        }
+
+        //! For Private Category Data End
 
         if ($request->brand_id) {
             $products = DB::table('products')->where('brand_id', $request->brand_id);
@@ -745,7 +773,7 @@ class HomeController extends Controller
     //     );
     // }
 
-    // new Way
+    //! new Way
     public function searchUsedProduct(Request $request)
     {
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
@@ -780,28 +808,50 @@ class HomeController extends Controller
             $products = $products->orderBy('id', 'desc');
         }
 
-        //! Category Filters
+        /**
+         * * Company & Private Categories Work
+         * TODO: category , sub_category, child_category, private_category , private_sub_category, private_child_category filter
+         */
+
+
+        //! Company Category Filters
         if ($request->category) {
             $category = Category::where('slug', $request->category)->first();
             $products = $products->where('category_id', $category->id);
         }
 
+        // if ($request->sub_category) {
+        //     $sub_category = SubCategory::where('slug', $request->sub_category)->first();
+        //     $products = $products->where('sub_category_id', $sub_category->id);
+        // }
+
+        // if ($request->child_category) {
+        //     $child_category = ChildCategory::where('slug', $request->child_category)->first();
+        //     $products = $products->where('child_category_id', $child_category->id);
+        // }
+         //! Company Category Filters End
+
         //! for Private Category Filter
 
         if ($request->private_category) {
             $category = PrivateCategory::where('slug', $request->private_category)->first();
-            $products = $products->where(' 	private_category_id', $category->id);
+            $products = $products->where('private_category_id', $category->id);
         }
 
-        if ($request->sub_category) {
-            $sub_category = SubCategory::where('slug', $request->sub_category)->first();
-            $products = $products->where('sub_category_id', $sub_category->id);
+        if ($request->private_sub_category) {
+            $sub_category = PrivateSubCategoryModel::where('slug', $request->private_sub_category)->first();
+            $products = $products->where('private_sub_category_id', $sub_category->id);
         }
 
-        if ($request->child_category) {
-            $child_category = ChildCategory::where('slug', $request->child_category)->first();
-            $products = $products->where('child_category_id', $child_category->id);
+        if ($request->private_child_category) {
+            $child_category = PrivateChildCategoryModel::where('slug', $request->private_child_category)->first();
+            $products = $products->where('private_child_category_id', $child_category->id);
         }
+
+        //! for Private Category Filter End
+
+
+
 
         //! Brand Filter
         if ($request->brands) {
