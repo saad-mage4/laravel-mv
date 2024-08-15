@@ -33,7 +33,7 @@
           </li>
 
 
-          <li class="nav-item dropdown {{ Route::is('admin.product-category.*') || Route::is('admin.private_category.*') || Route::is('admin.product-sub-category.*') || Route::is('admin.private_sub_category.*') || Route::is('admin.product-child-category.*') || Route::is('admin.private_child_category.*') ? 'active' : '' }}">
+          <li class="nav-item dropdown {{ Route::is('admin.product-category.*')  || Route::is('admin.product-sub-category.*')  || Route::is('admin.product-child-category.*') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i><span>
                 {{-- {{__('admin.Manage Categories')}} --}}
                Company Categories
@@ -59,7 +59,7 @@
           </li>
 
           {{-- Private Categories  --}}
-          <li class="nav-item dropdown {{  Route::is('admin.private_category.*') || Route::is('admin.private_sub_category.*') ||  Route::is('admin.private_child_category.*') ? 'active' : '' }}">
+          <li class="nav-item dropdown {{  Route::is('admin.private_adtype.*') || Route::is('admin.private_category.*') || Route::is('admin.private_sub_category.*') ||  Route::is('admin.private_child_category.*') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown"><i class="fas fa-user-shield"></i><span>
                 Private Categories
             </span></a>
@@ -74,6 +74,10 @@
 
                {{-- Private Child Category  --}}
                 <li class="{{ Route::is('admin.private_child_category.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.private_child_category.index') }}">Private Child Category</a></li>
+
+                {{-- Private AdType  --}}
+
+                 <li class="{{ Route::is('admin.private_adtype.*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.private_adtype.index') }}">Private Ad Type</a></li>
               </ul>
           </li>
 

@@ -567,7 +567,6 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </div>
                               </div>
                             </div>
-                            @if ($products->count() > 0)
                           <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingFour">
                                   <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -576,12 +575,12 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </h2>
                                 <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                            @foreach ($products as $product)
-                            @if (!$product->private_ad_type == null)
+                            @foreach ($ads as $ad)
+                            @if (!$ad == null)
                             <div class="form-check">
-                                <input name="AdType[]" class="form-check-input brand_item" type="checkbox" value="{{ $product->id }}" id="flexCheckDefault11-{{ $product->id }}">
-                                <label class="form-check-label" for="flexCheckDefault11-{{ $product->id }}">
-                                {{ $product->private_ad_type }}
+                                <input name="AdType[]" class="form-check-input brand_item" type="checkbox" value="{{ $ad->id }}" id="flexCheckDefault11-{{ $ad->id }}">
+                                <label class="form-check-label" for="flexCheckDefault11-{{ $ad->id }}">
+                                {{ $ad->name }}
                                 </label>
                             </div>
                             @endif
@@ -616,7 +615,6 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                 </div>
                             @endforeach --}}
                         </div>
-                            @endif
                     </div>
                 </div>
                 <div class="col-xl-9 col-lg-8">
@@ -704,9 +702,11 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             // Hover Menu
             $('.desktop-menu .category-item').on('mouseover', function(){
                 $(this).addClass('active_cat-menu')
+                $('div#v-pills-home').addClass('menu_hover')
             });
             $('.desktop-menu  .category-item').on('mouseleave', function(){
                 $(this).removeClass('active_cat-menu')
+                $('div#v-pills-home').removeClass('menu_hover')
             });
 
 

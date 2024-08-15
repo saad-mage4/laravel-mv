@@ -61,6 +61,7 @@ use App\Http\Controllers\Admin\HomepageVisibilityController;
 use App\Http\Controllers\Admin\MenuVisibilityController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\AdvertisementController;
+use App\Http\Controllers\Admin\PrivateAdType;
 use App\Http\Controllers\Admin\PrivateCategory;
 use App\Http\Controllers\Admin\PrivateChildCategory;
 use App\Http\Controllers\Admin\PrivateSubCategory;
@@ -96,6 +97,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Seller\ProductHighlightPaymentController;
 use App\Http\Controllers\Seller\SellerShippingMethodController;
 use App\Http\Controllers\User\StripeController;
+use App\Models\AdType;
 
 Route::group(['middleware' => ['demo','XSS']], function () {
 
@@ -412,6 +414,10 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
     Route::resource('product-category', ProductCategoryController::class);
     Route::put('product-category-status/{id}', [ProductCategoryController::class,'changeStatus'])->name('product.category.status');
 
+        //? Private AdType
+        Route::resource('private_adtype', PrivateAdType::class);
+        Route::put('private_adtype-status/{id}', [PrivateAdType::class, 'changeStatus'])->name('private_adtype.status');
+
         //! private category
         Route::resource('private_category', PrivateCategory::class);
         Route::put('private_category-status/{id}', [PrivateCategory::class, 'changeStatus'])->name('private_category.status');
@@ -429,13 +435,18 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin'],function (){
     Route::resource('product-sub-category', ProductSubCategoryController::class);
     Route::put('product-sub-category-status/{id}', [ProductSubCategoryController::class,'changeStatus'])->name('product.sub.category.status');
 
+    //? Public Categories
     Route::resource('product-child-category', ProductChildCategoryController::class);
     Route::put('product-child-category-status/{id}', [ProductChildCategoryController::class,'changeStatus'])->name('product.child.category.status');
     Route::get('subcategory-by-category/{id}', [ProductChildCategoryController::class,'getSubcategoryByCategory'])->name('subcategory-by-category');
     Route::get('childcategory-by-subcategory/{id}', [ProductChildCategoryController::class,'getChildcategoryBySubCategory'])->name('childcategory-by-subcategory');
 
+
+    //* Brands
     Route::resource('product-brand', ProductBrandController::class);
     Route::put('product-brand-status/{id}', [ProductBrandController::class,'changeStatus'])->name('product.brand.status');
+
+
 
     Route::resource('product-tax', ProductTaxController::class);
     Route::put('product-tax-status/{id}', [ProductTaxController::class,'changeStatus'])->name('product.tax.status');

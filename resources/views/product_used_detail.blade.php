@@ -274,7 +274,14 @@
                             {{ $product->brandName }}
                         <p class="brand_model detaile_private_seller"><span>Ad Type :</span>
                             {{-- <a href="{{ route('product',['category' => $product->categorySlug]) }}">{{ $product->CategoryName }}</a> --}}
-                            {{$product->private_ad_type}}
+                            {{-- {{$product->private_ad_type}} --}}
+                            @foreach ($ads as $ad)
+                        @if ($product->private_ad_type == $ad->id)
+                            {{$ad->name}}
+                        @else
+
+                        @endif
+                    @endforeach
                         </p>
                         <div class="wsus__pro_det_share d-none">
                             <h5>{{__('user.share')}} :</h5>
