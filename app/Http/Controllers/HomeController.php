@@ -31,6 +31,7 @@ use App\Models\Subscriber;
 use App\Mail\SubscriptionVerification;
 use App\Mail\ContactMessageInformation;
 use App\Helpers\MailHelper;
+use App\Models\AdType;
 use App\Models\EmailTemplate;
 use App\Models\ProductReview;
 use App\Models\Setting;
@@ -461,6 +462,7 @@ class HomeController extends Controller
         // ->with('private_subCategories')
         // ->get();
 
+        //! For Private Category
         $productPrivateCategories = PrivateCategory::where('status', 1)
         ->whereHas('private_subCategories', function ($query) {
             $query->whereHas('childCategories');
@@ -468,6 +470,8 @@ class HomeController extends Controller
             ->with(['private_subCategories.childCategories'])
             ->get();
         $brands = Brand::where(['status' => 1])->get();
+        // Ads Type
+        $ads = AdType::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
         // $products = Product::where(['status' => 1])->orderBy('id', 'desc');
         $products = DB::table('products')->where('status', '1')->orderBy('id', 'desc')->paginate($paginateQty);
@@ -503,12 +507,17 @@ class HomeController extends Controller
         if ($request->brand_id) {
             $products = DB::table('products')->where('brand_id', $request->brand_id);
         }
+        if ($request->private_ad_type) {
+            $products = DB::table('products')->where('private_ad_type', $request->private_ad_type);
+        }
+
+
 
         // $products = $products->paginate($paginateQty);
         $seoSetting = SeoSetting::find(9);
         $currencySetting = Setting::first();
         $setting = $currencySetting;
-        return view('used_products', compact('banner', 'products', 'productCategories', 'productPrivateCategories', 'brands', 'shop_page', 'variantsForSearch', 'seoSetting', 'currencySetting', 'setting'));
+        return view('used_products', compact('banner', 'products', 'productCategories', 'productPrivateCategories', 'brands', 'ads', 'shop_page', 'variantsForSearch', 'seoSetting', 'currencySetting', 'setting'));
     }
 
 
@@ -861,8 +870,9 @@ class HomeController extends Controller
 
         //! AdType Filter
         if ($request->AdType) {
-            $products = $products->whereIn('id', $request->AdType);
+            $products = $products->whereIn('private_ad_type', $request->AdType);
         }
+
 
         //! Price Range Filter
         if ($request->price_range) {
@@ -896,8 +906,9 @@ class HomeController extends Controller
         //! Get currency settings
         $currencySetting = Setting::first();
         $setting = $currencySetting;
+        $ads = AdType::where(['status' => 1])->get();
 
-        return view('ajax_used_products', compact('products', 'page_view', 'currencySetting', 'setting'));
+        return view('ajax_used_products', compact('products', 'ads', 'page_view', 'currencySetting', 'setting'));
     }
 
 
@@ -935,6 +946,7 @@ class HomeController extends Controller
     {
         $data = $request->values;
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
+        $ads = AdType::all();
 
         /**
          * * Join the Tables beacuse user watch if its not login
@@ -1013,7 +1025,7 @@ class HomeController extends Controller
         // }
 
 
-        // New change
+        //? New change for custom search
         if (!empty($data['state'])) {
             $productsQuery->where('vendors.state', $data['state']);
         }
@@ -1032,9 +1044,10 @@ class HomeController extends Controller
         $currencySetting = Setting::first();
         $setting = $currencySetting;
 
+
         return view(
             'ajax_used_products',
-            compact('products', 'page_view', 'currencySetting', 'setting')
+            compact('products', 'page_view', 'ads', 'currencySetting', 'setting')
         );
     }
 
@@ -1141,8 +1154,9 @@ class HomeController extends Controller
         $gallery = ProductGallery::where(['product_id' => $product->id])->get();
         // $seller = Vendor::where('id', $product->vendor_id)->firstl();
         // dd($product);
+        $ads = AdType::where(['status' => 1])->get();
 
-        return view('product_used_detail', compact('product', 'productReviews', 'totalProductReviewQty', 'productVariants', 'recaptchaSetting', 'relatedProducts', 'currencySetting', 'banner', 'setting', 'defaultProfile', 'tags', 'gallery'));
+        return view('product_used_detail', compact('product', 'ads', 'productReviews', 'totalProductReviewQty', 'productVariants', 'recaptchaSetting', 'relatedProducts', 'currencySetting', 'banner', 'setting', 'defaultProfile', 'tags', 'gallery'));
     }
 
     public function addToCompare($id)

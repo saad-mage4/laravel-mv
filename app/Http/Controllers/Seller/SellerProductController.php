@@ -30,6 +30,7 @@ use File;
 use Str;
 use Auth;
 use App\Mail\NewOfferPrice;
+use App\Models\AdType;
 use App\Models\PrivateCategory;
 use App\Models\PrivateChildCategoryModel;
 use App\Models\PrivateSubCategoryModel;
@@ -79,10 +80,11 @@ class SellerProductController extends Controller
         $categories = Category::all();
         $privates_categories = PrivateCategory::all(); //private category
         $brands = Brand::all();
+        $ads = AdType::all();
         $productTaxs = ProductTax::where('status', 1)->get();
         $retrunPolicies = ReturnPolicy::where('status', 1)->get();
         $specificationKeys = ProductSpecificationKey::all();
-        return view('seller.create_product', compact('categories', 'privates_categories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys'));
+        return view('seller.create_product', compact('categories', 'privates_categories', 'brands', 'ads', 'productTaxs', 'retrunPolicies', 'specificationKeys'));
     }
 
 
@@ -108,7 +110,7 @@ class SellerProductController extends Controller
 
 
 
-    // Private Sub Category & child Category
+    //! Private Sub Category & child Category
     public function getPrivateSubcategoryByCategory($id)
     {
         $subCategories = PrivateSubCategoryModel::where('private_category_id', $id)->get();
@@ -788,6 +790,8 @@ class SellerProductController extends Controller
         $private_childCategories = PrivateChildCategoryModel::all();
         // Private Sub Category & Child End
         $brands = Brand::all();
+        // Ads Type
+        $ads = AdType::all();
         $productTaxs = ProductTax::where('status', 1)->get();
         $retrunPolicies = ReturnPolicy::where('status', 1)->get();
         $specificationKeys = ProductSpecificationKey::all();
@@ -800,7 +804,7 @@ class SellerProductController extends Controller
             }
         }
 
-        return view('seller.edit_product', compact('categories', 'privates_categories', 'private_subCategories', 'private_childCategories', 'brands', 'productTaxs', 'retrunPolicies', 'specificationKeys', 'product', 'subCategories', 'childCategories', 'tags', 'productSpecifications'));
+        return view('seller.edit_product', compact('categories', 'privates_categories', 'private_subCategories', 'private_childCategories', 'brands', 'ads', 'productTaxs', 'retrunPolicies', 'specificationKeys', 'product', 'subCategories', 'childCategories', 'tags', 'productSpecifications'));
     }
 
 

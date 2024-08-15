@@ -1,4 +1,4 @@
-<div class="tab-pane fade {{ $page_view == 'grid_view' ? 'show active' : '' }} " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+<div  class="tab-pane fade {{ $page_view == 'grid_view' ? 'show active' : '' }} " id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
     @if ($products->count() == 0)
         <div class="row">
             <div class="col-12 text-center">
@@ -6,7 +6,8 @@
             </div>
         </div>
     @endif
-    <div class="row" style="position: relative; z-index: -1;">
+    {{--  --}}
+    <div class="row">
         @foreach ($products as $product)
         @if ($product->status == 1)
         <div class="col-xl-4  col-sm-6">
@@ -37,8 +38,17 @@
                     <li><a href="javascript:;" onclick="addToWishlist('{{ $product->id }}')"><i class="far fa-heart"></i></a></li>
                     <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li>
                 </ul> --}}
+                {{-- {{dd($ads)}} --}}
                 <div class="wsus__product_details">
-                <a class="wsus__category" href="#!">{{ $product->private_ad_type ?? "" }}</a>
+                <a class="wsus__category" href="#!">
+                    @foreach ($ads as $ad)
+                        @if ($product->private_ad_type == $ad->id)
+                            {{$ad->name}}
+                        @else
+
+                        @endif
+                    @endforeach
+                </a>
 
                 {{-- @if ($reviewQty > 0)
                     <p class="wsus__pro_rating">
@@ -89,7 +99,7 @@
         </div>
     </div>
 </div>
-<div class="tab-pane fade {{ $page_view == 'list_view' ? 'show active' : '' }}" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+<div  class="tab-pane fade {{ $page_view == 'list_view' ? 'show active' : '' }}" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
     @if ($products->count() == 0)
         <div class="row">
             <div class="col-12 text-center">

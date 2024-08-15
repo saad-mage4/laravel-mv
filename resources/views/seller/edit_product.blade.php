@@ -183,15 +183,25 @@
                                 </div>
 
                                 @if ($authUser->seller_type == "Private")
-                                <div class="form-group col-12">
+                                {{-- <div class="form-group col-12">
                                 <label for="private_ad_type">Ad Type <span class="text-danger">*</span></label>
                                 <select name="private_ad_type" id="private_ad_type" class="form-control select2">
                                      <option value="">Ad Type</option>
                                 <option value="New" {{ old('private_ad_type', $product->private_ad_type ?? '') == 'New' ? 'selected' : '' }}>New</option>
                                 <option value="Used" {{ old('private_ad_type', $product->private_ad_type ?? '') == 'Used' ? 'selected' : '' }}>Used</option>
                                 </select>
+                                </div> --}}
+
+                                <div class="form-group col-12">
+                                    <label for="private_ad_type">Ad Type <span class="text-danger">*</span></label>
+                                     <select name="private_ad_type" id="private_ad_type" class="form-control select2">
+                                        <option value="">Ad Type</option>
+                                        @foreach ($ads as $ad)
+                                            <option {{ $product->private_ad_type == $ad->id ? 'selected' : '' }} value="{{ $ad->id }}">{{ $ad->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                @endIf
+                                @endif
 
                                 @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
