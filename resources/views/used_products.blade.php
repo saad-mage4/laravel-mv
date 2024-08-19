@@ -395,7 +395,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             <div class="accordion-body">
             <ul class="list-unstyled">
             <div class="accordion" id="accordionCategories">
-            @foreach ($productPrivateCategories as $category)
+                @foreach ($productPrivateCategories as $category)
             <div class="accordion-item">
             <h2 class="accordion-header" id="headingCategory{{ $loop->index }}">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategory{{ $loop->index }}" aria-expanded="false" aria-controls="collapseCategory{{ $loop->index }}">
