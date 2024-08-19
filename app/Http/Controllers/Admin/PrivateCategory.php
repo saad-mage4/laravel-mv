@@ -38,8 +38,8 @@ class PrivateCategory extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|unique:categories',
-            'slug' => 'required|unique:categories',
+            'name' => 'required|unique:private_categories',
+            'slug' => 'required|unique:private_categories',
             'status' => 'required',
             'icon' => 'required',
         ];
@@ -77,8 +77,8 @@ class PrivateCategory extends Controller
     {
         $category = PrivateCategoryModel::find($id);
         $rules = [
-            'name' => 'required|unique:categories,name,' . $category->id,
-            'slug' => 'required|unique:categories,name,' . $category->id,
+            'name' => 'required|unique:private_categories,name,' . $category->id,
+            'slug' => 'required|unique:private_categories,name,' . $category->id,
             'status' => 'required',
             'icon' => 'required'
         ];

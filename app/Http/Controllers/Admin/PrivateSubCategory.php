@@ -34,7 +34,7 @@ class PrivateSubCategory extends Controller
     {
         $rules = [
             'name' => 'required',
-            'slug' => 'required|unique:sub_categories',
+            'slug' => 'required|unique:private_sub_category_models',
             'category' => 'required',
             'status' => 'required'
         ];
@@ -72,7 +72,7 @@ class PrivateSubCategory extends Controller
         $subCategory = PrivateSubCategoryModel::find($id);
         $rules = [
             'name' => 'required',
-            'slug' => 'required|unique:sub_categories,slug,' . $subCategory->id,
+            'slug' => 'required|unique:private_sub_category_models,slug,' . $subCategory->id,
             'category' => 'required',
             'status' => 'required'
         ];

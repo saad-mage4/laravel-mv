@@ -59,7 +59,7 @@ class PrivateChildCategory extends Controller
             'name' => 'required',
             'category' => 'required',
             'sub_category' => 'required',
-            'slug' => 'required|unique:child_categories',
+            'slug' => 'required|unique:private_child_category_models',
             'status' => 'required'
         ];
         $customMessages = [
@@ -100,7 +100,7 @@ class PrivateChildCategory extends Controller
             'name' => 'required',
             'category' => 'required',
             'sub_category' => 'required',
-            'slug' => 'required|unique:child_categories,slug,' . $childCategory->id,
+            'slug' => 'required|unique:private_child_category_models,slug,' . $childCategory->id,
             'status' => 'required'
         ];
         $customMessages = [

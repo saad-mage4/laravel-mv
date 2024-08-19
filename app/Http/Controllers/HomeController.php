@@ -457,18 +457,18 @@ class HomeController extends Controller
         $shop_page = ShopPage::first();
         $banner = BreadcrumbImage::where(['id' => 9])->first();
         $productCategories = Category::where(['status' => 1])->get();
-        // $productPrivateCategories = PrivateCategory::where(['status' => 1])->get();
-        // $productPrivateCategories = PrivateCategory::where('status', 1)
-        // ->with('private_subCategories')
-        // ->get();
+        $productPrivateCategories = PrivateCategory::where(['status' => 1])->get();
+        $productPrivateCategories = PrivateCategory::where('status', 1)
+        ->with(['private_subCategories.childCategories'])
+        ->get();
 
         //! For Private Category
-        $productPrivateCategories = PrivateCategory::where('status', 1)
-        ->whereHas('private_subCategories', function ($query) {
-            $query->whereHas('childCategories');
-        })
-            ->with(['private_subCategories.childCategories'])
-            ->get();
+        // $productPrivateCategories = PrivateCategory::where('status', 1)
+        // ->whereHas('private_subCategories', function ($query) {
+        //     $query->whereHas('childCategories');
+        // })
+        //     ->with(['private_subCategories.childCategories'])
+        //     ->get();
         $brands = Brand::where(['status' => 1])->get();
         // Ads Type
         $ads = AdType::where(['status' => 1])->get();
