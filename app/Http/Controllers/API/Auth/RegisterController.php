@@ -16,6 +16,8 @@ use App\Helpers\MailHelper;
 use App\Models\EmailTemplate;
 use Mail;
 use Str;
+use Swift_TransportException;
+
 class RegisterController extends Controller
 {
 
@@ -63,7 +65,11 @@ class RegisterController extends Controller
         $subject=$template->subject;
         $message=$template->description;
         $message = str_replace('{{user_name}}',$request->name,$message);
-        Mail::to($user->email)->send(new UserRegistration($message,$subject,$user));
+        try {
+            Mail::to($user->email)->send(new UserRegistration($message, $subject, $user));
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
         $notification = trans('user_validation.Register Successfully. Please Verify your email');
         return response()->json(['notification' => $notification]);
@@ -87,7 +93,11 @@ class RegisterController extends Controller
                 $subject=$template->subject;
                 $message=$template->description;
                 $message = str_replace('{{user_name}}',$user->name,$message);
-                Mail::to($user->email)->send(new UserRegistration($message,$subject,$user));
+                try {
+                    Mail::to($user->email)->send(new UserRegistration($message, $subject, $user));
+                } catch (Swift_TransportException $e) {
+                    echo $e->getMessage();
+                }
 
                 $notification = trans('user_validation.Register Successfully. Please Verify your email');
                 return response()->json(['notification' => $notification]);

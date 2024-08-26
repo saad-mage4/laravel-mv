@@ -26,6 +26,8 @@ use Auth;
 use Image;
 use File;
 use Mail;
+use Swift_TransportException;
+
 class SellerController extends Controller
 {
     public function __construct()
@@ -192,7 +194,12 @@ class SellerController extends Controller
             $subject = $template->subject;
             $message = $template->description;
             $message = str_replace('{{name}}',$user->name,$message);
-            Mail::to($user->email)->send(new ApprovedSellerAccount($message,$subject));
+            //! Send Scure mail through hostigner web mail
+            try {
+                Mail::to($user->email)->send(new ApprovedSellerAccount($message, $subject));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             $message = trans('admin_validation.Active Successfully');
         }
@@ -306,12 +313,16 @@ class SellerController extends Controller
         $user = User::with('seller')->find($id);
         $seller = $user->seller;
         MailHelper::setMailConfig();
-        Mail::to($user->email)->send(new SendSingleSellerMail($request->subject,$request->message));
-        $sellerMail = new SellerMailLog();
-        $sellerMail->seller_id = $seller->id;
-        $sellerMail->subject = $request->subject;
-        $sellerMail->message = $request->message;
-        $sellerMail->save();
+        try {
+            Mail::to($user->email)->send(new SendSingleSellerMail($request->subject, $request->message));
+            $sellerMail = new SellerMailLog();
+            $sellerMail->seller_id = $seller->id;
+            $sellerMail->subject = $request->subject;
+            $sellerMail->message = $request->message;
+            $sellerMail->save();
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
         $notification = trans('admin_validation.Email Send Successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
         return redirect()->back()->with($notification);
@@ -353,12 +364,16 @@ class SellerController extends Controller
         $sellers = Vendor::with('user')->where('status',1)->get();
         MailHelper::setMailConfig();
         foreach($sellers as $seller){
-            Mail::to($seller->user->email)->send(new SendSingleSellerMail($request->subject,$request->message));
-            $sellerMail = new SellerMailLog();
-            $sellerMail->seller_id = $seller->id;
-            $sellerMail->subject = $request->subject;
-            $sellerMail->message = $request->message;
-            $sellerMail->save();
+            try {
+                Mail::to($seller->user->email)->send(new SendSingleSellerMail($request->subject, $request->message));
+                $sellerMail = new SellerMailLog();
+                $sellerMail->seller_id = $seller->id;
+                $sellerMail->subject = $request->subject;
+                $sellerMail->message = $request->message;
+                $sellerMail->save();
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
         }
 
         $notification = trans('admin_validation.Email Send Successfully');
@@ -373,5 +388,4 @@ class SellerController extends Controller
         $setting = Setting::first();
         return view('admin.seller_withdraw_list', compact('withdraws','user','setting'));
     }
-
 }

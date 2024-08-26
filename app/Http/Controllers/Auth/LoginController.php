@@ -22,6 +22,8 @@ use Mail;
 use Str;
 use Validator,Redirect,Response,File;
 use Socialite;
+use Swift_TransportException;
+
 class LoginController extends Controller
 {
 
@@ -120,7 +122,11 @@ class LoginController extends Controller
             $subject = $template->subject;
             $message = $template->description;
             $message = str_replace('{{name}}',$user->name,$message);
-            Mail::to($user->email)->send(new UserForgetPassword($message,$subject,$user));
+            try {
+                Mail::to($user->email)->send(new UserForgetPassword($message, $subject, $user));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             $notification = trans('user_validation.Reset password link send to your email.');
             $notification = array('messege'=>$notification,'alert-type'=>'success');

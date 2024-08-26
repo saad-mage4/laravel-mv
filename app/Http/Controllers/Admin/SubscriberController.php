@@ -49,7 +49,11 @@ class SubscriberController extends Controller
         if($subscriber){
             MailHelper::setMailConfig();
 
-            Mail::to($subscriber->email)->send(new SubscirberSendMail($request->subject,$request->message));
+            try {
+                Mail::to($subscriber->email)->send(new SubscirberSendMail($request->subject, $request->message));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             $notification = trans('admin_validation.Email Send Successfully');
             $notification = array('messege'=>$notification,'alert-type'=>'success');
@@ -77,7 +81,11 @@ class SubscriberController extends Controller
         if($subscribers->count() > 0){
             MailHelper::setMailConfig();
             foreach($subscribers as $index => $subscriber){
-                Mail::to($subscriber->email)->send(new SubscirberSendMail($request->subject,$request->message));
+                try {
+                    Mail::to($subscriber->email)->send(new SubscirberSendMail($request->subject, $request->message));
+                } catch (Swift_TransportException $e) {
+                    echo $e->getMessage();
+                }
             }
 
             $notification = trans('admin_validation.Email Send Successfully');

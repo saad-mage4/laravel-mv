@@ -26,6 +26,8 @@ use Auth;
 use Image;
 use File;
 use Mail;
+use Swift_TransportException;
+
 class SellerController extends Controller
 {
     public function __construct()
@@ -181,7 +183,11 @@ class SellerController extends Controller
             $subject = $template->subject;
             $message = $template->description;
             $message = str_replace('{{name}}',$user->name,$message);
-            Mail::to($user->email)->send(new ApprovedSellerAccount($message,$subject));
+            try {
+                Mail::to($user->email)->send(new ApprovedSellerAccount($message, $subject));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             $message = trans('admin_validation.Active Successfully');
         }
@@ -296,12 +302,16 @@ class SellerController extends Controller
         $user = User::with('seller')->find($id);
         $seller = $user->seller;
         MailHelper::setMailConfig();
-        Mail::to($user->email)->send(new SendSingleSellerMail($request->subject,$request->message));
-        $sellerMail = new SellerMailLog();
-        $sellerMail->seller_id = $seller->id;
-        $sellerMail->subject = $request->subject;
-        $sellerMail->message = $request->message;
-        $sellerMail->save();
+        try {
+            Mail::to($user->email)->send(new SendSingleSellerMail($request->subject, $request->message));
+            $sellerMail = new SellerMailLog();
+            $sellerMail->seller_id = $seller->id;
+            $sellerMail->subject = $request->subject;
+            $sellerMail->message = $request->message;
+            $sellerMail->save();
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
         $notification = trans('admin_validation.Email Send Successfully');
 
         return response()->json(['notification' => $notification],200);
@@ -345,12 +355,16 @@ class SellerController extends Controller
         $sellers = Vendor::with('user')->where('status',1)->get();
         MailHelper::setMailConfig();
         foreach($sellers as $seller){
-            Mail::to($seller->user->email)->send(new SendSingleSellerMail($request->subject,$request->message));
-            $sellerMail = new SellerMailLog();
-            $sellerMail->seller_id = $seller->id;
-            $sellerMail->subject = $request->subject;
-            $sellerMail->message = $request->message;
-            $sellerMail->save();
+            try {
+                Mail::to($seller->user->email)->send(new SendSingleSellerMail($request->subject, $request->message));
+                $sellerMail = new SellerMailLog();
+                $sellerMail->seller_id = $seller->id;
+                $sellerMail->subject = $request->subject;
+                $sellerMail->message = $request->message;
+                $sellerMail->save();
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
         }
 
         $notification = trans('admin_validation.Email Send Successfully');
@@ -365,5 +379,4 @@ class SellerController extends Controller
 
         return response()->json(['user' => $user, 'seller' => $seller, 'withdraws' => $withdraws, 'setting' => $setting],200);
     }
-
 }

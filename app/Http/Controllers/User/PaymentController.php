@@ -229,7 +229,11 @@ class PaymentController extends Controller
         $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
         $message = str_replace('{{shipping}}', $shippingMethod->title, $message);
-        Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+        try {
+            Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
         /* Custom logic for sending emails to vendors */
         preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
@@ -557,7 +561,7 @@ class PaymentController extends Controller
                         ];
                         //! Send Scure mail through hostigner web mail
                         try {
-                            Mail::to($user->email)->send(new OrderShipped($details));;
+                            Mail::to($user->email)->send(new OrderShipped($details));
                         } catch (Swift_TransportException $e) {
                             echo $e->getMessage();
                         }
@@ -803,7 +807,12 @@ class PaymentController extends Controller
                                     'email' => $user->email
                                 ];
 
-                                Mail::to($user->email)->send(new OrderShipped($details));
+                                try {
+                                    Mail::to($user->email)->send(new OrderShipped($details));
+                                } catch (Swift_TransportException $e) {
+                                    echo $e->getMessage();
+                                }
+
                             }
                         }
                     }
@@ -1068,7 +1077,11 @@ class PaymentController extends Controller
                                 'email' => $user->email
                             ];
 
-                            Mail::to($user->email)->send(new OrderShipped($details));
+                            try {
+                                Mail::to($user->email)->send(new OrderShipped($details));
+                            } catch (Swift_TransportException $e) {
+                                echo $e->getMessage();
+                            }
                         }
                     }
                 }
@@ -1379,8 +1392,11 @@ class PaymentController extends Controller
                                 'name' => $user->name,
                                 'email' => $user->email
                             ];
-
-                            Mail::to($user->email)->send(new OrderShipped($details));
+                            try {
+                                Mail::to($user->email)->send(new OrderShipped($details));
+                            } catch (Swift_TransportException $e) {
+                                echo $e->getMessage();
+                            }
                         }
                     }
                 }
@@ -1642,7 +1658,11 @@ class PaymentController extends Controller
                                 'email' => $user->email
                             ];
 
-                            Mail::to($user->email)->send(new OrderShipped($details));
+                            try {
+                                Mail::to($user->email)->send(new OrderShipped($details));
+                            } catch (Swift_TransportException $e) {
+                                echo $e->getMessage();
+                            }
                         }
                     }
                 }
@@ -2012,8 +2032,11 @@ class PaymentController extends Controller
                                     'name' => $user->name,
                                     'email' => $user->email
                                 ];
-
-                                Mail::to($user->email)->send(new OrderShipped($details));
+                                try {
+                                    Mail::to($user->email)->send(new OrderShipped($details));
+                                } catch (Swift_TransportException $e) {
+                                    echo $e->getMessage();
+                                }
                             }
                         }
                     }
@@ -2251,8 +2274,12 @@ class PaymentController extends Controller
                             'name' => $user->name,
                             'email' => $user->email
                         ];
+                        try {
+                            Mail::to($user->email)->send(new OrderShipped($details));
+                        } catch (Swift_TransportException $e) {
+                            echo $e->getMessage();
+                        }
 
-                        Mail::to($user->email)->send(new OrderShipped($details));
                     }
                 }
             }
@@ -2556,8 +2583,11 @@ class PaymentController extends Controller
                                 'name' => $user->name,
                                 'email' => $user->email
                             ];
-
-                            Mail::to($user->email)->send(new OrderShipped($details));
+                            try {
+                                Mail::to($user->email)->send(new OrderShipped($details));
+                            } catch (Swift_TransportException $e) {
+                                echo $e->getMessage();
+                            }
                         }
                     }
                 }
@@ -2954,7 +2984,11 @@ class PaymentController extends Controller
                             'email' => $user->email
                         ];
 
-                        Mail::to($user->email)->send(new OrderShipped($details));
+                        try {
+                            Mail::to($user->email)->send(new OrderShipped($details));
+                        } catch (Swift_TransportException $e) {
+                            echo $e->getMessage();
+                        }
                     }
                 }
             }

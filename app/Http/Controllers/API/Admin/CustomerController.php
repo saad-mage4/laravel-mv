@@ -17,6 +17,8 @@ use Mail;
 use App\Mail\SendSingleSellerMail;
 use Image;
 use File;
+use Swift_TransportException;
+
 class CustomerController extends Controller
 {
     public function __construct()
@@ -106,7 +108,11 @@ class CustomerController extends Controller
         $users = User::where('status',1)->get();
         MailHelper::setMailConfig();
         foreach($users as $user){
-            Mail::to($user->email)->send(new SendSingleSellerMail($request->subject,$request->message));
+            try {
+                Mail::to($user->email)->send(new SendSingleSellerMail($request->subject, $request->message));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
         }
 
         $notification = trans('admin_validation.Email Send Successfully');
@@ -126,10 +132,13 @@ class CustomerController extends Controller
 
         $user = User::find($id);
         MailHelper::setMailConfig();
-        Mail::to($user->email)->send(new SendSingleSellerMail($request->subject,$request->message));
+        try {
+            Mail::to($user->email)->send(new SendSingleSellerMail($request->subject, $request->message));
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
         $notification = trans('admin_validation.Email Send Successfully');
         return response()->json(['notification' => $notification], 200);
     }
-
 }
