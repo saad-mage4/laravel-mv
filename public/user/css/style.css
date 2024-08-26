@@ -855,7 +855,7 @@ header {
 }
 
 .wsus_menu_cat_droapdown {
-    min-width: 265px;
+    min-width: 100%;
     background: #fff;
     position: absolute;
     z-index: 1;
@@ -3337,7 +3337,7 @@ PPRODUCT PAGE START
     color: #353535;
     width: 100%;
     text-transform: capitalize;
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
     transition: all linear 0.3s;
     -webkit-transition: all linear 0.3s ease;
     -moz-transition: all linear 0.3s ease;
