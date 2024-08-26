@@ -12,6 +12,7 @@ use Str;
 use Mail;
 use Hash;
 use Auth;
+use Swift_TransportException;
 
 class SubscriberController extends Controller
 {
