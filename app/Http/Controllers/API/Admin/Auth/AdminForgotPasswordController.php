@@ -15,6 +15,8 @@ use Mail;
 use Hash;
 use Auth;
 use App\Models\Setting;
+use Swift_TransportException;
+
 class AdminForgotPasswordController extends Controller
 {
     use SendsPasswordResetEmails;
@@ -47,7 +49,11 @@ class AdminForgotPasswordController extends Controller
             $subject=$template->subject;
             $message=str_replace('{{name}}',$admin->name,$message);
 
-            Mail::to($admin->email)->send(new AdminForgetPassword($admin,$message,$subject));
+            try {
+                Mail::to($admin->email)->send(new AdminForgetPassword($admin, $message, $subject));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             $notification= trans('admin_validation.Forget password link send your email');
             return response()->json(['notification' => $notification],200);
@@ -103,6 +109,4 @@ class AdminForgotPasswordController extends Controller
         }
 
     }
-
-
 }

@@ -43,6 +43,7 @@ use Session;
 use Auth;
 
 use App\Models\ShoppingCart;
+use Swift_TransportException;
 
 class PaypalController extends Controller
 {
@@ -497,7 +498,11 @@ class PaypalController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
-            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+            try {
+                Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             Session::forget('hipping_method');
             Session::forget('coupon_price');
@@ -717,7 +722,11 @@ class PaypalController extends Controller
             $message = str_replace('{{order_status}}','Pending',$message);
             $message = str_replace('{{order_date}}',$order->created_at->format('d F, Y'),$message);
             $message = str_replace('{{order_detail}}',$order_details,$message);
-            Mail::to($user->email)->send(new OrderSuccessfully($message,$subject));
+            try {
+                Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+            } catch (Swift_TransportException $e) {
+                echo $e->getMessage();
+            }
 
             Session::forget('shipping_method');
             Session::forget('coupon_price');
@@ -731,8 +740,4 @@ class PaypalController extends Controller
             return response()->json(['notification' => $notification]);
         }
     }
-
-
-
-
 }

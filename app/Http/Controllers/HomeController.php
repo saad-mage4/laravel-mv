@@ -59,6 +59,7 @@ use Carbon\Carbon;
 use Route;
 use Auth;
 use Illuminate\Database\Eloquent\Collection;
+use Swift_TransportException;
 
 class HomeController extends Controller
 {
@@ -218,7 +219,14 @@ class HomeController extends Controller
         $message = str_replace('{{subject}}', $request->subject, $message);
         $message = str_replace('{{message}}', $request->message, $message);
 
-        Mail::to($setting->contact_email)->send(new ContactMessageInformation($message, $subject));
+
+
+        //! Send Scure mail through hostigner web mail
+        try {
+            Mail::to($setting->contact_email)->send(new ContactMessageInformation($message, $subject));
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
         $notification = trans('user_validation.Message send successfully');
         $notification = array('messege' => $notification, 'alert-type' => 'success');
@@ -1231,7 +1239,13 @@ class HomeController extends Controller
                 $template = EmailTemplate::where('id', 3)->first();
                 $message = $template->description;
                 $subject = $template->subject;
-                Mail::to($subscriber->email)->send(new SubscriptionVerification($subscriber, $message, $subject));
+
+                //! Send Scure mail through hostigner web mail
+                try {
+                    Mail::to($subscriber->email)->send(new SubscriptionVerification($subscriber, $message, $subject));
+                } catch (Swift_TransportException $e) {
+                    echo $e->getMessage();
+                }
 
                 return response()->json(['status' => 1, 'message' => trans('user_validation.Subscription successfully, please verified your email')]);
             } else {

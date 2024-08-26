@@ -12,6 +12,7 @@ use App\Helpers\MailHelper;
 use App\Mail\SellerWithdrawApproval;
 use Mail;
 use Auth;
+use Swift_TransportException;
 
 class SellerWithdrawController extends Controller
 {
@@ -63,7 +64,11 @@ class SellerWithdrawController extends Controller
         $message=str_replace('{{withdraw_amount}}',$withdraw->withdraw_amount,$message);
         $message=str_replace('{{approval_date}}',$withdraw->approved_date,$message);
         MailHelper::setMailConfig();
-        Mail::to($user->email)->send(new SellerWithdrawApproval($subject,$message));
+        try {
+            Mail::to($user->email)->send(new SellerWithdrawApproval($subject, $message));
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
         $notification = trans('admin_validation.Withdraw request approval successfully');
         $notification=array('messege'=>$notification,'alert-type'=>'success');
