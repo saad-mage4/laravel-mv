@@ -89,45 +89,45 @@
                     @if ($menus->where('id',1)->first()->status == 1)
                     <li><a  href="{{ route('home') }}">{{__('user.Home')}}</a></li>
                     @endif
-                    <li><a href="/used_products?category=used-products">{{__('user.UsedProducts')}}</a></li>
                     @if ($menus->where('id',2)->first()->status == 1)
                     <li><a href="{{ route('product') }}">{{__('user.Shop')}}
                         @if ($menus->where('id',3)->first()->status == 1)
-                            <i class="fas fa-caret-down"></i>
+                        <i class="fas fa-caret-down"></i>
                         @endif
-                        </a>
-                        @if ($menus->where('id',3)->first()->status == 1)
-                        <div class="wsus__mega_menu">
-                            <div class="row">
-                                @foreach ($megaMenuCategories as $megaMenuCategory)
-                                    <div class="col-xl-3 col-lg-4">
-                                        <div class="wsus__mega_menu_colum">
-                                            <h4><a class="text-dark" href="{{ route('product',['category' => $megaMenuCategory->category->slug]) }}">{{ $megaMenuCategory->category->name }}</a></h4>
-                                            <ul class="wsis__mega_menu_item">
-                                                @foreach ($megaMenuCategory->subCategories as $subCategory)
-                                                <li><a href="{{ route('product',['sub_category' => $subCategory->subCategory->slug]) }}">{{ $subCategory->subCategory->name }} </a></li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
+                    </a>
+                    @if ($menus->where('id',3)->first()->status == 1)
+                    <div class="wsus__mega_menu">
+                        <div class="row">
+                            @foreach ($megaMenuCategories as $megaMenuCategory)
+                            <div class="col-xl-3 col-lg-4">
+                                <div class="wsus__mega_menu_colum">
+                                    <h4><a class="text-dark" href="{{ route('product',['category' => $megaMenuCategory->category->slug]) }}">{{ $megaMenuCategory->category->name }}</a></h4>
+                                    <ul class="wsis__mega_menu_item">
+                                        @foreach ($megaMenuCategory->subCategories as $subCategory)
+                                        <li><a href="{{ route('product',['sub_category' => $subCategory->subCategory->slug]) }}">{{ $subCategory->subCategory->name }} </a></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                            @endforeach
+                            
+                            @if ($megaMenuBanner->status == 1)
+                            <div class="col-xl-3 d-lg-none d-xl-block">
+                                <div class="wsus__mega_menu_colum">
+                                    <img src="{{ asset($megaMenuBanner->image) }}" alt="images" class="img-fluid w-100">
+                                    <div class="wsus__mega_menu_colum_text">
+                                        <h5>{{ $megaMenuBanner->title }}</h5>
+                                        <h3>{{ $megaMenuBanner->description }}</h3>
+                                        <a class="common_btn" href="{{ $megaMenuBanner->link }}">{{__('user.Shop Now')}}</a>
                                     </div>
-                                @endforeach
-
-                                @if ($megaMenuBanner->status == 1)
-                                <div class="col-xl-3 d-lg-none d-xl-block">
-                                    <div class="wsus__mega_menu_colum">
-                                        <img src="{{ asset($megaMenuBanner->image) }}" alt="images" class="img-fluid w-100">
-                                        <div class="wsus__mega_menu_colum_text">
-                                            <h5>{{ $megaMenuBanner->title }}</h5>
-                                            <h3>{{ $megaMenuBanner->description }}</h3>
-                                            <a class="common_btn" href="{{ $megaMenuBanner->link }}">{{__('user.Shop Now')}}</a>
-                                        </div>
-                                    </div>
+                                </div>
                                 </div>
                                 @endif
                             </div>
                         </div>
                         @endif
                     </li>
+                    <li><a href="/used_products?category=used-products">{{__('user.UsedProducts')}}</a></li>
                     @endif
                     @if ($menus->where('id',4)->first()->status == 1)
                         @if ($setting->enable_multivendor == 1)
