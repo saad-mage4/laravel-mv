@@ -10379,3 +10379,7 @@ label.label-period::before {
     }
 }
 
+
+.fa-facebook-messenger:before {
+    content: "\e07b" !important;
+}
