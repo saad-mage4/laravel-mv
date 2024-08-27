@@ -85,8 +85,37 @@ select.goog-te-combo {
     padding: 0 10px;
     border: none;
     border-radius: 5px;
-    background-color: #fff;
+    background-color: transparent;
+        color: #fff;
+    }
+    
+    @media (max-width: 575.99px) {
+        .wsus__topbar_right li {
+            margin-inline: 5px !important;
+        }
+    
+        .wsus__topbar_right li a {
+            font-size: 10px !important;
+        }
+    
+        select.goog-te-combo {
+            font-size: 10px !important;
+        }
+    
+        .flag {
+            width: 15px;
+            height: 30px;
+            margin-top: 10px;
+            margin-right: 5px;
+            font-size: 15px;
+        }
+    
+        .wsus__topbar_right {
+            justify-content: center;
+            align-items: baseline;
+        }
 }
+
 
 #goog-gt-tt {
     display: none !important;
