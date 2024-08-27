@@ -89,7 +89,7 @@
                     @if ($menus->where('id',1)->first()->status == 1)
                     <li><a  href="{{ route('home') }}">{{__('user.Home')}}</a></li>
                     @endif
-
+                    <li><a href="/used_products?category=used-products">{{__('user.UsedProducts')}}</a></li>
                     @if ($menus->where('id',2)->first()->status == 1)
                     <li><a href="{{ route('product') }}">{{__('user.Shop')}}
                         @if ($menus->where('id',3)->first()->status == 1)
@@ -136,7 +136,7 @@
                     @endif
                     <li><a href="{{ route('sponsor') }}">{{__('user.sponsors')}}</a></li>
                     @if ($menus->where('id',5)->first()->status == 1)
-                    <li><a href="{{ route('blog') }}">{{__('user.Blog')}} 123</a></li>
+                    <li><a href="{{ route('blog') }}">{{__('user.Blog')}}</a></li>
                     @endif
                     {{-- @if ($menus->where('id',6)->first()->status == 1)
                     <li><a href="{{ route('campaign') }}">{{__('user.Campaign')}}</a></li>
