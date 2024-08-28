@@ -391,7 +391,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             {{__('user.Filter By Categories')}}
             </button>
             </h2>
-            <div id="collapseCategories" class="accordion-collapse collapse show" aria-labelledby="headingCategories" data-bs-parent="#accordionExample">
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingCategories" data-bs-parent="#accordionExample">
             <div class="accordion-body">
             <ul class="list-unstyled">
             <div class="accordion" id="accordionCategories">
@@ -460,7 +460,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
     {{__('user.Filter By Categories')}}
     </button>
     </h2>
-    <div id="collapseCategories" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
     <div class="desktop-menu">
     <ul class="wsus_menu_cat_item">
     <!-- Main Categories -->

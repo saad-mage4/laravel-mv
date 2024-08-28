@@ -3,6 +3,12 @@
 <title>{{__('user.Dashboard')}}</title>
 @endsection
 @section('seller-content')
+{{-- @php
+use Carbon\Carbon;
+$expiryDate = Carbon::parse($user->private_subscription_expiry_date);
+$currentDate = Carbon::now();
+$remainingDays = $expiryDate->diffInDays($currentDate, false);
+@endphp --}}
 <!-- Main Content -->
 <div class="main-content">
     <section class="section">
@@ -454,6 +460,27 @@
                 </div>
               </div>
             </div>
+               {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+              <div class="card card-statistic-1">
+                <div class="card-icon bg-success">
+                  <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="card-wrap">
+                  <div class="card-header">
+                    <h4>Remaining Ads Days</h4>
+                  </div>
+                  <div class="card-body">
+
+                      @if($remainingDays > 0)
+                          {{ $remainingDays }} days left
+                      @else
+                          Subscription expired
+                      @endif
+                  </div>
+
+                </div>
+              </div>
+            </div> --}}
              @endif
 
 

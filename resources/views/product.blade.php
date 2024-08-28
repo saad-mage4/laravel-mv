@@ -75,12 +75,12 @@
                               <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <ul>
-                                        <li><a class="categoryForSearch" href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li>
+                                        <li><a class="categoryForSearch" style="margin-bottom: 15px;"  href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li>
                                         @foreach ($productCategories as $productCategory)
                                         @if ($productCategory->slug === "used-products")
                                             <li></li>
                                             @else
-                                        <li><a class="categoryForSearch" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
+                                        <li><a class="categoryForSearch" style="margin-bottom: 15px;" href="javascript:;" data-category="{{ $productCategory->slug }}">{{ $productCategory->name }}</a></li>
                                          @endif
                                         @endforeach
                                         <input type="hidden" name="category" value="" id="category_id_for_search">

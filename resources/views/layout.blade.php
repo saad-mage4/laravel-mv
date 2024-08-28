@@ -10,6 +10,10 @@
     $customPages = App\Models\CustomPage::where('status',1)->get();
     $googleAnalytic = App\Models\GoogleAnalytic::first();
     $facebookPixel = App\Models\FacebookPixel::first();
+    $user = App\Models\User::first();
+    // $user = Auth::guard('web')->user();
+    $is_member = $user->is_member;
+    $is_paid = $user->is_paid;
 @endphp
 
 <!DOCTYPE html>
@@ -140,7 +144,11 @@
                             <li><a href="{{ route('contact-us') }}"><i class="fal fa-address-card"></i> {{__('user.Contact Us')}}</a></li>
                         @endif
                         @if ($menus->where('id',17)->first()->status == 1)
-                            <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}}</a></li>
+                        @if ($is_member == true)
+                      <li><a href="{{ route('seller.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}}</a></li>
+                        @else
+                        <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}}</a></li>
+                        @endif
                         @endif
                         @if ($menus->where('id',18)->first()->status == 1)
                             @guest
@@ -255,6 +263,46 @@
                         </ul>
                     </div>
                 </div>
+
+                {{-- mobile search  --}}
+                <div class="mobile-search col-xl-6 col-lg-5 d-none">
+                    @if ($menus->where('id',25)->first()->status == 1)
+                    @if (request()->is('*used_products*'))
+                         <div class="wsus__search">
+                         </div>
+                    @else
+                    <div class="wsus__search">
+                        <form action="{{ route('product') }}">
+                            <div class="wsus__category_search">
+                                <select class="select_2" name="category">
+                                    <option value="">{{__('user.All Category')}}</option>
+                                    @if (request()->has('category'))
+                                        @foreach ($productCategories as $productCategory)
+                                        @if ($productCategory->slug === "used-products")
+                                         <option value=""></option>
+                                        @else
+                                        <option {{ request()->get('category') == $productCategory->slug ? 'selected' : ''  }} value="{{ $productCategory->slug }}">{{ $productCategory->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        @foreach ($productCategories as $productCategory)
+                                          @if ($productCategory->slug == "used-products")
+                                          <option value=""></option>
+                                          @else
+                                            <option value="{{ $productCategory->slug }}">{{ $productCategory->name }}</option>
+                                            @endif
+                                            @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <input type="text" placeholder="{{__('user.Search...')}}" name="search" value="{{ request()->has('search') ? request()->get('search') : '' }}">
+                            <button type="submit"><i class="far fa-search"></i></button>
+                        </form>
+                    </div>
+                    @endif
+                    @endif
+                </div>
+
             </div>
         </div>
         <div class="wsus__mini_cart" >

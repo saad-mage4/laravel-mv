@@ -456,7 +456,7 @@ class UserProfileController extends Controller
             $user->private_ad = $user->private_ad;
             $user->update();
 
-            $CurrentDate = Carbon::now()->toDateString();
+            // $CurrentDate = Carbon::now()->toDateString();
             // dd($user->is_paid);
             if ($user->is_member == 0 && $is_paid == 1 && $user_seller_type == "Public") {
                 $notification = 'Payment has been made Successfully!';
@@ -530,10 +530,19 @@ class UserProfileController extends Controller
         $is_member = $user->is_member;
         $user->save();
 
-        $CurrentDate = Carbon::now()->toDateString();
+        // $CurrentDate = Carbon::now()->toDateString();
+        // for private monthly ads
+        $currentTime = Carbon::now()->format('Y-m-d');
+        $differnce = Carbon::parse($user->private_subscription_expiry_date)->diffInDays($currentTime);
+        // public monthly differnce
+        $public_differnce = Carbon::parse($user->subscription_expiry_date)->diffInDays($currentTime);
 
-        if ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Private" && $user->private_ad == 0 && $user->private_subscription_expiry_date =  $CurrentDate) {
-            $notification = 'Your Ads Limit Reached!';
+        if ($user->is_member == 1 && $user->seller_type == "Private") {
+            if ($differnce > 30) {
+                $notification = 'Your monthly ads time has been ended';
+            } elseif ($user->is_paid == 0  && $user->private_ad == 0) {
+                $notification = 'Your Ads Limit Reached!';
+            }
             $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect('user/test')->with($notification);
             // return redirect('user.seller_membership')->with($notification);
@@ -541,7 +550,7 @@ class UserProfileController extends Controller
             $notification = 'You have already Paid!';
             $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect('user/seller-registration')->with($notification);
-        } elseif ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Public" && $user->subscription_expiry_date == $CurrentDate) {
+        } elseif ($user->is_member == 1 && $user->is_paid == 0 && $user->seller_type == "Public" && $public_differnce > 30) {
             return view('user.seller_membership', compact('setting', 'is_member'));
         } else {
             return view('user.seller_membership', compact('setting', 'is_member'));

@@ -14,14 +14,48 @@
       @if ($authUser->seller_type == "Private")
       <ul class="sidebar-menu">
         <li class="{{ Route::is('seller.dashboard') ? 'active' : '' }}"><a class="nav-link" href="{{ route('seller.dashboard') }}"><i class="fas fa-home"></i> <span>{{__('user.Dashboard')}}</span></a></li>
-         <li class="nav-item dropdown {{ Route::is('seller.product.*') || Route::is('seller.product-brand.*') || Route::is('seller.product-variant') || Route::is('seller.create-product-variant') || Route::is('seller.edit-product-variant') || Route::is('seller.product-gallery') || Route::is('seller.product-variant-item') || Route::is('seller.create-product-variant-item') || Route::is('seller.edit-product-variant-item') || Route::is('seller.product-review') || Route::is('seller.wholesale') || Route::is('seller.create-wholesale') || Route::is('seller.edit-wholesale') || Route::is('seller.pending-product') || Route::is('admin.product-highlight') || Route::is('seller.show-product-review')  || Route::is('seller.show-product-report') || Route::is('seller.product-report') ? 'active' : '' }}">
+        <li class="{{ Route::is('seller.product.create') ? 'active' : '' }}"><a class="nav-link" href="{{ route('seller.product.create') }}"><i class="fas fa-user"></i> <span>{{__('user.Product Create')}}</span></a></li>
+         <li class="nav-item dropdown {{
+         Route::is('seller.product.*') ||
+         Route::is('seller.product-brand.*') ||
+         Route::is('seller.product-variant') ||
+         Route::is('seller.create-product-variant') ||
+         Route::is('seller.edit-product-variant') ||
+         Route::is('seller.product-gallery') ||
+         Route::is('seller.product-variant-item') ||
+         Route::is('seller.create-product-variant-item') ||
+         Route::is('seller.edit-product-variant-item') ||
+         Route::is('seller.product-review') ||
+         Route::is('seller.wholesale') ||
+         Route::is('seller.create-wholesale') ||
+         Route::is('seller.edit-wholesale') ||
+         Route::is('seller.pending-product') ||
+         Route::is('admin.product-highlight') ||
+         Route::is('seller.show-product-review')  ||
+         Route::is('seller.show-product-report') ||
+         Route::is('seller.product-report') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i><span>{{__('user.Manage Products')}}</span></a>
 
             <ul class="dropdown-menu">
 
-            <li><a class="nav-link" href="{{ route('seller.product.create') }}">{{__('user.Product Create')}}</a></li>
+            {{-- <li><a class="nav-link" href="{{ route('seller.product.create') }}">{{__('user.Product Create')}}</a></li> --}}
 
-            <li class="{{ Route::is('seller.product.*') || Route::is('seller.product-variant') || Route::is('seller.create-product-variant') || Route::is('seller.edit-product-variant') || Route::is('seller.product-gallery') || Route::is('seller.product-variant-item') || Route::is('seller.create-product-variant-item') || Route::is('seller.edit-product-variant-item') || Route::is('seller.wholesale') || Route::is('seller.create-wholesale') || Route::is('seller.edit-wholesale') || Route::is('admin.product-highlight') ? 'active' : '' }}"><a class="nav-link" href="{{ route('seller.product.index') }}">{{__('user.Products')}}</a></li>
+            <li class="
+            {{
+            Route::is('seller.product.*')  ||
+             Route::is('seller.product-variant') ||
+             Route::is('seller.create-product-variant') ||
+             Route::is('seller.edit-product-variant') ||
+             Route::is('seller.product-gallery') ||
+             Route::is('seller.product-variant-item') ||
+             Route::is('seller.create-product-variant-item') ||
+             Route::is('seller.edit-product-variant-item') ||
+             Route::is('seller.wholesale') ||
+             Route::is('seller.create-wholesale') ||
+             Route::is('seller.edit-wholesale') ||
+             Route::is('admin.product-highlight') ? 'active' : '' }}">
+             <a class="nav-link" href="{{ route('seller.product.index') }}">
+              {{__('user.Products')}}</a></li>
 
             {{-- <li class="{{ Route::is('seller.pending-product') ? 'active' : '' }}"><a class="nav-link" href="{{ route('seller.pending-product') }}">{{__('user.Pending Products')}}</a></li>
 
