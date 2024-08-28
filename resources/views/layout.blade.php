@@ -12,8 +12,8 @@
     $facebookPixel = App\Models\FacebookPixel::first();
     $user = App\Models\User::first();
     // $user = Auth::guard('web')->user();
-    $is_member = $user->is_member;
-    $is_paid = $user->is_paid;
+    $is_member = $user->is_member ?? 0;
+    // $is_paid = $user->is_paid;
 @endphp
 
 <!DOCTYPE html>
