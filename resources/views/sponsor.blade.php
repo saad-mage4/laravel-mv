@@ -14,7 +14,7 @@
            'second_image' => '350x700',
            'third_image' => '350x700',
            'fourth_image' => '350x700',
-           'fifth_image' => '1280x200',
+      //      'fifth_image' => '1280x200',
            'sixth_image' => '350x700',
            'seventh_image' => '350x700',
            'eighth_image' => '350x700'

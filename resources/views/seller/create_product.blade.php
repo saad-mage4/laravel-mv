@@ -196,13 +196,17 @@
                                 </div>
                                 @endif
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Description')}} <span class="text-danger">*</span></label>
                                     <textarea name="short_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ old('short_description') }}</textarea>
                                 </div>
+                                @endif
 
                                 <div class="form-group col-12">
-                                    <label>{{__('user.Long Description')}} <span class="text-danger">*</span></label>
+                                    <label>
+                                     {{ $authUser->seller_type == "Private" ? "Description" : __('user.Long Description') }}
+                                        <span class="text-danger">*</span></label>
                                     <textarea name="long_description" id="" cols="30" rows="10" class="summernote">{{ old('long_description') }}</textarea>
                                 </div>
                                 @if ($authUser->seller_type == "Public")

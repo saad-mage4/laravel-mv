@@ -132,7 +132,7 @@ class SellerProductController extends Controller
     }
 
 
-    //! For Store the Product Data
+    //! For Store the Public/Private Product Data
     public function store(Request $request)
     {
         $user = Auth::guard('web')->user();
@@ -159,7 +159,7 @@ class SellerProductController extends Controller
                 'banner_image' => 'required',
                 // 'category' => 'required',
                 'private_category' => 'required',
-                'short_description' => 'required',
+                // 'short_description' => 'required',
                 'long_description' => 'required',
                 'brand' => 'required',
                 'price' => 'required|numeric',
@@ -176,7 +176,7 @@ class SellerProductController extends Controller
                 'private_category.required' => 'Private Category is required',
                 'thumb_image.required' => trans('user_validation.thumbnail is required'),
                 'banner_image.required' => trans('user_validation.Banner is required'),
-                'short_description.required' => trans('user_validation.Short description is required'),
+                // 'short_description.required' => trans('user_validation.Short description is required'),
                 'long_description.required' => trans('user_validation.Long description is required'),
                 'brand.required' => trans('user_validation.Brand is required'),
                 'price.required' => trans('user_validation.Price is required'),
@@ -274,7 +274,7 @@ class SellerProductController extends Controller
                 $product->price = $request->price;
                 $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
                 $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
-                $product->short_description = $request->short_description;
+                $product->short_description = "";
                 $product->long_description = $request->long_description;
                 $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
                 $product->tags = $user->seller_type == "Private" ? null : $request->tags;

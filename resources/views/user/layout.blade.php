@@ -120,15 +120,8 @@
         <a href="{{ route('user.dashboard') }}" class="dash_logo"><img src="{{ asset('uploads/website-images/white_logo_mv.png') }}" alt="logo" class="img-fluid"></a>
         <ul class="dashboard_link">
           <li><a class="{{ Route::is('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}"><i class="fas fa-tachometer"></i>{{__('user.Dashboard')}}</a></li>
-          <li><a class="{{ Route::is('user.message') ? 'active' : '' }}" href="{{ route('user.message') }}"><i class="fas fa-envelope"></i>{{__('user.Message')}}</a></li>
-
-          <li><a href="{{ route('home') }}"><i class="fal fa fa-globe"></i> {{__('user.Go to Homepage')}}</a></li>
-          <li><a class="{{ Route::is('user.order') || Route::is('user.order-show') ? 'active' : '' }}" href="{{ route('user.order') }}"><i class="fas fa-list-ul"></i> {{__('user.Orders')}}</a></li>
-          <li><a class="{{ Route::is('user.review') ? 'active' : '' }}" href="{{ route('user.review') }}"><i class="far fa-star"></i> {{__('user.Reviews')}}</a></li>
-          <li><a class="{{ Route::is('user.wishlist') ? 'active' : '' }}" href="{{ route('user.wishlist') }}"><i class="far fa-heart"></i> {{__('user.Wishlist')}}</a></li>
-          <li><a class="{{ Route::is('user.my-profile') ? 'active' : '' }}" href="{{ route('user.my-profile') }}"><i class="far fa-user"></i> {{__('user.My Profile')}}</a></li>
-          <li><a class="{{ Route::is('user.address') ? 'active' : '' }}" href="{{ route('user.address') }}"><i class="fal fa-gift-card"></i> {{__('user.Address')}}</a></li>
-            @if ($setting->enable_multivendor == 1)
+          {{-- Beacome A Seller  Routes  --}}
+          @if ($setting->enable_multivendor == 1)
                 @php
                     $authUser = Auth::guard('web')->user();
                     $isSeller = App\Models\Vendor::where('user_id', $authUser->id)->first();
@@ -169,6 +162,15 @@
                 @endif
 
             @endif
+          <li><a class="{{ Route::is('user.message') ? 'active' : '' }}" href="{{ route('user.message') }}"><i class="fas fa-envelope"></i>{{__('user.Message')}}</a></li>
+
+          <li><a href="{{ route('home') }}"><i class="fal fa fa-globe"></i> {{__('user.Go to Homepage')}}</a></li>
+          <li><a class="{{ Route::is('user.order') || Route::is('user.order-show') ? 'active' : '' }}" href="{{ route('user.order') }}"><i class="fas fa-list-ul"></i> {{__('user.Orders')}}</a></li>
+          <li><a class="{{ Route::is('user.review') ? 'active' : '' }}" href="{{ route('user.review') }}"><i class="far fa-star"></i> {{__('user.Reviews')}}</a></li>
+          <li><a class="{{ Route::is('user.wishlist') ? 'active' : '' }}" href="{{ route('user.wishlist') }}"><i class="far fa-heart"></i> {{__('user.Wishlist')}}</a></li>
+          <li><a class="{{ Route::is('user.my-profile') ? 'active' : '' }}" href="{{ route('user.my-profile') }}"><i class="far fa-user"></i> {{__('user.My Profile')}}</a></li>
+          <li><a class="{{ Route::is('user.address') ? 'active' : '' }}" href="{{ route('user.address') }}"><i class="fal fa-gift-card"></i> {{__('user.Address')}}</a></li>
+
             {{-- Private Seller  --}}
             {{-- <li><a class="{{ Route::is('user.private_seller') ? 'active' : '' }}" href="{{ route('user.private_seller') }}"><i class="fal fa-gift-card"></i> {{__('user.Private Seller')}}</a></li> --}}
 
