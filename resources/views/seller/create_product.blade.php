@@ -7,6 +7,29 @@
 <title>{{__('user.Products')}}</title>
 @endsection
 @section('seller-content')
+
+<style>
+    div#Image_Preview_Slider {
+    grid-template-columns: repeat(5,1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+div#Image_Preview_Slider img {
+    width: 100px;
+    height: 100px;
+}
+
+@media (max-width: 700px) {
+    div#Image_Preview_Slider {
+    grid-template-columns: repeat(4,1fr);
+}
+div#Image_Preview_Slider img {
+    width: 70px;
+    height: 70px;
+}
+}
+</style>
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
@@ -24,7 +47,7 @@
                 <div class="col-12">
                   <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('seller.product.store') }}" method="POST" enctype="multipart/form-data">
+                        <form  action="{{ route('seller.product.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="form-group col-12">
@@ -45,10 +68,22 @@
                                     <input type="file" class="form-control-file"  name="banner_image">
                                 </div>
 
+                                @if ($authUser->seller_type == "Private")
+                                {{-- Image Gallery  --}}
+                            <div class="form-group col-12">
+                                     <label for="">{{__('user.New Image (Multiple)')}}</label>
+                                <input type="file" class="form-control-file" name="images[]" multiple onchange="imageGalleryPreview(event)"
+                                accept="image/*">
+                                </div>
+                                <div id="Image_Preview_Slider" style="display: none;"></div>
+                                @endif
+
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Name')}} <span class="text-danger">*</span></label>
                                     <input type="text" id="short_name" class="form-control"  name="short_name" value="{{ old('short_name') }}">
                                 </div>
+                                @endif
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Name')}} <span class="text-danger">*</span></label>
@@ -151,9 +186,9 @@
                                 </div> --}}
 
                                 <div class="form-group col-12">
-                                    <label for="private_ad_type">Ad Type <span class="text-danger">*</span></label>
+                                    <label for="private_ad_type">Product Condition <span class="text-danger">*</span></label>
                                      <select name="private_ad_type" id="private_ad_type" class="form-control select2">
-                                        <option value="">Ad Type</option>
+                                        <option value="">Product Condition</option>
                                         @foreach ($ads as $ad)
                                             <option {{ old('ad') == $ad->id ? 'selected' : '' }} value="{{ $ad->id }}">{{ $ad->name }}</option>
                                         @endforeach
@@ -497,7 +532,44 @@
         reader.readAsDataURL(event.target.files[0]);
     };
 
+const imageGalleryPreview = (e) => {
+      const maxFiles = 5;
+    const files = e.target.files;
+
+    if (files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} images.`);
+        e.target.value = ''; // Reset the file input
+        return;
+    }
+    const previewContainer = document.getElementById('Image_Preview_Slider');
+    previewContainer.style.display = "grid";
+
+    // Clear any existing images in the preview container
+    previewContainer.innerHTML = '';
+
+    Array.from(e.target.files)?.forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            // Create an image element
+            const img = document.createElement('img');
+            img.className = 'admin-img';
+            img.src = reader.result;
+            img.alt = 'Preview Image';
+
+            // Append the image to the preview container
+            previewContainer.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+    });
+}
+
+
+
 </script>
+
+
 
 
 @endsection
