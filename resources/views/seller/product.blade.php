@@ -32,7 +32,10 @@
                                     <th width="30%">{{__('user.Name')}}</th>
                                     <th width="10%">{{__('user.Price')}}</th>
                                     <th width="15%">{{__('user.Photo')}}</th>
-                                    <th width="15%">{{__('user.Type')}}</th>
+                                    <th width="15%">{{$authUser->seller_type == "Public" ? __('user.Type') : "Ads Type"}}</th>
+                                    @if ($authUser->seller_type == "Private")
+                                    <th width="10%">Gallery</th>
+                                    @endif
                                     <th width="10%">{{__('user.Status')}}</th>
                                     <th width="15%">{{__('user.Action')}}</th>
                                     {{-- <th width="15%">Seller Type</th> --}}
@@ -42,10 +45,16 @@
                                 @foreach ($products as $index => $product)
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        <td><a href="{{ route('product-detail', $product->slug) }}">{{ $product->short_name }}</a></td>
+                                        <td><a href="{{ route('product-detail', $product->slug) }}">
+                                          @if ($authUser->seller_type == "Public")
+                                          {{ $product->short_name }}
+                                          @else {{ $product->name }}
+                                          @endif
+                                        </a></td>
                                         <td>{{ $setting->currency_icon }}{{ $product->price }}</td>
                                         <td> <img class="rounded-circle" src="{{ asset($product->thumb_image) }}" alt="" width="80px"></td>
-                                        <td>
+                                        @if ($authUser->seller_type == "Public")
+                                         <td>
                                             {{-- $authUser->seller_type --}}
                                             @if ($product->is_undefine == 1)
                                             {{__('user.Undefine Product')}}
@@ -61,6 +70,18 @@
                                             {{__('user.Flash Deal')}}
                                             @endif
                                         </td>
+                                          @else
+                                          <td>{{ $product->private_ad_type == 1 ? "New" : "Used" }}</td>
+                                          @endif
+
+                                       @if ($authUser->seller_type == "Private")
+                                       <td>
+                                        <a target="_blank" href="{{ route('seller.product-gallery',$product->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-link"></i>
+                                      </a>
+                                       </td>
+                                        @endif
+
                                         <td>
                                             @if($product->status == 1)
                                             <span class="badge badge-success">{{__('user.Active')}}</span>
@@ -80,6 +101,7 @@
                                         @endif
 
                                         <div class="dropdown d-inline">
+                                          @if ($authUser->seller_type == "Public")
                                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                               <i class="fas fa-cog"></i>
                                             </button>
@@ -87,13 +109,12 @@
                                             <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -131px, 0px);">
                                               <a class="dropdown-item has-icon" href="{{ route('seller.product-gallery',$product->id) }}"><i class="far fa-image"></i> {{__('user.Image Gallery')}}</a>
 
-                                              @if ($authUser->seller_type  == "Public")
                                               <a class="dropdown-item has-icon" href="{{ route('seller.product-highlight',$product->id) }}"><i class="fas fa-lightbulb"></i> {{__('user.Highlight')}}</a>
 
                                               <a class="dropdown-item has-icon" href="{{ route('seller.product-variant',$product->id) }}"><i class="fas fa-cog"></i> {{__('user.Product Variant')}}</a>
-                                              @endif
 
                                             </div>
+                                            @endIf
                                           </div>
                                          {{-- Seller Type  --}}
                                         {{-- <td>

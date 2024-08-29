@@ -45,7 +45,14 @@ class SellerProductController extends Controller
 
     public function index()
     {
-        $seller = Auth::guard('web')->user()->seller;
+        $guard_user = Auth::guard('web')->user();
+        $seller = $guard_user->seller;
+        // if ($guard_user->seller_type == "Private") {
+        //     $products = Product::with('private_categories')->orderBy('id', 'desc')->where('status', 1)->where('vendor_id', $seller->id)->get();
+        // } else {
+        //     $products = Product::with('category')->orderBy('id', 'desc')->where('status', 1)->where('vendor_id', $seller->id)->get();
+        // }
+
         $products = Product::with('category')->orderBy('id', 'desc')->where('status', 1)->where('vendor_id', $seller->id)->get();
 
         // Loop through products to update is_undefine if quantity is 0
@@ -63,6 +70,7 @@ class SellerProductController extends Controller
 
         $orderProducts = OrderProduct::all();
         $setting = Setting::first();
+        // $ads = AdType::where(['status' => 1])->get();
         return view('seller.product', compact('products', 'orderProducts', 'setting'));
     }
 
@@ -135,6 +143,7 @@ class SellerProductController extends Controller
     //! For Store the Public/Private Product Data
     public function store(Request $request)
     {
+        // dd($request->images);
         $user = Auth::guard('web')->user();
 
         if ($request->video_link) {
@@ -152,7 +161,7 @@ class SellerProductController extends Controller
 
         if ($user->seller_type == "Private") {
             $rules = [
-                'short_name' => 'required',
+                // 'short_name' => 'required',
                 'name' => 'required',
                 'slug' => 'required|unique:products',
                 'thumb_image' => 'required',
@@ -166,8 +175,8 @@ class SellerProductController extends Controller
                 'private_ad_type' => 'required'
             ];
             $customMessages = [
-                'short_name.required' => trans('user_validation.Short name is required'),
-                'short_name.unique' => trans('user_validation.Short name is required'),
+                // 'short_name.required' => trans('user_validation.Short name is required'),
+                // 'short_name.unique' => trans('user_validation.Short name is required'),
                 'name.required' => trans('user_validation.Name is required'),
                 'name.unique' => trans('user_validation.Name is required'),
                 'slug.required' => trans('user_validation.Slug is required'),
@@ -260,7 +269,7 @@ class SellerProductController extends Controller
                 $productCategories = Category::where(['name' => $request->category])->get();
                 // $productPrivateCategories = PrivateCategory::where(['name' => $request->private_category])->get();
                 $product->vendor_id = $seller->id;
-                $product->short_name = $request->short_name;
+                $product->short_name = "";
                 $product->name = $request->name;
                 $product->slug = $request->slug; //Slug is required for unique url redirect of the products
                 $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
@@ -295,6 +304,24 @@ class SellerProductController extends Controller
                     DB::table('users')->where('id', $user->id)->update(['is_paid' => false]); //'is_member' => false
                 }
                 $product->save();
+
+                $getCurrentProdId = DB::table('products')->select('id')->orderByDesc('id')->first();
+
+                //! Image Gallery Logic for Private Seller
+                if ($request->images) {
+                    foreach ($request->images as $index => $image) {
+                        $extention = $image->getClientOriginalExtension();
+                        $image_name = 'Gallery' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+                        $image_name = 'uploads/custom-images/' . $image_name;
+                        Image::make($image)
+                            ->save(public_path() . '/' . $image_name);
+                        $gallery = new ProductGallery();
+                        $gallery->product_id =
+                            $getCurrentProdId->id;
+                        $gallery->image = $image_name;
+                        $gallery->save();
+                    }
+                }
             } else {
                 $notification = 'You have reached your limit for ads posting..';
                 $notification = array('messege' => $notification, 'alert-type' => 'error');
@@ -384,22 +411,22 @@ class SellerProductController extends Controller
 
         if ($user->seller_type == "Private") {
             $rules = [
-                'short_name' => 'required',
+                // 'short_name' => 'required',
                 'name' => 'required',
                 'slug' => 'required|unique:products',
                 'thumb_image' => 'required',
                 'banner_image' => 'required',
                 // 'category' => 'required',
                 'private_category' => 'required',
-                'short_description' => 'required',
+                // 'short_description' => 'required',
                 'long_description' => 'required',
                 'brand' => 'required',
                 'price' => 'required|numeric',
                 'private_ad_type' => 'required'
             ];
             $customMessages = [
-                'short_name.required' => trans('user_validation.Short name is required'),
-                'short_name.unique' => trans('user_validation.Short name is required'),
+                // 'short_name.required' => trans('user_validation.Short name is required'),
+                // 'short_name.unique' => trans('user_validation.Short name is required'),
                 'name.required' => trans('user_validation.Name is required'),
                 'name.unique' => trans('user_validation.Name is required'),
                 'slug.required' => trans('user_validation.Slug is required'),
@@ -408,7 +435,7 @@ class SellerProductController extends Controller
                 'private_category.required' => 'Private Category is required',
                 'thumb_image.required' => trans('user_validation.thumbnail is required'),
                 'banner_image.required' => trans('user_validation.Banner is required'),
-                'short_description.required' => trans('user_validation.Short description is required'),
+                // 'short_description.required' => trans('user_validation.Short description is required'),
                 'long_description.required' => trans('user_validation.Long description is required'),
                 'brand.required' => trans('user_validation.Brand is required'),
                 'price.required' => trans('user_validation.Price is required'),
@@ -455,42 +482,6 @@ class SellerProductController extends Controller
                 'status.required' => trans('user_validation.Status is required'),
             ];
         }
-        // $rules = [
-        //     'short_name' => 'required',
-        //     'name' => 'required',
-        //     'slug' => 'required|unique:products,slug,' . $product->id,
-        //     'category' => 'required',
-        //     'short_description' => 'required',
-        //     'long_description' => 'required',
-        //     'brand' => 'required',
-        //     'price' => 'required|numeric',
-        //     'quantity' => 'required',
-        //     'tax' => 'required',
-        //     'is_return' => 'required',
-        //     'is_warranty' => 'required',
-        //     'return_policy_id' => $request->is_return == 1 ? 'required' : '',
-        // ];
-        // $customMessages = [
-        //     'short_name.required' => trans('user_validation.Short name is required'),
-        //     'short_name.unique' => trans('user_validation.Short name is required'),
-        //     'name.required' => trans('user_validation.Name is required'),
-        //     'name.unique' => trans('user_validation.Name is required'),
-        //     'slug.required' => trans('user_validation.Slug is required'),
-        //     'slug.unique' => trans('user_validation.Slug already exist'),
-        //     'category.required' => trans('user_validation.Category is required'),
-        //     'thumb_image.required' => trans('user_validation.thumbnail is required'),
-        //     'banner_image.required' => trans('user_validation.Banner is required'),
-        //     'short_description.required' => trans('user_validation.Short description is required'),
-        //     'long_description.required' => trans('user_validation.Long description is required'),
-        //     'brand.required' => trans('user_validation.Brand is required'),
-        //     'price.required' => trans('user_validation.Price is required'),
-        //     'quantity.required' => trans('user_validation.Quantity is required'),
-        //     'tax.required' => trans('user_validation.Tax is required'),
-        //     'is_return.required' => trans('user_validation.Return is required'),
-        //     'is_warranty.required' => trans('user_validation.Warranty is required'),
-        //     'return_policy_id.required' => trans('user_validation.Return policy is required'),
-        //     'status.required' => trans('user_validation.Status is required'),
-        // ];
         $this->validate($request, $rules, $customMessages);
         $product = Product::find($id);
         $seller = Auth::guard('web')->user()->seller;
@@ -588,7 +579,7 @@ class SellerProductController extends Controller
             $productCategories = Category::where(['name' => $request->category])->get();
             // $productPrivateCategories = PrivateCategory::where(['name' => $request->private_category])->get();
             $product->vendor_id = $seller->id;
-            $product->short_name = $request->short_name;
+            $product->short_name = "";
             $product->name = $request->name;
             $product->slug = $request->slug; //Slug is required for unique url redirect of the products
             $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
@@ -602,7 +593,7 @@ class SellerProductController extends Controller
             $product->price = $request->price;
             $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
             $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
-            $product->short_description = $request->short_description;
+            $product->short_description = "";
             $product->long_description = $request->long_description;
             $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
             $product->tags = $user->seller_type == "Private" ? null : $request->tags;

@@ -53,10 +53,12 @@
                                     <input type="file" class="form-control-file"  name="banner_image">
                                 </div>
 
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Name')}} <span class="text-danger">*</span></label>
                                     <input type="text" id="short_name" class="form-control"  name="short_name" value="{{ $product->short_name }}">
                                 </div>
+                                @endif
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Name')}} <span class="text-danger">*</span></label>
@@ -249,11 +251,12 @@
                                 </div>
 @endIf
 
-
+                                @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Description') }} <span class="text-danger">*</span></label>
                                     <textarea name="short_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ $product->short_description }}</textarea>
                                 </div>
+                                @endIf
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Long Description')}} <span class="text-danger">*</span></label>
@@ -482,6 +485,7 @@
                 $("#slug").val(convertToSlug($(this).val()));
             })
 
+
             $("#category").on("change",function(){
                 var categoryId = $("#category").val();
                 if(categoryId){
@@ -532,9 +536,8 @@
 
 
             // For Private Sub & Child Category
-
-             $("#private_category").on("change",function(){
-                var categoryId = $("#private_category").val();
+        function loadSubCategoriesAndChildCategories() {
+         var categoryId = $("#private_category").val();
                 if(categoryId){
                     $.ajax({
                         type:"get",
@@ -555,9 +558,40 @@
                     var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
                     $("#private_child_category").html(response);
                 }
+    }
+
+    loadSubCategoriesAndChildCategories();
+
+    // Bind the function to the change event as well
+    $("#private_category").on("change", function() {
+        loadSubCategoriesAndChildCategories();
+    });
+
+            //  $("#private_category").on("change",function(){
+            //     var categoryId = $("#private_category").val();
+            //     if(categoryId){
+            //         $.ajax({
+            //             type:"get",
+            //             url:"{{url('/seller/private_subcategory-by-category/')}}"+"/"+categoryId,
+            //             success:function(response){
+            //                 $("#private_sub_category").html(response.subCategories);
+            //                 var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
+            //                 $("#private_child_category").html(response);
+            //             },
+            //             error:function(err){
+            //                 console.log(err);
+
+            //             }
+            //         })
+            //     }else{
+            //         var response= "<option value=''>{{__('user.Select Sub Category')}}</option>";
+            //         $("#private_sub_category").html(response);
+            //         var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
+            //         $("#private_child_category").html(response);
+            //     }
 
 
-            })
+            // })
 
             $("#private_sub_category").on("change",function(){
                 var SubCategoryId = $("#private_sub_category").val();

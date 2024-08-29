@@ -15,20 +15,28 @@ class Product extends Model
 
     public function getAverageRatingAttribute()
     {
-        return $this->avgReview()->avg('rating') ? : '0';
+        return $this->avgReview()->avg('rating') ?: '0';
     }
 
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function wholesales(){
-        return $this->hasMany(Wholesell::class)->orderBy('minimum_product','asc');
+    public function private_categories()
+    {
+        return $this->belongsTo(PrivateCategory::class);
     }
 
-    public function seller(){
-        return $this->belongsTo(Vendor::class,'vendor_id');
+    public function wholesales()
+    {
+        return $this->hasMany(Wholesell::class)->orderBy('minimum_product', 'asc');
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(Vendor::class, 'vendor_id');
     }
 
     // for user
@@ -37,55 +45,64 @@ class Product extends Model
     //     return $this->belongsTo(User::class, 'vendor_id');
     // }
 
-    public function brand(){
+    public function brand()
+    {
         return $this->belongsTo(Brand::class);
     }
 
-    public function gallery(){
+    public function gallery()
+    {
         return $this->hasMany(ProductGallery::class);
     }
 
-    public function specifications(){
+    public function specifications()
+    {
         return $this->hasMany(ProductSpecification::class);
     }
 
-    public function reviews(){
+    public function reviews()
+    {
         return $this->hasMany(ProductReview::class);
     }
 
 
-    public function variants(){
+    public function variants()
+    {
         return $this->hasMany(ProductVariant::class);
     }
 
-    public function activeVariants(){
+    public function activeVariants()
+    {
 
-        return $this->hasMany(ProductVariant::class)->select(['id','name','product_id']);
-
+        return $this->hasMany(ProductVariant::class)->select(['id', 'name', 'product_id']);
     }
 
 
 
-    public function returnPolicy(){
+    public function returnPolicy()
+    {
         return $this->belongsTo(ReturnPolicy::class);
     }
 
-    public function tax(){
+    public function tax()
+    {
         return $this->belongsTo(ProductTax::class);
     }
 
-    public function variantItems(){
+    public function variantItems()
+    {
         return $this->hasMany(ProductVariantItem::class);
     }
 
 
-    public function activeReview(){
-        return $this->hasMany(ProductReview::class)->where('status',1);
+    public function activeReview()
+    {
+        return $this->hasMany(ProductReview::class)->where('status', 1);
     }
 
-    public function avgReview(){
+    public function avgReview()
+    {
         return $this->hasMany(ProductReview::class)->where('status', 1);
-
     }
 
     public function vendor()
