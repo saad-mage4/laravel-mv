@@ -233,8 +233,8 @@ $defaultImages = [
 
                              $imageUrl = isset($defaultImages[$imageKey])
                              ? asset($defaultImages[$imageKey])
-                             // : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->name);
-                             : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPM9n6Cizmh_-x663DF4Y9LZxxZzW9BrS_A&s';
+                             : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->name);
+                            //  : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPM9n6Cizmh_-x663DF4Y9LZxxZzW9BrS_A&s';
                              @endphp
                                  <a class="custom-catagroy" href="{{ route('product',['category' => $productCategory->slug]) }}">
                                      <img
