@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                             @endforeach
-                            
+
                             @if ($megaMenuBanner->status == 1)
                             <div class="col-xl-3 d-lg-none d-xl-block">
                                 <div class="wsus__mega_menu_colum">
@@ -188,7 +188,7 @@
     <!--============================
         BRAND SLIDER START
     ==============================-->
-    @php
+    {{-- @php
         $brandVisibility = $visibilities->where('id',2)->first();
     @endphp
     @if ($brandVisibility->status == 1)
@@ -207,7 +207,46 @@
                 </div>
             </div>
         </section>
-    @endif
+    @endif --}}
+
+    {{-- New  --}}
+    @php
+$defaultImages = [
+    'electronics' => 'images/defaults/electonics.jpg',
+    'fashion' => 'images/defaults/fasion.jpg',
+    'home-garden-diy' => 'images/defaults/garden.jpg',
+    'pawn-shop' => 'https://i.postimg.cc/QNJpCTyW/cata-2.png'
+];
+@endphp
+<section id="wsus__brand_sleder">
+            <div class="container">
+                <div class="brand_border">
+                    <div class="row brand_slider">
+                        @foreach ($productCategories as $productCategory)
+                        @if ($productCategory->status == 1)
+                        <div class="col-xl-2">
+                            <div class="wsus__brand_logo">
+                            @php
+                            $imageKey = strtolower(str_replace([' ', '&', '-'], '-', $productCategory->name));
+
+                            $imageUrl = isset($defaultImages[$imageKey])
+                            ? asset($defaultImages[$imageKey])
+                            // : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->name);
+                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPM9n6Cizmh_-x663DF4Y9LZxxZzW9BrS_A&s';
+                            @endphp
+                                <a class="custom-catagroy" href="{{ route('product',['category' => $productCategory->slug]) }}">
+                                    <img
+                                    src="{{ $imageUrl }}"
+                                    loading="lazy"
+                                    >{{ $productCategory->name }}</a>
+                            </div>
+                        </div>
+                        @endif
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
     <!--============================
         BRAND SLIDER END
     ==============================-->
