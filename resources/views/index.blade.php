@@ -210,14 +210,6 @@
     @endif --}}
 
     {{-- New  --}}
-    @php
-$defaultImages = [
-    'electronics' => 'images/defaults/electonics.jpg',
-    'fashion' => 'images/defaults/fasion.jpg',
-    'home-garden-diy' => 'images/defaults/garden.jpg',
-    'pawn-shop' => 'https://i.postimg.cc/QNJpCTyW/cata-2.png'
-];
-@endphp
 <section id="wsus__brand_sleder">
             <div class="container">
                 <div class="brand_border">
@@ -229,12 +221,22 @@ $defaultImages = [
                          <div class="col-xl-2">
                              <div class="wsus__brand_logo">
                              @php
-                             $imageKey = strtolower(str_replace([' ', '&', '-'], '-', $productCategory->name));
+                                // $defaultImages = [
+                                // 'electronics' => 'images/defaults/1.png',
+                                // 'home-garden-diy' => 'images/defaults/2.png',
+                                // 'fashion' => 'images/defaults/fasion.jpg',
+                                // 'pawn-shop' => 'https://i.postimg.cc/QNJpCTyW/cata-2.png'
+                                // ];
+                             $imageKey = strtolower(str_replace([' ', '&', '-'], '-', $productCategory->slug));
+                              $imagePath = "images/defaults/{$imageKey}.png";
 
-                             $imageUrl = isset($defaultImages[$imageKey])
-                             ? asset($defaultImages[$imageKey])
-                             : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->name);
-                            //  : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPM9n6Cizmh_-x663DF4Y9LZxxZzW9BrS_A&s';
+                            $imageUrl = file_exists(public_path($imagePath))
+                            ? asset($imagePath)
+                            : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->slug);
+
+                            //  $imageUrl = isset($defaultImages[$imageKey])
+                            //  ? asset($defaultImages[$imageKey])
+                            //  : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->slug);
                              @endphp
                                  <a class="custom-catagroy" href="{{ route('product',['category' => $productCategory->slug]) }}">
                                      <img
