@@ -35,9 +35,11 @@
                             </thead>
                             <tbody>
                                 @foreach ($withdraws as $index => $withdraw)
+                                {{-- {{dd($withdraw)}} --}}
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        <td><a href="{{ route('admin.seller-show',$withdraw->seller->id) }}">{{ $withdraw->seller->user->name }}</a></td>
+                                        {{-- seller->id --}}
+                                        <td><a href="{{ route('admin.seller-show',$withdraw->seller->id) }}">{{ $withdraw->seller->user->name ?? "" }}</a></td>
                                         <td>{{ $withdraw->method }}</td>
                                         <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
                                         <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>

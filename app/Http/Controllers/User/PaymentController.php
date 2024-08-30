@@ -284,7 +284,6 @@ class PaymentController extends Controller
         $notification = trans('user_validation.Order submited successfully. please wait for admin approval');
         $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.order')->with($notification);
-
     }
 
     public function payWithStripe(Request $request)
@@ -490,14 +489,14 @@ class PaymentController extends Controller
 
         $orderAddress = new OrderAddress();
         $orderAddress->order_id = $order->id;
-//        $orderAddress->billing_name = $billing->name;
-//        $orderAddress->billing_email = $billing->email;
-//        $orderAddress->billing_phone = $billing->phone;
-//        $orderAddress->billing_address = $billing->address;
-//        $orderAddress->billing_country = $billing->country ? $billing->country->name : '';
-//        $orderAddress->billing_state = $billing->countryState ? $billing->countryState->name : '';
-//        $orderAddress->billing_city = $billing->city ? $billing->city->name : '';
-//        $orderAddress->billing_zip_code = $billing->zip_code;
+        //        $orderAddress->billing_name = $billing->name;
+        //        $orderAddress->billing_email = $billing->email;
+        //        $orderAddress->billing_phone = $billing->phone;
+        //        $orderAddress->billing_address = $billing->address;
+        //        $orderAddress->billing_country = $billing->country ? $billing->country->name : '';
+        //        $orderAddress->billing_state = $billing->countryState ? $billing->countryState->name : '';
+        //        $orderAddress->billing_city = $billing->city ? $billing->city->name : '';
+        //        $orderAddress->billing_zip_code = $billing->zip_code;
         $orderAddress->shipping_name = $shipping->name;
         $orderAddress->shipping_email = $shipping->email;
         $orderAddress->shipping_phone = $shipping->phone;
@@ -527,7 +526,12 @@ class PaymentController extends Controller
         $message = str_replace('{{email}}', $orderAddress->billing_email, $message);
         // $message = str_replace('{{shop}}',$shop_name,$message);
         $message = str_replace('{{shipping}}', $new_title, $message); //$shippingMethod->title
-        Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+        //! Send Scure mail through hostigner web mail
+        try {
+            Mail::to($user->email)->send(new OrderSuccessfully($message, $subject));
+        } catch (Swift_TransportException $e) {
+            echo $e->getMessage();
+        }
 
         /* Custom logic for sending emails to vendors */
         preg_match_all('/Product: (.*?)<br>/', $order_details, $matches);
@@ -581,7 +585,6 @@ class PaymentController extends Controller
         $notification = trans('user_validation.Payment Successfully');
         $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('user.order')->with($notification);
-
     }
 
 
@@ -812,7 +815,6 @@ class PaymentController extends Controller
                                 } catch (Swift_TransportException $e) {
                                     echo $e->getMessage();
                                 }
-
                             }
                         }
                     }
@@ -829,13 +831,11 @@ class PaymentController extends Controller
                 $notification = trans('user_validation.Payment Successfully');
                 $notification = array('messege' => $notification, 'alert-type' => 'success');
                 return redirect()->route('user.order')->with($notification);
-
             } catch (Exception $e) {
                 $notification = trans('user_validation.Payment Faild');
                 $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect()->back()->with($notification);
             }
-
         }
     }
 
@@ -1763,9 +1763,14 @@ class PaymentController extends Controller
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,
-            array("X-Api-Key:$api_key",
-                "X-Auth-Token:$auth_token"));
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                "X-Api-Key:$api_key",
+                "X-Auth-Token:$auth_token"
+            )
+        );
         $payload = array(
             'purpose' => env("APP_NAME"),
             'amount' => $price,
@@ -1806,9 +1811,14 @@ class PaymentController extends Controller
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,
-            array("X-Api-Key:$api_key",
-                "X-Auth-Token:$auth_token"));
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                "X-Api-Key:$api_key",
+                "X-Auth-Token:$auth_token"
+            )
+        );
         $response = curl_exec($ch);
         $err = curl_error($ch);
         curl_close($ch);
@@ -2055,7 +2065,6 @@ class PaymentController extends Controller
                 return redirect()->route('user.order')->with($notification);
             }
         }
-
     }
 
     public function payWithBank(Request $request)
@@ -2279,7 +2288,6 @@ class PaymentController extends Controller
                         } catch (Swift_TransportException $e) {
                             echo $e->getMessage();
                         }
-
                     }
                 }
             }
@@ -2388,7 +2396,6 @@ class PaymentController extends Controller
                     'Content-Type' => 'application/json',
                 ],
             ]);
-
         } catch (Exception $e) {
             $notification = trans('user_validation.Please provide valid card information');
             $notification = array('messege' => $notification, 'alert-type' => 'error');
@@ -2609,7 +2616,6 @@ class PaymentController extends Controller
             $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
-
     }
 
     public function payWithPaymongoGrabPay()
