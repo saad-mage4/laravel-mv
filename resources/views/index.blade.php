@@ -224,23 +224,26 @@ $defaultImages = [
                     <div class="row brand_slider">
                         @foreach ($productCategories as $productCategory)
                         @if ($productCategory->status == 1)
-                        <div class="col-xl-2">
-                            <div class="wsus__brand_logo">
-                            @php
-                            $imageKey = strtolower(str_replace([' ', '&', '-'], '-', $productCategory->name));
+                         @if ($productCategory->slug == "used-products")
+                         @else
+                         <div class="col-xl-2">
+                             <div class="wsus__brand_logo">
+                             @php
+                             $imageKey = strtolower(str_replace([' ', '&', '-'], '-', $productCategory->name));
 
-                            $imageUrl = isset($defaultImages[$imageKey])
-                            ? asset($defaultImages[$imageKey])
-                            // : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->name);
-                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPM9n6Cizmh_-x663DF4Y9LZxxZzW9BrS_A&s';
-                            @endphp
-                                <a class="custom-catagroy" href="{{ route('product',['category' => $productCategory->slug]) }}">
-                                    <img
-                                    src="{{ $imageUrl }}"
-                                    loading="lazy"
-                                    >{{ $productCategory->name }}</a>
-                            </div>
-                        </div>
+                             $imageUrl = isset($defaultImages[$imageKey])
+                             ? asset($defaultImages[$imageKey])
+                             // : 'https://dummyimage.com/200x200/dbdbdb/000000.jpg&text=' . urlencode($productCategory->name);
+                             : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyPM9n6Cizmh_-x663DF4Y9LZxxZzW9BrS_A&s';
+                             @endphp
+                                 <a class="custom-catagroy" href="{{ route('product',['category' => $productCategory->slug]) }}">
+                                     <img
+                                     src="{{ $imageUrl }}"
+                                     loading="lazy"
+                                     >{{ $productCategory->name }}</a>
+                             </div>
+                         </div>
+                         @endif
                         @endif
                         @endforeach
                     </div>
