@@ -162,6 +162,19 @@ input#searchInput {
 
    }
 
+   /* Mobile Search Position sticky  */
+.animated-container.fixed {
+    position: fixed;
+    top: 0px;
+    z-index: 1234;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.animated-container {
+    position: relative; /* Ensure the header is positioned relative to its normal flow */
+    top: -50px; /* Start the header above the viewable area */
+    transition: top 1s ease-in-out; /* Animate the top property */
+}
 </style>
 
 <style>
@@ -988,5 +1001,25 @@ $("#searchInput").on("input", function () {
             error: function(err) {console.error(err)}
         });
     }
+
+            $(function() {
+                createSticky($(".animated-container"));
+            });
+            function createSticky(sticky) {
+                if (typeof sticky !== "undefined") {
+                    // Check if the window width is 768px or less (commonly considered as mobile screen size)
+                    if ($(window).width() <= 768) {
+                        var pos = sticky.offset().top + 20,
+                            win = $(window);
+                        win.on("scroll", function() {
+                            if (win.scrollTop() >= pos) {
+                                sticky.addClass("fixed");
+                            } else {
+                                sticky.removeClass("fixed");
+                            }
+                        });
+                    }
+                }
+            }
 </script>
 @endsection
