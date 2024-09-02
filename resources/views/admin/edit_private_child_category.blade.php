@@ -41,7 +41,7 @@
                                     <select name="sub_category" id="sub_category" class="form-control">
                                         <option value="">{{__('admin.Select Sub Category')}}</option>
                                         @foreach ($subCategories as $subCategory)
-                                        <option {{  $subCategory->id == $childCategory->private_sub_category_id  ? 'selected' : '' }} value="{{ $subCategory->id }}">{{ $subCategory->name }}</option>
+                                        <option {{  $childCategory->private_sub_category_id  == $subCategory->id  ? 'selected' : '' }} value="{{ $subCategory->id }}">{{ $subCategory->name }}</option>
                                         @endforeach
 
                                     </select>
@@ -100,6 +100,7 @@
             //         })
             //     }
 
+
             $("#category").on("change",function(){
                 var categoryId = $("#category").val();
                 if(categoryId){
@@ -108,10 +109,9 @@
                         url:"{{url('/admin/private_subcategory-by-category/')}}"+"/"+categoryId,
                         success:function(response){
                             $("#sub_category").html(response.subCategories);
-
                         },
                         error:function(err){
-
+                               console.log(err);
                         }
                     })
                 }

@@ -1,6 +1,6 @@
 @extends('layout')
 @section('title')
-    <title>Sponsors Page</title>
+    <title>Advertising</title>
 @endsection
 @section('meta')
     <meta name="description" content="">
@@ -26,7 +26,7 @@
 <div class="container sponsor-page">
       <div class="row">
             <div class="col-12 my-5">
-                  <h1 class="text-center text-uppercase">Sponsors Page</h1>
+                  <h1 class="text-center text-uppercase">Advertising</h1>
             </div>
             <!-- Top Main Image -->
             @foreach($bannerPositions as $position => $size)

@@ -40,8 +40,8 @@
                                         <td>{{ ++$index }}</td>
                                         <td>{{ $childCategory->name }}</td>
                                         <td>{{ $childCategory->slug }}</td>
-                                        <td>{{ $childCategory->subCategory->name ?? "No data" }}</td>
-                                        <td>{{ $childCategory->category->name ?? "No data" }}</td>
+                                        <td>{{ $childCategory->private_subCategories->name ?? "No data" }}</td>
+                                        <td>{{ $childCategory->private_category->name ?? "No data" }}</td>
                                         <td>
                                             @if($childCategory->status == 1)
                                             <a href="javascript:;" onclick="changeProductSubCategoryStatus({{ $childCategory->id }})">
