@@ -17,7 +17,7 @@ class PrivateChildCategory extends Controller
 
     public function index()
     {
-        $childCategories = PrivateChildCategoryModel::with('subCategory', 'category', 'private_products')->get();
+        $childCategories = PrivateChildCategoryModel::with('private_subCategories', 'private_category', 'private_products')->get();
         // $pupoularCategory = PopularCategory::first();
         // $threeColCategory = ThreeColumnCategory::first();
         return view('admin.private_child_category', compact('childCategories'));
@@ -88,7 +88,7 @@ class PrivateChildCategory extends Controller
     {
         $childCategory = PrivateChildCategoryModel::find($id);
         $categories = PrivateCategory::all();
-        $subCategories = PrivateSubCategoryModel::where('private_category_id', $childCategory->category_id)->get();
+        $subCategories = PrivateSubCategoryModel::where('private_category_id', $childCategory->private_category_id)->get();
         return view('admin.edit_private_child_category', compact('childCategory', 'categories', 'subCategories'));
     }
 

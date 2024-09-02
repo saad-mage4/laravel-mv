@@ -9,19 +9,14 @@ class PrivateChildCategoryModel extends Model
 {
     use HasFactory;
 
-    public function subCategory()
-    {
-        return $this->belongsTo(PrivateSubCategoryModel::class);
-    }
-
     public function private_subCategories()
     {
-        return $this->belongsTo(PrivateSubCategoryModel::class);
+        return $this->belongsTo(PrivateSubCategoryModel::class, 'private_sub_category_id');
     }
 
-    public function category()
+    public function private_category()
     {
-        return $this->belongsTo(PrivateCategory::class);
+        return $this->belongsTo(PrivateCategory::class, 'private_category_id');
     }
 
     public function private_products()

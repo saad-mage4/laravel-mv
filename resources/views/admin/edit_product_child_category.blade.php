@@ -83,18 +83,17 @@
             $("#name").on("focusout",function(e){
                 $("#slug").val(convertToSlug($(this).val()));
             })
-
             $("#category").on("change",function(){
-                var categoryId = $("#category").val();
+                 const categoryId = $("#category").val();
                 if(categoryId){
                     $.ajax({
                         type:"get",
                         url:"{{url('/admin/subcategory-by-category/')}}"+"/"+categoryId,
                         success:function(response){
                             $("#sub_category").html(response.subCategories);
-
                         },
                         error:function(err){
+                            console.log(err);
 
                         }
                     })
