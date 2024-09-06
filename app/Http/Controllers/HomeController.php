@@ -467,8 +467,8 @@ class HomeController extends Controller
         $productCategories = Category::where(['status' => 1])->get();
         $productPrivateCategories = PrivateCategory::where(['status' => 1])->get();
         $productPrivateCategories = PrivateCategory::where('status', 1)
-        ->with(['private_subCategories.childCategories'])
-        ->get();
+            ->with(['private_subCategories.childCategories'])
+            ->get();
 
         //! For Private Category
         // $productPrivateCategories = PrivateCategory::where('status', 1)
@@ -797,7 +797,7 @@ class HomeController extends Controller
 
         //! Initialize the products query
         $products = Product::where('status', 1)
-        ->where('seller_type', 'Private');
+            ->where('seller_type', 'Private');
 
         //! Variants
         if ($request->variantItems) {
@@ -846,7 +846,7 @@ class HomeController extends Controller
         //     $child_category = ChildCategory::where('slug', $request->child_category)->first();
         //     $products = $products->where('child_category_id', $child_category->id);
         // }
-         //! Company Category Filters End
+        //! Company Category Filters End
 
         //! for Private Category Filter
 
@@ -977,11 +977,11 @@ class HomeController extends Controller
         $input_value = $data['input_value'];
 
         $productsQuery = DB::table('products')
-        ->join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        ->join('brands', 'products.brand_id', '=', 'brands.id')
-        ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
-        ->where('seller_type', 'Private');
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+            ->join('brands', 'products.brand_id', '=', 'brands.id')
+            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
+            ->where('seller_type', 'Private');
 
         // // Search by all fileds
         // if ($state != '' && $input_value != '' && $city != '') {
@@ -1141,14 +1141,14 @@ class HomeController extends Controller
                 'vendors.shop_name',
                 'vendors.address',
                 'vendors.city',
-            'vendors.country',
-            'vendors.state',
+                'vendors.country',
+                'vendors.state',
                 'vendors.email',
                 'vendors.description as vendorDescription',
-            'vendors.banner_image as Vendor_banner',
-            'vendors.slug as Vendor_Slug',
-            'cities.name as City_Name',
-            'country_states.name as State_Name',
+                'vendors.banner_image as Vendor_banner',
+                'vendors.slug as Vendor_Slug',
+                'cities.name as City_Name',
+                'country_states.name as State_Name',
             )->where(['seller_type' => 'Private', 'products.status' => 1, 'products.slug' => $slug])->first();
         // 'vendors.id as Seller'
         // dd($product);

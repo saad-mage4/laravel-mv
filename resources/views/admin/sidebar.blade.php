@@ -304,6 +304,7 @@
             <li class="{{ Route::is('admin.admin.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.admin.index') }}"><i class="fas fa-user"></i> <span>{{__('admin.Admin list')}}</span></a></li>
           @endif
 
+           <li class="{{ Route::is('admin.logs.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.logs.index') }}"><i class="fas fa-bug"></i> <span>Logs</span></a></li>
         </ul>
 
     </aside>
