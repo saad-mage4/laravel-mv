@@ -46,18 +46,19 @@
                                     <tr>
                                         <td>{{ ++$index }}</td>
                                         <td><a href="{{ route('product-detail', $product->slug) }}">
-                                          @if ($authUser->seller_type == "Public")
+                                          {{-- @if ($authUser->seller_type == "Public")
                                           {{ $product->short_name }}
                                           @else {{ $product->name }}
-                                          @endif
+                                          @endif --}}
+                                           {{ $product->name }}
                                         </a></td>
                                         <td>{{ $setting->currency_icon }}{{ $product->price }}</td>
-                                        <td> <img class="rounded-circle" src="{{ asset($product->thumb_image) }}" alt="" width="80px"></td>
+                                        <td> <img class="rounded-circle" src="{{ asset($product->thumb_image) }}" alt="image" loading="lazy" width="80px"></td>
                                         @if ($authUser->seller_type == "Public")
                                          <td>
-                                            {{-- $authUser->seller_type --}}
                                             @if ($product->is_undefine == 1)
-                                            {{__('user.Undefine Product')}}
+                                            {{-- {{__('user.Undefine Product')}} --}}
+                                            Normal Product
                                             @elseif ($product->new_product == 1)
                                             {{__('user.New Arrival')}}
                                             @elseif ($product->is_featured == 1)
@@ -74,7 +75,8 @@
                                           <td>{{ $product->private_ad_type == 1 ? "New" : "Used" }}</td>
                                           @endif
 
-                                       @if ($authUser->seller_type == "Private")
+                                          {{-- && $product->seller_type == "Private" --}}
+                                       @if ($authUser->seller_type == "Private" )
                                        <td>
                                         <a target="_blank" href="{{ route('seller.product-gallery',$product->id) }}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-link"></i>

@@ -194,13 +194,13 @@ class SellerProductController extends Controller
             ];
         } else {
             $rules = [
-                'short_name' => 'required',
+                // 'short_name' => 'required',
                 'name' => 'required',
                 'slug' => 'required|unique:products',
                 'thumb_image' => 'required',
                 'banner_image' => 'required',
                 'category' => 'required',
-                'short_description' => 'required',
+                // 'short_description' => 'required',
                 'long_description' => 'required',
                 'brand' => 'required',
                 'price' => 'required|numeric',
@@ -211,8 +211,8 @@ class SellerProductController extends Controller
                 'return_policy_id' => $request->is_return == 1 ? 'required' : '',
             ];
             $customMessages = [
-                'short_name.required' => trans('user_validation.Short name is required'),
-                'short_name.unique' => trans('user_validation.Short name is required'),
+                // 'short_name.required' => trans('user_validation.Short name is required'),
+                // 'short_name.unique' => trans('user_validation.Short name is required'),
                 'name.required' => trans('user_validation.Name is required'),
                 'name.unique' => trans('user_validation.Name is required'),
                 'slug.required' => trans('user_validation.Slug is required'),
@@ -220,7 +220,7 @@ class SellerProductController extends Controller
                 'category.required' => trans('user_validation.Category is required'),
                 'thumb_image.required' => trans('user_validation.thumbnail is required'),
                 'banner_image.required' => trans('user_validation.Banner is required'),
-                'short_description.required' => trans('user_validation.Short description is required'),
+                // 'short_description.required' => trans('user_validation.Short description is required'),
                 'long_description.required' => trans('user_validation.Long description is required'),
                 'brand.required' => trans('user_validation.Brand is required'),
                 'price.required' => trans('user_validation.Price is required'),
@@ -292,9 +292,9 @@ class SellerProductController extends Controller
                 $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
                 $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
                 $product->is_undefine = 1;
-                $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
-                $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
-                $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
+                $product->is_specification = 0;
+                $product->seo_title = "";
+                $product->seo_description = "";
                 $product->seller_type = $user->seller_type;
                 $product->private_ad_type = $user->seller_type == "Private" ? $request->private_ad_type : null;
                 if ($user->seller_type == "Private") {
@@ -330,7 +330,7 @@ class SellerProductController extends Controller
         } else {
             $productCategories = Category::where(['name' => $request->category])->get();
             $product->vendor_id = $seller->id;
-            $product->short_name = $request->short_name;
+            $product->short_name =  ""; //$request->short_name
             $product->name = $request->name;
             $product->slug = $request->slug; //Slug is required for unique url redirect of the products
             $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
@@ -344,24 +344,42 @@ class SellerProductController extends Controller
             $product->price = $request->price;
             $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
             $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
-            $product->short_description = $request->short_description;
+            $product->short_description = ""; //$request->short_description
             $product->long_description = $request->long_description;
-            $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
-            $product->tags = $user->seller_type == "Private" ? null : $request->tags;
+            $product->video_link = null; //$request->video_link
+            $product->tags = null; //$request->tags
             $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
             $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
             $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
             $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
             $product->is_undefine = 1;
-            $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
-            $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
-            $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
+            $product->is_specification = 0;
+            $product->seo_title = ""; //$request->seo_title
+            $product->seo_description = ""; // $request->seo_description
             $product->seller_type = $user->seller_type;
             $product->private_ad_type = null;
             if ($user->seller_type == "Private") {
                 $product->status = 1;
             }
             $product->save();
+
+            $getCurrentProdId = DB::table('products')->select('id')->orderByDesc('id')->first();
+
+            //! Image Gallery Logic for Also For Public Seller
+            if ($request->images) {
+                foreach ($request->images as $index => $image) {
+                    $extention = $image->getClientOriginalExtension();
+                    $image_name = 'Gallery' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+                    $image_name = 'uploads/custom-images/' . $image_name;
+                    Image::make($image)
+                        ->save(public_path() . '/' . $image_name);
+                    $gallery = new ProductGallery();
+                    $gallery->product_id =
+                        $getCurrentProdId->id;
+                    $gallery->image = $image_name;
+                    $gallery->save();
+                }
+            }
         }
 
 
@@ -444,13 +462,13 @@ class SellerProductController extends Controller
             ];
         } else {
             $rules = [
-                'short_name' => 'required',
+                // 'short_name' => 'required',
                 'name' => 'required',
                 'slug' => 'required|unique:products',
                 'thumb_image' => 'required',
                 'banner_image' => 'required',
                 'category' => 'required',
-                'short_description' => 'required',
+                // 'short_description' => 'required',
                 'long_description' => 'required',
                 'brand' => 'required',
                 'price' => 'required|numeric',
@@ -461,8 +479,8 @@ class SellerProductController extends Controller
                 'return_policy_id' => $request->is_return == 1 ? 'required' : '',
             ];
             $customMessages = [
-                'short_name.required' => trans('user_validation.Short name is required'),
-                'short_name.unique' => trans('user_validation.Short name is required'),
+                // 'short_name.required' => trans('user_validatiogn.Short name is required'),
+                // 'short_name.unique' => trans('user_validation.Short name is required'),
                 'name.required' => trans('user_validation.Name is required'),
                 'name.unique' => trans('user_validation.Name is required'),
                 'slug.required' => trans('user_validation.Slug is required'),
@@ -470,7 +488,7 @@ class SellerProductController extends Controller
                 'category.required' => trans('user_validation.Category is required'),
                 'thumb_image.required' => trans('user_validation.thumbnail is required'),
                 'banner_image.required' => trans('user_validation.Banner is required'),
-                'short_description.required' => trans('user_validation.Short description is required'),
+                // 'short_description.required' => trans('user_validation.Short description is required'),
                 'long_description.required' => trans('user_validation.Long description is required'),
                 'brand.required' => trans('user_validation.Brand is required'),
                 'price.required' => trans('user_validation.Price is required'),
@@ -602,9 +620,9 @@ class SellerProductController extends Controller
             $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
             $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
             $product->is_undefine = 1;
-            $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
-            $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
-            $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
+            $product->is_specification = 0;
+            $product->seo_title = "";
+            $product->seo_description = "";
             $product->private_ad_type = $user->seller_type == "Private" ? $request->private_ad_type : null;
             // Update price Logic Default
 
@@ -652,7 +670,7 @@ class SellerProductController extends Controller
         } else {
             $productCategories = Category::where(['name' => $request->category])->get();
             $product->vendor_id = $seller->id;
-            $product->short_name = $request->short_name;
+            $product->short_name = ""; //$request->short_name
             $product->name = $request->name;
             $product->slug = $request->slug; //Slug is required for unique url redirect of the products
             $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
@@ -666,18 +684,18 @@ class SellerProductController extends Controller
             $product->price = $request->price;
             $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
             $product->qty = $user->seller_type == "Private" ? 0 : $request->quantity;
-            $product->short_description = $request->short_description;
+            $product->short_description = ""; //$request->short_description
             $product->long_description = $request->long_description;
-            $product->video_link = $user->seller_type == "Private" ? null : $request->video_link;
-            $product->tags = $user->seller_type == "Private" ? null : $request->tags;
+            $product->video_link = null; //$request->video_link
+            $product->tags = null; //$request->tags
             $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
             $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
             $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
             $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
             $product->is_undefine = 1;
-            $product->is_specification = $user->seller_type == "Private" ? 0 : $request->is_specification ? 1 : 0;
-            $product->seo_title = $user->seller_type == "Private" ? '' : $request->seo_title ? $request->seo_title : $request->name;
-            $product->seo_description = $user->seller_type == "Private" ? '' : $request->seo_description ? $request->seo_description : $request->name;
+            $product->is_specification = 0; //$request->is_specification
+            $product->seo_title = "";
+            $product->seo_description = "";
             $product->private_ad_type = null;
             // Update price Logic Default
 

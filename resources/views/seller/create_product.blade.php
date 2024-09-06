@@ -68,7 +68,7 @@ div#Image_Preview_Slider img {
                                     <input type="file" class="form-control-file"  name="banner_image">
                                 </div>
 
-                                @if ($authUser->seller_type == "Private")
+                                {{-- @if ($authUser->seller_type == "Private") --}}
                                 {{-- Image Gallery  --}}
                             <div class="form-group col-12">
                                      <label for="">{{__('user.New Image (Multiple)')}}</label>
@@ -76,14 +76,14 @@ div#Image_Preview_Slider img {
                                 accept="image/*">
                                 </div>
                                 <div id="Image_Preview_Slider" style="display: none;"></div>
-                                @endif
+                                {{-- @endif --}}
 
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Name')}} <span class="text-danger">*</span></label>
                                     <input type="text" id="short_name" class="form-control"  name="short_name" value="{{ old('short_name') }}">
                                 </div>
-                                @endif
+                                @endif --}}
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Name')}} <span class="text-danger">*</span></label>
@@ -176,15 +176,6 @@ div#Image_Preview_Slider img {
                                 </div>
 
                                 @if ($authUser->seller_type == "Private")
-                                {{-- <div class="form-group col-12">
-                                <label for="private_ad_type">Ad Type <span class="text-danger">*</span></label>
-                                <select name="private_ad_type" id="private_ad_type" class="form-control select2">
-                                     <option value="">Ad Type</option>
-                                <option value="New" {{ old('private_ad_type', $product->private_ad_type ?? '') == 'New' ? 'selected' : '' }}>New</option>
-                                <option value="Used" {{ old('private_ad_type', $product->private_ad_type ?? '') == 'Used' ? 'selected' : '' }}>Used</option>
-                                </select>
-                                </div> --}}
-
                                 <div class="form-group col-12">
                                     <label for="private_ad_type">Product Condition <span class="text-danger">*</span></label>
                                      <select name="private_ad_type" id="private_ad_type" class="form-control select2">
@@ -224,19 +215,19 @@ div#Image_Preview_Slider img {
                                 </div>
                                 @endif
 
-                                  @if ($authUser->seller_type == "Public")
+                                  {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Video Link')}}</label>
                                    <input type="text" class="form-control" name="video_link" value="{{ old('video_link') }}">
                                 </div>
-                                @endif
+                                @endif --}}
 
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Description')}} <span class="text-danger">*</span></label>
                                     <textarea name="short_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ old('short_description') }}</textarea>
                                 </div>
-                                @endif
+                                @endif --}}
 
                                 <div class="form-group col-12">
                                     <label>
@@ -244,12 +235,12 @@ div#Image_Preview_Slider img {
                                         <span class="text-danger">*</span></label>
                                     <textarea name="long_description" id="" cols="30" rows="10" class="summernote">{{ old('long_description') }}</textarea>
                                 </div>
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Tags')}}</label>
                                    <input type="text" class="form-control tags" name="tags" value="{{ old('tags') }}">
                                 </div>
-                                @endif
+                                @endif --}}
                                 @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Tax')}} <span class="text-danger">*</span></label>
@@ -289,7 +280,7 @@ div#Image_Preview_Slider img {
                                     </select>
                                 </div>
                                 @endif
-                                  @if ($authUser->seller_type == "Public")
+                                  {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.SEO Title')}}</label>
                                    <input type="text" class="form-control" name="seo_title" value="{{ old('seo_title') }}">
@@ -300,10 +291,10 @@ div#Image_Preview_Slider img {
                                     <label>{{__('user.SEO Description')}}</label>
                                     <textarea name="seo_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ old('seo_description') }}</textarea>
                                 </div>
-                                @endif
+                                @endif --}}
 
 
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Specifications')}}</label>
                                     <div>
@@ -312,9 +303,9 @@ div#Image_Preview_Slider img {
                                         </a>
                                     </div>
                                 </div>
-                                @endif
+                                @endif --}}
 
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12" id="specification-box">
                                     <div class="row">
                                         <div class="col-md-5">
@@ -334,7 +325,7 @@ div#Image_Preview_Slider img {
                                         </div>
                                     </div>
                                 </div>
-                                @endif
+                                @endif --}}
 
                                 @if ($authUser->seller_type == "Public")
                                 <div id="hidden-specification-box" class="d-none">
@@ -383,7 +374,7 @@ div#Image_Preview_Slider img {
             })
 
             $("#category").on("change",function(){
-                var categoryId = $("#category").val();
+                const categoryId = $("#category").val();
                 if(categoryId){
                     $.ajax({
                         type:"get",
@@ -395,7 +386,6 @@ div#Image_Preview_Slider img {
                         },
                         error:function(err){
                             console.log(err);
-
                         }
                     })
                 }else{
@@ -429,7 +419,7 @@ div#Image_Preview_Slider img {
 
             })
 
-            // For Private Sub & Child Category
+            //! For Private Sub & Child Category
 
              $("#private_category").on("change",function(){
                 var categoryId = $("#private_category").val();
@@ -444,7 +434,6 @@ div#Image_Preview_Slider img {
                         },
                         error:function(err){
                             console.log(err);
-
                         }
                     })
                 }else{
@@ -478,7 +467,7 @@ div#Image_Preview_Slider img {
 
             })
 
-            // Private Sub Category End
+            //! Private Sub Category End
 
             $("#is_return").on('change',function(){
                 var returnId = $("#is_return").val();
