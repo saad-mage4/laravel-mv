@@ -154,7 +154,9 @@
                                                 <div class="d-flex gap-3">
                                                     <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
 
-                                                <a href="{{ route('user.chat-with-seller', $user->Vendor_Slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
+                                                    {{-- {{dd($user)}} --}}
+                                                     {{-- <a href="{{ route('user.chat-with-seller', $user->seller->slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a> --}}
+                                                <a href="{{ route('user.message', $user->Vendor_Slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -558,7 +560,7 @@
                                                 <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
 
-                                                <a href="{{ route('user.chat-with-seller', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
+                                                <a href="{{ route('user.message', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
                                             </div>
                                         </div>
                                         <div class="col-xl-12">

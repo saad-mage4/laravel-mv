@@ -123,7 +123,7 @@
                         <span>(0 {{__('user.review')}})</span>
                     </p>
                 @endif
-                    <a class="wsus__pro_name" href="{{ route('product-detail',$product->slug) }}">{{ $product->short_name }}</a>
+                    <a class="wsus__pro_name" href="{{ route('product-detail',$product->slug) }}">{{ $product->name }}</a>
 
                     @if ($isCampaign)
                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
@@ -266,7 +266,7 @@
                         <span>(0 {{__('user.review')}})</span>
                     </p>
                 @endif
-                    <a class="wsus__pro_name" href="{{ route('product-detail',$product->slug) }}">{{ $product->short_name }}</a>
+                    <a class="wsus__pro_name" href="{{ route('product-detail',$product->slug) }}">{{ $product->name }}</a>
                     @if ($isCampaign)
                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
                     @else

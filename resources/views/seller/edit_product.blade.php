@@ -53,12 +53,12 @@
                                     <input type="file" class="form-control-file"  name="banner_image">
                                 </div>
 
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Name')}} <span class="text-danger">*</span></label>
                                     <input type="text" id="short_name" class="form-control"  name="short_name" value="{{ $product->short_name }}">
                                 </div>
-                                @endif
+                                @endif --}}
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Name')}} <span class="text-danger">*</span></label>
@@ -69,8 +69,48 @@
                                     <label>{{__('user.Slug')}} <span class="text-danger">*</span></label>
                                     <input type="text" id="slug" class="form-control"  name="slug" value="{{ $product->slug }}">
                                 </div>
+                                     {{-- Category of in Private  --}}
 
+            {{-- {{dd($product)}} --}}
+                                @if ($authUser->seller_type == "Private")
+                            @foreach ($categories as $item)
+                    @if (isset($item->slug) && $item->slug === 'used-products')
+                            <div class="form-group col-12 d-none">
+                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
+                                    <input name="category"  class="form-control"  readonly type="text" value="{{ $item['name']}}" />
+                                </div>
+                                @endif
+                @endforeach
+                                @else
                                 {{-- <div class="form-group col-12">
+                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
+                                    <select name="category" class="form-control select2" id="category">
+                                        <option value="">{{__('user.Select Category')}}</option>
+                                        @foreach ($categories as $category)
+                                            @if ($category->slug !== 'used-products')
+                                             <option {{ $product->category_id == $category->id ? 'selected' : '' }}
+                                                value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group col-12">
+                                    <label>{{__('user.Sub Category')}}</label>
+                                    <select name="sub_category" class="form-control select2" id="sub_category">
+                                        <option value="">{{__('user.Select Sub Category')}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label>{{__('user.Child Category')}}</label>
+                                    <select name="child_category" class="form-control select2" id="child_category">
+                                        <option value="">{{__('user.Select Child Category')}}</option>
+                                    </select>
+                                </div> --}}
+
+                                <div class="form-group col-12">
                                     <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
                                     <select name="category" class="form-control select2" id="category">
                                         <option value="">{{__('user.Select Category')}}</option>
@@ -102,45 +142,6 @@
                                             <option {{ $product->child_category_id == $childCategory->id ? 'selected' : '' }} value="{{ $childCategory->id }}">{{ $childCategory->name }}</option>
                                             @endforeach
                                         @endif
-                                    </select>
-                                </div> --}}
-
-                                     {{-- Category of in Private  --}}
-
-                                @if ($authUser->seller_type == "Private")
-                            @foreach ($categories as $item)
-                    @if (isset($item->slug) && $item->slug === 'used-products')
-                            <div class="form-group col-12 d-none">
-                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
-                                    <input name="category"  class="form-control"  readonly type="text" value="{{ $item['name']}}" />
-                                </div>
-                                @endif
-                @endforeach
-                                @else
-                                <div class="form-group col-12">
-                                    <label>{{__('user.Category')}} <span class="text-danger">*</span></label>
-                                    <select name="category" class="form-control select2" id="category">
-                                        <option value="">{{__('user.Select Category')}}</option>
-                                        @foreach ($categories as $category)
-                                            @if ($category->slug !== 'used-products')
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-
-
-                                <div class="form-group col-12">
-                                    <label>{{__('user.Sub Category')}}</label>
-                                    <select name="sub_category" class="form-control select2" id="sub_category">
-                                        <option value="">{{__('user.Select Sub Category')}}</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group col-12">
-                                    <label>{{__('user.Child Category')}}</label>
-                                    <select name="child_category" class="form-control select2" id="child_category">
-                                        <option value="">{{__('user.Select Child Category')}}</option>
                                     </select>
                                 </div>
 
@@ -185,15 +186,6 @@
                                 </div>
 
                                 @if ($authUser->seller_type == "Private")
-                                {{-- <div class="form-group col-12">
-                                <label for="private_ad_type">Ad Type <span class="text-danger">*</span></label>
-                                <select name="private_ad_type" id="private_ad_type" class="form-control select2">
-                                     <option value="">Ad Type</option>
-                                <option value="New" {{ old('private_ad_type', $product->private_ad_type ?? '') == 'New' ? 'selected' : '' }}>New</option>
-                                <option value="Used" {{ old('private_ad_type', $product->private_ad_type ?? '') == 'Used' ? 'selected' : '' }}>Used</option>
-                                </select>
-                                </div> --}}
-
                                 <div class="form-group col-12">
                                     <label for="private_ad_type">Ad Type <span class="text-danger">*</span></label>
                                      <select name="private_ad_type" id="private_ad_type" class="form-control select2">
@@ -224,39 +216,39 @@
                                 @endIf
 
 
-@if ($authUser->seller_type == "Public")
-                                <div class="form-group col-12">
-                                    <label>{{__('user.Stock Quantity')}} <span class="text-danger">*</span></label>
-                                   <input type="number" class="form-control" name="quantity" value="{{ $product->qty }}">
-                                </div>
+                                    @if ($authUser->seller_type == "Public")
+                                                                    <div class="form-group col-12">
+                                                                        <label>{{__('user.Stock Quantity')}} <span class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control" name="quantity" value="{{ $product->qty }}">
+                                                                    </div>
 
-                                @if ($product->video_link)
-                                    <div class="form-group col-12">
-                                        <label>{{__('user.Video Preview')}}</label>
-                                        @php
-                                            $video_id=explode("=",$product->video_link);
-                                        @endphp
-                                        <div>
-                                            <iframe width="300" height="200"
-                                                src="https://www.youtube.com/embed/{{ $video_id[1] }}">
-                                            </iframe>
-                                        </div>
+                                                                    {{-- @if ($product->video_link)
+                                                                        <div class="form-group col-12">
+                                                                            <label>{{__('user.Video Preview')}}</label>
+                                                                            @php
+                                                                                $video_id=explode("=",$product->video_link);
+                                                                            @endphp
+                                                                            <div>
+                                                                                <iframe width="300" height="200"
+                                                                                    src="https://www.youtube.com/embed/{{ $video_id[1] }}">
+                                                                                </iframe>
+                                                                            </div>
 
-                                    </div>
-                                @endif
+                                                                        </div>
+                                                                    @endif
 
-                                <div class="form-group col-12">
-                                    <label>{{__('user.Video Link')}}</label>
-                                   <input type="text" class="form-control" name="video_link" value="{{ $product->video_link }}">
-                                </div>
-@endIf
+                                                                    <div class="form-group col-12">
+                                                                        <label>{{__('user.Video Link')}}</label>
+                                                                    <input type="text" class="form-control" name="video_link" value="{{ $product->video_link }}">
+                                                                    </div> --}}
+                                    @endIf
 
-                                @if ($authUser->seller_type == "Public")
+                                {{-- @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
                                     <label>{{__('user.Short Description') }} <span class="text-danger">*</span></label>
                                     <textarea name="short_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ $product->short_description }}</textarea>
                                 </div>
-                                @endIf
+                                @endIf --}}
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Long Description')}} <span class="text-danger">*</span></label>
@@ -266,10 +258,10 @@
 
 
 @if ($authUser->seller_type == "Public")
-                                <div class="form-group col-12">
+                                {{-- <div class="form-group col-12">
                                     <label>{{__('user.Tags')}}</label>
                                    <input type="text" class="form-control tags" name="tags" value="{{ $tags }}">
-                                </div>
+                                </div> --}}
 
                                 <div class="form-group col-12">
                                     <label>{{__('user.Tax')}} <span class="text-danger">*</span></label>
@@ -320,7 +312,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-12">
+                                {{-- <div class="form-group col-12">
                                     <label>{{__('user.SEO Title')}}</label>
                                    <input type="text" class="form-control" name="seo_title" value="{{ $product->seo_title }}">
                                 </div>
@@ -328,9 +320,9 @@
                                 <div class="form-group col-12">
                                     <label>{{__('user.SEO Description')}}</label>
                                     <textarea name="seo_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ $product->seo_description }}</textarea>
-                                </div>
+                                </div> --}}
 
-                                <div class="form-group col-12">
+                                {{-- <div class="form-group col-12">
                                     <label>{{__('user.Specifications')}}</label>
                                     <div>
                                         @if ($product->is_specification==1)
@@ -388,9 +380,9 @@
                                         </div>
 
                                     </div>
-                                @endif
+                                @endif --}}
 
-                                @if ($product->is_specification==0)
+                                {{-- @if ($product->is_specification==0)
                                     <div class="form-group col-12 d-none" id="specification-box">
                                         @if ($productSpecifications->count() != 0)
                                             @foreach ($productSpecifications as $productSpecification)
@@ -433,12 +425,12 @@
                                         </div>
 
                                     </div>
-                                @endif
+                                @endif --}}
 
 
 
 
-                                <div id="hidden-specification-box" class="d-none">
+                                {{-- <div id="hidden-specification-box" class="d-none">
                                     <div class="delete-specification-row">
                                         <div class="row mt-2">
                                             <div class="col-md-5">
@@ -458,7 +450,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
 @endif
                             </div>
@@ -487,7 +479,7 @@
 
 
             $("#category").on("change",function(){
-                var categoryId = $("#category").val();
+                 const categoryId = $("#category").val();
                 if(categoryId){
                     $.ajax({
                         type:"get",
@@ -509,8 +501,6 @@
                     var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
                     $("#child_category").html(response);
                 }
-
-
             })
 
             $("#sub_category").on("change",function(){
@@ -558,14 +548,14 @@
                     var response= "<option value=''>{{__('user.Select Child Category')}}</option>";
                     $("#private_child_category").html(response);
                 }
-    }
+         }
 
-    loadSubCategoriesAndChildCategories();
+             loadSubCategoriesAndChildCategories();
 
-    // Bind the function to the change event as well
-    $("#private_category").on("change", function() {
-        loadSubCategoriesAndChildCategories();
-    });
+                // Bind the function to the change event as well
+                $("#private_category").on("change", function() {
+                    loadSubCategoriesAndChildCategories();
+                });
 
             //  $("#private_category").on("change",function(){
             //     var categoryId = $("#private_category").val();

@@ -10,9 +10,9 @@
     $customPages = App\Models\CustomPage::where('status',1)->get();
     $googleAnalytic = App\Models\GoogleAnalytic::first();
     $facebookPixel = App\Models\FacebookPixel::first();
-    $user = App\Models\User::first();
-    // $user = Auth::guard('web')->user();
-    $is_member = $user->is_member ?? 0;
+    $user = Auth::guard('web')->user();
+    // $user= App\Models\User::where('id' , $user_id->id)->first();
+    // $is_member = $user->is_member ?? 0;
     // $is_paid = $user->is_paid;
 @endphp
 
@@ -143,13 +143,26 @@
                         @if ($menus->where('id',9)->first()->status == 1)
                             <li><a href="{{ route('contact-us') }}"><i class="fal fa-address-card"></i> {{__('user.Contact Us')}}</a></li>
                         @endif
+                        {{-- @if ($menus->where('id',17)->first()->status == 1)
+                        @foreach ($users as $user)
+                          @if ($user->status == 1 && $user->is_member == 1)
+                      <li><a href="{{ route('seller.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}} </a></li>
+                              @else
+                              <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}} </a></li>
+                          @endif
+                        @endforeach
+                        @endif --}}
+                        @if (isset($user) && $user !== null)
                         @if ($menus->where('id',17)->first()->status == 1)
-                        @if ($is_member == true)
-                      <li><a href="{{ route('seller.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}}</a></li>
+                            @if ($user->status == 1 && $user->is_member == 1)
+                        <li><a href="{{ route('seller.dashboard') }}"><i class="fal fa-user-circle"></i> {{ __('user.My Account') }} </a></li>
                         @else
-                        <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user-circle"></i> {{__('user.My Account')}}</a></li>
+                        <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user-circle"></i> {{ __('user.My Account') }} </a></li>
                         @endif
                         @endif
+                        @endif
+
+
                         @if ($menus->where('id',18)->first()->status == 1)
                             @guest
                             <li><a href="{{ route('login') }}"><i class="fal fa-user-alt"></i> {{__('user.Login / Register')}}</a></li>

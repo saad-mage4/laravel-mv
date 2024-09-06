@@ -37,13 +37,14 @@
                             <tbody>
                                 @foreach ($products as $index => $product)
                                     <tr>
-                                        <td>{{ ++$index }} 123</td>
+                                        <td>{{ ++$index }}</td>
                                         <td><a href="{{ route('admin.seller-show', $product->vendor_id) }}">{{ $product->seller ? $product->seller->user->name: "No data" }}</a></td>
-                                        <td><a href="{{ route('product-detail', $product->slug) }}">{{ $product->short_name }}</a></td>
+                                        <td><a href="{{ route('product-detail', $product->slug) }}">{{ $product->name }}</a></td>
                                         <td>{{ $setting->currency_icon }}{{ $product->price }}</td>
                                         <td>
                                             @if ($product->is_undefine == 1)
-                                                {{__('admin.Undefine Product')}}
+                                                {{-- {{__('admin.Undefine Product')}} --}}
+                                                Normal Product
                                             @elseif ($product->new_product == 1)
                                                 {{__('admin.New Arrival')}}
                                             @elseif ($product->is_featured == 1)
