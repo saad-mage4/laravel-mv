@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Seller;
+
 use App\Providers\PusherConfig;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -15,19 +16,23 @@ use App\Events\SellerToUser;
 class SellerMessageContoller extends Controller
 {
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth:web');
     }
 
-    public function index(){
+    public function index()
+    {
         $auth = Auth::guard('web')->user();
         $defaultProfile = BannerImage::whereId('15')->first();
-        $customers = Message::with('customer')->where(['seller_id' => $auth->id])->select('customer_id')->groupBy('customer_id')->orderBy('id','desc')->get();
+        // dd($auth->seller_type);
+        $customers = Message::with('customer')->where(['seller_id' => $auth->id])->select('customer_id')->groupBy('customer_id')->orderBy('id', 'desc')->get();
 
-        return view('seller.chat_list', compact('customers','defaultProfile','auth'));
+        return view('seller.chat_list', compact('customers', 'defaultProfile', 'auth'));
     }
 
-    public function sendMessage(Request $request){
+    public function sendMessage(Request $request)
+    {
 
         $auth = Auth::guard('web')->user();
         $message = new Message();
@@ -42,31 +47,33 @@ class SellerMessageContoller extends Controller
         event(new SellerToUser($user, $data));
         $customer = User::find($request->customer_id);
         $id = $request->customer_id;
-        $messages = Message::where(['seller_id' => $auth->id, 'customer_id'=>$id])->get();
+        $messages = Message::where(['seller_id' => $auth->id, 'customer_id' => $id])->get();
         $defaultProfile = BannerImage::whereId('15')->first();
 
-        return view('seller.chat__message_list', compact('customer','auth','messages','defaultProfile'));
+        return view('seller.chat__message_list', compact('customer', 'auth', 'messages', 'defaultProfile'));
     }
 
-    public function loadNewMessage($id){
+    public function loadNewMessage($id)
+    {
         $auth = Auth::guard('web')->user();
         $customer = User::find($id);
         $unRead = Message::where(['seller_id' => $auth->id, 'customer_id' => $customer->id])->update(['seller_read_msg' => 1]);
-        $messages = Message::where(['seller_id' => $auth->id, 'customer_id'=>$id])->get();
+        $messages = Message::where(['seller_id' => $auth->id, 'customer_id' => $id])->get();
         $defaultProfile = BannerImage::whereId('15')->first();
 
-        return view('seller.chat__message_list', compact('customer','auth','messages','defaultProfile'));
+        return view('seller.chat__message_list', compact('customer', 'auth', 'messages', 'defaultProfile'));
     }
 
 
 
-    public function loadChatBox($id){
+    public function loadChatBox($id)
+    {
         $customer = User::find($id);
         $auth = Auth::guard('web')->user();
         $unRead = Message::where(['seller_id' => $auth->id, 'customer_id' => $customer->id])->update(['seller_read_msg' => 1]);
-        $messages = Message::where(['seller_id' => $auth->id, 'customer_id'=>$id])->get();
+        $messages = Message::where(['seller_id' => $auth->id, 'customer_id' => $id])->get();
         $defaultProfile = BannerImage::whereId('15')->first();
 
-        return view('seller.chat_box', compact('customer','auth','messages','defaultProfile'));
+        return view('seller.chat_box', compact('customer', 'auth', 'messages', 'defaultProfile'));
     }
 }

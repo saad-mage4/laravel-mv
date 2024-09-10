@@ -1,3 +1,22 @@
+<style>
+.spinner-border {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: text-bottom;
+    border: .25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: .75s linear infinite spinner-border;
+    animation: .75s linear infinite spinner-border;
+    color: #fff;
+}
+
+#buttonContent i {
+    display: inline;
+    color: #ffffff
+}
+</style>
 <div class="card-header">
     <h4>{{__('user.Chat with')}} {{ $customer->name }}</h4>
   </div>
@@ -27,7 +46,10 @@
       <input autocomplete="off" type="text" class="form-control" id="customer_message" placeholder="{{__('user.Type message')}}">
       <input type="hidden" id="customer_id" name="customer_id" value="{{ $customer->id }}">
       <button type="submit" class="btn btn-primary">
-        <i class="far fa-paper-plane"></i>
+      <span id="buttonContent">
+        <i class="fas fa-paper-plane"></i>
+        <span id="messageLoader" class="spinner-border" style="display:none;"></span>
+    </span>
       </button>
     </form>
   </div>
@@ -51,6 +73,8 @@
             let customer_id = $("#customer_id").val();
             $("#customer_message").val('');
             if(customer_message){
+            $("#messageLoader").show();
+             $("#buttonContent i").hide();
                 $.ajax({
                     type:"get",
                     data : {message: customer_message , customer_id : customer_id},
@@ -60,7 +84,12 @@
                         scrollToBottomFunc()
                     },
                     error:function(err){
-                    }
+                        console.error(err);
+                    },
+                    complete: function() {
+                $("#messageLoader").hide();
+                 $("#buttonContent i").show();
+            }
                 })
             }
 

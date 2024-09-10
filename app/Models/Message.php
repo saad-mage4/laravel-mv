@@ -9,18 +9,19 @@ class Message extends Model
 {
     use HasFactory;
 
-    public function seller(){
-        return $this->belongsTo(User::class,'seller_id');
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id');
     }
 
-    public function customer(){
-        return $this->belongsTo(User::class,'customer_id');
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
     }
 
     protected $casts = [
         'customer_id' => 'integer',
         'seller_id' => 'integer',
+        'seller_type' => 'string'
     ];
-
-
 }

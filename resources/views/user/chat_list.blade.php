@@ -14,11 +14,24 @@
                 <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                   <h2>{{__('user.Seller List')}}</h2>
                   <div class="wsus__chatlist_body">
-                      @foreach ($sellers as $index => $seller )
+                    @foreach ($sellers as $index => $seller )
                             @php
                                 $unRead = App\Models\Message::where(['customer_id' => $auth->id, 'seller_id' => $seller->seller->id, 'send_seller' => $seller->seller->id])->where('customer_read_msg',0)->count();
+
+                                // $unRead = App\Models\Message::where([
+                              // 'customer_id' => $auth->id,
+                              // 'seller_id' => $seller->seller_id,
+                              // 'send_seller' => $seller->seller_id
+                              // ])
+                              // ->where('customer_read_msg', 0)
+                              // ->whereHas('seller', function ($query) use ($auth) {
+                              // $query->where('seller_type', $auth->seller_type);
+                              // })
+                              // ->count();
+
                             @endphp
                         <button onclick="loadChatBox('{{ $seller->seller->id }}')" class="nav-link seller" id="seller-list-{{ $seller->seller->id }}" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+                          {{-- <button onclick="loadChatBox('{{ $seller->seller_id }}')" class="nav-link seller" id="seller-list-{{ $seller->seller_id }}" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true"> --}}
                         <div class="wsus_chat_list_img">
                             <img src="{{ $seller->seller->image ? asset($seller->seller->image) : asset($defaultProfile->image) }}" alt="user" class="img-fluid">
                             <span class="pending {{ $unRead == 0 ? 'd-none' : '' }}" id="pending-{{ $seller->seller->id }}">{{ $unRead }}</span>
