@@ -1,3 +1,24 @@
+<style>
+.spinner-border {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: text-bottom;
+    border: .25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: .75s linear infinite spinner-border;
+    animation: .75s linear infinite spinner-border;
+    color: #fff;
+}
+
+#buttonContent i {
+    display: inline;
+    color: #ffffff
+}
+
+
+</style>
 <div class="wsus__chat_area">
     <div class="wsus__chat_area_header">
       <h2>{{__('user.Chat with')}} {{ $seller->name }}</h2>
@@ -31,7 +52,13 @@
       <form id="customerToSellerMsgForm">
         <input type="text" placeholder="{{__('user.Type Message')}}" id="seller_message" autocomplete="off">
         <input type="hidden" name="seller_id" id="seller_id" value="{{ $seller->id }}">
-        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+        {{-- <input type="hidden" name="seller_type" id="seller_type" value="{{ $seller->seller_type }}"> --}}
+                <button type="submit">
+                    <span id="buttonContent">
+        <i class="fas fa-paper-plane"></i>
+        <span id="messageLoader" class="spinner-border" style="display:none;"></span>
+    </span>
+                </button>
       </form>
     </div>
 </div>
@@ -43,7 +70,7 @@
     $(document).ready(function () {
         scrollToBottomFunc()
         $("#customerToSellerMsgForm").on("submit", function(event){
-            event.preventDefault()
+            event.preventDefault();
             var isDemo = "{{ env('APP_VERSION') }}"
             if(isDemo == 0){
                 toastr.error('This Is Demo Version. You Can Not Change Anything');
@@ -52,18 +79,30 @@
 
             let seller_msg = $("#seller_message").val();
             let seller_id = $("#seller_id").val();
+            // let seller_type = $("#seller_type").val();
             $("#seller_message").val('');
             if(seller_msg){
+            $("#messageLoader").show();
+             $("#buttonContent i").hide();
                 $.ajax({
                     type:"get",
-                    data : {message: seller_msg , seller_id : seller_id},
+                    data : {
+                        message: seller_msg ,
+                        seller_id : seller_id,
+                        // seller_type: seller_type ?? null
+                    },
                     url: "{{ route('user.send-message') }}",
                     success:function(response){
                         $(".wsus__chat_area_body").html(response)
                         scrollToBottomFunc()
                     },
                     error:function(err){
-                    }
+                        console.error(err);
+                    },
+                    complete: function() {
+                $("#messageLoader").hide();
+                 $("#buttonContent i").show();
+            }
                 })
             }
 

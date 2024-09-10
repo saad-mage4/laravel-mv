@@ -236,7 +236,9 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
 
             Route::get('delete-account', [UserProfileController::class, 'delete_account'])->name('delete-account');
 
+            // User Messages
             Route::get('chat-with-seller/{slug}', [MessageController::class, 'chatWithSeller'])->name('chat-with-seller');
+            Route::get('chat-with-private-seller/{slug}', [MessageController::class, 'chatWithPrivateSeller'])->name('chat-with-private-seller');
             Route::get('message', [MessageController::class, 'index'])->name('message');
             Route::get('load-chat-box/{id}', [MessageController::class, 'loadChatBox'])->name('load-chat-box');
             Route::get('load-new-message/{id}', [MessageController::class, 'loadNewMessage'])->name('load-new-message');
@@ -375,10 +377,13 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
             Route::resource('shipping', SellerShippingMethodController::class);
             Route::put('shipping-status/{id}', [SellerShippingMethodController::class, 'changeStatus'])->name('shipping-status');
 
+            // Seller Messages
             Route::get('message', [SellerMessageContoller::class, 'index'])->name('message');
             Route::get('load-chat-box/{id}', [SellerMessageContoller::class, 'loadChatBox'])->name('load-chat-box');
             Route::get('load-new-message/{id}', [SellerMessageContoller::class, 'loadNewMessage'])->name('load-new-message');
             Route::get('send-message', [SellerMessageContoller::class, 'sendMessage'])->name('send-message');
+
+            // Sponsors Work
             Route::get('show-sponsor', [SellerSponsorController::class, 'showSponsor'])->name('show-sponsor');
             Route::post('add-sponsor-req', [SellerSponsorController::class, 'addSponsorReq']);
             Route::get('get-sponsor', [SellerSponsorController::class, 'getSponsor']);

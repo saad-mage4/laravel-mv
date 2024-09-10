@@ -78,6 +78,7 @@
                 <div class="col-12 col-md-4" >
                       @if ($product->vendor_id != 0)
                             @php
+                             $users = Auth::guard('web')->user();
                                 $user = $product;
                                 // $user = $user->user;
                             @endphp
@@ -155,8 +156,11 @@
                                                     <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
 
                                                     {{-- {{dd($user)}} --}}
-                                                     {{-- <a href="{{ route('user.chat-with-seller', $user->seller->slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a> --}}
-                                                <a href="{{ route('user.message', $user->Vendor_Slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
+                                                    @if ($user->seller_type == "Private")
+                                                    <a href="{{ route('user.chat-with-private-seller', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
+                                                    @else
+                                                    <a href="{{ route('user.chat-with-seller', $user->Vendor_Slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -263,7 +267,7 @@
                             <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li> --}}
 
                     <li><a class="add_cart"  href="tel:{{$product->phone}}">Call</a></li>
-                    <li><a class="add_cart"  href="#!{{$product->phone}}">Chat</a></li>
+                    <li><a class="add_cart"  href="tel:{{$product->phone}}">Chat</a></li>
                         </ul>
 
                     </form>
@@ -560,7 +564,11 @@
                                                 <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
 
-                                                <a href="{{ route('user.message', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
+                                                @if ($user->seller_type == "Private")
+                                                    <a href="{{ route('user.chat-with-private-seller', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
+                                                    @else
+                                                    <a href="{{ route('user.chat-with-seller', $user->Vendor_Slug) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.Chat with Seller')}}</a>
+                                                    @endif
                                             </div>
                                         </div>
                                         <div class="col-xl-12">
