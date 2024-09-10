@@ -274,11 +274,11 @@ class SellerProductController extends Controller
                 $product->slug = $request->slug; //Slug is required for unique url redirect of the products
                 $product->category_id = $user->seller_type == "Private" ? $productCategories[0]->id : $request->category;
                 $product->private_category_id  = $request->private_category;
-                $product->private_sub_category_id  = $request->private_sub_category;
-                $product->private_child_category_id  = $request->private_child_category;
+                $product->private_sub_category_id  = $request->private_sub_category ?? 0;
+                $product->private_child_category_id  = $request->private_child_category ?? 0;
                 $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
                 $product->child_category_id = $request->child_category ? $request->child_category : 0;
-                $product->brand_id = $request->brand;
+                $product->brand_id = $request->brand ?? 0;
                 $product->sku = $user->seller_type == "Private" ? null : $request->sku;
                 $product->price = $request->price;
                 $product->offer_price = $user->seller_type == "Private" ? 0 : $request->offer_price;
