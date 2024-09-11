@@ -220,6 +220,8 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
             //! Default route if not verified
             Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->name('seller-membership');
             Route::get('test', [UserProfileController::class, 'Test'])->name('test');
+            // Route::get('test', [UserProfileController::class, 'Test'])->name('test')->middleware('check.seller.access');
+            // Route::get('seller-membership', [UserProfileController::class, 'sellerMembership'])->middleware('check.seller.access');
             Route::get('private_seller', [UserProfileController::class, 'privateMembership'])->name('private_seller');
             Route::get('/membership/subscribe', [UserProfileController::class, 'subscribe'])->name('membership.subscribe');
             Route::get('billing-address', [UserProfileController::class, 'editBillingAddress'])->name('billing-address');
@@ -236,7 +238,7 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
 
             Route::get('delete-account', [UserProfileController::class, 'delete_account'])->name('delete-account');
 
-            // User Messages
+            //* User Messages
             Route::get('chat-with-seller/{slug}', [MessageController::class, 'chatWithSeller'])->name('chat-with-seller');
             Route::get('chat-with-private-seller/{slug}', [MessageController::class, 'chatWithPrivateSeller'])->name('chat-with-private-seller');
             Route::get('message', [MessageController::class, 'index'])->name('message');
@@ -693,6 +695,7 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
 
         Route::resource('slider', SliderController::class);
         Route::put('slider-status/{id}', [SliderController::class, 'changeStatus'])->name('slider-status');
+        Route::put('button-status/{id}', [SliderController::class, 'changeButtonStatus'])->name('button-status');
 
         Route::get('home-page', [HomePageController::class, 'index'])->name('home-page');
 

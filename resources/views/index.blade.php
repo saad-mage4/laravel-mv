@@ -64,7 +64,9 @@
                                     <div class="wsus__single_slider_text">
                                         <h1>{!! nl2br($slider->title) !!}</h1>
                                         <h6>{!! nl2br($slider->description) !!}</h6>
+                                        @if ($slider->button_status == 1)
                                         <a class="common_btn" href="{{ $slider->link }}">{{__('user.shop now')}}</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -441,7 +443,7 @@
                                             <span>(0 {{__('user.review')}})</span>
                                         </p>
                                     @endif
-                                    <a class="wsus__pro_name" href="{{ route('product-detail', $campaignProduct->product->slug) }}">{{ $campaignProduct->product->short_name }}</a>
+                                    <a class="wsus__pro_name" href="{{ route('product-detail', $campaignProduct->product->slug) }}">{{ $campaignProduct->product->name }}</a>
 
                                     @if ($isCampaign)
                                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
@@ -770,7 +772,7 @@
                                     @endphp
 
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $firstCategoryproduct->short_name }}</h5>
+                                        <h5>{{ $firstCategoryproduct->name }}</h5>
 
                                         @if ($reviewQty > 0)
                                             <p class="wsus__rating">
@@ -879,7 +881,7 @@
                                     @endphp
 
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $secondCategoryproduct->short_name }}</h5>
+                                        <h5>{{ $secondCategoryproduct->name }}</h5>
 
                                         @if ($reviewQty > 0)
                                             <p class="wsus__rating">
@@ -988,7 +990,7 @@
                                     @endphp
 
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $thirdCategoryproduct->short_name }}</h5>
+                                        <h5>{{ $thirdCategoryproduct->name }}</h5>
 
                                         @if ($reviewQty > 0)
                                             <p class="wsus__rating">
@@ -1097,7 +1099,7 @@
                                     @endphp
 
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $fourthCategoryproduct->short_name }}</h5>
+                                        <h5>{{ $fourthCategoryproduct->name }}</h5>
 
                                         @if ($reviewQty > 0)
                                             <p class="wsus__rating">
@@ -1291,7 +1293,7 @@
                             <div class="simply-countdown flash-deal-product-{{ $flashDealProduct->id }}"></div>
                         </div>
                         <div class="wsus__hot_deals_text">
-                            <a class="wsus__hot_title" href="{{ route('product-detail', $flashDealProduct->slug) }}">{{ $flashDealProduct->short_name }}</a>
+                            <a class="wsus__hot_title" href="{{ route('product-detail', $flashDealProduct->slug) }}">{{ $flashDealProduct->name }}</a>
                             @php
                                 $reviewQty = $flashDealProduct->reviews->where('status',1)->count();
                                 $totalReview = $flashDealProduct->reviews->where('status',1)->sum('rating');
@@ -1781,7 +1783,7 @@
                                         </p>
                                     @endif
 
-                                    <a class="wsus__pro_name" href="{{ route('product-detail', $featuredProduct->slug) }}">{{ $featuredProduct->short_name }}</a>
+                                    <a class="wsus__pro_name" href="{{ route('product-detail', $featuredProduct->slug) }}">{{ $featuredProduct->name }}</a>
                                     @if ($isCampaign)
                                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f",$totalPrice) }}</del></p>
                                     @else
@@ -1975,7 +1977,7 @@
                                         </p>
                                     @endif
 
-                                    <a class="wsus__pro_name" href="{{ route('product-detail', $bestProduct->slug) }}">{{ $bestProduct->short_name }}</a>
+                                    <a class="wsus__pro_name" href="{{ route('product-detail', $bestProduct->slug) }}">{{ $bestProduct->name }}</a>
                                     @if ($isCampaign)
                                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f",$totalPrice) }}</del></p>
                                     @else
@@ -2117,7 +2119,7 @@
                                         </p>
                                     @endif
 
-                                    <a class="wsus__pro_name" href="{{ route('product-detail', $topProduct->slug) }}">{{ $topProduct->short_name }}</a>
+                                    <a class="wsus__pro_name" href="{{ route('product-detail', $topProduct->slug) }}">{{ $topProduct->name }}</a>
                                     @if ($isCampaign)
                                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f",$totalPrice) }}</del></p>
                                     @else
@@ -2256,7 +2258,7 @@
                                         </p>
                                     @endif
 
-                                    <a class="wsus__pro_name" href="{{ route('product-detail', $newProduct->slug) }}">{{ $newProduct->short_name }}</a>
+                                    <a class="wsus__pro_name" href="{{ route('product-detail', $newProduct->slug) }}">{{ $newProduct->name }}</a>
                                     @if ($isCampaign)
                                         <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f",$totalPrice) }}</del></p>
                                     @else
@@ -3291,7 +3293,7 @@
                                         <img src="{{ asset($threeColfirstCatProduct->thumb_image) }}" alt="bag" class="img-fluid w-100">
                                     </div>
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $threeColfirstCatProduct->short_name }}</h5>
+                                        <h5>{{ $threeColfirstCatProduct->name }}</h5>
                                         @php
                                             $reviewQty = $threeColfirstCatProduct->reviews->where('status',1)->count();
                                             $totalReview = $threeColfirstCatProduct->reviews->where('status',1)->sum('rating');
@@ -3409,7 +3411,7 @@
                                         <img src="{{ asset($threeColsecondCatProduct->thumb_image) }}" alt="bag" class="img-fluid w-100">
                                     </div>
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $threeColsecondCatProduct->short_name }}</h5>
+                                        <h5>{{ $threeColsecondCatProduct->name }}</h5>
                                         @php
                                             $reviewQty = $threeColsecondCatProduct->reviews->where('status',1)->count();
                                             $totalReview = $threeColsecondCatProduct->reviews->where('status',1)->sum('rating');
@@ -3528,7 +3530,7 @@
                                         <img src="{{ asset($threeColCatProduct->thumb_image) }}" alt="bag" class="img-fluid w-100">
                                     </div>
                                     <div class="wsus__hot_deals__single_text">
-                                        <h5>{{ $threeColCatProduct->short_name }}</h5>
+                                        <h5>{{ $threeColCatProduct->name }}</h5>
                                         @php
                                             $reviewQty = $threeColCatProduct->reviews->where('status',1)->count();
                                             $totalReview = $threeColCatProduct->reviews->where('status',1)->sum('rating');

@@ -183,16 +183,16 @@ $Ads = [
             </div>
         </div>
 
-     <div class="wsus__dashboard_profile">
+      <div class="wsus__dashboard_profile">
         <div class="wsus__dash_pro_area">
           <div class="row mb-3" id="list-styled">
             <div class="col-xl-12" id="Public_Seller_Content">
-              <h3>Termeni și condiții - Persoane juridice - TradeMag</h3>
+              <h3>TERMENI ȘI CONDIȚII - PERSOANE JURIDICE - TRADEMAG</h3>
+              <p>Taxă de abonament lunară - <strong>14,99</strong> euro.</p>
               <strong>Taxă de abonament lunară</strong>
               <p class="mt-2">
-              Prin abonarea la serviciul nostru, sunteți de acord să plătiți o taxă lunară de <strong>14,99</strong> euro.
-        Include postarea de anunțuri nelimitate timp de o lună de zile.
-        Aveți astfel propriul magazin de vânzări produse.
+              Aceasta oferă posibilitatea de a posta anunțuri nelimitate pentru o perioadă de o lună de zile, site-ul
+nostru acționând ca propriul dumneavoastră magazin de vânzări produse.
               </p>
               {{-- <ul>
                 <li>By subscribing to our service, you agree to pay a monthly fee of <strong>14.99</strong> Euros.</li>
@@ -226,113 +226,34 @@ $Ads = [
               </ul>
               </div>
             </div>
-            <div class="col-xl-12" id="Private_Seller_Content">
-              <h3>Termeni și condiții - Persoane fizice - VooP</h3>
-              <strong>Prin abonarea la serviciul nostru aveți posibilitatea să vă postați anunțurile astfel:</strong>
+            <div class="col-xl-12 mb-3" id="Private_Seller_Content" style="display: none">
+              <h3>TERMENI ȘI CONDIȚII - PERSOANE FIZICE – VOOP</h3>
+              <strong class="mb-3">Prețuri:</strong>
               <ul>
-                <li>1 anunț - <strong>2,99 </strong> Euros.</li>
+                <li>1 Anun - <strong>2,99 </strong> Euro</li>
               </ul>
                <ul>
-                    <li>30 de anunțuri<strong>14,99</strong> Euro.</li>
+                    <li>30 Anunțuri - <strong>14,99</strong> Euro</li>
                </ul>
 
                <ul>
-                    <li>50 de anunțuri <strong>24,99</strong> Euro.</li>
+                    <li>50 Anunțuri - <strong>24,99</strong> Euro</li>
                </ul>
 
                <ul>
-                    <li>100 de anunțuri <strong>49,99</strong> Euro.</li>
+                    <li>100 Anunțuri - <strong>49,99</strong> Euro</li>
                </ul>
 
-               <p>Anunțul are o valabilitate de 60 de zile (2 luni în loc de una) pentru a avea posibilitatea să
-expuneți și să vindeți produsul pe o perioadă mai lungă.</p>
+               <p>Prețul reprezintă tariful pentru publicarea anunțurilor timp de 60 de zile (2 luni) pe site-ul nostru,
+oferindu-vă astfel posibilitatea de a expune și vinde produsul pe o perioadă mai îndelungată.</p>
 
-<strong>Nu aprobăm vânzarea produselor ilegale</strong>
+<strong>*Nu aprobăm vânzarea produselor ilegale.</strong>
 
-<p>
-  TradeMag și Voop sunt platforme de prezentare a produselor și realizează legătura între
-vânzători și cumpărători.
-Pentru publicitate pe pagina dedicată sunt de (Here I do not remember the prices for the ad space
-on the page - ?)
-Pentru publicitate în orice alt spațiu și durată ne contactați la numărul <strong>+40736352248</strong> sau
-<strong>publicitate@trademag.ro</strong>.
-</p>
-
+<p class="mb-4">TradeMag   și   Voop   sunt   platforme   de   prezentare   a   produselor   și   realizează   legătura   între
+vânzători și cumpărători.</p>
+Pentru publicitate în orice alt spațiu și/sau durată ne puteți contacta la <strong>publicitate@trademag.ro</strong>.
             </div>
-        {{-- <div class="wsus__dash_pro_area">
-          <div class="row mb-3" id="list-styled">
-            <div class="col-xl-12" id="Public_Seller_Content">
-              <h3>TERMS & CONDITION</h3>
-              <strong>Monthly Subscription Fee:</strong>
-              <ul>
-                <li>By subscribing to our service, you agree to pay a monthly fee of <strong>14.99</strong> Euros.</li>
-              </ul>
-               <ul>
-                    <li>In addition to the subscription fee, a <strong>1%</strong> commission per withdrawal will be applied.</li>
-               </ul>
-                <strong>Return Policy:</strong>
-               <ul>
-                    <li>The Seller will reimburse the amount within <strong>14</strong> days from the Buyer's decision to withdraw.</li>
-               </ul>
-              <div class="d-none">
-              <strong>Monthly Membership Fee:</strong>
-              <ul>
-                <li>In addition to the initial fee, a monthly membership fee will be charged based on your sales volume. Here's how the monthly membership fee is calculated:
-                  <ul>
-                    <li>
-                      Sales up to <strong>1000</strong> Euros: Monthly fee of 15 Euros
-                    </li>
-                    <li>
-                      Sales from <strong>1001 to 5000</strong> Euros: Monthly fee of 50 Euros
-                    </li>
-                    <li>
-                      Sales from <strong>5001 to 10000</strong> Euros: Monthly fee of 100 Euros
-                    </li>
-                    <li>
-                      Please note that the monthly membership fee will be automatically deducted from your account balance on a monthly basis, based on your sales volume from the previous month.
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-              </div>
-            </div>
-            <div class="col-xl-12" id="Private_Seller_Content">
-              <h3>TERMS & CONDITION 1233</h3>
-              <strong>Monthly Subscription Fee:</strong>
-              <ul>
-                <li>By subscribing to our service, you agree to pay a monthly fee of <strong>14.99</strong> Euros.</li>
-              </ul>
-               <ul>
-                    <li>In addition to the subscription fee, a <strong>1%</strong> commission per withdrawal will be applied.</li>
-               </ul>
-                <strong>Return Policy:</strong>
-               <ul>
-                    <li>The Seller will reimburse the amount within <strong>14</strong> days from the Buyer's decision to withdraw.</li>
-               </ul>
-              <div class="d-none">
-              <strong>Monthly Membership Fee:</strong>
-              <ul>
-                <li>In addition to the initial fee, a monthly membership fee will be charged based on your sales volume. Here's how the monthly membership fee is calculated:
-                  <ul>
-                    <li>
-                      Sales up to <strong>1000</strong> Euros: Monthly fee of 15 Euros
-                    </li>
-                    <li>
-                      Sales from <strong>1001 to 5000</strong> Euros: Monthly fee of 50 Euros
-                    </li>
-                    <li>
-                      Sales from <strong>5001 to 10000</strong> Euros: Monthly fee of 100 Euros
-                    </li>
-                    <li>
-                      Please note that the monthly membership fee will be automatically deducted from your account balance on a monthly basis, based on your sales volume from the previous month.
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-              </div>
-            </div> --}}
-
-            <div class="col-xl-4 col-md-6">
+<div class="col-xl-4 col-md-6">
                     <label for="Seller_Method" class="Seller_Method">Slelect Your Seller Type</label>
                     <div class="wsus__dash_pro_single gap-3">
                       <div class="seller-1">
@@ -508,16 +429,16 @@ Pentru publicitate în orice alt spațiu și durată ne contactați la numărul 
         e.preventDefault();
         value  = e?.target?.value;
 
-         if (value === "Private") {
-      $('#privateAdsContainer').show();
-      $('#Seller_Type_btn').hide();
-      $('#Private_Seller_Content').show()
-      $('#Public_Seller_Content').hide()
-    } else {
+   if (value == "Public") {
       $('#privateAdsContainer').hide();
        $('#Seller_Type_btn').show();
        $('#Private_Seller_Content').hide()
        $('#Public_Seller_Content').show()
+    } else {
+        $('#privateAdsContainer').show();
+      $('#Seller_Type_btn').hide();
+      $('#Private_Seller_Content').show()
+      $('#Public_Seller_Content').hide()
     }
       });
 

@@ -28,6 +28,7 @@
                                     <th>{{__('admin.Title')}}</th>
                                     <th>{{__('admin.Description')}}</th>
                                     <th>{{__('admin.Serial')}}</th>
+                                    <th>{{__('Button Status')}}</th>
                                     <th>{{__('admin.Status')}}</th>
                                     <th>{{__('admin.Action')}}</th>
                                   </tr>
@@ -41,6 +42,19 @@
                                         <td>{{ $slider->title }}</td>
                                         <td>{{ $slider->description }}</td>
                                         <td>{{ $slider->serial }}</td>
+                                        <td>
+                                            @if($slider->button_status == 1)
+                                            <a href="javascript:;" onclick="changeProductButtonStatus({{ $slider->id }})">
+                                                <input id="status_toggle" type="checkbox" checked data-toggle="toggle" data-on="{{__('admin.Active')}}" data-off="{{__('admin.InActive')}}" data-onstyle="success" data-offstyle="danger">
+                                            </a>
+
+                                            @else
+                                            <a href="javascript:;" onclick="changeProductButtonStatus({{ $slider->id }})">
+                                                <input id="status_toggle" type="checkbox" data-toggle="toggle" data-on="{{__('admin.Active')}}" data-off="{{__('admin.InActive')}}" data-onstyle="success" data-offstyle="danger">
+                                            </a>
+
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($slider->status == 1)
                                             <a href="javascript:;" onclick="changeProductCategoryStatus({{ $slider->id }})">
@@ -91,6 +105,26 @@
             error:function(err){
                 console.log(err);
 
+            }
+        })
+    }
+
+    // For Button Status
+     function changeProductButtonStatus(id){
+        var isDemo = "{{ env('APP_VERSION') }}"
+        if(isDemo == 0){
+            toastr.error('This Is Demo Version. You Can Not Change Anything');
+            return;
+        }
+        $.ajax({
+            type:"put",
+            data: { _token : '{{ csrf_token() }}' },
+            url:"{{url('/admin/button-status/')}}"+"/"+id,
+            success:function(response){
+                toastr.success(response)
+            },
+            error:function(err){
+                console.log(err);
             }
         })
     }

@@ -43,7 +43,17 @@
                                 </div>
 
                                 <div class="form-group col-12">
-                                    <label>{{__('admin.Button Link')}} <span class="text-danger">*</span></label>
+                                    <label>Button Status<span class="text-danger">*</span></label>
+                                    <select name="button_status" class="form-control">
+                                        <option value="1">{{__('admin.Active')}}</option>
+                                        <option value="0">{{__('admin.Inactive')}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label>{{__('admin.Button Link')}}
+                                      {{-- <span class="text-danger">*</span> --}}
+                                    </label>
                                     <input type="text" name="button_link" class="form-control">
                                 </div>
 

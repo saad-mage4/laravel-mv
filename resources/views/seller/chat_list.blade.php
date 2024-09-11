@@ -19,7 +19,7 @@
               <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card">
                   <div class="card-header">
-                    <h4>{{__('user.Customer List')}} 555</h4>
+                    <h4>{{__('user.Customer List')}}</h4>
                   </div>
                   <div class="card-body seller_chat_list">
                     <ul class="list-unstyled list-unstyled-border">
