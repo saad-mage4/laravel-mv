@@ -16,11 +16,12 @@ use Auth;
 use Hash;
 use App\Mail\UserForgetPassword;
 use App\Helpers\MailHelper;
+use App\Helpers\SocialLoginHelper;
 use App\Models\EmailTemplate;
 use App\Models\SocialLoginInformation;
 use Mail;
 use Str;
-use Validator,Redirect,Response,File;
+use Validator, Redirect, Response, File;
 use Socialite;
 use Swift_TransportException;
 
@@ -28,100 +29,102 @@ class LoginController extends Controller
 {
 
     use AuthenticatesUsers;
-    protected $redirectTo = '/user/dashboard';
+    protected $redirectTo = '/'; //user/dashboard
 
     public function __construct()
     {
         $this->middleware('guest:web')->except('userLogout');
     }
 
-    public function loginPage(){
+    public function loginPage()
+    {
         $banner = BreadcrumbImage::where(['id' => 5])->first();
         $background = BannerImage::whereId('13')->first();
         $recaptchaSetting = GoogleRecaptcha::first();
         $socialLogin = SocialLoginInformation::first();
-        return view('login', compact('banner','background','recaptchaSetting','socialLogin'));
+        return view('login', compact('banner', 'background', 'recaptchaSetting', 'socialLogin'));
     }
 
-    public function storeLogin(Request $request){
+    public function storeLogin(Request $request)
+    {
         $rules = [
-            'email'=>'required',
-            'password'=>'required',
-            'g-recaptcha-response'=>new Captcha()
+            'email' => 'required',
+            'password' => 'required',
+            'g-recaptcha-response' => new Captcha()
         ];
         $customMessages = [
             'email.required' => trans('user_validation.Email is required'),
             'password.required' => trans('user_validation.Password is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
-        $credential=[
-            'email'=> $request->email,
-            'password'=> $request->password
+        $credential = [
+            'email' => $request->email,
+            'password' => $request->password
         ];
-        $user = User::where('email',$request->email)->first();
-        if($user){
-            if($user->status==1){
-                if(Hash::check($request->password,$user->password)){
-                    if(Auth::guard('web')->attempt($credential,$request->remember)){
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            if ($user->status == 1) {
+                if (Hash::check($request->password, $user->password)) {
+                    if (Auth::guard('web')->attempt($credential, $request->remember)) {
                         $notification = trans('user_validation.Login Successfully');
-                        $notification=array('messege'=>$notification,'alert-type'=>'success');
-                        $isVendor = Vendor::where('user_id',$user->id)->first();
-                        if($isVendor) {
-                            if($isVendor->status == 1) {
+                        $notification = array('messege' => $notification, 'alert-type' => 'success');
+                        $isVendor = Vendor::where('user_id', $user->id)->first();
+                        if ($isVendor) {
+                            if ($isVendor->status == 1) {
                                 // return redirect()->intended(route('user.dashboard'))->with($notification);
                                 return redirect()->intended(route('home'))->with($notification);
                             }
-                        }else {
+                        } else {
                             return redirect()->intended(route('home'))->with($notification);
                         }
-
                     }
-                }else{
+                } else {
                     $notification = trans('user_validation.Credentials does not exist');
-                    $notification=array('messege'=>$notification,'alert-type'=>'error');
+                    $notification = array('messege' => $notification, 'alert-type' => 'error');
                     return redirect()->back()->with($notification);
                 }
-
-            }else{
+            } else {
                 $notification = trans('user_validation.Disabled Account');
-                $notification=array('messege'=>$notification,'alert-type'=>'error');
+                $notification = array('messege' => $notification, 'alert-type' => 'error');
                 return redirect()->back()->with($notification);
             }
-        }else{
+        } else {
             $notification = trans('user_validation.Email does not exist');
-            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
     }
 
 
-    public function forgetPage(){
+    public function forgetPage()
+    {
         $banner = BreadcrumbImage::where(['id' => 5])->first();
         $recaptchaSetting = GoogleRecaptcha::first();
-        return view('forget_password', compact('banner','recaptchaSetting'));
+        return view('forget_password', compact('banner', 'recaptchaSetting'));
     }
 
-    public function sendForgetPassword(Request $request){
+    public function sendForgetPassword(Request $request)
+    {
         $rules = [
-            'email'=>'required',
-            'g-recaptcha-response'=>new Captcha()
+            'email' => 'required',
+            'g-recaptcha-response' => new Captcha()
         ];
         $customMessages = [
             'email.required' => trans('user_validation.Email is required'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user = User::where('email', $request->email)->first();
-        if($user){
+        if ($user) {
             $user->forget_password_token = Str::random(100);
             $user->save();
 
             MailHelper::setMailConfig();
-            $template = EmailTemplate::where('id',1)->first();
+            $template = EmailTemplate::where('id', 1)->first();
             $subject = $template->subject;
             $message = $template->description;
-            $message = str_replace('{{name}}',$user->name,$message);
+            $message = str_replace('{{name}}', $user->name, $message);
             try {
                 Mail::to($user->email)->send(new UserForgetPassword($message, $subject, $user));
             } catch (Swift_TransportException $e) {
@@ -129,29 +132,30 @@ class LoginController extends Controller
             }
 
             $notification = trans('user_validation.Reset password link send to your email.');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->back()->with($notification);
-
-        }else{
+        } else {
             $notification = trans('user_validation.Email does not exist');
-            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->back()->with($notification);
         }
     }
 
 
-    public function resetPasswordPage($token){
+    public function resetPasswordPage($token)
+    {
         $user = User::where('forget_password_token', $token)->first();
         $banner = BreadcrumbImage::where(['id' => 5])->first();
         $recaptchaSetting = GoogleRecaptcha::first();
-        return view('reset_password', compact('banner','recaptchaSetting','user','token'));
+        return view('reset_password', compact('banner', 'recaptchaSetting', 'user', 'token'));
     }
 
-    public function storeResetPasswordPage(Request $request, $token){
+    public function storeResetPasswordPage(Request $request, $token)
+    {
         $rules = [
-            'email'=>'required',
-            'password'=>'required|min:4|confirmed',
-            'g-recaptcha-response'=>new Captcha()
+            'email' => 'required',
+            'password' => 'required|min:4|confirmed',
+            'g-recaptcha-response' => new Captcha()
         ];
         $customMessages = [
             'email.required' => trans('user_validation.Email is required'),
@@ -159,72 +163,124 @@ class LoginController extends Controller
             'password.min' => trans('user_validation.Password must be 4 characters'),
             'password.confirmed' => trans('user_validation.Confirm password does not match'),
         ];
-        $this->validate($request, $rules,$customMessages);
+        $this->validate($request, $rules, $customMessages);
 
         $user = User::where(['email' => $request->email, 'forget_password_token' => $token])->first();
-        if($user){
-            $user->password=Hash::make($request->password);
-            $user->forget_password_token=null;
+        if ($user) {
+            $user->password = Hash::make($request->password);
+            $user->forget_password_token = null;
             $user->save();
 
             $notification = trans('user_validation.Password Reset successfully');
-            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            $notification = array('messege' => $notification, 'alert-type' => 'success');
             return redirect()->route('login')->with($notification);
-        }else{
+        } else {
             $notification = trans('user_validation.Something went wrong');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect()->route('login')->with($notification);
         }
     }
 
-    public function userLogout(){
+    public function userLogout()
+    {
         Auth::guard('web')->logout();
-        $notification= trans('user_validation.Logout Successfully');
-        $notification=array('messege'=>$notification,'alert-type'=>'success');
+        $notification = trans('user_validation.Logout Successfully');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
         return redirect()->route('login')->with($notification);
     }
 
-    public function redirectToGoogle(){
-        SocialLoginInformation::setGoogleLoginInfo();
-        return Socialite::driver('google')->redirect();
+    // public function redirectToGoogle()
+    // {
+    //     SocialLoginInformation::setGoogleLoginInfo();
+    //     return Socialite::driver('google')->redirect();
+    // return Socialite::driver('google')->redirectUrl(
+    //     'http://127.0.0.1:8000/callback/google'
+    // )->redirect();
+    // }
+
+    // public function googleCallBack()
+    // {
+    //     SocialLoginInformation::setGoogleLoginInfo();
+    //     $user = Socialite::driver('google')->user();
+    //     $user = $this->createUser($user, 'google');
+    //     auth()->login($user);
+    //     $notification = trans('user_validation.Login Successfully');
+    //     $notification = array('messege' => $notification, 'alert-type' => 'success');
+    //     return redirect()->route('home')->with($notification);
+    //     // return redirect()->intended(route('home'));
+    // }
+
+
+    // public function redirectToFacebook()
+    // {
+    //     SocialLoginInformation::setFacebookLoginInfo();
+    //     return Socialite::driver('facebook')->redirect();
+    // }
+
+    // public function facebookCallBack()
+    // {
+    //     SocialLoginInformation::setFacebookLoginInfo();
+    //     $user = Socialite::driver('facebook')->user();
+    //     $user = $this->createUser($user, 'facebook');
+    //     auth()->login($user);
+    //     $notification = trans('user_validation.Login Successfully');
+    //     $notification = array('messege' => $notification, 'alert-type' => 'success');
+    //     return redirect()->route('home')->with($notification);
+    //     // return redirect()->intended(route('home')); //user.dashboard
+    // }
+
+
+
+    // Social Login
+    // function createUser($getInfo, $provider)
+    // {
+    //     // $user = User::where('provider_id', $getInfo->id)->first();
+    //     $user = User::where('provider_id', $getInfo->id)->orWhere('email', $getInfo->email)->first();
+
+    //     if (!$user) {
+    //         $user = User::create([
+    //             'name'     => $getInfo->name,
+    //             'email'    => $getInfo->email,
+    //             'provider' => $provider,
+    //             'provider_id' => $getInfo->id,
+    //             'provider_avatar' => $getInfo->avatar,
+    //             'status' => 1,
+    //             'email_verified' => 1,
+    //         ]);
+    //     } else {
+    //         $user->update([
+    //             'name' => $getInfo->name,
+    //             'provider_avatar' => $getInfo->avatar,
+    //             'email_verified' => 1, // Assuming the email is verified
+    //         ]);
+    //     }
+    //     return $user;
+    // }
+
+
+
+    // New Code
+
+    /**
+     *!! Redirect the user to the OAuth Provider (Google, Facebook, GitHub, LinkedIn, etc.).
+     */
+    public function redirectToProvider($provider)
+    {
+        SocialLoginInformation::setProviderLoginInfo($provider);
+        return Socialite::driver($provider)->redirect();
     }
 
-    public function googleCallBack(){
-        SocialLoginInformation::setGoogleLoginInfo();
-        $user = Socialite::driver('google')->user();
-        $user = $this->createUser($user,'google');
+    /**
+     *! Handle callback from OAuth Provider (Google, Facebook, GitHub, LinkedIn, etc.).
+     */
+    public function handleProviderCallback($provider)
+    {
+        SocialLoginInformation::setProviderLoginInfo($provider);
+        $socialUser = Socialite::driver($provider)->user();
+        $user = SocialLoginHelper::handleSocialLogin($socialUser, $provider);
         auth()->login($user);
-        return redirect()->intended(route('user.dashboard'));
-    }
-
-    public function redirectToFacebook(){
-        SocialLoginInformation::setFacebookLoginInfo();
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    public function facebookCallBack(){
-        SocialLoginInformation::setFacebookLoginInfo();
-        $user = Socialite::driver('facebook')->user();
-        $user = $this->createUser($user,'facebook');
-        auth()->login($user);
-        return redirect()->intended(route('user.dashboard'));
-    }
-
-
-
-    function createUser($getInfo,$provider){
-        $user = User::where('provider_id', $getInfo->id)->first();
-        if (!$user) {
-            $user = User::create([
-                'name'     => $getInfo->name,
-                'email'    => $getInfo->email,
-                'provider' => $provider,
-                'provider_id' => $getInfo->id,
-                'provider_avatar' => $getInfo->avatar,
-                'status' => 1,
-                'email_verified' => 1,
-            ]);
-        }
-        return $user;
+        $notification = trans('user_validation.Login Successfully');
+        $notification = array('messege' => $notification, 'alert-type' => 'success');
+        return redirect()->route('home')->with($notification);
     }
 }

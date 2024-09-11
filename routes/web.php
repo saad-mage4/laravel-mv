@@ -169,11 +169,21 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
         Route::get('/get-cart-qty', [CartController::class, 'calculateCartQty'])->name('get-cart-qty');
         Route::get('/load-main-cart', [CartController::class, 'loadMainCart'])->name('load-main-cart');
 
-        Route::get('login/google', [LoginController::class, 'redirectToGoogle'])->name('login-google');
-        Route::get('/callback/google', [LoginController::class, 'googleCallBack'])->name('callback-google');
+        // Route::get('login/google', [LoginController::class, 'redirectToGoogle'])->name('login-google');
+        // Route::get('/callback/google', [LoginController::class, 'googleCallBack'])->name('callback-google');
 
-        Route::get('login/facebook', [LoginController::class, 'redirectToFacebook'])->name('login-facebook');
-        Route::get('/callback/facebook', [LoginController::class, 'facebookCallBack'])->name('callback-facebook');
+        // Route::get('login/facebook', [LoginController::class, 'redirectToFacebook'])->name('login-facebook');
+        // Route::get('/callback/facebook', [LoginController::class, 'facebookCallBack'])->name('callback-facebook');
+
+
+        // This My Custom Social Login Code
+        Route::get('login/{provider}', [LoginController::class, 'redirectToProvider'])
+            ->name('social-login')
+            ->where('provider', 'google|facebook|github|linkedin'); // Define supported providers here
+
+        Route::get('callback/{provider}', [LoginController::class, 'handleProviderCallback'])
+            ->name('social-callback')
+            ->where('provider', 'google|facebook|github|linkedin'); // Define supported providers here
 
 
         Route::get('/login', [LoginController::class, 'loginPage'])->name('login');

@@ -230,7 +230,7 @@ nostru acționând ca propriul dumneavoastră magazin de vânzări produse.
               <h3>TERMENI ȘI CONDIȚII - PERSOANE FIZICE – VOOP</h3>
               <strong class="mb-3">Prețuri:</strong>
               <ul>
-                <li>1 Anun - <strong>2,99 </strong> Euro</li>
+                <li>1 Anunț  - <strong>2,99 </strong> Euro</li>
               </ul>
                <ul>
                     <li>30 Anunțuri - <strong>14,99</strong> Euro</li>
