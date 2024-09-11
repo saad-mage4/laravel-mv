@@ -82,12 +82,27 @@
                                         @if ($socialLogin->is_gmail == 1 || $socialLogin->is_facebook == 1)
                                         <p class="social_text">{{__('user.Sign in with social account')}}</p>
                                         <ul class="wsus__login_link">
-                                            @if ($socialLogin->is_gmail == 1)
+                                            {{-- @if ($socialLogin->is_gmail == 1)
                                             <li><a href="{{ route('login-google') }}"><i class="fab fa-google"></i></a></li>
                                             @endif
                                             @if ($socialLogin->is_facebook == 1)
                                             <li><a href="{{ route('login-facebook') }}"><i class="fab fa-facebook-f"></i></a></li>
-                                            @endif
+                                            @endif --}}
+                                                @if ($socialLogin->is_gmail == 1)
+                                                <li>
+                                                <a href="{{ route('social-login', 'google') }}">
+                                                <i class="fab fa-google"></i>
+                                                </a>
+                                                </li>
+                                                @endif
+
+                                                @if ($socialLogin->is_facebook == 1)
+                                                <li>
+                                                <a href="{{ route('social-login', 'facebook') }}">
+                                                <i class="fab fa-facebook-f"></i>
+                                                </a>
+                                                </li>
+                                                @endif
                                         </ul>
                                         @endif
                                     </form>
