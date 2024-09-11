@@ -439,7 +439,7 @@ class UserProfileController extends Controller
 
         $user = Auth::guard('web')->user();
 
-        // Set the Stripe API key
+        //! Set the Stripe API key
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         if ($response == 'success' && $SellerType == "Public") {
@@ -474,7 +474,7 @@ class UserProfileController extends Controller
                 return redirect('seller/dashboard')->with($notification);
             }
         } elseif ($response == 'success' && $SellerType == "Private") {
-            //! Making products live again (60 days products subcriptio work)
+            //! Making products live again (60 days products subscription work)
             $vendor_id = DB::table('vendors')->select('id')->where('user_id', '=', $user->id)->get()->toArray();
             $vendor_id = implode(array_column($vendor_id, 'id'));
             $products = Product::where('vendor_id', $vendor_id)->get();

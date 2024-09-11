@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http;
-  
+
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -70,5 +70,8 @@ class Kernel extends HttpKernel
         'checkseller' => \App\Http\Middleware\CheckSeller::class,
         'demo' => \App\Http\Middleware\DemoHandler::class,
         'XSS' => \App\Http\Middleware\XSSProtection::class,
+
+        // for seller check status middleware
+        'check.seller.access' => \App\Http\Middleware\CheckSellerAccess::class,
     ];
 }

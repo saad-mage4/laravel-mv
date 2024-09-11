@@ -154,8 +154,6 @@
                                                 <p><span class="w-auto">{{__('user.mail')}}:</span> {{ $user->email }}</p>
                                                 <div class="d-flex gap-3">
                                                     <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
-
-                                                    {{-- {{dd($user)}} --}}
                                                     @if ($user->seller_type == "Private")
                                                     <a href="{{ route('user.chat-with-private-seller', $user->Vendor_Slug) }}" class="see_btn">{{__('user.Chat with Seller')}}</a>
                                                     @else

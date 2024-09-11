@@ -522,7 +522,7 @@ div#Image_Preview_Slider img {
     };
 
 const imageGalleryPreview = (e) => {
-      const maxFiles = 5;
+      const maxFiles = 8;
     const files = e.target.files;
 
     if (files.length > maxFiles) {

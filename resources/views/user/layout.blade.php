@@ -119,7 +119,6 @@
         </span>
         <a href="{{ route('user.dashboard') }}" class="dash_logo"><img src="{{ asset('uploads/website-images/white_logo_mv.png') }}" alt="logo" class="img-fluid"></a>
         <ul class="dashboard_link">
-          <li><a class="{{ Route::is('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}"><i class="fas fa-tachometer"></i>{{__('user.Dashboard')}}</a></li>
           {{-- Beacome A Seller  Routes  --}}
           @if ($setting->enable_multivendor == 1)
                 @php
@@ -162,6 +161,8 @@
                 @endif
 
             @endif
+            {{-- Dashboard  --}}
+          <li><a class="{{ Route::is('user.dashboard') ? 'active' : '' }}" href="{{ route('user.dashboard') }}"><i class="fas fa-tachometer"></i>{{__('user.Dashboard')}}</a></li>
           <li><a class="{{ Route::is('user.message') ? 'active' : '' }}" href="{{ route('user.message') }}"><i class="fas fa-envelope"></i>{{__('user.Message')}}</a></li>
 
           <li><a href="{{ route('home') }}"><i class="fal fa fa-globe"></i> {{__('user.Go to Homepage')}}</a></li>
