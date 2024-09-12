@@ -102,6 +102,7 @@
                                                 <i class="fab fa-facebook-f"></i>
                                                 </a>
                                                 </li>
+                                                 {{-- <li><a href="{{ route('login-facebook') }}"><i class="fab fa-facebook-f"></i></a></li> --}}
                                                 @endif
                                         </ul>
                                         @endif
