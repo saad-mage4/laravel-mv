@@ -211,51 +211,51 @@ class LoginController extends Controller
     // }
 
 
-    public function redirectToFacebook()
-    {
-        SocialLoginInformation::setFacebookLoginInfo();
-        return Socialite::driver('facebook')->redirect();
-    }
+    // public function redirectToFacebook()
+    // {
+    //     SocialLoginInformation::setFacebookLoginInfo();
+    //     return Socialite::driver('facebook')->redirect();
+    // }
 
-    public function facebookCallBack()
-    {
-        SocialLoginInformation::setFacebookLoginInfo();
-        $user = Socialite::driver('facebook')->user();
-        $user = $this->createUser($user, 'facebook');
-        auth()->login($user);
-        $notification = trans('user_validation.Login Successfully');
-        $notification = array('messege' => $notification, 'alert-type' => 'success');
-        return redirect()->route('home')->with($notification);
-        // return redirect()->intended(route('home')); //user.dashboard
-    }
+    // public function facebookCallBack()
+    // {
+    //     SocialLoginInformation::setFacebookLoginInfo();
+    //     $user = Socialite::driver('facebook')->user();
+    //     $user = $this->createUser($user, 'facebook');
+    //     auth()->login($user);
+    //     $notification = trans('user_validation.Login Successfully');
+    //     $notification = array('messege' => $notification, 'alert-type' => 'success');
+    //     return redirect()->route('home')->with($notification);
+    //     // return redirect()->intended(route('home')); //user.dashboard
+    // }
 
 
 
-    // Social Login
-    function createUser($getInfo, $provider)
-    {
-        // $user = User::where('provider_id', $getInfo->id)->first();
-        $user = User::where('provider_id', $getInfo->id)->orWhere('email', $getInfo->email)->first();
+    // // Social Login
+    // function createUser($getInfo, $provider)
+    // {
+    //     // $user = User::where('provider_id', $getInfo->id)->first();
+    //     $user = User::where('provider_id', $getInfo->id)->orWhere('email', $getInfo->email)->first();
 
-        if (!$user) {
-            $user = User::create([
-                'name'     => $getInfo->name,
-                'email'    => $getInfo->email,
-                'provider' => $provider,
-                'provider_id' => $getInfo->id,
-                'provider_avatar' => $getInfo->avatar,
-                'status' => 1,
-                'email_verified' => 1,
-            ]);
-        } else {
-            $user->update([
-                'name' => $getInfo->name,
-                'provider_avatar' => $getInfo->avatar,
-                'email_verified' => 1, // Assuming the email is verified
-            ]);
-        }
-        return $user;
-    }
+    //     if (!$user) {
+    //         $user = User::create([
+    //             'name'     => $getInfo->name,
+    //             'email'    => $getInfo->email,
+    //             'provider' => $provider,
+    //             'provider_id' => $getInfo->id,
+    //             'provider_avatar' => $getInfo->avatar,
+    //             'status' => 1,
+    //             'email_verified' => 1,
+    //         ]);
+    //     } else {
+    //         $user->update([
+    //             'name' => $getInfo->name,
+    //             'provider_avatar' => $getInfo->avatar,
+    //             'email_verified' => 1, // Assuming the email is verified
+    //         ]);
+    //     }
+    //     return $user;
+    // }
 
 
 

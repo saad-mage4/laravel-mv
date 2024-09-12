@@ -97,12 +97,12 @@
                                                 @endif
 
                                                 @if ($socialLogin->is_facebook == 1)
-                                                {{-- <li>
+                                                <li>
                                                 <a href="{{ route('social-login', 'facebook') }}">
                                                 <i class="fab fa-facebook-f"></i>
                                                 </a>
-                                                </li> --}}
-                                                 <li><a href="{{ route('login-facebook') }}"><i class="fab fa-facebook-f"></i></a></li>
+                                                </li>
+                                                 {{-- <li><a href="{{ route('login-facebook') }}"><i class="fab fa-facebook-f"></i></a></li> --}}
                                                 @endif
                                         </ul>
                                         @endif
