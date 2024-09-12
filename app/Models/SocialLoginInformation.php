@@ -19,15 +19,15 @@ class SocialLoginInformation extends Model
     //     }
     // }
 
-    // public function setFacebookLoginInfo()
-    // {
-    //     $facebookInfo = SocialLoginInformation::first();
-    //     if ($facebookInfo) {
-    //         \Config::set('services.facebook.client_id', $facebookInfo->facebook_client_id);
-    //         \Config::set('services.facebook.client_secret', $facebookInfo->facebook_secret_id);
-    //         \Config::set('services.facebook.redirect', $facebookInfo->facebook_redirect_url);
-    //     }
-    // }
+    public function setFacebookLoginInfo()
+    {
+        $facebookInfo = SocialLoginInformation::first();
+        if ($facebookInfo) {
+            \Config::set('services.facebook.client_id', $facebookInfo->facebook_client_id);
+            \Config::set('services.facebook.client_secret', $facebookInfo->facebook_secret_id);
+            \Config::set('services.facebook.redirect', $facebookInfo->facebook_redirect_url);
+        }
+    }
 
     public static function setProviderLoginInfo($provider)
     {
