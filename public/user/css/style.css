@@ -5712,12 +5712,12 @@ WISHLIST PAGE START
     top: 0;
     left: 0;
     height: 100%;
-    background: rgb(42, 156, 245);
-    background: linear-gradient(
+    /* background: rgb(42, 156, 245); */
+    /* background: linear-gradient(
         180deg,
         rgba(42, 156, 245, 0.8) 0%,
         rgba(139, 35, 244, 0.8) 100%
-    );
+    ); */
 }
 
 .wsus__login_text_position {
@@ -7531,6 +7531,12 @@ WISHLIST PAGE START
     margin-bottom: 30px;
 }
 
+@media (max-width: 599px) {
+    .wsus__dash_pro_single {
+        flex-direction: column;
+    }
+}
+
 .wsus__dash_pro_single i {
     width: 57px;
     height: 47px;
@@ -7554,6 +7560,19 @@ WISHLIST PAGE START
     color: #353535;
     resize: none;
     border: 1px solid #b0d8ff;
+}
+
+.wsus__dash_pro_single .seller-1 input[type="radio"],
+.wsus__dash_pro_single .seller-2 input[type="radio"],
+.wsus__dash_pro_single .seller-3 input[type="radio"] {
+    display: none;
+}
+
+.wsus__dash_pro_single .seller-1 input[type="radio"]:checked ~ label,
+.wsus__dash_pro_single .seller-2 input[type="radio"]:checked ~ label,
+.wsus__dash_pro_single .seller-3 input[type="radio"]:checked ~ label {
+    background-color: #ff5200;
+    color: #fff;
 }
 
 .wsus__dash_pro_single input::placeholder,
@@ -10292,10 +10311,11 @@ input.error {
 .seller-3 {
     width: 100%;
     height: 50px;
-    border: 2px solid #204e77;
+    border: 2px solid #ff5200;
     border-radius: 10px;
     position: relative;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .seller-1 label,
@@ -10305,6 +10325,8 @@ input.error {
     height: 100%;
     position: relative;
     cursor: pointer;
+    text-align: center;
+    text-wrap: nowrap;
 }
 
 .seller-1 label::before,
@@ -10314,8 +10336,8 @@ input.error {
     font-size: 20px;
     position: absolute;
     top: 50%;
-    right: 50px;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .seller-1 label::before {

@@ -157,7 +157,7 @@
                             @if ($user->status == 1 && $user->is_member == 1)
                         <li><a href="{{ route('seller.dashboard') }}"><i class="fal fa-user-circle"></i> {{ __('user.My Account') }} </a></li>
                         @else
-                        <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user-circle"></i> {{ __('user.My Account') }} </a></li>
+                        <li><a href="{{ route('user.seller-membership') }}"><i class="fal fa-user-circle"></i> {{ __('user.My Account') }} </a></li>
                         @endif
                         @endif
                         @endif

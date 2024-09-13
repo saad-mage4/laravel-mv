@@ -186,47 +186,45 @@ $Ads = [
       <div class="wsus__dashboard_profile">
         <div class="wsus__dash_pro_area">
           <div class="row mb-3" id="list-styled">
-            <div class="col-xl-12" id="Public_Seller_Content">
-              <h3>TERMENI ȘI CONDIȚII - PERSOANE JURIDICE - TRADEMAG</h3>
-              <p>Taxă de abonament lunară - <strong>14,99</strong> euro.</p>
-              <strong>Taxă de abonament lunară</strong>
-              <p class="mt-2">
-              Aceasta oferă posibilitatea de a posta anunțuri nelimitate pentru o perioadă de o lună de zile, site-ul
-nostru acționând ca propriul dumneavoastră magazin de vânzări produse.
+             {{-- id="Public_Seller_Content" --}}
+            <div class="col-xl-12">
+              <h3 style="text-transform: uppercase">TERMENI ȘI CONDIȚII - PERSOANE JURIDICE - TradeMag</h3>
+              <h4><strong>Taxă de abonament lunară - 14,99 euro.</strong></h4>
+              <p style="color: #000" class="mb-4">
+                Aceasta oferă posibilitatea de a posta anunțuri nelimitate pentru o perioadă de o lună de zile, site-ul
+                nostru acționând ca propriul dumneavoastră magazin de vânzări produse.
               </p>
-              {{-- <ul>
-                <li>By subscribing to our service, you agree to pay a monthly fee of <strong>14.99</strong> Euros.</li>
-              </ul>
-               <ul>
-                    <li>In addition to the subscription fee, a <strong>1%</strong> commission per withdrawal will be applied.</li>
-               </ul>
-                <strong>Return Policy:</strong>
-               <ul>
-                    <li>The Seller will reimburse the amount within <strong>14</strong> days from the Buyer's decision to withdraw.</li>
-               </ul> --}}
-              <div class="d-none">
-              <strong>Monthly Membership Fee:</strong>
+              <h3 style="text-transform: uppercase">TERMENI ȘI CONDIȚII - PERSOANE FIZICE – VOOP</h3>
+              <strong class="mb-3">Prețuri:</strong>
               <ul>
-                <li>In addition to the initial fee, a monthly membership fee will be charged based on your sales volume. Here's how the monthly membership fee is calculated:
-                  <ul>
-                    <li>
-                      Sales up to <strong>1000</strong> Euros: Monthly fee of 15 Euros
-                    </li>
-                    <li>
-                      Sales from <strong>1001 to 5000</strong> Euros: Monthly fee of 50 Euros
-                    </li>
-                    <li>
-                      Sales from <strong>5001 to 10000</strong> Euros: Monthly fee of 100 Euros
-                    </li>
-                    <li>
-                      Please note that the monthly membership fee will be automatically deducted from your account balance on a monthly basis, based on your sales volume from the previous month.
-                    </li>
-                  </ul>
-                </li>
+                 <h4><strong>1 Anunț - 2,99 Euro</strong></h4>
               </ul>
-              </div>
+               <ul>
+                    <h4><strong>30 Anunțuri - 14,99 Euro</strong></h4>
+               </ul>
+
+               <ul>
+                   <h4><strong>50 Anunțuri - 24,99 Euro</strong></h4>
+               </ul>
+
+               <ul>
+                   <h4><strong>100 Anunțuri - 49,99 Euro</strong></h4>
+               </ul>
+
+               <p style="color: #000">Prețul reprezintă tariful pentru publicarea anunțurilor timp de 60 de zile (2 luni) pe site-ul nostru,
+oferindu-vă astfel posibilitatea de a expune și vinde produsul pe o perioadă mai îndelungată.</p>
+
+<p style="color: #000;  font-style: italic;">
+  *Nu aprobăm vânzarea produselor ilegale.
+  <br>
+  TradeMag și Voop sunt platforme de prezentare a produselor și realizează legătura între
+  vânzători și cumpărători.
+  <br>
+  Pentru publicitate în orice alt spațiu și/sau durată ne puteți contacta la publicitate@trademag.ro.
+</p>
+
             </div>
-            <div class="col-xl-12 mb-3" id="Private_Seller_Content" style="display: none">
+            {{-- <div class="col-xl-12 mb-3" id="Private_Seller_Content" style="display: none">
               <h3>TERMENI ȘI CONDIȚII - PERSOANE FIZICE – VOOP</h3>
               <strong class="mb-3">Prețuri:</strong>
               <ul>
@@ -252,21 +250,21 @@ oferindu-vă astfel posibilitatea de a expune și vinde produsul pe o perioadă 
 <p class="mb-4">TradeMag   și   Voop   sunt   platforme   de   prezentare   a   produselor   și   realizează   legătura   între
 vânzători și cumpărători.</p>
 Pentru publicitate în orice alt spațiu și/sau durată ne puteți contacta la <strong>publicitate@trademag.ro</strong>.
-            </div>
-<div class="col-xl-4 col-md-6">
+            </div> --}}
+<div class="col-12  col-md-5">
                     <label for="Seller_Method" class="Seller_Method">Slelect Your Seller Type</label>
                     <div class="wsus__dash_pro_single gap-3">
                       <div class="seller-1">
-                        <label for="seller" title="Company"></label>
                         <input type="radio" id="seller" name="seller" value="Public" required checked>
+                        <label for="seller" title="PERSOANE JURIDICE"></label>
                       </div>
                         {{-- <div class="seller-2">
                             <label for="public/private" title="Public/Private"></label>
                             <input type="radio" id="sellerboth" name="seller" value="both" required>
                         </div> --}}
-                       <div class="seller-3">
-                        <label for="privateseller" title="Private"></label>
-                        <input type="radio" id="privateseller" name="seller"  value="Private" required>
+                        <div class="seller-3">
+                          <input type="radio" id="privateseller" name="seller"  value="Private" required>
+                         <label for="privateseller" title="PERSOANE FIZICE"></label>
                       </div>
                     </div>
 
