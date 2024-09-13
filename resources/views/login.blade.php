@@ -153,7 +153,7 @@
                 </div>
                 <div class="col-xl-6 col-md-6">
                     <div class="wsus__login_reg_text">
-                        <img src="{{ asset($background->image) }}" alt="login" class="img-fluid w-100">
+                        <img src="{{ !$background->image == null ? asset($background->image) : 'https://dummyimage.com/636x40/eee/000' }}" alt="" loading="lazy" class="img-fluid w-100">
                         <div class="wsus__login_reg_text_center">
                             <div class="wsus__login_text_position">
                                 <h6>{{ $background->title }} <span>{{ $background->header }}</span></h6>

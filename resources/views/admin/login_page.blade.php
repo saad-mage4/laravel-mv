@@ -34,15 +34,21 @@
                                         <input type="file" name="bg_image" class="form-control-file">
                                     </div>
                                     <div class="form-group col-12">
-                                        <label>{{__('admin.Title')}} <span class="text-danger">*</span></label>
+                                        <label>{{__('admin.Title')}}
+                                            {{-- <span class="text-danger">*</span> --}}
+                                        </label>
                                         <input type="text" name="title" class="form-control" value="{{ $banner->title }}">
                                     </div>
                                     <div class="form-group col-12">
-                                        <label>{{__('admin.Header')}} <span class="text-danger">*</span></label>
+                                        <label>{{__('admin.Header')}}
+                                            {{-- <span class="text-danger">*</span> --}}
+                                        </label>
                                         <input type="text" name="header"  class="form-control" value="{{ $banner->header }}">
                                     </div>
                                     <div class="form-group col-12">
-                                        <label>{{__('admin.Description')}} <span class="text-danger">*</span></label>
+                                        <label>{{__('admin.Description')}}
+                                            {{-- <span class="text-danger">*</span> --}}
+                                        </label>
                                         <input type="text" name="description" class="form-control" value="{{ $banner->description }}">
                                     </div>
 
