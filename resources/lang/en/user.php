@@ -115,7 +115,7 @@ return array(
     'Thumnail Image' => 'Thumnail Image',
     'Banner Image' => 'Banner Image',
     'Short Name' => 'Short Name',
-    'Slug' => 'Slug',
+    'Slug' => 'URL',
     'Category' => 'Category',
     'Select Category' => 'Select Category',
     'Sub Category' => 'Sub Category',

@@ -79,7 +79,7 @@
                         <span>(0 {{__('user.review')}})</span>
                     </p>
                 @endif --}}
-                <h4 class="View_Price">$ <span id="mainProductPrice">{{$product->price}}</span>
+                <h4 class="View_Price"> {{ $currencySetting->currency_icon }}<span id="mainProductPrice">{{$product->price}}</span>
                     {{-- <del>${{$product->offer_price}}</del> --}}
                 </h4>
                     <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name }}</a>
@@ -166,7 +166,7 @@
                         <span>(0 {{__('user.review')}})</span>
                     </p>
                 @endif --}}
-                <h4 class="View_Price">$ <span id="mainProductPrice">{{$product->price}}</span>
+                <h4 class="View_Price"> {{ $currencySetting->currency_icon }} <span id="mainProductPrice">{{$product->price}}</span>
                     {{-- <del>${{$product->offer_price}}</del> --}}
                 </h4>
                     <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name }}</a>

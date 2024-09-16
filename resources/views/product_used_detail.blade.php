@@ -231,7 +231,7 @@
                 <div class="col-12 mt-5">
                     <div class="wsus__pro_details_text p-3 rounded-3 " style="border: 2px solid #d8dfe0; ">
                         <a class="title" href="javascript:;">{{ $product->name }}</a>
-                        <h4>$ <span id="mainProductPrice">{{$product->price}}</span>
+                        <h4> {{ $currencySetting->currency_icon }} <span id="mainProductPrice">{{$product->price}}</span>
                             {{-- <del>${{$product->offer_price}}</del> --}}
                         </h4>
                             {{-- Review Code  --}}
