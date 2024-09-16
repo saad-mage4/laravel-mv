@@ -126,12 +126,12 @@
                     <a class="wsus__pro_name" href="{{ route('product-detail',$product->slug) }}">{{ $product->name }}</a>
 
                     @if ($isCampaign)
-                        <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
+                        <p class="wsus__price">{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice) }}</del></p>
                     @else
                         @if ($product->offer_price == null)
-                            <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice + $variantPrice) }}</p>
+                            <p class="wsus__price">{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice + $variantPrice) }}</p>
                         @else
-                            <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $product->offer_price + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
+                            <p class="wsus__price">{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $product->offer_price + $variantPrice) }} <del>{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice) }}</del></p>
                         @endif
                     @endif
 
@@ -268,12 +268,12 @@
                 @endif
                     <a class="wsus__pro_name" href="{{ route('product-detail',$product->slug) }}">{{ $product->name }}</a>
                     @if ($isCampaign)
-                        <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
+                        <p class="wsus__price">{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }} <del>{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice) }}</del></p>
                     @else
                         @if ($product->offer_price == null)
-                            <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice + $variantPrice) }}</p>
+                            <p class="wsus__price">{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice + $variantPrice) }}</p>
                         @else
-                            <p class="wsus__price">{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $product->offer_price + $variantPrice) }} <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></p>
+                            <p class="wsus__price">{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $product->offer_price + $variantPrice) }} <del>{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice) }}</del></p>
                         @endif
                     @endif
 
@@ -401,12 +401,12 @@
                                     @endphp
 
                                     @if ($isCampaign)
-                                        <h4>{{ $currencySetting->currency_icon }} <span id="mainProductModalPrice-{{ $product->id }}">{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }}</span>  <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></h4>
+                                        <h4>{{ $currencySetting->currency_icon }}  <span id="mainProductModalPrice-{{ $product->id }}">{{ sprintf("%.2f", $campaignOfferPrice + $variantPrice) }}</span>  <del>{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice) }}</del></h4>
                                     @else
                                         @if ($product->offer_price == null)
-                                            <h4>{{ $currencySetting->currency_icon }}<span id="mainProductModalPrice-{{ $product->id }}">{{ sprintf("%.2f", $totalPrice + $variantPrice) }}</span></h4>
+                                            <h4>{{ $currencySetting->currency_icon }} <span id="mainProductModalPrice-{{ $product->id }}">{{ sprintf("%.2f", $totalPrice + $variantPrice) }}</span></h4>
                                         @else
-                                            <h4>{{ $currencySetting->currency_icon }}<span id="mainProductModalPrice-{{ $product->id }}">{{ sprintf("%.2f", $product->offer_price + $variantPrice) }}</span> <del>{{ $currencySetting->currency_icon }}{{ sprintf("%.2f", $totalPrice) }}</del></h4>
+                                            <h4>{{ $currencySetting->currency_icon }} <span id="mainProductModalPrice-{{ $product->id }}">{{ sprintf("%.2f", $product->offer_price + $variantPrice) }}</span> <del>{{ $currencySetting->currency_icon }} {{ sprintf("%.2f", $totalPrice) }}</del></h4>
                                         @endif
                                     @endif
 
@@ -461,7 +461,7 @@
                                             <input id="productModalQty-{{ $product->id }}" name="quantity"  readonly class="form-control" type="text" min="1" max="100" value="1" />
                                             <button onclick="productModalIncrement('{{ $product->id }}','{{ $product->qty }}')" type="button" class="btn btn-success btn-sm">+</button>
                                         </div>
-                                        <h3 class="d-none">{{ $currencySetting->currency_icon }}<span id="productModalPrice-{{ $product->id }}">{{ sprintf("%.2f",$productPrice) }}</span></h3>
+                                        <h3 class="d-none">{{ $currencySetting->currency_icon }} <span id="productModalPrice-{{ $product->id }}">{{ sprintf("%.2f",$productPrice) }}</span></h3>
 
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="image" value="{{ $product->thumb_image }}">

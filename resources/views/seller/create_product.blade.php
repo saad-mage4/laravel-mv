@@ -59,12 +59,12 @@ div#Image_Preview_Slider img {
                                 </div>
 
                                 <div class="form-group col-12">
-                                    <label>{{__('user.Thumnail Image')}} <span class="text-danger">*</span></label>
+                                    <label>{{__('user.Thumnail Image')}} (384 x 263) <span class="text-danger">*</span></label>
                                     <input type="file" class="form-control-file"  name="thumb_image" onchange="previewThumnailImage(event)">
                                 </div>
 
                                 <div class="form-group col-12">
-                                    <label>{{__('user.Banner Image')}} <span class="text-danger">*</span></label>
+                                    <label>{{__('user.Banner Image')}} (1905 x 275)<span class="text-danger">*</span></label>
                                     <input type="file" class="form-control-file"  name="banner_image">
                                 </div>
 
@@ -196,13 +196,13 @@ div#Image_Preview_Slider img {
                                 @endif
 
                                 <div class="form-group col-12">
-                                    <label>{{__('user.Price')}} <span class="text-danger">*</span></label>
+                                    <label>{{__('user.Price')}} (Lei) <span class="text-danger">*</span></label>
                                    <input type="text" class="form-control" name="price" value="{{ old('price') }}">
                                 </div>
 
                                 @if ($authUser->seller_type == "Public")
                                 <div class="form-group col-12">
-                                    <label>{{__('user.Offer Price')}}</label>
+                                    <label>{{__('user.Offer Price')}} (Lei)</label>
                                    <input type="text" class="form-control" name="offer_price" value="{{ old('offer_price') }}">
                                 </div>
                                 @endif

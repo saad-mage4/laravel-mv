@@ -46,7 +46,7 @@
   'Yes' => 'Yes',
   'No' => 'No',
   'Blog Category' => 'Blog Category',
-  'Slug' => 'Slug',
+  'Slug' => 'URL',
   'You can not delete this category. Because there are one or more blogs has been created in this category.' => 'You can not delete this category. Because there are one or more blogs has been created in this category.',
   'Close' => 'Close',
   'Blog Comment' => 'Blog Comment',

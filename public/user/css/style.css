@@ -39,7 +39,7 @@ body {
 }
 /* Price View in card  */
 .View_Price {
-    font-size: 35px;
+    font-size: 26px;
     font-weight: 700;
     color: #ff5200;
     margin: 10px 0px 5px 0px;
@@ -5745,9 +5745,9 @@ WISHLIST PAGE START
 }
 
 .wsus__login_text_position p {
-    color: #fff;
-    font-size: 18px;
-    font-weight: 500;
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 /*========================
