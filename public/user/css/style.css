@@ -7535,6 +7535,49 @@ WISHLIST PAGE START
     .wsus__dash_pro_single {
         flex-direction: column;
     }
+
+    /* chandiresh css  slider*/
+    #wsus__banner .slick-dots li button {
+        font-size: 0;
+        width: 8px;
+        height: 8px;
+        background: #76c3ff;
+        border-radius: 50px;
+        margin: 0 5px;
+        outline: 0;
+        border: none;
+    }
+    #wsus__banner .slick-dots {
+        position: absolute;
+        left: 0;
+        bottom: 30px;
+        display: flex;
+        justify-content: center;
+    }
+
+    #wsus__brand_sleder .nxt_arr,
+    #wsus__brand_sleder .prv_arr {
+        position: absolute;
+        top: 40%;
+        left: -7px;
+        width: 25px;
+        height: 25px;
+        /* background: #2a9cf5a1; */
+        line-height: 25px;
+        font-size: 12px;
+        text-align: center;
+        padding: 0;
+        color: #fff;
+        z-index: 99;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all linear 0.3s;
+        -webkit-transition: all linear 0.3s ease;
+        -moz-transition: all linear 0.3s ease;
+        -ms-transition: all linear 0.3s ease;
+        -o-transition: all linear 0.3s ease;
+        transform: translateY(-50%);
+    }
 }
 
 .wsus__dash_pro_single i {
