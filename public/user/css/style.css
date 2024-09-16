@@ -1568,7 +1568,7 @@ PRODUCT MODAL VIEW END
 }
 
 .wsus__single_slider {
-    background-size: cover !important;
+    background-size: contain !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
     padding: 148px 50px;
