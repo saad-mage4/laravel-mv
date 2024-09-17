@@ -976,7 +976,7 @@ header {
     -moz-transition: all linear 0.3s ease;
     -ms-transition: all linear 0.3s ease;
     -o-transition: all linear 0.3s ease;
-    height: 570px;
+    height: 500px;
 }
 
 .wsus_menu_cat_droapdown li:hover .wsus__sub_category {
