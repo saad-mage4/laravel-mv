@@ -917,7 +917,8 @@ header {
     background: #fff;
     position: absolute;
     z-index: 1;
-    top: 0;
+    top: auto;
+    margin-top: -54px;
     left: 105%;
     padding: 0;
     border: 1px solid #def0ff;
@@ -930,7 +931,8 @@ header {
     -moz-transition: all linear 0.3s ease;
     -ms-transition: all linear 0.3s ease;
     -o-transition: all linear 0.3s ease;
-    min-height: 570px;
+    /* 570px */
+    min-height: 500px;
 }
 
 .wsus_menu_cat_droapdown li a {
@@ -960,7 +962,8 @@ header {
     background: #fff;
     position: absolute;
     z-index: 1;
-    top: 0;
+    top: auto;
+    margin-top: -42px;
     left: 105%;
     padding: 0;
     border: 1px solid #def0ff;
