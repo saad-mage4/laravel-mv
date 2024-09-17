@@ -917,8 +917,8 @@ header {
     background: #fff;
     position: absolute;
     z-index: 1;
-    top: auto;
-    margin-top: -54px;
+    top: auto !important;
+    margin-top: -54px !important;
     left: 105%;
     padding: 0;
     border: 1px solid #def0ff;
@@ -962,8 +962,8 @@ header {
     background: #fff;
     position: absolute;
     z-index: 1;
-    top: auto;
-    margin-top: -42px;
+    top: auto !important;
+    margin-top: -42px !important;
     left: 105%;
     padding: 0;
     border: 1px solid #def0ff;
