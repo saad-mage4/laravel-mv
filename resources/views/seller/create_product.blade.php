@@ -95,6 +95,7 @@ div#Image_Preview_Slider img {
                                     <input type="text" id="slug" class="form-control"  name="slug" value="{{ old('slug') }}">
                                 </div>
 
+
                                 {{-- Category of in Private  --}}
 
                                 @if ($authUser->seller_type == "Private")
@@ -112,12 +113,16 @@ div#Image_Preview_Slider img {
                                     <select name="category" class="form-control select2" id="category">
                                         <option value="">{{__('user.Select Category')}}</option>
                                         @foreach ($categories as $category)
-                                            @if ($category->slug !== 'used-products')
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                            @endif
+                                        @if ($category->status == 1)
+                                        @if ($category->slug !== 'used-products')
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endif
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
+
+
 
 
                                 <div class="form-group col-12">
@@ -145,7 +150,9 @@ div#Image_Preview_Slider img {
                                     <select name="private_category" class="form-control select2" id="private_category">
                                         <option value="">Select Private Category</option>
                                         @foreach ($privates_categories as $private_category)
-                                            <option value="{{ $private_category->id }}">{{ $private_category->name }}</option>
+                                          @if ($private_category->status == 1)
+                                          <option value="{{ $private_category->id }}">{{ $private_category->name }}</option>
+                                          @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -170,7 +177,9 @@ div#Image_Preview_Slider img {
                                     <select name="brand" class="form-control select2" id="brand">
                                         <option value="">{{__('user.Select Brand')}}</option>
                                         @foreach ($brands as $brand)
-                                            <option {{ old('brand') == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @if ($brand->status == 1)
+                                        <option {{ old('brand') == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -181,7 +190,9 @@ div#Image_Preview_Slider img {
                                      <select name="private_ad_type" id="private_ad_type" class="form-control select2">
                                         <option value="">Product Condition</option>
                                         @foreach ($ads as $ad)
-                                            <option {{ old('ad') == $ad->id ? 'selected' : '' }} value="{{ $ad->id }}">{{ $ad->name }}</option>
+                                        @if ($ad->status == 1)
+                                        <option {{ old('ad') == $ad->id ? 'selected' : '' }} value="{{ $ad->id }}">{{ $ad->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>

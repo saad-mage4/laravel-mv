@@ -425,12 +425,14 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             <div class="accordion" id="accordionSubcategories{{ $loop->index }}">
             @foreach ($category->private_subCategories as $subCategory)
             <div class="accordion-item">
-            <h2 class="accordion-header" id="headingSubcategory{{ $loop->parent->index }}{{ $loop->index }}">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}" aria-expanded="false" aria-controls="collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}">
-            <li class="list-group-item border-0 ps-0">
-            <a class="categoryForSearch d-block py-1" href="javascript:;" data-private_sub_category="{{ $subCategory->slug }}">{{ $subCategory->name }}</a>
-            </button>
-            </h2>
+                @if ($subCategory->status == 1)
+                <h2 class="accordion-header" id="headingSubcategory{{ $loop->parent->index }}{{ $loop->index }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}" aria-expanded="false" aria-controls="collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}">
+                <li class="list-group-item border-0 ps-0">
+                <a class="categoryForSearch d-block py-1" href="javascript:;" data-private_sub_category="{{ $subCategory->slug }}">{{ $subCategory->name }}</a>
+                </button>
+                </h2>
+                @endif
 
             <div id="collapseSubcategory{{ $loop->parent->index }}{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="headingSubcategory{{ $loop->parent->index }}{{ $loop->index }}" data-bs-parent="#accordionSubcategories{{ $loop->parent->index }}">
             <div class="accordion-body ps-4">
@@ -438,9 +440,11 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             <!-- Child Categories List -->
             <ul class="list-group">
             @foreach ($subCategory->childCategories as $childCategory)
+            @if ($childCategory->status == 1)
             <li class="list-group-item border-0 ps-0">
             <a class="categoryForSearch d-block py-1" href="javascript:;" data-private_child_category="{{ $childCategory->slug }}">{{ $childCategory->name }}</a>
             </li>
+            @endif
             @endforeach
             </ul>
             @endif
@@ -487,14 +491,16 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
     <ul class="wsus_menu_cat_droapdown">
     <!-- Subcategories -->
     @foreach ($category->private_subCategories as $subCategory)
+    @if ($subCategory->status == 1)
     <li class="sub-category-item">
-    <a class="categoryForSearch wsus__droap_arrow" href="javascript:;" data-private_sub_category="{{ $subCategory->slug }}">
-    {{ $subCategory->name }}
-    </a>
+        <a class="categoryForSearch wsus__droap_arrow" href="javascript:;" data-private_sub_category="{{ $subCategory->slug }}">
+        {{ $subCategory->name }}
+        </a>
     @if ($subCategory->childCategories->count() > 0)
     <ul class="child-category-dropdown">
     <!-- Child Categories -->
     @foreach ($subCategory->childCategories as $childCategory)
+    @if ($childCategory->status == 1)
     <li>
     <a
     class="categoryForSearch"
@@ -502,10 +508,13 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
     {{ $childCategory->name }}
     </a>
     </li>
+    @endIf
     @endforeach
     </ul>
     @endif
     </li>
+    @endif
+
     @endforeach
     </ul>
     @endif
