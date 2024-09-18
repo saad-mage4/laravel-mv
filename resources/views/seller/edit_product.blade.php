@@ -70,8 +70,6 @@
                                     <input type="text" id="slug" class="form-control"  name="slug" value="{{ $product->slug }}">
                                 </div>
                                      {{-- Category of in Private  --}}
-
-            {{-- {{dd($product)}} --}}
                                 @if ($authUser->seller_type == "Private")
                             @foreach ($categories as $item)
                     @if (isset($item->slug) && $item->slug === 'used-products')
@@ -115,7 +113,9 @@
                                     <select name="category" class="form-control select2" id="category">
                                         <option value="">{{__('user.Select Category')}}</option>
                                         @foreach ($categories as $category)
-                                            <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @if ($category->status == 1)
+                                        <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -154,7 +154,9 @@
                                     <select name="private_category" class="form-control select2" id="private_category">
                                         <option value="">Select Private Category</option>
                                         @foreach ($privates_categories as $private_category)
-                                            <option {{ $product->private_category_id == $private_category->id ? 'selected' : '' }} value="{{ $private_category->id }}">{{ $private_category->name }}</option>
+                                        @if ($private_category->status == 1)
+                                        <option {{ $product->private_category_id == $private_category->id ? 'selected' : '' }} value="{{ $private_category->id }}">{{ $private_category->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -180,7 +182,9 @@
                                     <select name="brand" class="form-control select2" id="brand">
                                         <option value="">{{__('user.Select Brand')}}</option>
                                         @foreach ($brands as $brand)
-                                            <option {{ $product->brand_id == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @if ($brand->status == 1)
+                                        <option {{ $product->brand_id == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -191,7 +195,9 @@
                                      <select name="private_ad_type" id="private_ad_type" class="form-control select2">
                                         <option value="">Ad Type</option>
                                         @foreach ($ads as $ad)
-                                            <option {{ $product->private_ad_type == $ad->id ? 'selected' : '' }} value="{{ $ad->id }}">{{ $ad->name }}</option>
+                                        @if ($ad->status == 1)
+                                        <option {{ $product->private_ad_type == $ad->id ? 'selected' : '' }} value="{{ $ad->id }}">{{ $ad->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -268,7 +274,9 @@
                                     <select name="tax" class="form-control">
                                         <option value="">{{__('user.Select Tax')}}</option>
                                         @foreach ($productTaxs as $tax)
-                                            <option {{ $product->tax_id == $tax->id ? 'selected' : '' }}  value="{{ $tax->id }}">{{ $tax->title }}</option>
+                                        @if ($tax->status == 1)
+                                        <option {{ $product->tax_id == $tax->id ? 'selected' : '' }}  value="{{ $tax->id }}">{{ $tax->title }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>

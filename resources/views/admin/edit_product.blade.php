@@ -70,7 +70,9 @@
                                     <select name="category" class="form-control select2" id="category">
                                         <option value="">{{__('admin.Select Category')}}</option>
                                         @foreach ($categories as $category)
-                                            <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @if ($category->status == 1)
+                                        <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -104,7 +106,9 @@
                                     <select name="brand" class="form-control select2" id="brand">
                                         <option value="">{{__('admin.Select Brand')}}</option>
                                         @foreach ($brands as $brand)
-                                            <option {{ $product->brand_id == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @if ($brand->status == 1)
+                                        <option {{ $product->brand_id == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
