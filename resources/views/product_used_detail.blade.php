@@ -276,7 +276,7 @@
                         <p class="brand_model detaile_private_seller" ><span>{{__('user.Brand')}} :</span>
                             {{-- <a href="{{ route('product',['brand' => $product->brandSlug]) }}">{{ $product->brandName }}</a></p> --}}
                             {{ $product->brandName }}
-                        <p class="brand_model detaile_private_seller"><span>Ad Type :</span>
+                        <p class="brand_model detaile_private_seller"><span>Product Condition :</span>
                             {{-- <a href="{{ route('product',['category' => $product->categorySlug]) }}">{{ $product->CategoryName }}</a> --}}
                             {{-- {{$product->private_ad_type}} --}}
                             @foreach ($ads as $ad)
