@@ -265,7 +265,7 @@
                             <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li> --}}
 
                     <li><a class="add_cart"  href="tel:{{$product->phone}}">Call</a></li>
-                    <li><a class="add_cart"  href="tel:{{$product->phone}}">Chat</a></li>
+                    <li><a class="add_cart"  href="sms:{{$product->phone}}">Chat</a></li>
                         </ul>
 
                     </form>
