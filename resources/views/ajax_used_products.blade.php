@@ -87,7 +87,7 @@
                         {{-- <p class="">{{ $product->short_description }}</p> --}}
                      {{-- <a class="add_cart" onclick="addToCartMainProduct('{{ $product->id }}')" href="javascript:;">{{__('user.add to cart')}}</a> --}}
                     <a class="add_cart position-static mt-2"  href="tel:{{$product->phone}}">Call</a>
-                    <a class="add_cart position-static mt-2"  href="tel:{{$product->phone}}">Chat</a>
+                    <a class="add_cart position-static mt-2"  href="sms:{{$product->phone}}">Chat</a>
                 </div>
             </div>
         </div>
@@ -173,7 +173,7 @@
                     <p class="" style="max-height: 80px; overflow-y: auto">{{ $product->short_description }}</p>
                     <ul class="wsus__single_pro_icon mt-4">
                         <li><a class="add_cart"  href="tel:{{$product->phone}}">Call</a></li>
-                    <li><a class="add_cart"  href="tel:{{$product->phone}}">Chat</a></li>
+                    <li><a class="add_cart"  href="sms:{{$product->phone}}">Chat</a></li>
                        {{-- <li><a class="add_cart" onclick="addToCartMainProduct('{{ $product->id }}')" href="javascript:;">{{__('user.add to cart')}}</a></li>
                          <li><a href="javascript:;" onclick="addToWishlist('{{ $product->id }}')"><i class="far fa-heart"></i></a></li>
                         <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li> --}}

@@ -790,14 +790,19 @@ class HomeController extends Controller
     //     );
     // }
 
-    //! new Way
+    //! new Way (Default Ajax Load to show the Product in the Used Product Page)
     public function searchUsedProduct(Request $request)
     {
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
 
         //! Initialize the products query
-        $products = Product::where('status', 1)
-            ->where('seller_type', 'Private');
+        // $products = Product::where('status', 1)
+        //     ->where('seller_type', 'Private');
+
+        $products = Product::where('products.status', 1)
+            ->where('products.seller_type', 'Private')
+            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+            ->select('products.*', 'vendors.phone');
 
         //! Variants
         if ($request->variantItems) {
