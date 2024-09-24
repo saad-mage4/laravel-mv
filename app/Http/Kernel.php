@@ -73,5 +73,10 @@ class Kernel extends HttpKernel
 
         // for seller check status middleware
         'check.seller.access' => \App\Http\Middleware\CheckSellerAccess::class,
+
+        // seller sub domian
+        'check.subdomain' => \App\Http\Middleware\CheckSubdomain::class,
+
+
     ];
 }
