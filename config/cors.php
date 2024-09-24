@@ -21,7 +21,7 @@ return [
 
     // 'allowed_origins' => ['*'],
 
-    'allowed_origins' => ['https://membri.trademag.ro/:8000', 'http://trademag.ro'],
+    'allowed_origins' => ['https://membri.trademag.ro', 'https://trademag.ro'],
 
 
     'allowed_origins_patterns' => [],
