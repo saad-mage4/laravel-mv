@@ -23,15 +23,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->call('App\Http\Controllers\Seller\WithdrawController@automateWithdraw')
+        $schedule->call('App\Http\Controllers\Seller\WithdrawController@automateWithdraw')
+            ->everyMinute()->timezone('Asia/Karachi');
+
+        // $schedule->call('App\Http\Controllers\Seller\SellerSponsorController@bannerRemoveCron')
         //     ->everyMinute()->timezone('Asia/Karachi');
 
-        $schedule->call('App\Http\Controllers\Seller\SellerSponsorController@bannerRemoveCron')
-        ->everyMinute()->timezone('Asia/Karachi');
-
-        // For Private Seller Ads Cron job montly/2months
-        $schedule->call('App\Http\Controllers\User\StripeController@PrivateAdsCron')
-        ->everyMinute()->timezone('Asia/Karachi');
+        // // For Private Seller Ads Cron job montly/2months
+        // $schedule->call('App\Http\Controllers\User\StripeController@PrivateAdsCron')
+        //     ->everyMinute()->timezone('Asia/Karachi');
     }
 
     /**
@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

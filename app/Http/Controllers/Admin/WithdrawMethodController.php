@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\SellerWithdraw;
 use Illuminate\Http\Request;
 use App\Models\WithdrawMethod;
 use App\Models\Setting;
@@ -122,4 +123,34 @@ class WithdrawMethodController extends Controller
         }
         return response()->json($message);
     }
+
+    //! Admin Approve/Reject Withdrawals:
+
+    // public function approveWithdrawal($id)
+    // {
+    //     $withdraw = SellerWithdraw::find($id);
+    //     if ($withdraw->status == 0) { // Pending
+    //         $withdraw->status = 1; // Approved
+    //         $withdraw->save();
+
+    //         $notification = array('messege' => 'Withdrawal approved successfully.', 'alert-type' => 'success');
+    //     } else {
+    //         $notification = array('messege' => 'Withdrawal already processed.', 'alert-type' => 'error');
+    //     }
+    //     return redirect()->back()->with($notification);
+    // }
+
+    // public function rejectWithdrawal($id)
+    // {
+    //     $withdraw = SellerWithdraw::find($id);
+    //     if ($withdraw->status == 0) { // Pending
+    //         $withdraw->status = 2; // Rejected
+    //         $withdraw->save();
+
+    //         $notification = array('messege' => 'Withdrawal rejected successfully.', 'alert-type' => 'success');
+    //     } else {
+    //         $notification = array('messege' => 'Withdrawal already processed.', 'alert-type' => 'error');
+    //     }
+    //     return redirect()->back()->with($notification);
+    // }
 }

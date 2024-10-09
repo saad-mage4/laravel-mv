@@ -15,7 +15,15 @@
           </div>
 
           <div class="section-body">
-            <a href="{{ route('seller.my-withdraw.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> {{__('user.New withdraw')}}</a>
+     @if ($eligibleForWithdraw)
+    <a href="{{ route('seller.my-withdraw.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> {{ __('user.New withdraw') }}
+    </a>
+    @else
+      @if (!is_null($daysLeftForNextWithdraw) && $daysLeftForNextWithdraw > 0)
+        <p>You can do the next withdrawal after {{ $daysLeftForNextWithdraw }} working days.</p>
+    @endif
+@endif
             <div class="row mt-4">
                 <div class="col">
                   <div class="card">

@@ -15,7 +15,10 @@
           </div>
 
           <div class="section-body">
-            <a href="{{ route('seller.my-withdraw.index') }}" class="btn btn-primary"><i class="fas fa-list"></i> {{__('user.My withdraw')}}</a>
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                <a href="{{ route('seller.my-withdraw.index') }}" class="btn btn-primary"><i class="fas fa-list"></i> {{__('user.My withdraw')}}</a>
+            <h5 class="text-black btn btn-primary">Avaiable Amount : <span class="fs-4 font-weight-bold">{{$currentAmount}}</span></h5>
+            </div>
             <div class="row mt-4">
                 <div class="col-6">
                   <div class="card">
@@ -23,7 +26,7 @@
                         <form action="{{ route('seller.my-withdraw.store') }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="">{{__('user.Withdraw Method')}}</label>
+                            <label for="">{{__('user.Withdraw Method')}} </label>
                             <select name="method_id" id="method_id" class="form-control">
                                 <option value="">{{__('user.Select Method')}}</option>
                                 @foreach ($methods as $method)

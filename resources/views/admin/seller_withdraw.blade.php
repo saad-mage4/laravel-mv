@@ -39,7 +39,7 @@
                                     <tr>
                                         <td>{{ ++$index }}</td>
                                         {{-- seller->id --}}
-                                        <td><a href="{{ route('admin.seller-show',$withdraw->seller->id) }}">{{ $withdraw->seller->user->name ?? "" }}</a></td>
+                                        <td><a href="{{ route('admin.seller-show',$withdraw->seller->id ?? $withdraw->seller_id) }}">{{ $withdraw->seller->user->name ?? "seller" }}</a></td>
                                         <td>{{ $withdraw->method }}</td>
                                         <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
                                         <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>

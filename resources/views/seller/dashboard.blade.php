@@ -15,7 +15,94 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       <div class="section-header">
         <h1>{{__('user.Dashbaord')}}</h1>
       </div>
-      <div class="section-body">
+
+      @if ($user->seller_type == "Public")
+      <h4>Withdraws:</h4>
+          <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="far fa-newspaper"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>{{__('user.Total Earning')}}</h4>
+      </div>
+      <div class="card-body">
+      @php
+      $totalEarning = 0;
+      $totalProductSale = 0;
+      foreach ($totalOrders as $key => $totalOrder) {
+      $orderProducts = $totalOrder->orderProducts->where('seller_id',$seller->id);
+      foreach ($orderProducts as $key => $orderProduct) {
+      $price = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
+      $totalEarning = $totalEarning + $price;
+      $totalProductSale = $totalProductSale + $orderProduct->qty;
+      }
+      }
+      @endphp
+      {{ $setting->currency_icon }}{{ $totalEarning }}
+      </div>
+      </div>
+      </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="fas fa-shopping-cart"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>In Review</h4>
+      </div>
+      <div class="card-body">
+        {{-- {{dd($inReviewWithdraw)}}] --}}
+        {{ $setting->currency_icon }}{{ $inReviewWithdraw }}
+        {{-- @if ($inReviewWithdraw && $inReviewWithdraw->status == 0)
+        @else
+        {{ $setting->currency_icon }}0.00
+        @endif --}}
+      </div>
+      </div>
+      </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="far fa-user"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>Pending Amount</h4>
+      </div>
+      <div class="card-body">
+      {{ $setting->currency_icon }}{{ $totalPendingWithdraw }}
+      </div>
+      </div>
+      </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="far fa-user"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>Avaiable Amount</h4>
+      </div>
+      <div class="card-body">
+      {{ $setting->currency_icon }}{{ $totalWithdraw }}
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      <hr/>
+      @endif
+
+            <div class="section-body">
         <div class="row">
             @if ($user->seller_type == "Public")
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -259,7 +346,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
               </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="far fa-newspaper"></i>
@@ -285,7 +372,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
 
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
@@ -412,7 +499,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
             </div>
 
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="far fa-user"></i>
@@ -426,9 +513,9 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="far fa-user"></i>
@@ -442,7 +529,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
 
              @if ($user->seller_type == "Private")
      <div class="col-lg-3 col-md-6 col-sm-6 col-12">

@@ -30,7 +30,10 @@ class SellerDashboardController extends Controller
 
     //!! After Admin Approve the Seller Request
 
-    public function index(){
+
+
+    public function index()
+    {
 
         $user = Auth::guard('web')->user();
         $seller = $user->seller;
@@ -39,30 +42,30 @@ class SellerDashboardController extends Controller
             $user->is_paid = 0;
             $user->save();
         }
-        if($user->is_member == 0) {
+        if ($user->is_member == 0) {
             $notification = 'Your Monthly Subscription has been expired!';
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            $notification = array('messege' => $notification, 'alert-type' => 'error');
             return redirect('user/dashboard')->with($notification);
         }
 
-        $todayOrders = Order::with('user')->whereHas('orderProducts',function($query) use ($user){
+        $todayOrders = Order::with('user')->whereHas('orderProducts', function ($query) use ($user) {
             $query->where('seller_id', $user->seller->id);
-        })->orderBy('id','desc')->whereDay('created_at', now()->day)->get();
+        })->orderBy('id', 'desc')->whereDay('created_at', now()->day)->get();
 
 
 
-        $totalOrders = Order::with('user')->whereHas('orderProducts',function($query) use ($user){
+        $totalOrders = Order::with('user')->whereHas('orderProducts', function ($query) use ($user) {
             $query->where('seller_id', $user->seller->id);
-        })->orderBy('id','desc')->get();
+        })->orderBy('id', 'desc')->get();
 
-        $monthlyOrders = Order::with('user')->whereHas('orderProducts',function($query) use ($user){
+        $monthlyOrders = Order::with('user')->whereHas('orderProducts', function ($query) use ($user) {
             $query->where('seller_id', $user->seller->id);
-        })->orderBy('id','desc')->whereMonth('created_at', now()->month)->get();
+        })->orderBy('id', 'desc')->whereMonth('created_at', now()->month)->get();
 
 
-        $yearlyOrders = Order::with('user')->whereHas('orderProducts',function($query) use ($user){
+        $yearlyOrders = Order::with('user')->whereHas('orderProducts', function ($query) use ($user) {
             $query->where('seller_id', $user->seller->id);
-        })->orderBy('id','desc')->whereYear('created_at', now()->year)->get();
+        })->orderBy('id', 'desc')->whereYear('created_at', now()->year)->get();
 
 
         $setting = Setting::first();
@@ -71,11 +74,14 @@ class SellerDashboardController extends Controller
         $reviews = ProductReview::where('product_vendor_id', $seller->id)->get();
         $reports = ProductReport::where('seller_id', $seller->id)->get();
 
-        $totalWithdraw = SellerWithdraw::where('seller_id',$seller->id)->where('status',1)->sum('withdraw_amount');
-        $totalPendingWithdraw = SellerWithdraw::where('seller_id',$seller->id)->where('status',0)->sum('withdraw_amount');
+        $totalWithdraw = SellerWithdraw::where('seller_id', $seller->id)->where('status', 1)->sum('withdraw_amount');
+        $totalPendingWithdraw = SellerWithdraw::where('seller_id', $seller->id)->where('status', 0)->sum('withdraw_amount');
 
+        //! Retrieve the latest withdraw record for the seller
+        $inReviewWithdraw = SellerWithdraw::where('seller_id', $seller->id)->where('status', 0)->sum('total_amount');
+        // ->orderBy('created_at', 'desc')
+        // ->first();
 
-
-        return view('seller.dashboard', compact('user', 'todayOrders', 'totalOrders', 'setting', 'monthlyOrders', 'yearlyOrders', 'products', 'reviews', 'reports', 'seller', 'totalWithdraw', 'totalPendingWithdraw'));
+        return view('seller.dashboard', compact('user', 'todayOrders', 'totalOrders', 'setting', 'monthlyOrders', 'yearlyOrders', 'products', 'reviews', 'reports', 'seller', 'totalWithdraw', 'totalPendingWithdraw', 'inReviewWithdraw'));
     }
 }
