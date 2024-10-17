@@ -10,6 +10,8 @@ use App\Models\Setting;
 use App\Models\EmailTemplate;
 use App\Helpers\MailHelper;
 use App\Mail\SellerWithdrawApproval;
+use App\Models\Vendor;
+use App\Models\WithdrawSchedule;
 use Mail;
 use Auth;
 use Swift_TransportException;
@@ -39,7 +41,8 @@ class SellerWithdrawController extends Controller
     {
         $setting = Setting::first();
         $withdraw = SellerWithdraw::find($id);
-        return view('admin.show_seller_withdraw', compact('withdraw', 'setting'));
+        $seller_details = Vendor::where('id', $withdraw->seller_id)->first();
+        return view('admin.show_seller_withdraw', compact('withdraw', 'setting', 'seller_details'));
     }
 
     public function destroy($id)
@@ -58,14 +61,18 @@ class SellerWithdrawController extends Controller
         $withdraw->approved_date = date('Y-m-d');
         $withdraw->save();
 
+        //! For Fetch the withdraw schedule
+        $withdraw_schedule = WithdrawSchedule::where('seller_id', $withdraw->seller_id)->first();
+
         $user = $withdraw->seller->user;
         $template = EmailTemplate::where('id', 5)->first();
         $message = $template->description;
         $subject = $template->subject;
         $message = str_replace('{{seller_name}}', $user->name, $message);
-        $message = str_replace('{{withdraw_method}}', $withdraw->method, $message);
-        $message = str_replace('{{total_amount}}', $withdraw->total_amount, $message);
-        $message = str_replace('{{withdraw_charge}}', $withdraw->withdraw_charge, $message);
+        // $message = str_replace('{{withdraw_method}}', $withdraw->method, $message);
+        // $message = str_replace("",  "", $message);
+        // $message = str_replace('{{total_amount}}', $withdraw->total_amount, $message);
+        $message = str_replace('{{withdraw_charge}}', $withdraw_schedule->tax_rate, $message);
         $message = str_replace('{{withdraw_amount}}', $withdraw->withdraw_amount, $message);
         $message = str_replace('{{approval_date}}', $withdraw->approved_date, $message);
         MailHelper::setMailConfig();

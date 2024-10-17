@@ -17,7 +17,7 @@
           <div class="section-body">
             <div class="d-flex justify-content-between align-items-center gap-3">
                 <a href="{{ route('seller.my-withdraw.index') }}" class="btn btn-primary"><i class="fas fa-list"></i> {{__('user.My withdraw')}}</a>
-            <h5 class="text-black btn btn-primary">Avaiable Amount : <span class="fs-4 font-weight-bold">{{$currentAmount}}</span></h5>
+            {{-- <h5 class="text-black btn btn-primary">Avaiable Amount : <span class="fs-4 font-weight-bold">{{$currentAmount}}</span></h5> --}}
             </div>
             <div class="row mt-4">
                 <div class="col-6">
@@ -25,7 +25,7 @@
                     <div class="card-body">
                         <form action="{{ route('seller.my-withdraw.store') }}" method="POST">
                         @csrf
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="">{{__('user.Withdraw Method')}} </label>
                             <select name="method_id" id="method_id" class="form-control">
                                 <option value="">{{__('user.Select Method')}}</option>
@@ -33,17 +33,17 @@
                                     <option value="{{ $method->id }}">{{ $method->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <label for="">{{__('user.Withdraw Amount')}}</label>
-                            <input type="text" class="form-control" name="withdraw_amount">
+                            <input type="text" class="form-control" name="withdraw_amount" required>
                         </div>
 
 
                         <div class="form-group">
                             <label for="">{{__('user.Account Information')}}</label>
-                            <textarea name="account_info" id="" cols="30" rows="10" class="form-control text-area-5"></textarea>
+                            <textarea name="account_info" id="" cols="30" rows="10" class="form-control text-area-5" required></textarea>
                         </div>
 
                         <button class="btn btn-primary" type="submit">{{__('user.Send Request')}}</button>

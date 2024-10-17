@@ -372,7 +372,7 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
             Route::get('product-report', [SellerProductReportControler::class, 'index'])->name('product-report');
             Route::get('show-product-report/{id}', [SellerProductReportControler::class, 'show'])->name('show-product-report');
 
-            Route::resource('my-withdraw', WithdrawController::class);
+            Route::resource('my-withdraw', WithdrawController::class)->middleware('check.available.withdraw');
             Route::get('get-withdraw-account-info/{id}', [WithdrawController::class, 'getWithDrawAccountInfo'])->name('get-withdraw-account-info');
 
             Route::get('all-order', [SellerOrderController::class, 'index'])->name('all-order');
@@ -662,11 +662,11 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
         Route::get('login-page', [ContentController::class, 'loginPage'])->name('login-page');
         Route::put('update-login-page', [ContentController::class, 'updateloginPage'])->name('update-login-page');
 
-        Route::get('shop-page', [ContentController::Class, 'shopPage'])->name('shop-page');
-        Route::put('update-filter-price', [ContentController::Class, 'updateFilterPrice'])->name('update-filter-price');
+        Route::get('shop-page', [ContentController::class, 'shopPage'])->name('shop-page');
+        Route::put('update-filter-price', [ContentController::class, 'updateFilterPrice'])->name('update-filter-price');
 
-        Route::get('seo-setup', [ContentController::Class, 'seoSetup'])->name('seo-setup');
-        Route::put('update-seo-setup/{id}', [ContentController::Class, 'updateSeoSetup'])->name('update-seo-setup');
+        Route::get('seo-setup', [ContentController::class, 'seoSetup'])->name('seo-setup');
+        Route::put('update-seo-setup/{id}', [ContentController::class, 'updateSeoSetup'])->name('update-seo-setup');
 
 
 

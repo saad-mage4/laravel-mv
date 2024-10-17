@@ -17,7 +17,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       </div>
 
       @if ($user->seller_type == "Public")
-      <h4>Withdraws:</h4>
+      <h4>WithDraws:</h4>
           <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <div class="card card-statistic-1">
@@ -41,7 +41,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       }
       }
       @endphp
-      {{ $setting->currency_icon }}{{ $totalEarning }}
+      {{ $setting->currency_icon }} {{ $totalEarning ?? 0 }}
       </div>
       </div>
       </div>
@@ -57,12 +57,8 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       <h4>In Review</h4>
       </div>
       <div class="card-body">
-        {{-- {{dd($inReviewWithdraw)}}] --}}
-        {{ $setting->currency_icon }}{{ $inReviewWithdraw }}
-        {{-- @if ($inReviewWithdraw && $inReviewWithdraw->status == 0)
-        @else
-        {{ $setting->currency_icon }}0.00
-        @endif --}}
+        {{ $setting->currency_icon }} {{$inReviewWithdraw ?? 0}}
+        {{-- {{ $inReviewWithdraw }} --}}
       </div>
       </div>
       </div>
@@ -77,7 +73,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       <h4>Pending Amount</h4>
       </div>
       <div class="card-body">
-      {{ $setting->currency_icon }}{{ $totalPendingWithdraw }}
+      {{ $setting->currency_icon }} {{ $totalPendingWithdraw ?? 0 }}
       </div>
       </div>
       </div>
@@ -93,12 +89,22 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       <h4>Avaiable Amount</h4>
       </div>
       <div class="card-body">
-      {{ $setting->currency_icon }}{{ $totalWithdraw }}
+      {{ $setting->currency_icon }} {{ $availableAmount ?? 0 }}
+    </div>
+    @if ($widthdraw_Status == "available")
+    <span>Commission : {{$taxRate_Per}} %</span>
+    @endif
+  </div>
       </div>
       </div>
       </div>
-      </div>
-      </div>
+          @if ($widthdraw_Status == "available")
+    <a href="my-withdraw" style="font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px; text-transform: capitalize"> WithDraws </a>
+    @endif
       <hr/>
       @endif
 
@@ -640,6 +646,21 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
               </div>
             </div>
       </div>
+
+      @if ($widthdraw_Status == "available")
+            <!-- Modal for requesting a withdrawal -->
+      <div id="withdrawalModal" class="modal">
+        {{-- action="{{ route('withdraw.request') }}" --}}
+          <form  method="POST">
+              @csrf
+              <div class="modal-content">
+                  <h4>Request Withdrawal</h4>
+                  <input type="number" name="amount" placeholder="Enter amount" required>
+                  <button type="submit" class="btn">Submit</button>
+              </div>
+          </form>
+        </div>
+      @endif
     </section>
   </div>
 @endsection

@@ -94,20 +94,20 @@
                                                 <td>{{ $name }}</td>
                                                 <td>{{__('admin.Seller Name')}}</td>
                                             </tr>
-                                            <tr>
+                                            {{-- <tr>
                                                 @php
                                                     $method="{{withdraw_method}}";
                                                 @endphp
                                                 <td>{{ $method }}</td>
                                                 <td>{{__('admin.Withdraw method')}}</td>
-                                            </tr>
-                                            <tr>
+                                            </tr> --}}
+                                            {{-- <tr>
                                                 @php
                                                     $total_amount="{{total_amount}}";
                                                 @endphp
                                                 <td>{{ $total_amount }}</td>
                                                 <td>{{__('admin.Total amount')}}</td>
-                                            </tr>
+                                            </tr> --}}
                                             <tr>
                                                 @php
                                                     $withdraw_charge="{{withdraw_charge}}";

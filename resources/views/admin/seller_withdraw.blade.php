@@ -25,9 +25,9 @@
                                 <tr>
                                     <th >{{__('admin.SN')}}</th>
                                     <th >{{__('admin.Seller')}}</th>
-                                    <th >{{__('admin.Method')}}</th>
-                                    <th >{{__('admin.Charge')}}</th>
-                                    <th >{{__('admin.Total Amount')}}</th>
+                                    {{-- <th >{{__('admin.Method')}}</th> --}}
+                                    {{-- <th >{{__('admin.Charge')}}</th>
+                                    <th >{{__('admin.Total Amount')}}</th> --}}
                                     <th >{{__('admin.Withdraw Amount')}}</th>
                                     <th >{{__('admin.Status')}}</th>
                                     <th >{{__('admin.Action')}}</th>
@@ -35,14 +35,12 @@
                             </thead>
                             <tbody>
                                 @foreach ($withdraws as $index => $withdraw)
-                                {{-- {{dd($withdraw)}} --}}
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        {{-- seller->id --}}
                                         <td><a href="{{ route('admin.seller-show',$withdraw->seller->id ?? $withdraw->seller_id) }}">{{ $withdraw->seller->user->name ?? "seller" }}</a></td>
-                                        <td>{{ $withdraw->method }}</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>
+                                        {{-- <td>{{ $withdraw->method }}</td> --}}
+                                        {{-- <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td> --}}
+                                        {{-- <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td> --}}
                                         <td>{{ $setting->currency_icon }}{{ $withdraw->withdraw_amount }}</td>
                                         <td>
                                             @if ($withdraw->status==1)

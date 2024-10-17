@@ -23,30 +23,54 @@
                         <table class="table table-bordered table-striped table-hover">
                             <tr>
                                 <td width="50%">{{__('admin.Seller')}}</td>
-                                <td width="50%"><a href="{{ route('admin.seller-show',$withdraw->seller->id) }}">{{ $withdraw->seller->user->name }}</a></td>
+                                <td width="50%"><a href="{{ route('admin.seller-show', $withdraw->seller_id ?? $withdraw->seller->id ) }}">{{ $withdraw->seller->user->name ?? "" }}</a></td>
                             </tr>
                             <tr>
+                                <td width="50%">Seller Iban</td>
+                                <td width="50%">{{$seller_details->iban}}</td>
+                            </tr>
+                             <tr>
+                                <td width="50%">Seller Bank</td>
+                                <td width="50%">{{$seller_details->bank}}</td>
+                            </tr>
+                             <tr>
+                                <td width="50%">Seller Swift</td>
+                                <td width="50%">{{$seller_details->swift}}</td>
+                            </tr>
+                             <tr>
+                                <td width="50%">Seller LocalCurrency</td>
+                                <td width="50%">{{$seller_details->localCurrency}}</td>
+                            </tr>
+                            <tr>
+                                <td width="50%">Seller Producer</td>
+                                <td width="50%">{{$seller_details->producer == "on" ? "Local" : "other"}}</td>
+                            </tr>
+                            <tr>
+                                <td width="50%">Seller CompanyDesc</td>
+                                <td width="50%">{{$seller_details->companyDesc}}</td>
+                            </tr>
+                            {{-- <tr>
                                 <td width="50%">{{__('admin.Withdraw Method')}}</td>
                                 <td width="50%">{{ $withdraw->method }}</td>
-                            </tr>
+                            </tr> --}}
 
-                            <tr>
+                            {{-- <tr>
                                 <td width="50%">{{__('admin.Withdraw Charge')}}</td>
                                 <td width="50%">{{ $withdraw->withdraw_charge }}%</td>
-                            </tr>
+                            </tr> --}}
 
-                            <tr>
+                            {{-- <tr>
                                 <td width="50%">{{__('admin.Withdraw Charge Amount')}}</td>
-                                <td width="50%">{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
+                                <td width="50%">{{ $setting->currency_icon }} {{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
                             </tr>
 
                             <tr>
                                 <td width="50%">{{__('admin.Total amount')}}</td>
                                 <td width="50%">{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <td width="50%">{{__('admin.Withdraw amount')}}</td>
-                                <td width="50%">{{ $setting->currency_icon }}{{ $withdraw->withdraw_amount }}</td>
+                                <td width="50%">{{ $setting->currency_icon }} {{ $withdraw->withdraw_amount }}</td>
                             </tr>
                             <tr>
                                 <td width="50%">{{__('admin.Status')}}</td>

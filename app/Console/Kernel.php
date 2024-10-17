@@ -23,15 +23,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call('App\Http\Controllers\Seller\WithdrawController@automateWithdraw')
+        // Theme code withdraw cron job for 14 days
+        // $schedule->call('App\Http\Controllers\Seller\WithdrawController@automateWithdraw')
+        //     ->everyMinute()->timezone('Asia/Karachi');
+
+        //! Banners corn
+        $schedule->call('App\Http\Controllers\Seller\SellerSponsorController@bannerRemoveCron')
             ->everyMinute()->timezone('Asia/Karachi');
 
-        // $schedule->call('App\Http\Controllers\Seller\SellerSponsorController@bannerRemoveCron')
-        //     ->everyMinute()->timezone('Asia/Karachi');
-
-        // // For Private Seller Ads Cron job montly/2months
-        // $schedule->call('App\Http\Controllers\User\StripeController@PrivateAdsCron')
-        //     ->everyMinute()->timezone('Asia/Karachi');
+        //! For Private Seller Ads Cron job montly/2months
+        $schedule->call('App\Http\Controllers\User\StripeController@PrivateAdsCron')
+            ->everyMinute()->timezone('Asia/Karachi');
     }
 
     /**

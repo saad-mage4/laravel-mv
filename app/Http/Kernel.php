@@ -73,5 +73,8 @@ class Kernel extends HttpKernel
 
         // for seller check status middleware
         'check.seller.access' => \App\Http\Middleware\CheckSellerAccess::class,
+
+        //withdraw middleware
+        'check.available.withdraw' => \App\Http\Middleware\CheckAvailableWithdraw::class,
     ];
 }
