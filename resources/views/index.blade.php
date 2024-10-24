@@ -1280,7 +1280,7 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="wsus__section_header">
-                        <h3>{{__('user.Flash Deal')}} taha</h3>
+                        <h3>{{__('user.Flash Deal')}}</h3>
                     </div>
                 </div>
             </div>
