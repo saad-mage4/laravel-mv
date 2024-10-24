@@ -27,9 +27,9 @@
                                     <th >{{__('admin.SN')}}</th>
                                     <th >{{__('admin.Requested Date')}}</th>
                                     <th >{{__('admin.Approval Date')}}</th>
-                                    <th >{{__('admin.Method')}}</th>
-                                    <th >{{__('admin.Charge')}}</th>
-                                    <th >{{__('admin.Total Amount')}}</th>
+                                    {{-- <th >{{__('admin.Method')}}</th> --}}
+                                    {{-- <th >{{__('admin.Charge')}}</th> --}}
+                                    {{-- <th >{{__('admin.Total Amount')}}</th> --}}
                                     <th >{{__('admin.Withdraw Amount')}}</th>
                                     <th width="10%">{{__('admin.Status')}}</th>
                                     <th width="10%">{{__('admin.Action')}}</th>
@@ -41,10 +41,10 @@
                                         <td>{{ ++$index }}</td>
                                         <td>{{ $withdraw->created_at->format('Y-m-d') }}</td>
                                         <td>{{ $withdraw->approved_date }}</td>
-                                        <td>{{ $withdraw->method }}</td>
-                                        <td>{{ $withdraw->withdraw_charge }}%</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->withdraw_amount }}</td>
+                                        {{-- <td>{{ $withdraw->method }}</td> --}}
+                                        {{-- <td>{{ $withdraw->withdraw_charge }}%</td> --}}
+                                        {{-- <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td> --}}
+                                        <td>{{ $setting->currency_icon }} {{ $withdraw->withdraw_amount }}</td>
                                         <td>
                                             @if ($withdraw->status==1)
                                             <span class="badge badge-success">{{__('admin.Success')}}</span>

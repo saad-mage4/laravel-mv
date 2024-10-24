@@ -8,6 +8,23 @@
 
 @section('public-content')
 
+<style>
+    .SHOP_PROFILE {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+    .SHOP_PROFILE img {
+        width: 200px !important;
+    height: 200px !important;
+    border-radius: 100% !important;
+    object-fit: cover;
+    padding: 0;
+    box-sizing: border-box;
+    display: inline-block;
+    }
+</style>
+
 
     <!--============================
          BREADCRUMB START
@@ -84,13 +101,14 @@
                             @endphp
                   <div class="wsus__pro_det_vendor p-4 rounded-3" style="border: 2px solid #d8dfe0">
                                     {{-- <div class="row"> --}}
-                                        <div class="col-xl-4 col-xxl-5 col-md4">
-                                            <div class="wsus__vebdor_img h-auto rounded-circle fa-w-20">
+                                        <div class="col-xl-12 col-xxl-12 col-md-12">
+                                            <div class="SHOP_PROFILE">
                                                 {{-- {{dd($user)}} --}}
+                                                {{-- wsus__vebdor_img h-auto rounded-circle fa-w-20 --}}
                                                 @if ($user->Vendor_banner)
-                                                <img src="{{ asset($user->Vendor_banner) }}" alt="vendor-db" class="img-fluid w-100" style="width: 20px">
+                                                <img src="{{ asset($user->Vendor_banner) }}" alt="" class="img-fluid w-100">
                                                 @else
-                                                <img src="{{ asset($defaultProfile->image) }}" alt="vendor-default" class="img-fluid w-100" style="width: 20px">
+                                                <img src="{{ asset($defaultProfile->image) }}" alt="" class="img-fluid w-100">
                                                 @endif
 
                                             </div>
@@ -151,7 +169,7 @@
                                                 <p><span class="w-auto">Country:</span> {{ $product->country }}</p>
                                                 <p><span class="w-auto">City:</span> {{ $product->City_Name }}</p>
                                                 <p><span class="w-auto">State:</span> {{ $product->State_Name }}</p>
-                                                <p><span class="w-auto">{{__('user.mail')}}:</span> {{ $user->email }}</p>
+                                                {{-- <p><span class="w-auto">{{__('user.mail')}}:</span> {{ $user->email }}</p> --}}
                                                 <div class="d-flex gap-3">
                                                     <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn d-flex justify-content-center align-items-center">{{__('user.visit store')}}</a>
                                                     @if ($user->seller_type == "Private")
@@ -499,9 +517,9 @@
                                         <div class="col-xl-6 col-xxl-5 col-md-6">
                                             <div class="wsus__vebdor_img">
                                                 @if ($user->Vendor_banner)
-                                                <img src="{{ asset($user->Vendor_banner) }}" alt="vensor" class="img-fluid w-100">
+                                                <img src="{{ asset($user->Vendor_banner) }}" alt="" class="img-fluid w-100">
                                                 @else
-                                                <img src="{{ asset($defaultProfile->image) }}" alt="vensor" class="img-fluid w-100">
+                                                <img src="{{ asset($defaultProfile->image) }}" alt="" class="img-fluid w-100">
                                                 @endif
 
                                             </div>
@@ -556,10 +574,10 @@
                                                     </p>
                                                 @endif --}}
 
-                                                <p><span>{{__('user.Store Name')}}:</span> {{ $user->shop_name ?? '' }}</p>
+                                                <p><span>{{__('user.Store Name')}}:</span> {{ $user->shop_name ?? 'test store' }}</p>
                                                 {{-- <p><span>{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p> --}}
                                                 <p><span>{{__('user.Phone')}}:</span> {{ $user->phone }}</p>
-                                                <p><span>{{__('user.mail')}}:</span> {{ $user->email }}</p>
+                                                {{-- <p><span>{{__('user.mail')}}: </span> {{ $user->email }}</p> --}}
                                                 <a href="{{ route('seller_used_detail',['shop_name' => $user->Vendor_Slug]) }}" class="see_btn">{{__('user.visit store')}}</a>
 
                                                 @if ($user->seller_type == "Private")

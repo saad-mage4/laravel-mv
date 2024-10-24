@@ -16,12 +16,13 @@ class CreateSellerWithdrawsTable extends Migration
         Schema::create('seller_withdraws', function (Blueprint $table) {
             $table->id();
             $table->integer('seller_id');
-            $table->string('method');
+            $table->string('method')->nullable();
             $table->double('total_amount');
             $table->double('withdraw_amount');
             $table->double('withdraw_charge');
             $table->text('account_info');
             $table->integer('status')->default(0);
+            $table->string('approved_date')->nullable();
             $table->timestamps();
         });
     }

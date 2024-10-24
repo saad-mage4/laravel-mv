@@ -21,26 +21,26 @@
                   <div class="card">
                     <div class="card-body">
                         <table class="table table-bordered table-striped table-hover">
-                            <tr>
+                            {{-- <tr>
                                 <td width="50%">{{__('user.Withdraw Method')}}</td>
                                 <td width="50%">{{ $withdraw->method }}</td>
-                            </tr>
-                            <tr>
+                            </tr> --}}
+                            {{-- <tr>
                                 <td width="50%">{{__('user.Withdraw Charge')}}</td>
                                 <td width="50%">{{ $withdraw->withdraw_charge }}%</td>
-                            </tr>
-                            <tr>
+                            </tr> --}}
+                            {{-- <tr>
                                 <td width="50%">{{__('user.Withdraw Charge Amount')}}</td>
                                 <td width="50%">{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
-                            </tr>
+                            </tr> --}}
 
-                            <tr>
+                            {{-- <tr>
                                 <td width="50%">{{__('user.Total amount')}}</td>
                                 <td width="50%">{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <td width="50%">{{__('user.Withdraw amount')}}</td>
-                                <td width="50%">{{ $setting->currency_icon }}{{ $withdraw->withdraw_amount }}</td>
+                                <td width="50%">{{ $setting->currency_icon }} {{ $withdraw->withdraw_amount }}</td>
                             </tr>
                             <tr>
                                 <td width="50%">{{__('user.Status')}}</td>

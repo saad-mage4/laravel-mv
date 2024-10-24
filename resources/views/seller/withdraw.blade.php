@@ -15,7 +15,19 @@
           </div>
 
           <div class="section-body">
-            <a href="{{ route('seller.my-withdraw.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> {{__('user.New withdraw')}}</a>
+     {{-- @if ($eligibleForWithdraw)
+    <a href="{{ route('seller.my-withdraw.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> {{ __('user.New withdraw') }}
+    </a>
+    @else
+      @if (!is_null($daysLeftForNextWithdraw) && $daysLeftForNextWithdraw > 0)
+        <p>You can do the next withdrawal after {{ $daysLeftForNextWithdraw }} working days.</p>
+    @endif
+@endif --}}
+
+<a href="{{ route('seller.my-withdraw.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> {{ __('user.New withdraw') }}
+    </a>
             <div class="row mt-4">
                 <div class="col">
                   <div class="card">
@@ -25,9 +37,9 @@
                             <thead>
                                 <tr>
                                     <th >{{__('user.SN')}}</th>
-                                    <th >{{__('user.Method')}}</th>
-                                    <th >{{__('user.Charge')}}</th>
-                                    <th >{{__('user.Total Amount')}}</th>
+                                    {{-- <th >{{__('user.Method')}}</th> --}}
+                                    {{-- <th >{{__('user.Charge')}}</th> --}}
+                                    {{-- <th >{{__('user.Total Amount')}}</th> --}}
                                     <th >{{__('user.Withdraw Amount')}}</th>
                                     <th >{{__('user.Status')}}</th>
                                     <th >{{__('user.Action')}}</th>
@@ -37,10 +49,12 @@
                                 @foreach ($withdraws as $index => $withdraw)
                                     <tr>
                                         <td>{{ ++$index }}</td>
-                                        <td>{{ $withdraw->method }}</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->total_amount }}</td>
-                                        <td>{{ $setting->currency_icon }}{{ $withdraw->withdraw_amount }}</td>
+                                        {{-- <td>{{ $withdraw->method }}</td> --}}
+                                        {{-- <td>{{ $setting->currency_icon }} {{ $withdraw->total_amount - $withdraw->withdraw_amount }}</td> --}}
+                                        {{-- <td>{{ $setting->currency_icon }} {{ $withdraw->withdraw_charge }}</td> --}}
+
+                                        {{-- <td>{{ $setting->currency_icon }} {{ $withdraw->total_amount }}</td> --}}
+                                        <td>{{ $setting->currency_icon }} {{ $withdraw->withdraw_amount }}</td>
                                         <td>
                                             @if ($withdraw->status==1)
                                             <span class="badge badge-success">{{__('user.Success')}}</span>

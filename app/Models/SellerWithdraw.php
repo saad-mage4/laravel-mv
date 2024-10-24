@@ -9,7 +9,8 @@ class SellerWithdraw extends Model
 {
     use HasFactory;
 
-    public function seller(){
-        return $this->belongsTo(Vendor::class,'seller_id');
+    public function seller()
+    {
+        return $this->belongsTo(Vendor::class, 'seller_id');
     }
 }

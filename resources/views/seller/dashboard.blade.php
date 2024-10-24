@@ -15,7 +15,87 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       <div class="section-header">
         <h1>{{__('user.Dashbaord')}}</h1>
       </div>
-      <div class="section-body">
+
+      @if ($user->seller_type == "Public")
+      <h4>WithDraws:</h4>
+          <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="far fa-newspaper"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>{{__('user.Total Earning')}}</h4>
+      </div>
+      <div class="card-body">
+      {{ $setting->currency_icon }} {{ $totalAmount ?? 0 }}
+      </div>
+      </div>
+      </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="fas fa-shopping-cart"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>In Review</h4>
+      </div>
+      <div class="card-body">
+        {{ $setting->currency_icon }} {{$inReviewWithdraw ?? 0}}
+      </div>
+      </div>
+      </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="far fa-user"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>Pending Amount</h4>
+      </div>
+      <div class="card-body">
+      {{ $setting->currency_icon }} {{ $totalPendingWithdraw ?? 0 }}
+      </div>
+      </div>
+      </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div class="card card-statistic-1">
+      <div class="card-icon bg-success">
+      <i class="far fa-user"></i>
+      </div>
+      <div class="card-wrap">
+      <div class="card-header">
+      <h4>Avaiable Amount</h4>
+      </div>
+      <div class="card-body">
+      {{ $setting->currency_icon }} {{ $availableAmount ?? 0 }}
+    </div>
+    @if ($widthdraw_Status == "available")
+    <span>Commission : {{$taxRate_Per}} %</span>
+    @endif
+  </div>
+      </div>
+      </div>
+      </div>
+          @if ($widthdraw_Status == "available")
+    <a href="my-withdraw" style="font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px; text-transform: capitalize"> WithDraws </a>
+    @endif
+      <hr/>
+      @endif
+
+            <div class="section-body">
         <div class="row">
             @if ($user->seller_type == "Public")
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -259,7 +339,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
               </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="far fa-newspaper"></i>
@@ -285,7 +365,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
 
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
@@ -412,7 +492,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
             </div>
 
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="far fa-user"></i>
@@ -426,9 +506,9 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                   <i class="far fa-user"></i>
@@ -442,7 +522,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
                   </div>
                 </div>
               </div>
-            </div>
+            </div> --}}
 
              @if ($user->seller_type == "Private")
      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -487,6 +567,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
           </div>
       </div>
 
+      @if ($user->seller_type == "Public")
       <div class="section-body">
         <div class="row mt-4">
             <div class="col">
@@ -553,6 +634,21 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
               </div>
             </div>
       </div>
+      @endif
+
+      {{-- action="{{ route('withdraw.request') }}" --}}
+      {{-- @if ($widthdraw_Status == "available")
+      <div id="withdrawalModal" class="modal">
+          <form  method="POST">
+              @csrf
+              <div class="modal-content">
+                  <h4>Request Withdrawal</h4>
+                  <input type="number" name="amount" placeholder="Enter amount" required>
+                  <button type="submit" class="btn">Submit</button>
+              </div>
+          </form>
+        </div>
+      @endif --}}
     </section>
   </div>
 @endsection
