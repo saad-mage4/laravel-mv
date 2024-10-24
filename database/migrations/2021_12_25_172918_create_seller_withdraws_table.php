@@ -23,7 +23,6 @@ class CreateSellerWithdrawsTable extends Migration
             $table->text('account_info');
             $table->integer('status')->default(0);
             $table->string('approved_date')->nullable();
-            $table->enum('withdraw_status', ['requested', 'in_review', 'pending', 'available'])->default('requested');
             $table->timestamps();
         });
     }

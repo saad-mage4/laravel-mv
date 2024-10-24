@@ -1280,7 +1280,7 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="wsus__section_header">
-                        <h3>{{__('user.Flash Deal')}}</h3>
+                        <h3>{{__('user.Flash Deal')}} taha</h3>
                     </div>
                 </div>
             </div>
@@ -3274,11 +3274,37 @@
 @php
     $threeColVisible = $visibilities->where('id',9)->first();
 @endphp
-@if ($threeColVisible->status == 1)
-    <section id="wsus__weekly_best">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-4 col-sm-6 col-md-6 col-lg-4">
+@php
+$products = DB::table('products')->where(['status' => 1, 'seller_type' => 'Private'])->orderBy('id', 'desc')->limit(3)->get();
+@endphp
+<section id="wsus__weekly_best">
+    <div class="container">
+        <div class="row">
+                    @if ($products->count() > 0)
+                    <div class="col-xl-3 col-sm-6 col-md-6 col-lg-3">
+                    <div class="wsus__section_header">
+                    <h3>Private Ads </h3>
+                    </div>
+                    <div class="row weekly_best">
+                    @foreach ($products as $product)
+                    <div class="col-xl-12">
+                    <a class="wsus__hot_deals__single" href="{{ route('product_used_detail', $product->slug) }}">
+                    <div class="wsus__hot_deals__single_img">
+                        <img src="{{ asset($product->thumb_image) }}" alt="ads" class="img-fluid w-100">
+                    </div>
+                    <div class="wsus__hot_deals__single_text">
+                        <h5>{{ $product->name}}</h5>
+                        <p class="wsus__tk">{{ $product->price}}</p>
+                    </div>
+                    </a>
+                    </div>
+                    @endforeach
+
+                    </div>
+                    </div>
+                    @endif
+            @if ($threeColVisible->status == 1)
+                <div class="col-xl-3 col-sm-6 col-md-6 col-lg-3">
                     <div class="wsus__section_header">
                         @php
                             $firstCategory = $columnCategories->where('id',$threeColumnCategory->category_id_one)->first();
@@ -3396,7 +3422,7 @@
 
                     </div>
                 </div>
-                <div class="col-xl-4 col-sm-6 col-md-6 col-lg-4">
+                <div class="col-xl-3 col-sm-6 col-md-6 col-lg-3">
                     <div class="wsus__section_header">
                         @php
                             $secondCategory = $columnCategories->where('id',$threeColumnCategory->category_id_two)->first();
@@ -3515,7 +3541,7 @@
 
                     </div>
                 </div>
-                <div class="col-xl-4 col-sm-6 col-md-6 col-lg-4">
+                <div class="col-xl-3 col-sm-6 col-md-6 col-lg-3">
                     <div class="wsus__section_header">
                         @php
                             $threeCategory = $columnCategories->where('id',$threeColumnCategory->category_id_three)->first();
@@ -3632,10 +3658,10 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </section>
-@endif
     <!--============================
         WEEKLY BEST ITEM END
     ==============================-->

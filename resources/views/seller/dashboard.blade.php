@@ -29,19 +29,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       <h4>{{__('user.Total Earning')}}</h4>
       </div>
       <div class="card-body">
-      @php
-      $totalEarning = 0;
-      $totalProductSale = 0;
-      foreach ($totalOrders as $key => $totalOrder) {
-      $orderProducts = $totalOrder->orderProducts->where('seller_id',$seller->id);
-      foreach ($orderProducts as $key => $orderProduct) {
-      $price = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
-      $totalEarning = $totalEarning + $price;
-      $totalProductSale = $totalProductSale + $orderProduct->qty;
-      }
-      }
-      @endphp
-      {{ $setting->currency_icon }} {{ $totalEarning ?? 0 }}
+      {{ $setting->currency_icon }} {{ $totalAmount ?? 0 }}
       </div>
       </div>
       </div>
@@ -58,7 +46,6 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
       </div>
       <div class="card-body">
         {{ $setting->currency_icon }} {{$inReviewWithdraw ?? 0}}
-        {{-- {{ $inReviewWithdraw }} --}}
       </div>
       </div>
       </div>
@@ -580,6 +567,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
           </div>
       </div>
 
+      @if ($user->seller_type == "Public")
       <div class="section-body">
         <div class="row mt-4">
             <div class="col">
@@ -646,11 +634,11 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
               </div>
             </div>
       </div>
+      @endif
 
-      @if ($widthdraw_Status == "available")
-            <!-- Modal for requesting a withdrawal -->
+      {{-- action="{{ route('withdraw.request') }}" --}}
+      {{-- @if ($widthdraw_Status == "available")
       <div id="withdrawalModal" class="modal">
-        {{-- action="{{ route('withdraw.request') }}" --}}
           <form  method="POST">
               @csrf
               <div class="modal-content">
@@ -660,7 +648,7 @@ $remainingDays = $expiryDate->diffInDays($currentDate, false);
               </div>
           </form>
         </div>
-      @endif
+      @endif --}}
     </section>
   </div>
 @endsection

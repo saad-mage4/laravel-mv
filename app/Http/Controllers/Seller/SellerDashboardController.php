@@ -93,6 +93,16 @@ class SellerDashboardController extends Controller
 
         // date_default_timezone_set('Asia/Karachi');
 
+        $orderProducts = OrderProduct::where('seller_id', $seller->id)->get();
+        $price = [];
+        foreach ($orderProducts as $orderProduct) {
+            $price[] = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
+        }
+
+        $totalPrice = array_sum($price);
+
+        $totalAmount = $totalPrice;
+
         if (!$check) {
             $withdrawal->seller_id = $seller->id;
             $withdrawal->available_date = Carbon::now(); // Setting the initial available date
@@ -112,15 +122,7 @@ class SellerDashboardController extends Controller
             $pending_date = Carbon::parse($current_date->available_date)->diffInDays($currentTime);
             $available_date = Carbon::parse($current_date->available_date)->diffInDays($currentTime);
 
-            $orderProducts = OrderProduct::where('seller_id', $seller->id)->get();
-            $price = [];
-            foreach ($orderProducts as $orderProduct) {
-                $price[] = ($orderProduct->unit_price * $orderProduct->qty) + $orderProduct->vat;
-            }
 
-            $totalPrice = array_sum($price);
-
-            // $totalAmount = $totalPrice;
 
             if ($review_date >= 3 && $pending_date < 8) {
                 $withdrawal->status = 'in_review';
@@ -136,6 +138,10 @@ class SellerDashboardController extends Controller
                 $withdrawal->tax_rate = $taxRate;
                 $withdrawal->tax_amount = $calculated_tax; // Set the tax amount
                 $availableAmount = $totalPrice - $calculated_tax; // Calculate available amount
+                // Set totalAmount to 0 if any withdraw values exist
+            }
+            if (!is_null($inReviewWithdraw) || !is_null($totalPendingWithdraw) || !is_null($availableAmount)) {
+                $totalAmount = 0;
             }
 
             $withdrawal->update();
@@ -143,6 +149,8 @@ class SellerDashboardController extends Controller
 
         $widthdraw_Status = $withdrawal->status;
         $taxRate_Per = $withdrawal->tax_rate;
+
+
 
         return view('seller.dashboard', compact(
             'user',
@@ -161,7 +169,7 @@ class SellerDashboardController extends Controller
             'availableAmount',
             'widthdraw_Status',
             'taxRate_Per',
-            // 'totalAmount'
+            'totalAmount'
         ));
     }
 }
