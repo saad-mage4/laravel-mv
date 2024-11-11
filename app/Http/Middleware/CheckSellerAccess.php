@@ -47,9 +47,10 @@ class CheckSellerAccess
 
         // Handle private seller access
         if ($user->is_member == 1 && $user->seller_type == "Private") {
-            if ($privateDifference > 30) {
-                $notification = 'Your monthly ads time has been ended';
-            } elseif ($user->is_paid == 0 && $user->private_ad == 0) {
+            // if ($privateDifference > 30) {
+            //     $notification = 'Your monthly ads time has been ended';
+            // }
+            if ($user->is_paid == 0 && $user->private_ad == 0) {
                 $notification = 'Your Ads Limit Reached!';
             }
             $notification = array('messege' => $notification, 'alert-type' => 'error');
