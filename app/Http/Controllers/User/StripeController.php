@@ -17,7 +17,10 @@ class StripeController extends Controller
         $transactionType = $request->value;
         $privateAd = $request->privateAds;
         $stripeValue = "";
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe = new StripeClient(
+            $transactionType === "Public" ? env('STRIPE_SECRET') : env('MARKETPLACE_STRIPE_SECRET')
+        );
+
 
         if ($transactionType == "Public") {
             $stripeValue = env('SPONSOR_PRODUCT_PRICE');
