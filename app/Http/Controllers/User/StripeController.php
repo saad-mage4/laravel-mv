@@ -17,7 +17,10 @@ class StripeController extends Controller
         $transactionType = $request->value;
         $privateAd = $request->privateAds;
         $stripeValue = "";
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe = new StripeClient(
+            $transactionType === "Public" ? env('STRIPE_SECRET') : env('MARKETPLACE_STRIPE_SECRET')
+        );
+
 
         if ($transactionType == "Public") {
             $stripeValue = env('SPONSOR_PRODUCT_PRICE');
@@ -40,6 +43,7 @@ class StripeController extends Controller
             }
         }
         try {
+            // $transactionType == "Public" ? 'subscription'
             $session = $stripe->checkout->sessions->create([
                 'line_items' => [
                     [
@@ -47,7 +51,7 @@ class StripeController extends Controller
                         'quantity' => 1,
                     ],
                 ],
-                'mode' => 'subscription',
+                'mode' => $transactionType == "Public" ? 'subscription' : 'payment',
                 'success_url' => url('/user/membership/subscribe?transaction_type=' . $transactionType . '&status=success&privateAds=' . $privateAd),
                 'cancel_url' => url('/user/seller-membership?transaction_type=' . $transactionType),
             ]);
@@ -64,14 +68,14 @@ class StripeController extends Controller
         $users = User::whereNotNull('private_subscription_expiry_date')->get();
         foreach ($users  as $user) {
             $differnce = Carbon::parse($user->private_subscription_expiry_date)->diffInDays($currentTime);
-            if ($differnce > 30) {
-                $user->is_paid = 0;
-                $user->private_ad = 0;
-                // $user->private_subscription_expiry_date = null;
-                $user->update();
-            }
+            // if ($differnce > 30) {
+            //     $user->is_paid = 0;
+            //     $user->private_ad = 0;
+            //     // $user->private_subscription_expiry_date = null;
+            //     $user->update();
+            // }
             //! After 2months the products status get 0 (Not shown inthe UI)
-            elseif ($differnce > 60) {
+            if ($differnce >= 60) {
                 $vendor_id = DB::table('vendors')->select('id')->where('user_id', '=', $user->id)->get()->toArray();
                 $vendor_id = implode(array_column($vendor_id, 'id'));
                 $products = Product::where('vendor_id', $vendor_id)->get();

@@ -538,9 +538,10 @@ class UserProfileController extends Controller
         $public_differnce = Carbon::parse($user->subscription_expiry_date)->diffInDays($currentTime);
 
         if ($user->is_member == 1 && $user->seller_type == "Private") {
-            if ($differnce > 30) {
-                $notification = 'Your monthly ads time has been ended';
-            } elseif ($user->is_paid == 0  && $user->private_ad == 0) {
+            // if ($differnce > 30) {
+            //     $notification = 'Your monthly ads time has been ended';
+            // }
+            if ($user->is_paid == 0  && $user->private_ad == 0) {
                 $notification = 'Your Ads Limit Reached!';
             }
             $notification = array('messege' => $notification, 'alert-type' => 'error');
