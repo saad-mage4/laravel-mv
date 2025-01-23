@@ -35,6 +35,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($products as $index => $product)
+                                @if (!$product->private_ad == "AdminPrivateProduct")
                                     <tr>
                                         <td>{{ ++$index }}</td>
                                         <td><a href="{{ route('product-detail', $product->slug) }}">{{ $product->short_name }}</a></td>
@@ -100,6 +101,7 @@
 
                                         </td>
                                     </tr>
+                                @endif
                                   @endforeach
                             </tbody>
                         </table>

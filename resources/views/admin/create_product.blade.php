@@ -144,7 +144,7 @@
                                     <label>{{__('admin.Tax')}} <span class="text-danger">*</span></label>
                                     <select name="tax" class="form-control">
                                         <option value="">{{__('admin.Select Tax')}}</option>
-                                        @foreach ($productTaxs as $tax)
+                                        @foreach ($productTaxs ?? '' as $tax)
                                             <option {{ old('tax') == $tax->id ? 'selected' : '' }}  value="{{ $tax->id }}">{{ $tax->title }}</option>
                                         @endforeach
                                     </select>

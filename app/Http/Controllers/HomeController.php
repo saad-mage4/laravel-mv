@@ -482,12 +482,26 @@ class HomeController extends Controller
         $ads = AdType::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
         // $products = Product::where(['status' => 1])->orderBy('id', 'desc');
-        $products = DB::table('products')->where('status', '1')->orderBy('id', 'desc')->paginate($paginateQty);
+        $product_status = DB::table('products')->where('status', '1')->where('private_ad', 'AdminPrivateProduct')->get();
+
+        if ($product_status) {
+            $products = DB::table('products')
+                ->where('status', '1')
+                ->where('private_ad', 'AdminPrivateProduct')
+                ->orderBy('id', 'desc')
+                ->paginate($paginateQty);
+        } else {
+
+            $products = DB::table('products')->where('status', '1')->orderBy('id', 'desc')->paginate($paginateQty);
+        }
+
+
 
         // $products = Product::where(['status' => 1])->orderBy('created_at', 'desc')->get();
         if ($request->category_id) {
             $products = DB::table('products')->where('category_id', $request->category_id);
         }
+
         // if ($request->sub_category_id) {
         //     $products = $products->where('sub_category_id', $request->sub_category_id);
         // }

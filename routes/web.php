@@ -65,6 +65,7 @@ use App\Http\Controllers\Admin\AdvertisementController;
 use App\Http\Controllers\Admin\PrivateAdType;
 use App\Http\Controllers\Admin\PrivateCategory;
 use App\Http\Controllers\Admin\PrivateChildCategory;
+use App\Http\Controllers\Admin\PrivateProductController;
 use App\Http\Controllers\Admin\PrivateSubCategory;
 use App\Http\Controllers\Seller\SellerDashboardController;
 use App\Http\Controllers\Seller\SellerProfileController;
@@ -133,10 +134,7 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
         Route::get('/seller-detail', [HomeController::class, 'sellerDetail'])->name('seller-detail');
         Route::get('/product', [HomeController::class, 'product'])->name('product');
         // Private Used Products
-        Route::get(
-            '/used_products',
-            [HomeController::class, 'Used_Products']
-        )->name('used_products');
+        Route::get('/used_products', [HomeController::class, 'Used_Products'])->name('used_products');
         // Private Seller Details
         Route::get('/seller_used_detail', [HomeController::class, 'sellerUsedDetail'])->name('seller_used_detail');
         Route::get('/search-product', [HomeController::class, 'searchProduct'])->name('search-product');
@@ -456,7 +454,7 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
         Route::resource('product-sub-category', ProductSubCategoryController::class);
         Route::put('product-sub-category-status/{id}', [ProductSubCategoryController::class, 'changeStatus'])->name('product.sub.category.status');
 
-        //? Public Categories
+        //! Public Categories
         Route::resource('product-child-category', ProductChildCategoryController::class);
         Route::put('product-child-category-status/{id}', [ProductChildCategoryController::class, 'changeStatus'])->name('product.child.category.status');
         Route::get('subcategory-by-category/{id}', [ProductChildCategoryController::class, 'getSubcategoryByCategory'])->name('subcategory-by-category');
@@ -478,6 +476,7 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
         Route::resource('specification-key', SpecificationKeyController::class);
         Route::put('specification-key-status/{id}', [SpecificationKeyController::class, 'changeStatus'])->name('specification-key.status');
 
+        //! Public products
         Route::resource('product', ProductController::class);
         Route::put('product-status/{id}', [ProductController::class, 'changeStatus'])->name('product.status');
         Route::put('removed-product-exist-specification/{id}', [ProductController::class, 'removedProductExistSpecification'])->name('removed-product-exist-specification');
@@ -487,6 +486,12 @@ Route::group(['middleware' => ['demo', 'XSS']], function () {
         Route::put('update-product-highlight/{id}', [ProductController::class, 'productHighlightUpdate'])->name('update-product-highlight');
 
 
+        //! Private products
+        Route::resource('private_product', PrivateProductController::class);
+        Route::put('private_product-status/{id}', [PrivateProductController::class, 'changeStatus'])->name('private_product.status');
+        Route::put('private_product_removed-product-exist-specification/{id}', [PrivateProductController::class, 'removedProductExistSpecification'])->name('private_product_removed-product-exist-specification');
+
+        //! Public products variants
         Route::get('product-variant/{id}', [ProductVariantController::class, 'index'])->name('product-variant');
         Route::get('create-product-variant/{id}', [ProductVariantController::class, 'create'])->name('create-product-variant');
         Route::post('store-product-variant', [ProductVariantController::class, 'store'])->name('store-product-variant');
