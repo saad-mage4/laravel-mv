@@ -38,6 +38,7 @@ use App\Models\Setting;
 use App\Models\ContactMessage;
 use App\Models\BlogComment;
 use App\Models\City;
+use App\Models\Country;
 use App\Models\CountryState;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantItem;
@@ -482,18 +483,29 @@ class HomeController extends Controller
         $ads = AdType::where(['status' => 1])->get();
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
         // $products = Product::where(['status' => 1])->orderBy('id', 'desc');
-        $product_status = DB::table('products')->where('status', '1')->where('private_ad', 'AdminPrivateProduct')->get();
+        // $product_status = DB::table('products')->where('status', '1')->where('private_ad', 'AdminPrivateProduct')->get();
 
-        if ($product_status) {
-            $products = DB::table('products')
-                ->where('status', '1')
-                ->where('private_ad', 'AdminPrivateProduct')
-                ->orderBy('id', 'desc')
-                ->paginate($paginateQty);
-        } else {
+        // if ($product_status) {
+        //     $products = DB::table('products')
+        //         ->where('status', '1')
+        //         ->where('private_ad', 'AdminPrivateProduct')
+        //         ->orderBy('id', 'desc')
+        //         ->paginate($paginateQty);
+        // } else {
+        // }
 
-            $products = DB::table('products')->where('status', '1')->orderBy('id', 'desc')->paginate($paginateQty);
-        }
+
+        $products = DB::table('products')->where('status', '1')->orderBy('id', 'desc'); //->paginate($paginateQty)
+
+        //! Query for admin and private seller products
+        // $products = Product::where('status', 1)
+        //     ->where(function ($query) {
+        //         $query->where('seller_type', 'Private')
+        //             ->orWhere('seller_type', 'AdminPrivate');
+        //     })
+        //     ->orderBy('id', 'desc');
+
+        // dd($products);
 
 
 
@@ -533,7 +545,8 @@ class HomeController extends Controller
             $products = DB::table('products')->where('private_ad_type', $request->private_ad_type);
         }
 
-
+        //! Paginate the results
+        $products = $products->paginate($paginateQty);
 
         // $products = $products->paginate($paginateQty);
         $seoSetting = SeoSetting::find(9);
@@ -555,12 +568,14 @@ class HomeController extends Controller
                     }
                     $query->whereIn('name', $sortArr);
                 }
-            })->where('status', 1)->where('seller_type', 'Public');
+            })->where('status', 1)
+                ->whereIn('seller_type', ['AdminPublic', 'Public']);
+            // ->where('seller_type', 'Public');
         } else {
-            $products = Product::where('status', 1)->where('seller_type', 'Public');
+            $products = Product::where('status', 1)
+                ->whereIn('seller_type', ['AdminPublic', 'Public']);
+            // ->where('seller_type', 'Public');
         }
-
-
 
 
         if ($request->shorting_id) {
@@ -638,211 +653,32 @@ class HomeController extends Controller
         return view('ajax_products', compact('products', 'page_view', 'currencySetting', 'setting'));
     }
 
-    //!! Private Products Search (In this function all the used_products ajax request logic like: filters, Products order Sorting)
-    // public function searchUsedProduct(Request $request)
-    // {
-    //     $paginateQty = CustomPagination::whereId('2')->first()->qty;
-
-    //     //! Variants
-    //     if ($request->variantItems) {
-    //         $products = Product::whereHas('variantItems', function ($query) use ($request) {
-    //             $sortArr = [];
-    //             if ($request->variantItems) {
-    //                 foreach ($request->variantItems as $variantItem) {
-    //                     $sortArr[] = $variantItem;
-    //                 }
-    //                 $query->whereIn('name', $sortArr);
-    //             }
-    //         })->where('status', 1)->where('seller_type', 'Private');
-    //     } else {
-    //         $products = Product::where('status', 1)->where('seller_type', 'Private');
-    //     }
-
-
-
-
-    //     //! Shorting
-    //     if ($request->shorting_id) {
-    //         if (
-    //             $request->shorting_id == 1
-    //         ) {
-    //             $products = $products->orderBy('id', 'desc');
-    //         } else if ($request->shorting_id == 2) {
-    //             $products = $products->orderBy('price', 'asc');
-    //         } else if ($request->shorting_id == 3) {
-    //             $products = $products->orderBy('price', 'desc');
-    //         }
-    //     } else {
-    //         $products = $products->orderBy('id', 'desc');
-    //     }
-
-
-    //     //! Category
-    //     if ($request->category) {
-    //         $category = Category::where('slug', $request->category)->first();
-    //         $products = $products->where('category_id', $category->id);
-    //     }
-
-
-    //     if ($request->sub_category) {
-    //         $sub_category = SubCategory::where('slug', $request->sub_category)->first();
-    //         $products = $products->where('sub_category_id', $sub_category->id);
-    //     }
-
-    //     if ($request->child_category) {
-    //         $child_category = ChildCategory::where('slug', $request->child_category)->first();
-    //         $products = $products->where('child_category_id', $child_category->id);
-    //     }
-
-    //     //! Brands Filter
-    //     // if ($request->brands) {
-    //     //     $brand = Brand::where('slug', $request->brands)->first();
-    //     //     $products = $products->where('brand_id', $brand->id);
-    //     // }
-
-    //     // $brandSortArr = [];
-    //     // if ($request->brands) {
-    //     //     foreach ($request->brands as $brand) {
-    //     //         $brandSortArr[] = $brand;
-    //     //     }
-    //     //     $products = $products->whereIn('brand_id', $brandSortArr);
-    //     // }
-
-
-    //     //! My Brand Filter Work
-    //     // $brands = $request->brands;
-    //     // if ($brands && $request->has('brands')) {
-    //     //     $products = Product::whereIn('brand_id', $brands)->where('seller_type', 'Private')->get();
-    //     // }
-
-    //     //? Price Filter
-    //     // if ($request->price_range) {
-    //     //     $price_range = explode(';', $request->price_range);
-    //     //     $start_price = $price_range[0];
-    //     //     $end_price = $price_range[1];
-    //     //     $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
-    //     // }
-
-    //     if ($request->shop_name) {
-    //         $slug = $request->shop_name;
-    //         $seller = Vendor::where(['slug' => $slug])->first();
-    //         $products = $products->where('vendor_id', $seller->id);
-    //     }
-
-    //     if ($request->search) {
-    //         $products = $products->where('name', 'LIKE', '%' . $request->search . "%")
-    //             ->orWhere('long_description', 'LIKE', '%' . $request->search . '%');
-    //     }
-
-    //     //! Pagatination
-    //     // $products = $products->paginate($paginateQty); //$paginateQty
-    //     // $products = $products->appends($request->all());
-
-    //     //! page View Filter
-    //     $page_view = '';
-    //     if ($request->page_view) {
-    //         $page_view = $request->page_view;
-    //     } else {
-    //         $page_view = 'grid_view';
-    //     }
-    //     // $user = Auth::guard('web')->user();
-    //     // $Vendor = Vendor::where('user_id', $user->id)->first();
-
-    //     /**
-    //      * * Join the Tables beacuse user watch if its not login
-    //      * TODO: products , categories, vendors, brands , pagination, price filter
-    //      */
-    //     $products = DB::table('products')
-    //     ->join('categories', 'products.category_id', '=', 'categories.id')
-    //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-    //     ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-
-    //     $brands = $request->brands;
-    //     if ($brands && $request->has('brands')) {
-    //         $products = DB::table('products')
-    //         ->join('categories', 'products.category_id', '=', 'categories.id')
-    //         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-    //         ->join('brands', 'products.brand_id', '=', 'brands.id')
-    //         ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->whereIn('brand_id', $brands)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-    //     }
-
-    //     // dd($request->all());
-
-    //     // product New/Used Filter AdType
-    //     $productsfilter = $request->AdType;
-    //     if ($productsfilter && $request->has('AdType')) {
-    //         // dd($productsfilter);
-    //         $products = DB::table('products')
-    //         ->join('categories', 'products.category_id', '=', 'categories.id')
-    //         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-    //         // ->join('brands', 'products.brand_id', '=', 'brands.id')
-    //         ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
-    //         ->where('products.seller_type', 'Private')
-    //         ->where('products.private_ad_type', true)
-    //         // ->whereIn('products.brand_id', $brands)0;200000
-    //         ->orderBy('products.id', 'desc')
-    //             ->paginate($paginateQty)
-    //             ->appends($request->all());
-    //     }
-
-    //     if ($request->price_range && !$request->has('brands')) {
-    //         $price_range = explode(';', $request->price_range);
-    //         $start_price = $price_range[0];
-    //         $end_price = $price_range[1];
-    //         // $products = $products->where('price', '>=', $start_price)->where('price', '<=', $end_price);
-    //         $products = DB::table('products')
-    //         ->join('categories', 'products.category_id', '=', 'categories.id')
-    //         ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-    //         ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('price', '>=', $start_price)->where('price', '<=', $end_price)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-    //     }
-
-    //     $currencySetting = Setting::first();
-    //     $setting = $currencySetting;
-    //     return view(
-    //         'ajax_used_products',
-    //         compact('products', 'page_view', 'currencySetting', 'setting')
-    //     );
-    // }
-
     //! new Way (Default Ajax Load to show the Product in the Used Product Page)
     public function searchUsedProduct(Request $request)
     {
+
         $paginateQty = CustomPagination::whereId('2')->first()->qty;
 
         //! Initialize the products query
-        // $products = Product::where('status', 1)
-        //     ->where('seller_type', 'Private');
+        // $products = Product::where('products.status', 1)
+        //     ->where('products.seller_type', 'Private')
+        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+        //     ->select('products.*', 'vendors.phone');
 
-        $products = Product::where('products.status', 1)
-            ->where('products.seller_type', 'Private')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->select('products.*', 'vendors.phone');
-
-        //! Variants
-        if ($request->variantItems) {
-            $products = $products->whereHas('variantItems', function ($query) use ($request) {
-                $sortArr = [];
-                if ($request->variantItems) {
-                    foreach ($request->variantItems as $variantItem) {
-                        $sortArr[] = $variantItem;
-                    }
-                    $query->whereIn('name', $sortArr);
-                }
-            });
-        }
-
-        //! Shorting
-        if ($request->shorting_id) {
-            if ($request->shorting_id == 1) {
-                $products = $products->orderBy('id', 'desc');
-            } elseif ($request->shorting_id == 2) {
-                $products = $products->orderBy('price', 'asc');
-            } elseif ($request->shorting_id == 3) {
-                $products = $products->orderBy('price', 'desc');
-            }
-        } else {
-            $products = $products->orderBy('id', 'desc');
-        }
+        //! For Admin Private Product Selections
+        $products = DB::table('products')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->whereIn('products.seller_type', ['AdminPrivate', 'Private'])
+            ->leftJoin(
+                'vendors',
+                'products.vendor_id',
+                '=',
+                'vendors.id'
+            )
+            // ->orWhere('products.vendor_id', '=', 0)
+            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
+            ->orderBy('id', 'desc')
+            ->get();
 
         /**
          * * Company & Private Categories Work
@@ -855,17 +691,6 @@ class HomeController extends Controller
             $category = Category::where('slug', $request->category)->first();
             $products = $products->where('category_id', $category->id);
         }
-
-        // if ($request->sub_category) {
-        //     $sub_category = SubCategory::where('slug', $request->sub_category)->first();
-        //     $products = $products->where('sub_category_id', $sub_category->id);
-        // }
-
-        // if ($request->child_category) {
-        //     $child_category = ChildCategory::where('slug', $request->child_category)->first();
-        //     $products = $products->where('child_category_id', $child_category->id);
-        // }
-        //! Company Category Filters End
 
         //! for Private Category Filter
 
@@ -881,11 +706,8 @@ class HomeController extends Controller
 
         if ($request->private_child_category) {
             $child_category = PrivateChildCategoryModel::where('slug', $request->private_child_category)->first();
-            $products = $products->where('private_child_category_id', $child_category->id);
+            $products = $products->whepaginateQtynd;
         }
-
-        //! for Private Category Filter End
-
 
 
 
@@ -924,8 +746,7 @@ class HomeController extends Controller
             });
         }
 
-        //! Pagination
-        $products = $products->paginate($paginateQty)->appends($request->all());
+
 
         //! Page View Filter
         $page_view = $request->page_view ?? 'grid_view';
@@ -934,6 +755,8 @@ class HomeController extends Controller
         $currencySetting = Setting::first();
         $setting = $currencySetting;
         $ads = AdType::where(['status' => 1])->get();
+        //! Pagination
+        // $products = $products->paginate($paginateQty)->appends($request->all());
 
         return view('ajax_used_products', compact('products', 'ads', 'page_view', 'currencySetting', 'setting'));
     }
@@ -985,74 +808,30 @@ class HomeController extends Controller
         // ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
 
         //! page View Filter
-        $page_view = '';
-        if ($request->page_view) {
-            $page_view = $request->page_view;
-        } else {
-            $page_view = 'grid_view';
-        }
+        $page_view = $request->page_view ?? 'grid_view';
+
+
+
+        $productsQuery = DB::table('products')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->whereIn('seller_type', ['AdminPrivate', 'Private'])
+            ->leftJoin(
+                'vendors',
+                'products.vendor_id',
+                '=',
+                'vendors.id'
+            )
+            // ->orWhere('products.vendor_id', '=', 0)
+            ->join('brands', 'products.brand_id', '=', 'brands.id')
+            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug');
+        // ->get();
+        // ->where('seller_type', 'Private');
+
         $state = $data['state'];
         $city = $data['city'];
         $input_value = $data['input_value'];
 
-        $productsQuery = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-            ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->select('products.*', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')
-            ->where('seller_type', 'Private');
-
-        // // Search by all fileds
-        // if ($state != '' && $input_value != '' && $city != '') {
-        //     $products = DB::table('products')
-        //     ->join('categories', 'products.category_id', '=', 'categories.id')
-        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
-        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('vendors.city', $city)->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        // }
-
-        // // search by only State
-        // if ($state != '' && $input_value == '' && $city == '') {
-        //     $products = DB::table('products')
-        //     ->join('categories', 'products.category_id', '=', 'categories.id')
-        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
-        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        // }
-
-
-        // // Search by state & city only
-
-        // if ($state != '' && $input_value == '' && $city != '') {
-        //     $products = DB::table('products')
-        //     ->join('categories', 'products.category_id', '=', 'categories.id')
-        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
-        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('vendors.city', $city)->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        // }
-
-
-        // // Search by input-name only
-        // if ($state == '' && $input_value != '' && $city == '') {
-        //     $products = DB::table('products')
-        //     ->join('categories', 'products.category_id', '=', 'categories.id')
-        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
-        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        // }
-
-
-        // // Search by state & input-name only
-        // if ($state != '' && $input_value != '' && $city == '') {
-        //     $products = DB::table('products')
-        //     ->join('categories', 'products.category_id', '=', 'categories.id')
-        //     ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
-        //     ->join('brands', 'products.brand_id', '=', 'brands.id')
-        //     ->select('products.*', 'vendors.state', 'vendors.phone', 'categories.name as CategoryName', 'categories.slug as categorySlug')->where('seller_type', 'Private')->where('vendors.state', $state)->where('products.name', 'like',  '%' . $input_value . '%')->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
-        // }
-
-
-        //? New change for custom search
+        //! New change for custom search
         if (!empty($data['state'])) {
             $productsQuery->where('vendors.state', $data['state']);
         }
@@ -1066,7 +845,12 @@ class HomeController extends Controller
         }
 
 
-        $products = $productsQuery->orderBy('id', 'desc')->paginate($paginateQty)->appends($request->all());
+
+
+        $products = $productsQuery->orderBy('id', 'desc')
+            ->paginate($paginateQty)->appends($request->all());
+
+
 
         $currencySetting = Setting::first();
         $setting = $currencySetting;
@@ -1110,7 +894,9 @@ class HomeController extends Controller
     //! Private Products Details
     public function productUsedDetail($slug)
     {
-        $product = Product::where(['status' => 1, 'slug' => $slug])->first();
+        $product = Product::whereIn('seller_type', ['AdminPrivate', 'Private'])
+            ->where(['status' => 1, 'slug' => $slug])->first();
+
         // $user = Auth::guard('web')->user();
         // $Vendor = Vendor::where('user_id', $user->id)->first();
 
@@ -1137,17 +923,20 @@ class HomeController extends Controller
             }
         }
 
-
         /**
          * TODO : Session Expire
          * ! For that if the user is !login (session logout)
          */
+
+        // Use DB query with proper joins
         $product = DB::table('products')
+            ->whereIn('seller_type', ['AdminPrivate', 'Private'])
+            ->where(['products.status' => 1, 'products.slug' => $slug])
             ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->join('vendors', 'products.vendor_id', '=', 'vendors.id')
+            ->leftJoin('vendors', 'products.vendor_id', '=', 'vendors.id')
             ->join('brands', 'products.brand_id', '=', 'brands.id')
-            ->join('cities', 'vendors.city', 'cities.id')
-            ->join('country_states', 'vendors.state', 'country_states.id')
+            ->leftJoin('cities', 'vendors.city', '=', 'cities.id')
+            ->leftJoin('country_states', 'vendors.state', '=', 'country_states.id')
             ->select(
                 'products.*',
                 'vendors.phone',
@@ -1167,10 +956,17 @@ class HomeController extends Controller
                 'vendors.banner_image as Vendor_banner',
                 'vendors.slug as Vendor_Slug',
                 'cities.name as City_Name',
-                'country_states.name as State_Name',
-            )->where(['seller_type' => 'Private', 'products.status' => 1, 'products.slug' => $slug])->first();
+                'country_states.name as State_Name'
+            )
+            ->first();
+
+
+
+
+
         // 'vendors.id as Seller'
         // dd($product);
+
         $currencySetting = Setting::first();
         $setting = $currencySetting;
         // $product = [];
@@ -1179,11 +975,39 @@ class HomeController extends Controller
         //     $product = $product_item;
         // }
         $gallery = ProductGallery::where(['product_id' => $product->id])->get();
-        // $seller = Vendor::where('id', $product->vendor_id)->firstl();
+        // $seller = Vendor::where('id', $product->vendor_id)->first();
         // dd($product);
         $ads = AdType::where(['status' => 1])->get();
 
-        return view('product_used_detail', compact('product', 'ads', 'productReviews', 'totalProductReviewQty', 'productVariants', 'recaptchaSetting', 'relatedProducts', 'currencySetting', 'banner', 'setting', 'defaultProfile', 'tags', 'gallery'));
+        // $adName = AdType::where('id', $product->private_ad_type)->value('name');
+        $countryName = Country::where('id', $product->private_country)->value('name');
+        $stateName = CountryState::where('id', $product->private_state)->value('name');
+        $cityName = City::where('id', $product->private_city)->value('name');
+
+        // dd($adName);
+
+        // $countries = Country::orderBy('name', 'asc')->where('status', 1)->get();
+        // $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => $product->private_country])->get();
+        // $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => $product->private_state])->get();
+
+        return view('product_used_detail', compact(
+            'product',
+            'ads',
+            'productReviews',
+            'totalProductReviewQty',
+            'productVariants',
+            'recaptchaSetting',
+            'relatedProducts',
+            'currencySetting',
+            'banner',
+            'setting',
+            'defaultProfile',
+            'tags',
+            'gallery',
+            'countryName',
+            'stateName',
+            'cityName'
+        ));
     }
 
     public function addToCompare($id)

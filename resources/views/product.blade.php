@@ -102,7 +102,7 @@
                                     </div>
                                     <div class="accordion-body">
                                       @foreach ($brands as $brand)
-                                        <div class="form-check">
+                                        <div class="form-check brands">
                                             <input name="brands[]" class="form-check-input brand_item" type="checkbox" value="{{ $brand->id }}" id="flexCheckDefault11-{{ $brand->id }}">
                                             <label class="form-check-label" for="flexCheckDefault11-{{ $brand->id }}">
                                             {{ $brand->name }}
@@ -268,7 +268,7 @@
                // Search By Brands
             $('#searchBrands').on('keyup', function() {
       var value = $(this).val().toLowerCase();
-      $('.form-check').each(function() {
+      $('.form-check.brands').each(function() {
         var brandName = $(this).text().toLowerCase();
         if (brandName.indexOf(value) > -1) {
           $(this).show();

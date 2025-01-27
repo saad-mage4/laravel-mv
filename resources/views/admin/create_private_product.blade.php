@@ -3,6 +3,11 @@
 <title>{{__('admin.Products')}}</title>
 @endsection
 @section('admin-content')
+<?php
+$countries = App\Models\Country::orderBy('name','asc')->where('status',1)->get();
+$states = App\Models\CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
+$cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
+?>
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
@@ -42,6 +47,13 @@
                                 </div>
 
 
+                                {{-- Image Gallery  --}}
+                            <div class="form-group col-12">
+                                     <label for="">{{__('user.New Image (Multiple)')}}</label>
+                                <input type="file" class="form-control-file" name="images[]" multiple onchange="imageGalleryPreview(event)"
+                                accept="image/*">
+                                </div>
+                                <div id="Image_Preview_Slider" style="display: none;"></div>
 
                                 <div class="form-group col-12">
                                     <label>{{__('admin.Name')}} <span class="text-danger">*</span></label>
@@ -109,31 +121,46 @@
                                    <input type="text" class="form-control" name="price" value="{{ old('price') }}">
                                 </div>
 
+                                  <div class="form-group col-12">
+                                    <label>Private Phone </label>
+                                   <input type="text" class="form-control" name="private_phone" value="{{ old('private_phone') }}">
+                                </div>
 
 
+                                 <div class="form-group col-12">
+                                    <label for="private_country">Private Country </label>
+                                     <select class="form-control select2" name="private_country" id="country_id">
+                                       <option value="">{{__('user.Select Country')}}</option>
+                                        @foreach ($countries as $country)
+                                                    <option  {{ old('private_country') == $country->id ? 'selected' : '' }} value="{{ $country->id }}" data-name="{{ $country->name }}">{{ $country->name }}</option>
+                                                @endforeach
+                                    </select>
+                                </div>
 
+                                <div class="form-group col-12">
+                                    <label for="private_state">Private State</label>
+                                     <select class="form-control select2" name="private_state" id="state_id">
+                                                <option value="">{{__('user.Select State')}}</option>
+                                        @foreach ($states as $state)
+                                                    <option {{ old('private_state') ==$state->id ? 'selected' : '' }}  value="{{ $state->id }}" data-name="{{ $state->name }}">{{ $state->name }}</option>
+                                                @endforeach
+                                    </select>
+                                </div>
 
-
-
-
-
-
+                                <div class="form-group col-12">
+                                    <label for="private_city">Private City </label>
+                                     <select class="form-control select2" name="private_city" id="city_id">
+                                                <option value="">{{__('user.Select City')}}</option>
+                                        @foreach ($cities as $city)
+                                                    <option {{ old('private_city') ==$state->id ? 'selected' : '' }} value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
+                                                @endforeach
+                                    </select>
+                                </div>
 
                                 <div class="form-group col-12">
                                     <label>{{__('admin.Long Description')}} <span class="text-danger">*</span></label>
                                     <textarea name="long_description" id="" cols="30" rows="10" class="summernote">{{ old('long_description') }}</textarea>
                                 </div>
-
-
-
-
-
-
-
-
-
-
-
 
                                 <div class="form-group col-12">
                                     <label>{{__('admin.Status')}} <span class="text-danger">*</span></label>
@@ -142,15 +169,6 @@
                                         <option value="0">{{__('admin.Inactive')}}</option>
                                     </select>
                                 </div>
-
-
-
-
-
-
-
-
-
                             </div>
                             <div class="row">
                                 <div class="col-12">
@@ -221,6 +239,65 @@
 
             })
 
+
+            // onLoad
+            const handleCountryChange = () => {
+                let countryId = $("#country_id").val();
+                    let countryName = $("#country_id option:selected").data('name');
+                    if(countryId){
+                        $.ajax({
+                            type:"get",
+                            url:"{{url('/admin/state-by-country/')}}"+"/"+countryId,
+                            success:function(response){
+                                $("#state_id").html(response.states);
+                                $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                            },
+                            error:function(err){
+                                console.table(err);
+                            }
+                        })
+                    }else{
+                        $("#state_id").html("<option value=''>{{__('user.Select a State')}}</option>");
+                        $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                    }
+            }
+
+            handleCountryChange();
+
+
+             //   Country Select
+        $("#country_id").on("change", function (e) {
+            e.preventDefault();
+            handleCountryChange();
+        });
+
+            $("#state_id").on("change",function(e){
+                e.preventDefault();
+                let stateId = $("#state_id").val();
+                const stateName = $("#state_id option:selected").data('name');
+                if(stateId){
+                    $.ajax({
+                        type:"get",
+                        url:"{{url('/admin/city-by-state/')}}"+"/"+stateId,
+                        success:function(response){
+                            $("#city_id").html(response.cities);
+                        },
+                        error:function(err){
+                            console.table(err);
+                        }
+                    })
+                }else{
+                   $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                }
+
+            })
+
+
+            $("#city_id").on("change", function() {
+            let cityId = $("#city_id").val();
+            const cityName = $("#city_id option:selected").data('name');
+            });
+
         });
     })(jQuery);
 
@@ -239,6 +316,39 @@
         }
         reader.readAsDataURL(event.target.files[0]);
     };
+
+    const imageGalleryPreview = (e) => {
+      const maxFiles = 8;
+    const files = e?.target?.files;
+
+    if (files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} images.`);
+        e.target.value = ''; // Reset the file input
+        return;
+    }
+    const previewContainer = document.getElementById('Image_Preview_Slider');
+    previewContainer.style.display = "grid";
+
+    // Clear any existing images in the preview container
+    previewContainer.innerHTML = '';
+
+    Array.from(e.target.files)?.forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            // Create an image element
+            const img = document.createElement('img');
+            img.className = 'admin-img';
+            img.src = reader.result;
+            img.alt = 'Preview Image';
+
+            // Append the image to the preview container
+            previewContainer.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+     });
+}
 
 </script>
 

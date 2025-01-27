@@ -30,6 +30,7 @@ use App\Models\Setting;
 use App\Rules\NotSvg;
 use Image;
 use File;
+use Illuminate\Support\Facades\DB;
 use Str;
 
 class PrivateProductController extends Controller
@@ -58,6 +59,7 @@ class PrivateProductController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         // if ($request->video_link) {
         //     $valid = preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $request->video_link);
 
@@ -121,9 +123,12 @@ class PrivateProductController extends Controller
         $product->short_name = "";
         $product->name = $request->name;
         $product->slug = $request->slug;
-        $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
-        $product->child_category_id = $request->child_category ? $request->child_category : 0;
+        $product->category_id = 25;
+        $product->sub_category_id = 0;
+        $product->child_category_id = 0;
+        $product->private_category_id = $request->category;
+        $product->private_sub_category_id = $request->sub_category ?? 0;
+        $product->private_child_category_id = $request->child_category ?? 0;
         $product->brand_id = $request->brand;
         $product->sku = null;
         $product->price = $request->price;
@@ -137,7 +142,12 @@ class PrivateProductController extends Controller
         $product->is_warranty = 0;
         $product->is_return = 0;
         $product->return_policy_id = 0;
-        $product->private_ad = "AdminPrivateProduct";
+        $product->seller_type = "AdminPrivate";
+        $product->private_ad_type = $request->private_ad_type;
+        $product->private_phone = $request->private_phone;
+        $product->private_country = $request->private_country;
+        $product->private_state = $request->private_state;
+        $product->private_city = $request->private_city;
         $product->status = $request->status;
 
         $product->is_undefine = 1;
@@ -145,6 +155,24 @@ class PrivateProductController extends Controller
         $product->seo_title = $request->name;
         $product->seo_description = $request->name;
         $product->save();
+
+        $getCurrentProdId = DB::table('products')->select('id')->orderByDesc('id')->first();
+
+        //! Image Gallery Logic
+        if ($request->images) {
+            foreach ($request->images as $index => $image) {
+                $extention = $image->getClientOriginalExtension();
+                $image_name = 'Gallery' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+                $image_name = 'uploads/custom-images/' . $image_name;
+                Image::make($image)
+                    ->save(public_path() . '/' . $image_name);
+                $gallery = new ProductGallery();
+                $gallery->product_id =
+                    $getCurrentProdId->id;
+                $gallery->image = $image_name;
+                $gallery->save();
+            }
+        }
 
         $notification = trans('admin_validation.Created Successfully');
         $notification = array('messege' => $notification, 'alert-type' => 'success');
@@ -231,9 +259,12 @@ class PrivateProductController extends Controller
         $product->short_name = "";
         $product->name = $request->name;
         $product->slug = $request->slug;
-        $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
-        $product->child_category_id = $request->child_category ? $request->child_category : 0;
+        $product->category_id = 25;
+        $product->sub_category_id = 0;
+        $product->child_category_id =  0;
+        $product->private_category_id = $request->category;
+        $product->private_sub_category_id = $request->sub_category ?? 0;
+        $product->private_child_category_id = $request->child_category ?? 0;
         $product->brand_id = $request->brand;
         $product->sku = null;
         $product->price = $request->price;
@@ -247,7 +278,12 @@ class PrivateProductController extends Controller
         $product->is_warranty = 0;
         $product->is_return = 0;
         $product->return_policy_id = 0;
-        $product->private_ad = "AdminPrivateProduct";
+        $product->seller_type = "AdminPrivate";
+        $product->private_ad_type = $request->private_ad_type;
+        $product->private_phone = $request->private_phone;
+        $product->private_country = $request->private_country;
+        $product->private_state = $request->private_state;
+        $product->private_city = $request->private_city;
         $product->status = $request->status;
 
         $product->is_undefine = 1;

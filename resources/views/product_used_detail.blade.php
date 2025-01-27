@@ -93,17 +93,15 @@
                 </div>
                 {{-- seller information  --}}
                 <div class="col-12 col-md-4" >
-                      @if ($product->vendor_id != 0)
+                      @if ($product->vendor_id !=0)
                             @php
                              $users = Auth::guard('web')->user();
                                 $user = $product;
                                 // $user = $user->user;
                             @endphp
                   <div class="wsus__pro_det_vendor p-4 rounded-3" style="border: 2px solid #d8dfe0">
-                                    {{-- <div class="row"> --}}
                                         <div class="col-xl-12 col-xxl-12 col-md-12">
                                             <div class="SHOP_PROFILE">
-                                                {{-- {{dd($user)}} --}}
                                                 {{-- wsus__vebdor_img h-auto rounded-circle fa-w-20 --}}
                                                 @if ($user->Vendor_banner)
                                                 <img src="{{ asset($user->Vendor_banner) }}" alt="" class="img-fluid w-100">
@@ -116,53 +114,7 @@
                                        <div class="col-xl-12 col-xxl-12 col-md-12 mt-5 mt-md-0">
                                             <div class="wsus__pro_det_vendor_text w-100">
                                                 <h4 class="mt-3">{{ $user->firstName }} {{ $user->lastName }}</h4>
-                                                    {{-- @php
-                                                        $reviewQty = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->count();
-                                                        $totalReview = App\Models\ProductReview::where('status',1)->where('product_vendor_id',$product->vendor_id)->sum('rating');
-                                                        if ($reviewQty > 0) {
-                                                            $average = $totalReview / $reviewQty;
-                                                            $intAverage = intval($average);
-                                                            $nextValue = $intAverage + 1;
-                                                            $reviewPoint = $intAverage;
-                                                            $halfReview = false;
-                                                            if($intAverage < $average && $average < $nextValue){
-                                                                $reviewPoint= $intAverage + 0.5;
-                                                                $halfReview=true;
-                                                            }
-                                                        }
-                                                    @endphp --}}
 
-                                                    {{-- @if ($reviewQty > 0)
-                                                    <p class="rating">
-                                                        @for ($i = 1; $i <=5; $i++)
-                                                            @if ($i <= $reviewPoint)
-                                                                <i class="fas fa-star"></i>
-                                                            @elseif ($i> $reviewPoint )
-                                                                @if ($halfReview==true)
-                                                                <i class="fas fa-star-half-alt"></i>
-                                                                    @php
-                                                                        $halfReview=false
-                                                                    @endphp
-                                                                @else
-                                                                <i class="fal fa-star"></i>
-                                                                @endif
-                                                            @endif
-                                                        @endfor
-                                                        <span>({{ $reviewQty }} {{ __('user.review') }})</span>
-                                                    </p>
-                                                    @endif
-
-                                                    @if ($reviewQty == 0)
-                                                        <p class="rating">
-                                                            <i class="fal fa-star"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <span>(0 {{ __('user.review') }})</span>
-                                                        </p>
-                                                    @endif --}}
-                                                 {{-- {{ dd($user) }} --}}
                                                 <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ $user->shop_name ?? "test Store" }}</p>
                                                 {{-- <p><span class="w-auto">{{__('user.Address')}}:</span> {{ $user->address }} {{ $user->city ? ','.$user->city->name : '' }} {{ $user->city ? ','.$user->city->countryState->name : '' }} {{ $user->city ? ','.$user->city->countryState->country->name : '' }}</p> --}}
                                                 <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->phone }}</p>
@@ -186,65 +138,33 @@
                                             </div>
                                         </div> --}}
                                     </div>
-                                {{-- </div> --}}
-                @endif
-                {{-- Return Data  --}}
-                 {{-- <div class="col-xl-3 col-md-12 mt-md-5 mt-lg-0"> --}}
-                    {{-- id="sticky_sidebar" --}}
-                    {{-- <div class="wsus_pro_det_sidebar" >
-                        <div class="lg_area">
-                            <div class="wsus_pro_det_sidebar_single">
-                                <i class="fal fa-truck"></i>
-                                <div class="wsus_pro_det_sidebar_text">
+                </div>
+                                @else
+                                @php
+                             $users = Auth::guard('web')->user();
+                                $user = $product;
+                            @endphp
+                               {{-- Admin Private Ads  --}}
+                            <div class="wsus__pro_det_vendor p-4 rounded-3" style="border: 2px solid #d8dfe0">
+                               <div class="col-xl-12 col-xxl-12 col-md-12">
+                                            <div class="SHOP_PROFILE">
+                                            <img src="{{ asset($defaultProfile->image) }}" alt="" class="img-fluid w-100">
+                                            </div>
+                                        </div>
+                                       <div class="col-xl-12 col-xxl-12 col-md-12 mt-5 mt-md-0">
+                                            <div class="wsus__pro_det_vendor_text w-100">
+                                                <h4 class="mt-3">All in one Shop</h4>
+                                                <p><span class="w-auto">{{__('user.Store Name')}}:</span> {{ "TradeMag Store" }}</p>
+                                                <p><span class="w-auto">{{__('user.Phone')}}:</span> {{ $product->private_phone }}</p>
+                                                <p><span class="w-auto">Country:</span> {{ $countryName }}</p>
+                                                <p><span class="w-auto">City:</span> {{ $cityName }}</p>
+                                                <p><span class="w-auto">State:</span> {{ $stateName }}</p>
 
-                                    @if ($product->is_return == 1)
-                                    <h5>{{__('user.Return Available')}}</h5>
-                                    <p>{{ $product->returnPolicy->details }}</p>
-                                    @else
-                                        <h5>{{__('user.Return Not Available')}}</h5>
-                                    @endif
-
-                                </div>
-                            </div>
-
-
-                            <div class="wsus_pro_det_sidebar_single">
-                                <i class="far fa-shield-check"></i>
-                                <div class="wsus_pro_det_sidebar_text">
-                                    <h5>{{__('user.Secure Payment')}}</h5>
-                                    <p>{{__('user.We ensure secure payment')}}</p>
-                                </div>
-                            </div>
-                            <div class="wsus_pro_det_sidebar_single">
-                                <i class="fal fa-envelope-open-dollar"></i>
-                                <div class="wsus_pro_det_sidebar_text">
-                                    @if ($product->is_warranty == 1)
-                                    <h5>{{__('user.Warranty Available')}}</h5>
-                                    @else
-                                    <h5>{{__('user.Warranty Not Available')}}</h5>
-                                    @endif
-
-                                </div>
-                            </div>
-                        </div>
-
-                        @if ($banner->status == 1)
-                            <div class="wsus__det_sidebar_banner">
-                                <img src="{{ asset($banner->image) }}" alt="banner" class="img-fluid w-100">
-                                    <div class="wsus__det_sidebar_banner_text_overlay">
-                                    <div class="wsus__det_sidebar_banner_text">
-                                        <p>{{ $banner->title }}</p>
-                                        <h4>{{ $banner->description }}</h4>
-                                        <a href="{{ $banner->link }}" class="common_btn">{{__('user.shop now')}}</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endif
-
-
-                    </div> --}}
-                {{-- </div> --}}
-                </div>
+                                @endif
                 {{-- col-xl-5 col-md-7 col-lg-7 --}}
                 <div class="col-12 mt-5">
                     <div class="wsus__pro_details_text p-3 rounded-3 " style="border: 2px solid #d8dfe0; ">
@@ -257,33 +177,15 @@
                         <p class="description" style="max-height: 200px; overflow-y: auto">{{ $product->short_description }}</p>
 
                         {{-- Flash Deal  --}}
-
-
-
                         <form id="shoppingCartForm">
-                        {{-- <div class="wsus__quentity">
-                            <h5>{{__('user.Quantity')}} :</h5>
-                            <div class="modal_btn">
-                                <button type="button" class="btn btn-danger btn-sm decrementProduct">-</button>
-                                <input class="form-control product_qty" name="quantity" readonly type="text" min="1" max="{{ $product->qty }}" value="1" data-qty="{{ $product->qty }}"/>
-                                <button type="button" class="btn btn-success btn-sm incrementProduct">+</button>
-                            </div>
-                            <h3 class="d-none">{{ $currencySetting->currency_icon }}<span id="product_price">{{ sprintf("%.2f",$productPrice) }}</span></h3>
-                        </div> --}}
-
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <input type="hidden" name="image" value="{{ $product->thumb_image }}">
                         <input type="hidden" name="slug" value="{{ $product->slug }}">
 
                         {{-- productVariants --}}
                         <ul class="wsus__button_area">
-                            {{-- <li><button type="submit" class="add_cart">{{__('user.add to cart')}}</button></li>
-                            <li><a class="buy_now" href="javascript:;" id="buyNowBtn">{{__('user.buy now')}}</a></li>
-                            <li><a href="javascript:;" onclick="addToWishlist('{{ $product->id }}')"><i class="fal fa-heart"></i></a></li>
-                            <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li> --}}
-
-                    <li><a class="add_cart"  href="tel:{{$product->phone}}">Call</a></li>
-                    <li><a class="add_cart"  href="sms:{{$product->phone}}">Chat</a></li>
+                    <li><a class="add_cart"  href="tel:{{$product->seller_type == "AdminPrivate" ? $product->private_phone : $product->phone}}">Call</a></li>
+                    <li><a class="add_cart"  href="sms:{{$product->seller_type == "AdminPrivate" ? $product->private_phone : $product->phone}}">Chat</a></li>
                         </ul>
 
                     </form>
@@ -296,12 +198,10 @@
                             {{ $product->brandName }}
                         <p class="brand_model detaile_private_seller"><span>Product Condition :</span>
                             {{-- <a href="{{ route('product',['category' => $product->categorySlug]) }}">{{ $product->CategoryName }}</a> --}}
-                            {{-- {{$product->private_ad_type}} --}}
                             @foreach ($ads as $ad)
                         @if ($product->private_ad_type == $ad->id)
                             {{$ad->name}}
                         @else
-
                         @endif
                     @endforeach
                         </p>
@@ -314,139 +214,8 @@
                                 <li><a class="pinterest" href="https://www.pinterest.com/pin/create/button/?description={{ $product->name }}&media=&url={{ route('product-detail', $product->slug) }}"><i class="fab fa-pinterest-p"></i></a></li>
                             </ul>
                         </div>
-                        {{-- @auth
-                            @php
-                                $user = Auth::guard('web')->user();
-                                $isExist = false;
-                                $orders = App\Models\Order::where(['user_id' => $user->id])->get();
-                                foreach ($orders as $key => $order) {
-                                    foreach ($order->orderproduct as $key => $orderProduct) {
-                                        if($orderProduct->product_id == $product->id){
-                                            $isExist = true;
-                                        }
-                                    }
-                                }
-                            @endphp
-                        @if ($isExist)
-                            <a class="wsus__pro_report" href="#" data-bs-toggle="modal" data-bs-target="#productReportModal"><i
-                            class="fal fa-comment-alt-smile"></i> {{__('user.Report incorrect productinformation')}}</a>
-                        @endif
-
-                        @endauth --}}
-
                     </div>
-
-                    <!--==========================
-                    product REPORT MODAL VIEW
-                    ===========================-->
-                    {{-- @auth
-                        @if ($isExist)
-                            <section class="product_popup_modal report_modal">
-                                <div class="modal fade" id="productReportModal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">{{__('user.Report Product')}}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
-                                                        class="far fa-times"></i></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <form id="reportModalForm">
-                                                            @csrf
-                                                            <div class="wsus__single_input">
-                                                                <label>{{__('user.Subject')}}</label>
-                                                                <input type="text" name="subject" placeholder="{{__('user.Type Subject')}}">
-                                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                                <input type="hidden" name="seller_id" value="{{ $product->vendor_id }}">
-                                                            </div>
-                                                            <div class="wsus__single_input">
-                                                                <label>{{__('user.Description')}}</label>
-                                                                <textarea name="description" cols="3" rows="3"
-                                                                    placeholder="{{__('user.Description')}}"></textarea>
-                                                            </div>
-
-                                                            <button type="submit" class="common_btn">{{__('user.submit')}}</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        @endif
-                    @endauth --}}
-                    <!--==========================
-                    productREPORT MODAL VIEW
-                    ===========================-->
                 </div>
-
-                {{-- Warranty  --}}
-                {{-- <div class="col-xl-3 col-md-12 mt-md-5 mt-lg-0">
-                    <div class="wsus_pro_det_sidebar" id="sticky_sidebar">
-                        <div class="lg_area">
-                            <div class="wsus_pro_det_sidebar_single">
-                                <i class="fal fa-truck"></i>
-                                <div class="wsus_pro_det_sidebar_text">
-
-                                    @if ($product->is_return == 1)
-                                    <h5>{{__('user.Return Available')}}</h5>
-                                    <p>{{ $product->returnPolicy->details }}</p>
-                                    @else
-                                        <h5>{{__('user.Return Not Available')}}</h5>
-                                    @endif
-
-                                </div>
-                            </div>
-
-
-                            <div class="wsus_pro_det_sidebar_single">
-                                <i class="far fa-shield-check"></i>
-                                <div class="wsus_pro_det_sidebar_text">
-                                    <h5>{{__('user.Secure Payment')}}</h5>
-                                    <p>{{__('user.We ensure secure payment')}}</p>
-                                </div>
-                            </div>
-                            <div class="wsus_pro_det_sidebar_single">
-                                <i class="fal fa-envelope-open-dollar"></i>
-                                <div class="wsus_pro_det_sidebar_text">
-                                    @if ($product->is_warranty == 1)
-                                    <h5>{{__('user.Warranty Available')}}</h5>
-                                    @else
-                                    <h5>{{__('user.Warranty Not Available')}}</h5>
-                                    @endif
-
-                                </div>
-                            </div>
-                        </div>
-
-                        @if ($banner->status == 1)
-                            <div class="wsus__det_sidebar_banner">
-                                <img src="{{ asset($banner->image) }}" alt="banner" class="img-fluid w-100">
-                                    <div class="wsus__det_sidebar_banner_text_overlay">
-                                    <div class="wsus__det_sidebar_banner_text">
-                                        <p>{{ $banner->title }}</p>
-                                        <h4>{{ $banner->description }}</h4>
-                                        <a href="{{ $banner->link }}" class="common_btn">{{__('user.shop now')}}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-
-                    </div>
-                </div> --}}
-
-                {{-- Description Shown  --}}
-                                    {{-- <div class="col-12">
-                                        <div class="wsus__pro_det_description">
-                                            <h1 class="fw-bold  mb-3">Description :</h1>
-                                            {!! $product->long_description !!}
-                                        </div>
-                                    </div> --}}
-
                 <div class="col-xl-12">
                     <div class="wsus__pro_det_description">
                         <ul class="nav nav-pills mb-3" id="pills-tab3" role="tablist">
@@ -463,21 +232,8 @@
                             </li>
                             @endif
 
-                            {{-- @if ($product->vendor_id != 0)
-                            @if ($setting->enable_multivendor == 1)
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-contact" type="button" role="tab"
-                                    aria-controls="pills-contact" aria-selected="false">{{__('user.Seller Information')}}</button>
-                            </li>
-                            @endif
-                            @endif --}}
 
-                            {{-- <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills-contact-tab2" data-bs-toggle="pill"
-                                    data-bs-target="#pills-contact2" type="button" role="tab"
-                                    aria-controls="pills-contact2" aria-selected="false">{{__('user.Reviews')}}</button>
-                            </li> --}}
+
 
                         </ul>
                         <div class="tab-content" id="pills-tabContent4">

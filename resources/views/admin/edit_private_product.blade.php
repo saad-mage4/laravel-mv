@@ -3,6 +3,11 @@
 <title>Private Product</title>
 @endsection
 @section('admin-content')
+<?php
+$countries = App\Models\Country::orderBy('name','asc')->where('status',1)->get();
+$states = App\Models\CountryState::orderBy('name','asc')->where(['status' => 1, 'country_id' => 0])->get();
+$cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country_state_id' => 0])->get();
+?>
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
@@ -129,6 +134,42 @@
                                 </div>
 
 
+                                <div class="form-group col-12">
+                                    <label>Private Phone </label>
+                                   <input type="text" class="form-control" name="private_phone" value="{{$product->private_phone}}">
+                                </div>
+
+
+                                 <div class="form-group col-12">
+                                    <label for="private_country">Private Country </label>
+                                     <select class="form-control select2" name="private_country" id="country_id">
+                                       <option value="">{{__('user.Select Country')}}</option>
+                                        @foreach ($countries as $country)
+                                                    <option  {{ $product->private_country == $country->id ? 'selected' : '' }} value="{{ $country->id }}" data-name="{{ $country->name }}">{{ $country->name }}</option>
+                                                @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label for="private_state">Private State</label>
+                                     <select class="form-control select2" name="private_state" id="state_id">
+                                                <option value="">{{__('user.Select State')}}</option>
+                                        @foreach ($states as $state)
+                                                    <option {{ $producct->private_state ==$state->id ? 'selected' : '' }}  value="{{ $state->id }}" data-name="{{ $state->name }}">{{ $state->name }}</option>
+                                                @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label for="private_city">Private City </label>
+                                     <select class="form-control select2" name="private_city" id="city_id">
+                                                <option value="">{{__('user.Select City')}}</option>
+                                        @foreach ($cities as $city)
+                                                    <option {{ $product->private_city == $state->id ? 'selected' : '' }} value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
+                                                @endforeach
+                                    </select>
+                                </div>
+
 
 
 
@@ -248,6 +289,65 @@
                 }
 
             })
+
+
+             // onLoad
+            const handleCountryChange = () => {
+                let countryId = $("#country_id").val();
+                    let countryName = $("#country_id option:selected").data('name');
+                    if(countryId){
+                        $.ajax({
+                            type:"get",
+                            url:"{{url('/admin/state-by-country/')}}"+"/"+countryId,
+                            success:function(response){
+                                $("#state_id").html(response.states);
+                                $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                            },
+                            error:function(err){
+                                console.table(err);
+                            }
+                        })
+                    }else{
+                        $("#state_id").html("<option value=''>{{__('user.Select a State')}}</option>");
+                        $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                    }
+            }
+
+            handleCountryChange();
+
+
+             //   Country Select
+        $("#country_id").on("change", function (e) {
+            e.preventDefault();
+            handleCountryChange();
+        });
+
+            $("#state_id").on("change",function(e){
+                e.preventDefault();
+                let stateId = $("#state_id").val();
+                const stateName = $("#state_id option:selected").data('name');
+                if(stateId){
+                    $.ajax({
+                        type:"get",
+                        url:"{{url('/admin/city-by-state/')}}"+"/"+stateId,
+                        success:function(response){
+                            $("#city_id").html(response.cities);
+                        },
+                        error:function(err){
+                            console.table(err);
+                        }
+                    })
+                }else{
+                   $("#city_id").html("<option value=''>{{__('user.Select a City')}}</option>");
+                }
+
+            })
+
+
+            $("#city_id").on("change", function() {
+            let cityId = $("#city_id").val();
+            const cityName = $("#city_id option:selected").data('name');
+            });
 
 
 

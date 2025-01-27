@@ -6,7 +6,6 @@
             </div>
         </div>
     @endif
-    {{--  --}}
     <div class="row">
         @foreach ($products as $product)
         @if ($product->status == 1)
@@ -21,24 +20,10 @@
                 @elseif ($product->is_best == 1)
                     <span class="wsus__new">{{__('user.Best')}}</span>
                 @endif
-
-                {{-- @if ($isCampaign)
-                    <span class="wsus__minus">-{{ $campaignOffer }}%</span>
-                @else
-                    @if ($product->offer_price != null)
-                        <span class="wsus__minus">-{{ $percentage }}%</span>
-                    @endif
-                @endif --}}
                 <a class="wsus__pro_link" href="{{ route('product_used_detail', $product->slug) }}">
                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_2" />
                 </a>
-                {{-- <ul class="wsus__single_pro_icon">
-                    <li><a data-bs-toggle="modal" data-bs-target="#productModalView-{{ $product->id }}"><i class="fal fa-eye"></i></a></li>
-                    <li><a href="javascript:;" onclick="addToWishlist('{{ $product->id }}')"><i class="far fa-heart"></i></a></li>
-                    <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li>
-                </ul> --}}
-                {{-- {{dd($ads)}} --}}
                 <div class="wsus__product_details">
                 <a class="wsus__category" href="#!">
                     @foreach ($ads as $ad)
@@ -50,44 +35,13 @@
                     @endforeach
                 </a>
 
-                {{-- @if ($reviewQty > 0)
-                    <p class="wsus__pro_rating">
-                        @for ($i = 1; $i <=5; $i++)
-                            @if ($i <= $reviewPoint)
-                                <i class="fas fa-star"></i>
-                            @elseif ($i> $reviewPoint )
-                                @if ($halfReview==true)
-                                <i class="fas fa-star-half-alt"></i>
-                                    @php
-                                        $halfReview=false
-                                    @endphp
-                                @else
-                                <i class="fal fa-star"></i>
-                                @endif
-                            @endif
-                        @endfor
-                        <span>({{ $reviewQty }} {{__('user.review')}})</span>
-                    </p>
-                @endif
-                @if ($reviewQty == 0)
-                    <p class="wsus__pro_rating">
-                        <i class="fal fa-star"></i>
-                        <i class="fal fa-star"></i>
-                        <i class="fal fa-star"></i>
-                        <i class="fal fa-star"></i>
-                        <i class="fal fa-star"></i>
-                        <span>(0 {{__('user.review')}})</span>
-                    </p>
-                @endif --}}
+
                 <h4 class="View_Price"> {{ $currencySetting->currency_icon }}<span id="mainProductPrice">{{$product->price}}</span>
                     {{-- <del>${{$product->offer_price}}</del> --}}
                 </h4>
-                    <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name }}</a>
-
-                        {{-- <p class="">{{ $product->short_description }}</p> --}}
-                     {{-- <a class="add_cart" onclick="addToCartMainProduct('{{ $product->id }}')" href="javascript:;">{{__('user.add to cart')}}</a> --}}
-                    <a class="add_cart position-static mt-2"  href="tel:{{$product->phone}}">Call</a>
-                    <a class="add_cart position-static mt-2"  href="sms:{{$product->phone}}">Chat</a>
+                    <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name ?? "" }}</a>
+                    <a class="add_cart position-static mt-2"  href="tel:{{$product->seller_type == "AdminPrivate" ? $product->private_phone : $product->phone}}">Call</a>
+                    <a class="add_cart position-static mt-2"  href="sms:{{$product->seller_type == "AdminPrivate" ? $product->private_phone : $product->phone}}">Chat</a>
                 </div>
             </div>
         </div>
@@ -95,7 +49,7 @@
         @endforeach
 
         <div class="col-xl-12">
-            {{ $products->links('ajax_custom_paginator') }}
+            {{-- {{ $products->links('ajax_custom_paginator') }} --}}
         </div>
     </div>
 </div>
@@ -172,8 +126,8 @@
                     <a class="wsus__pro_name" href="{{ route('product_used_detail',$product->slug) }}">{{ $product->name }}</a>
                     <p class="" style="max-height: 80px; overflow-y: auto">{{ $product->short_description }}</p>
                     <ul class="wsus__single_pro_icon mt-4">
-                        <li><a class="add_cart"  href="tel:{{$product->phone}}">Call</a></li>
-                    <li><a class="add_cart"  href="sms:{{$product->phone}}">Chat</a></li>
+                        <li><a class="add_cart"  href="tel:{{$product->seller_type == "AdminPrivate" ? $product->private_phone : $product->phone}}">Call</a></li>
+                    <li><a class="add_cart"  href="sms:{{$product->seller_type == "AdminPrivate" ? $product->private_phone : $product->phone}}">Chat</a></li>
                        {{-- <li><a class="add_cart" onclick="addToCartMainProduct('{{ $product->id }}')" href="javascript:;">{{__('user.add to cart')}}</a></li>
                          <li><a href="javascript:;" onclick="addToWishlist('{{ $product->id }}')"><i class="far fa-heart"></i></a></li>
                         <li><a href="javascript:;" onclick="addToCompare('{{ $product->id }}')"><i class="far fa-random"></i></a></li> --}}
@@ -184,7 +138,7 @@
         @endif
         @endforeach
         <div class="col-xl-12">
-            {{ $products->links('ajax_custom_paginator') }}
+            {{-- {{ $products->links('ajax_custom_paginator') }} --}}
         </div>
     </div>
 </div>
