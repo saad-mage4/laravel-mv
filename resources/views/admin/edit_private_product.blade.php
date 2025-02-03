@@ -49,10 +49,25 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                     </div>
                                 </div>
 
+                                {{-- {{dd($gallery)}} --}}
                                 <div class="form-group col-12">
                                     <label>{{__('admin.Banner Image')}} <span class="text-danger">*</span></label>
                                     <input type="file" class="form-control-file"  name="banner_image">
                                 </div>
+
+                            {{-- <div class="form-group col-12">
+                                     <label for="">{{__('user.New Image (Multiple)')}}</label>
+                                <input type="file" class="form-control-file" name="images[]" multiple onchange="imageGalleryPreview(event)"
+                                accept="image/*">
+                                </div> --}}
+                                {{-- <div id="Image_Preview_Slider" style="display: none;"></div> --}}
+
+
+                                {{-- <div id="Image_Preview_Slider">
+                                @foreach ($gallery as $image)
+                                        <img class="admin-img" src="{{ asset($image->image) }}" alt="preview-image"  loading="lazy">
+                                @endforeach
+                            </div> --}}
 
 
 
@@ -73,7 +88,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                         <option value="">{{__('admin.Select Category')}}</option>
                                         @foreach ($categories as $category)
                                         @if ($category->status == 1)
-                                        <option {{ $product->category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option {{ $product->private_category_id == $category->id ? 'selected' : '' }} value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endif
                                         @endforeach
                                     </select>
@@ -85,7 +100,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                         <option value="">{{__('admin.Select Sub Category')}}</option>
                                         @if ($product->sub_category_id != 0)
                                             @foreach ($subCategories as $subCategory)
-                                            <option {{ $product->sub_category_id == $subCategory->id ? 'selected' : '' }} value="{{ $subCategory->id }}">{{ $subCategory->name }}</option>
+                                            <option {{ $product->private_sub_category_id == $subCategory->id ? 'selected' : '' }} value="{{ $subCategory->id }}">{{ $subCategory->name }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -97,7 +112,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                                         <option value="">{{__('admin.Select Child Category')}}</option>
                                         @if ($product->child_category_id != 0)
                                             @foreach ($childCategories as $childCategory)
-                                            <option {{ $product->child_category_id == $childCategory->id ? 'selected' : '' }} value="{{ $childCategory->id }}">{{ $childCategory->name }}</option>
+                                            <option {{ $product->private_child_category_id == $childCategory->id ? 'selected' : '' }} value="{{ $childCategory->id }}">{{ $childCategory->name }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -242,8 +257,8 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                 $("#slug").val(convertToSlug($(this).val()));
             })
 
-            $("#category").on("change",function(){
-                var categoryId = $("#category").val();
+            const CategoryLoad = () => {
+                   var categoryId = $("#category").val();
                 if(categoryId){
                     $.ajax({
                         type:"get",
@@ -265,8 +280,13 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
                     var response= "<option value=''>{{__('admin.Select Child Category')}}</option>";
                     $("#child_category").html(response);
                 }
+            }
 
+            CategoryLoad();
 
+            $("#category").on("change",function(e){
+                 e.preventDefault();
+             CategoryLoad();
             })
 
             $("#sub_category").on("change",function(){
@@ -370,6 +390,40 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
         reader.readAsDataURL(event.target.files[0]);
     };
 
+
+    const imageGalleryPreview = (e) => {
+      const maxFiles = 8;
+    const files = e?.target?.files;
+
+    if (files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} images.`);
+        e.target.value = ''; // Reset the file input
+        return;
+    }
+    const previewContainer = document.getElementById('Image_Preview_Slider');
+    previewContainer.style.display = "grid";
+
+    // Clear any existing images in the preview container
+    previewContainer.innerHTML = '';
+
+    Array.from(e.target.files)?.forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            // Create an image element
+            const img = document.createElement('img');
+            img.className = 'admin-img';
+            img.src = reader.result;
+            img.alt = 'Preview Image';
+            img.loading = 'lazy';
+
+            // Append the image to the preview container
+            previewContainer.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+     });
+}
 </script>
 
 

@@ -83,8 +83,15 @@
                     @endif
                 @endif
                 <a class="wsus__pro_link" href="{{ route('product-detail', $product->slug) }}">
-                    <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
-                    <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_2" />
+                   <img
+                    src="{{ ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->thumb_image, env('APP_URL')) }}"
+                    {{-- src="{{ asset($product->thumb_image) }}" --}}
+                     alt="product" class="img-fluid w-100 img_1" />
+                    <img
+                    {{-- src="{{ asset($product->thumb_image) }}"  --}}
+                    src="{{ ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->thumb_image, env('APP_URL')) }}"
+
+                    alt="product" class="img-fluid w-100 img_2" />
                 </a>
                 <ul class="wsus__single_pro_icon">
                     <li><a data-bs-toggle="modal" data-bs-target="#productModalView-{{ $product->id }}"><i class="fal fa-eye"></i></a></li>
@@ -231,8 +238,15 @@
                 @endif
 
                 <a class="wsus__pro_link" href="{{ route('product-detail', $product->slug) }}">
-                    <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
-                    <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_2" />
+                    <img
+                    src="{{ ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->thumb_image, env('APP_URL')) }}"
+                    {{-- src="{{ asset($product->thumb_image) }}" --}}
+                     alt="product" class="img-fluid w-100 img_1" />
+                    <img
+                    {{-- src="{{ asset($product->thumb_image) }}"  --}}
+                    src="{{ ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->thumb_image, env('APP_URL')) }}"
+
+                    alt="product" class="img-fluid w-100 img_2" />
                 </a>
                 <div class="wsus__product_details">
                     <a class="wsus__category" href="{{ route('product',['category' => $product->category->slug]) }}">{{ $product->category->name }} </a>
@@ -319,7 +333,10 @@
                                         @foreach ($product->gallery as $image)
                                         <div class="col-xl-12">
                                             <div class="modal_slider_img">
-                                                <img src="{{ asset($image->image) }}" alt="product" class="img-fluid w-100">
+                                                <img
+                                                {{-- src="{{ asset($image->image) }}"  --}}
+                                                src="{{ ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($image->image, env('APP_URL')) }}"
+                                                alt="product" class="img-fluid w-100">
                                             </div>
                                         </div>
                                         @endforeach

@@ -241,8 +241,8 @@ class ProductController extends Controller
         $rules = [
             'short_name' => 'required',
             'name' => 'required',
-            'thumb_image' =>  ['required', 'image', new NotSvg()],
-            'banner_image' =>  ['required', 'image', new NotSvg()],
+            // 'thumb_image' =>  ['required', 'image', new NotSvg()],
+            // 'banner_image' =>  ['required', 'image', new NotSvg()],
             'slug' => 'required|unique:products,slug,' . $product->id,
             'category' => 'required',
             'short_description' => 'required',

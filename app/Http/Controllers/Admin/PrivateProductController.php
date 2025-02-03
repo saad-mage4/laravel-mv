@@ -59,22 +59,11 @@ class PrivateProductController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-        // if ($request->video_link) {
-        //     $valid = preg_match("/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/watch\?v\=\w+$/", $request->video_link);
-
-        //     if (!$valid) {
-        //         $notification = trans('admin_validation.Please provide your valid youtube url');
-        //         $notification = array('messege' => $notification, 'alert-type' => 'error');
-        //         return redirect()->back()->with($notification);
-        //     }
-        // }
-
         $rules = [
             'name' => 'required',
             'slug' => 'required|unique:products',
-            'thumb_image' => 'required',
-            'banner_image' => 'required',
+            'thumb_image' =>  ['required', 'image', new NotSvg()],
+            'banner_image' =>  ['required', 'image', new NotSvg()],
             'category' => 'required',
             'long_description' => 'required',
             'brand' => 'required',
@@ -190,20 +179,22 @@ class PrivateProductController extends Controller
         $categories = PrivateCategory::all();
         $subCategories = PrivateSubCategoryModel::all();
         $childCategories = PrivateChildCategoryModel::all();
+        $gallery = ProductGallery::where('product_id', $product->id)->get();
         $brands = Brand::all();
         $ads = AdType::all();
-        return view('admin.edit_private_product', compact('categories', 'brands',  'product', 'subCategories', 'childCategories', 'ads'));
+        return view('admin.edit_private_product', compact('categories', 'brands',  'product', 'subCategories', 'childCategories', 'ads', 'gallery'));
     }
 
     public function update(Request $request, $id)
     {
 
         $product = Product::find($id);
+        $gallery = ProductGallery::where('product_id', $product->id)->get();
         $rules = [
             'name' => 'required',
             'slug' => 'required|unique:products,slug,' . $product->id,
-            'thumb_image' => 'required',
-            'banner_image' => 'required',
+            // 'thumb_image' => 'required',
+            // 'banner_image' => 'required',
             'category' => 'required',
             'long_description' => 'required',
             'brand' => 'required',
@@ -291,6 +282,28 @@ class PrivateProductController extends Controller
         $product->seo_title = $request->name;
         $product->seo_description = $request->name;
         $product->save();
+
+        // $getCurrentProdId = DB::table('products')->select('id')->orderByDesc('id')->first();
+        //! Image Gallery Logic
+        if ($request->images) {
+            $old_gallery =   $gallery;
+            if ($old_gallery) {
+                if (File::exists(public_path() . '/' . $old_gallery)) unlink(public_path() . '/' . $old_gallery);
+                // $old_gallery->save();
+            } else {
+                foreach ($request->images as $index => $image) {
+                    $extention = $image->getClientOriginalExtension();
+                    $image_name = 'Gallery' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;
+                    $image_name = 'uploads/custom-images/' . $image_name;
+                    Image::make($image)
+                        ->save(public_path() . '/' . $image_name);
+                    $gallery_new = new ProductGallery();
+                    $gallery_new->product_id = $product->id;
+                    $gallery_new->image = $image_name;
+                    $gallery_new->save();
+                }
+            }
+        }
 
         $notification = trans('admin_validation.Update Successfully');
         $notification = array('messege' => $notification, 'alert-type' => 'success');

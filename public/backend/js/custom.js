@@ -62,4 +62,47 @@ $(document).ready(function () {
     //         contentType: false,
     //     });
     // });
-});
+
+
+
+    const checkSpan_withdangerClass = $(document).find("span[class='text-danger']");
+
+    function checkFields() {
+        $(checkSpan_withdangerClass.parent('label').next(`input[type="text"], input[type="number"], select, textarea, .note-editable p`)).each(function () {
+            const $input = $(this);
+            let isEmpty = false;
+
+            if ($input.val() === "" || ($input.is('select') && $input.val() === null)) {
+                isEmpty = true;
+            } else if ($input.hasClass('select2-hidden-accessible')) {
+                const $select2Container = $input.next('.select2-container');
+                if ($select2Container.length === 0) {
+                    return;
+                }
+                if ($select2Container.find('.select2-selection__rendered').text() === "") {
+                    isEmpty = true;
+                }
+            }
+
+            if (isEmpty) {
+                $input.addClass('red-bg');
+            } else {
+                $input.removeClass('red-bg');
+            }
+        });
+    }
+
+
+    checkFields();
+
+    $('input[type="text"], input[type="number"], select').on('input change blur', checkFields);
+
+    $(document).on('select2:open', function (e) {
+        const $select2 = $(e.target);
+        $select2.on('select2:select select2:unselect select2:close', checkFields);
+    });
+
+
+})
+
+

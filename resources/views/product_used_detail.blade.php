@@ -29,7 +29,11 @@
     <!--============================
          BREADCRUMB START
     ==============================-->
-    <section id="wsus__breadcrumb" style="background: url({{  asset($product->banner_image) }});">
+
+    <section id="wsus__breadcrumb" style="background: url({{
+    // asset($product->banner_image)
+    ($product->seller_type == 'AdminPrivate' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->banner_image, env('APP_URL'))
+     }});">
         <div class="wsus_breadcrumb_overlay">
             <div class="container">
                 <div class="row">
@@ -69,12 +73,29 @@
                                     </a>
                                 @endif
                                 <ul class='exzoom_img_ul'>
-                                    @foreach ($gallery as $image)
-                                    @if ($image->count() === 1 &&  $image->status === 1)
-                                  <li><img class="zoom img-fluid w-100" src="{{ asset($image->first()->image) }}" alt="product"></li>
-                                    @else <li><img class="zoom ing-fluid w-100" src="{{ asset($image->image) }}" alt="product"></li>
+                                    {{-- {{dd($gallery)}} --}}
+                                    {{-- @foreach ($gallery as $images)
+                                    @if ($images->count() === 1 &&  $images->status === 1)
+                                  <li><img class="zoom img-fluid w-100" src="{{ asset($images->first()->image) }}" alt="product"></li>
+                                    @else
+                                    <li><img class="zoom ing-fluid w-100" src="{{ asset($images->image) }}" alt="product"></li>
                                     @endif
-                                    @endforeach
+                                    @endforeach --}}
+@foreach ($gallery as $image)
+    <li>
+        <img class="zoom img-fluid w-100"
+             src="{{ ($product->seller_type == 'AdminPrivate' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($image->image, env('APP_URL')) }}"
+             alt="product">
+    </li>
+@endforeach
+
+                                {{-- @foreach ($gallery as $image)
+                                    <li>
+                                        <img class="zoom img-fluid w-100"
+                                            src="{{ ($product->seller_type == 'AdminPrivate' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . asset($image->image) }}"
+                                            alt="product">
+                                    </li>
+                                @endforeach --}}
 
 
                                 </ul>

@@ -12,7 +12,10 @@
     <!--============================
          BREADCRUMB START
     ==============================-->
-    <section id="wsus__breadcrumb" style="background: url({{  asset($product->banner_image) }});">
+    <section id="wsus__breadcrumb" style="background: url({{
+    // asset($product->banner_image)
+    ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->banner_image, env('APP_URL'))
+     }});">
         <div class="wsus_breadcrumb_overlay">
             <div class="container">
                 <div class="row">
@@ -51,7 +54,8 @@
                                 @endif
                                 <ul class='exzoom_img_ul'>
                                     @foreach ($product->gallery as $image)
-                                    <li><img class="zoom ing-fluid w-100" src="{{ asset($image->image) }}" alt="product"></li>
+
+                                    <li><img class="zoom ing-fluid w-100" src="{{ ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($image->image, env('APP_URL')) }}" alt="product"></li>
                                     @endforeach
 
 
@@ -816,7 +820,10 @@
                                                     @foreach ($relatedProduct->gallery as $image)
                                                     <div class="col-xl-12">
                                                         <div class="modal_slider_img">
-                                                            <img src="{{ asset($image->image) }}" alt="product" class="img-fluid w-100">
+                                                            <img src="{{
+                                                                // asset($image->image)
+                                                                ($product->seller_type == 'AdminPublic' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($image->image, env('APP_URL'))
+                                                                 }}" alt="product" class="img-fluid w-100">
                                                         </div>
                                                     </div>
                                                     @endforeach

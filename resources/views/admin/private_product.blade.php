@@ -29,7 +29,7 @@
                                     <th width="10%">{{__('user.Price')}}</th>
                                     <th width="15%">{{__('user.Photo')}}</th>
                                     <th width="15%">Ads Type</th>
-                                    {{-- <th width="10%">Gallery</th> --}}
+                                    <th width="10%">Gallery</th>
                                     <th width="10%">{{__('user.Status')}}</th>
                                     <th width="15%">{{__('user.Action')}}</th>
                                   </tr>
@@ -43,11 +43,11 @@
                                     <td>{{ $setting->currency_icon }}{{ $product->price }}</td>
                                     <td> <img class="rounded-circle" src="{{ asset($product->thumb_image) }}" alt="" width="100px" height="100px"></td>
                                     <td>{{ $product->private_ad_type == 1 ? "New" : "Used" }}</td>
-                                    {{-- <td>
+                                    <td>
                                     <a target="_blank" href="{{ route('admin.product-gallery',$product->id) }}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-link"></i>
                                   </a>
-                                   </td> --}}
+                                   </td>
                                     <td>
                                         @if($product->status == 1)
                                         <a href="javascript:;" onclick="changeProductStatus({{ $product->id }})">

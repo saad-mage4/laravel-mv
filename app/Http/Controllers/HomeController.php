@@ -896,10 +896,6 @@ class HomeController extends Controller
     {
         $product = Product::whereIn('seller_type', ['AdminPrivate', 'Private'])
             ->where(['status' => 1, 'slug' => $slug])->first();
-
-        // $user = Auth::guard('web')->user();
-        // $Vendor = Vendor::where('user_id', $user->id)->first();
-
         if (!$product) {
             $notification = trans('user_validation.Something went wrong');
             $notification = array('messege' => $notification, 'alert-type' => 'error');
@@ -960,35 +956,16 @@ class HomeController extends Controller
             )
             ->first();
 
-
-
-
-
-        // 'vendors.id as Seller'
-        // dd($product);
-
         $currencySetting = Setting::first();
         $setting = $currencySetting;
-        // $product = [];
-
-        // foreach ($products as $product_item) {
-        //     $product = $product_item;
-        // }
-        $gallery = ProductGallery::where(['product_id' => $product->id])->get();
-        // $seller = Vendor::where('id', $product->vendor_id)->first();
-        // dd($product);
+        $gallery = ProductGallery::where('product_id', $product->id)->where('status', 1)->get();
+        // dd($gallery);
         $ads = AdType::where(['status' => 1])->get();
 
-        // $adName = AdType::where('id', $product->private_ad_type)->value('name');
         $countryName = Country::where('id', $product->private_country)->value('name');
         $stateName = CountryState::where('id', $product->private_state)->value('name');
         $cityName = City::where('id', $product->private_city)->value('name');
 
-        // dd($adName);
-
-        // $countries = Country::orderBy('name', 'asc')->where('status', 1)->get();
-        // $states = CountryState::orderBy('name', 'asc')->where(['status' => 1, 'country_id' => $product->private_country])->get();
-        // $cities = City::orderBy('name', 'asc')->where(['status' => 1, 'country_state_id' => $product->private_state])->get();
 
         return view('product_used_detail', compact(
             'product',

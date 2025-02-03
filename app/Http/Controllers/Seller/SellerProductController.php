@@ -432,8 +432,8 @@ class SellerProductController extends Controller
                 // 'short_name' => 'required',
                 'name' => 'required',
                 'slug' => 'required|unique:products',
-                'thumb_image' => 'required',
-                'banner_image' => 'required',
+                // 'thumb_image' => 'required',
+                // 'banner_image' => 'required',
                 // 'category' => 'required',
                 'private_category' => 'required',
                 // 'short_description' => 'required',
@@ -465,8 +465,8 @@ class SellerProductController extends Controller
                 // 'short_name' => 'required',
                 'name' => 'required',
                 'slug' => 'required|unique:products',
-                'thumb_image' => 'required',
-                'banner_image' => 'required',
+                // 'thumb_image' => 'required',
+                // 'banner_image' => 'required',
                 'category' => 'required',
                 // 'short_description' => 'required',
                 'long_description' => 'required',
@@ -532,67 +532,6 @@ class SellerProductController extends Controller
             }
         }
 
-        // $product->short_name = $request->short_name;
-        // $product->name = $request->name;
-        // $product->slug = $request->slug;
-        // $product->category_id = $request->category;
-        // $product->sub_category_id = $request->sub_category ? $request->sub_category : 0;
-        // $product->child_category_id = $request->child_category ? $request->child_category : 0;
-        // $product->brand_id = $request->brand;
-        // $product->sku = $request->sku;
-        // $product->price = $request->price;
-        // $product->offer_price = $request->offer_price;
-        // $product->qty = $request->quantity;
-        // $product->short_description = $request->short_description;
-        // $product->long_description = $request->long_description;
-        // $product->video_link = $request->video_link;
-        // $product->tags = $request->tags;
-        // $product->tax_id = $request->tax;
-        // $product->is_warranty = $request->is_warranty;
-        // $product->is_return = $request->is_return;
-        // $product->return_policy_id = $request->is_return == 1 ? $request->return_policy_id : 0;
-        // $product->is_specification = $request->is_specification ? 1 : 0;
-        // $product->seo_title = $request->seo_title ? $request->seo_title : $request->name;
-        // $product->seo_description = $request->seo_description ? $request->seo_description : $request->name;
-
-        // // Check if the offer_price has changed
-        // $oldOfferPrice = $product->getOriginal('offer_price'); // Get the original offer_price from the database
-        // $newOfferPrice = $request->offer_price;
-
-        // if ($oldOfferPrice != $newOfferPrice) {
-        //     // Offer price has changed, notify users in the wishlist
-        //     $wishlistUsers = Wishlist::where('product_id', $product->id)
-        //         ->where('created_at', '>=', now()->subDays(7)) // Filter wishlists created in the past 7 days
-        //         ->pluck('user_id')
-        //         ->toArray();
-
-        //     foreach ($wishlistUsers as $userId) {
-        //         $user = User::find($userId);
-        //         info('start');
-        //         if ($user && $user->email) {
-        //             $email = $user->email;
-
-        //             $details = array(
-        //                 'product_name' => $product->name,
-        //                 'new_price' => $newOfferPrice,
-        //                 'old_price' => $oldOfferPrice,
-        //             );
-        //             info('data set');
-        //             // Send email notification to the user (You may customize this part)
-        //             $subject = 'Offer Price Update Notification';
-        //             $message = 'The offer price for the product ' . $product->name . ' has been updated to ' . $newOfferPrice;
-
-        //             $details = ['product_name' => $product->name, 'new_price' => $newOfferPrice, 'old_price' => $oldOfferPrice];
-        //             Mail::to($email)->send(new NewOfferPrice($details));
-        //             info('done');
-
-        //             // Use your own logic to send the email (e.g., Laravel's Mail::to())
-        //         }
-        //     }
-        // }
-        // $product->save();
-
-
         if ($user->seller_type == "Private") {
             $productCategories = Category::where(['name' => $request->category])->get();
             // $productPrivateCategories = PrivateCategory::where(['name' => $request->private_category])->get();
@@ -618,7 +557,7 @@ class SellerProductController extends Controller
             $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
             $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
             $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
-            $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
+            $product->return_policy_id = 0;
             $product->is_undefine = 1;
             $product->is_specification = 0;
             $product->seo_title = "";
@@ -691,7 +630,7 @@ class SellerProductController extends Controller
             $product->tax_id = $user->seller_type == "Private" ? 0 : $request->tax;
             $product->is_warranty = $user->seller_type == "Private" ? 0 : $request->is_warranty;
             $product->is_return = $user->seller_type == "Private" ? 0 : $request->is_return;
-            $product->return_policy_id = $user->seller_type == "Private" ? 0 : $request->is_return == 1 ? $request->return_policy_id : 0;
+            $product->return_policy_id = $request->is_return == 1 ? $request->return_policy_id : 0;
             $product->is_undefine = 1;
             $product->is_specification = 0; //$request->is_specification
             $product->seo_title = "";
