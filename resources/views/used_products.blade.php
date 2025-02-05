@@ -407,7 +407,8 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingCategories" data-bs-parent="#accordionExample">
             <div class="accordion-body">
             <ul class="list-unstyled">
-            <div class="accordion" id="accordionCategories">
+                <div class="accordion" id="accordionCategories">
+                {{-- <li><a class="categoryForSearch" style="margin-bottom: 15px;"  href="javascript:;" data-category="0">{{__('user.All Categories')}}</a></li> --}}
                 @foreach ($productPrivateCategories as $category)
             <div class="accordion-item">
             <h2 class="accordion-header" id="headingCategory{{ $loop->index }}">
@@ -481,6 +482,7 @@ $cities = App\Models\City::orderBy('name','asc')->where(['status' => 1, 'country
     <div class="desktop-menu">
     <ul class="wsus_menu_cat_item">
     <!-- Main Categories -->
+    {{-- <li><a class="categoryForSearch"  href="javascript:;" data-category="0"><i class="" aria-hidden="true"></i>{{__('user.All Categories')}}</a></li> --}}
     @foreach ($productPrivateCategories as $category)
     <li class="category-item">
     <a class="categoryForSearch wsus__droap_arrow" href="javascript:;" data-private_category="{{ $category->slug }}">

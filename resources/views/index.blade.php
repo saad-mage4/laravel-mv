@@ -3290,7 +3290,10 @@ $products = DB::table('products')->where(['status' => 1, 'seller_type' => 'Priva
                     <div class="col-xl-12">
                     <a class="wsus__hot_deals__single" href="{{ route('product_used_detail', $product->slug) }}">
                     <div class="wsus__hot_deals__single_img">
-                        <img src="{{ asset($product->thumb_image) }}" alt="ads" class="img-fluid w-100">
+                        <img src="{{
+                            // asset($product->thumb_image)
+                             ($product->seller_type == 'AdminPrivate' ? env('APP_URL') : env('SELLER_APP_URL')) . '/' . ltrim($product->thumb_image, env('APP_URL'))
+                             }}" alt="ads" class="img-fluid w-100">
                     </div>
                     <div class="wsus__hot_deals__single_text">
                         <h5>{{ $product->name}}</h5>

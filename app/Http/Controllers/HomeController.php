@@ -706,7 +706,8 @@ class HomeController extends Controller
 
         if ($request->private_child_category) {
             $child_category = PrivateChildCategoryModel::where('slug', $request->private_child_category)->first();
-            $products = $products->whepaginateQtynd;
+            // $products = $products->whepaginateQtynd;
+            $products = $products->where('private_child_category_id', $child_category->id);
         }
 
 
@@ -906,7 +907,7 @@ class HomeController extends Controller
         $totalProductReviewQty = ProductReview::where(['status' => 1, 'product_id' => $product->id])->count();
         $recaptchaSetting = GoogleRecaptcha::first();
         $productVariants = ProductVariant::where(['status' => 1, 'product_id' => $product->id])->get();
-        $relatedProducts = Product::where(['category_id' => $product->category_id, 'status' => 1])->where('id', '!=', $product->id)->get()->take(10);
+        $relatedProducts = Product::where(['private_category_id' => $product->private_category_id, 'status' => 1])->where('id', '!=', $product->id)->get()->take(10);
         $currencySetting = Setting::first();
         $banner = BannerImage::whereId('14')->first();
         $setting = Setting::first();
